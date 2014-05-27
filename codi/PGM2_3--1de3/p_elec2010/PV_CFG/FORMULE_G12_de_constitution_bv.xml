@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >FORMULE G/12 </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Hauptwahlvorstand des Wahlkreises</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >       ________           </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >WAHL DES PARLAMENTS DER DEUTSCHSPRACHIGEN GEMEINSCHAFT VOM 7. JUNI 2009</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Allgemeine Stimmenauszählung - Protokoll</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" > </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >_______</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Der Hauptwahlvorstand des Wahlkreises EUPEN ist am #DATE# um #HEURE# Uhr zusammengetreten, um die allgemeine Auszählung der Stimmen vorzunehmen, die die Kandidaten für die Wahl des Parlaments der Deutschsprachigen Gemeinschaft erzielt haben.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Anwesend sind (1) :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Vorsitzender: #PRESIDENT#;</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Beisitzer: #ASSESSEUR#;</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Sekretär: #SECRETAIRE#;</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Die Frauen/Herren, #MEMBRES# (Vorsitzender oder Beisitzer) die noch nicht getagt haben, leisten den folgenden Eid vor dem gebildeten Vorstand: "Ich schwöre, die Stimmen gewissenhaft zu zählen und das Stimmgeheimnis zu bewahren." oder: "Je jure de recenser fidèlement les suffrages et de garder le secret des votes." oder: "Ik zweer dat ik de stemmen getrouw zal opnemen en het geheim van de stemming zal bewaren."</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Die Frauen/Herren, #TEMOINS# Zeugen, und die Frauen/Herren #TEMOINS_SUPPL#, Ersatzzeugen der Kandidaten, tagen im Vorstand.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >oder: Kein Zeuge wird vorstellig, um im Vorstand zu tagen.</String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorsitzende öffnet die Umschläge, die ihm gegen Empfangsbescheinigung von den Vorsitzenden der Hauptwahlvorstände der Kantone ausgehändigt wurden, und der Vorstand nimmt die Stimmenauszählung vor.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>-
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Das Ergebnis dieser Stimmenauszählung ist in den Tabellen angegeben, die dem vorliegenden Protokoll beigefügt sind und von allen Vorstandsmitgliedern und den Zeugen unterzeichnet werden.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+</TD_XML_Table>

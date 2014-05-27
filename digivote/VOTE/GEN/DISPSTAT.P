@@ -1,0 +1,76 @@
+/* Filename            : DISPSTAT.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES VIA INCLUDE FILES                                */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}        /* De variabelen voor de selection record             */
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAMETER fra_var AS C FORMAT "x(20)" NO-UNDO.
+DEF INPUT PARAMETER lengte  AS I                NO-UNDO.
+
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR error_message AS C FORMAT "x(78)" NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+IF NUM-ENTRIES(fra_var) = 2
+THEN DO:
+    FIND language WHERE language.fra_name = ENTRY(1,fra_var)
+                    AND language.var_name = ENTRY(2,fra_var) NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE language
+    THEN DO:
+        error_message = "DISPSTAT: " + PROGRAM-NAME(2) + " <" + fra_var + ">".
+        HIDE MESSAGE NO-PAUSE.
+        MESSAGE error_message.
+        {call.i &prg="stathelp" &param=",TRUE"}
+        HIDE MESSAGE NO-PAUSE.
+        MESSAGE "****** NOT FOUND ******".
+    END.
+    ELSE DO :
+        IF taalkode < 1 OR
+           taalkode > 3
+        THEN DO:
+            error_message = "DISPSTAT: " + PROGRAM-NAME(2) +
+                            " - 'taalkode' incorrect (" + STRING(taalkode) + ")" +
+                            " - <1> forced !".
+            HIDE MESSAGE NO-PAUSE.
+            MESSAGE error_message.
+            {call.i &prg="stathelp" &param=",TRUE"}
+            HIDE MESSAGE NO-PAUSE.
+            taalkode = 1.
+        END.
+
+        IF lengte = 0
+        OR lengte > LENGTH(language.var_string[taalkode])
+        THEN lengte = LENGTH(language.var_string[taalkode]).
+
+        STATUS DEFAULT SUBSTRING(language.var_string[taalkode],1,lengte).
+    END.
+END.
+ELSE DO:
+    error_message = "MESFIL: " + PROGRAM-NAME(2) + " <" + fra_var + ">".
+    HIDE MESSAGE NO-PAUSE.
+    MESSAGE SUBSTR(error_message,1,78).
+    {call.i &prg="stathelp" &param=",TRUE"}
+    HIDE MESSAGE NO-PAUSE.
+END.
+
+{return.i}
+/* eof */

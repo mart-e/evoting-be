@@ -1,0 +1,338 @@
+/* Filename            : TRACEPRG.P                                     */
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM currSTAT  AS I                                     NO-UNDO.
+DEF INPUT PARAM sign2use  AS C                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{cryprslt.i}
+{hlcvars.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR         prglvl     AS I INIT 2                            NO-UNDO.
+DEF VAR         logFile    AS C                                   NO-UNDO.
+DEF VAR         lvlFile    AS C                                   NO-UNDO.
+DEF VAR         xmlFile    AS C                                   NO-UNDO.
+DEF VAR         prg2check  AS C FORMAT "x(20)"                    NO-UNDO.
+
+DEF VAR         wz-running AS C                                   NO-UNDO.
+DEF VAR         wz-list    AS C                                   NO-UNDO.
+DEF VAR         wz-file    AS C FORMAT "x(12)"                    NO-UNDO.
+DEF VAR         wz-level   AS I INIT 0                            NO-UNDO.
+DEF VAR         wz-levels  AS I INIT 0                            NO-UNDO.
+
+DEF VAR         wz-message AS C FORMAT "x(78)"                    NO-UNDO.
+DEF VAR         xml-part   AS C FORMAT "x(40)" EXTENT 5           NO-UNDO.
+
+/* Needed for {QUIT.I} */
+DEF VAR         prgSTAT    AS I                                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/*************************************************************************/
+/* If called as 1st level program : QUIT without warning, message, ...   */
+/* Don't use {chklevel.i 1}, because this is for debugging reason only ! */
+IF PROGRAM-NAME(prglvl) = ? 
+THEN DO:
+    {quit.i &corrupt=FALSE}
+END.
+/*************************************************************************/
+FIND FIRST session NO-LOCK.
+
+ASSIGN
+wz-running = "\VOTE\TRACE.LOG\RUNNING"
+wz-list    = ramdrive + "LIST.LOG"
+logFile    = {tracelog.i}.
+
+/* Program to be called */
+IF sign2use = ">>>"
+THEN DO:
+    REPEAT WHILE PROGRAM-NAME(prglvl + 1) <> ?:
+        prglvl = prglvl + 1.
+    END.
+    sign2use = STRING(prglvl - 2, "999").
+    
+    call C_DIR VALUE(ramdrive + "VOTE\TRACE.LOG\LEVEL???.LOG") VALUE(wz-list).
+
+    IF sign2use = "000" 
+    THEN DO:
+        INPUT FROM VALUE(wz-list) NO-ECHO.
+        wz-levels = 0.
+        REPEAT:
+            SET wz-file.
+            IF SUBSTR(wz-file,6,1) < "0" OR SUBSTR(wz-file,6,1) > "9"
+            OR SUBSTR(wz-file,7,1) < "0" OR SUBSTR(wz-file,7,1) > "9"
+            OR SUBSTR(wz-file,8,1) < "0" OR SUBSTR(wz-file,8,1) > "9"
+            THEN IF INT(SUBSTR(wz-file,6,3)) > wz-levels
+                 THEN wz-levels = INT(SUBSTR(wz-file,6,3)).
+        END.
+        INPUT CLOSE.
+        call C_DEL VALUE(wz-list).
+        call C_TSTFN VALUE(wz-running).
+        IF fileok    = 1 
+        OR wz-levels > 0
+        THEN DO:
+            wz-message = "PCF not correct !! " + "(" + STRING(wz-levels)
+                                               +       (IF fileok = 1 
+                                                        THEN " running"
+                                                        ELSE ""        ) + ")".
+            OUTPUT TO VALUE(logFile) APPEND.
+            PUT UNFORMATTED "<!-- " wz-message " -->".
+            OUTPUT CLOSE.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message) 2.
+            MESSAGE PROGRAM-NAME(1) ":PCF not correct !!".
+            MESSAGE PROGRAM-NAME(1) ":Program stops here !".
+            PAUSE.
+            {quit.i &corrupt=TRUE}
+        END.
+        OUTPUT TO VALUE(wz-running).
+        OUTPUT CLOSE.
+    END.
+    ELSE IF PROGRAM-NAME(2) <> "checkrun"
+    THEN DO:
+        INPUT FROM VALUE(wz-list) NO-ECHO.
+        wz-file = "".
+        REPEAT:
+            SET wz-file.
+        END.
+        INPUT CLOSE.
+        call C_DEL VALUE(wz-list).
+        IF wz-file <> ""
+        THEN DO:
+            IF SUBSTR(wz-file,6,1) < "0" OR SUBSTR(wz-file,6,1) > "9"
+            OR SUBSTR(wz-file,7,1) < "0" OR SUBSTR(wz-file,7,1) > "9"
+            OR SUBSTR(wz-file,8,1) < "0" OR SUBSTR(wz-file,8,1) > "9"
+            THEN wz-levels = 0.
+            ELSE wz-levels = INT(SUBSTR(wz-file,6,3)).
+        END.
+        IF wz-levels > 0
+        THEN DO:
+            IF wz-levels > INT(sign2use)
+            THEN DO:
+                INPUT FROM VALUE({runlevel.i wz-levels}) NO-ECHO.
+                SET wz-file.
+                INPUT CLOSE.
+                wz-message = "PCF not current level :" 
+                           + sign2use + "<" + STRING(wz-levels,"999")
+                           + " (" + wz-file + ")".
+                OUTPUT TO VALUE(logFile) APPEND.
+                PUT UNFORMATTED "<!-- " wz-message " -->".
+                OUTPUT CLOSE.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message) 2.
+                MESSAGE PROGRAM-NAME(1) ":PCF not current level :" sign2use "<" STRING(wz-levels,"999")
+                                                                                  " (" wz-file ")".
+                MESSAGE PROGRAM-NAME(1) ":Program stops here !".
+                PAUSE.
+                {quit.i &corrupt=TRUE}
+            END.
+        END.
+        lvlFile = {runlevel.i sign2use}.
+        call C_TSTFN VALUE(lvlFile).
+        IF fileok = 0
+        THEN DO:
+            wz-message = "PCF missing : " + lvlFile.
+            OUTPUT TO VALUE(logFile) APPEND.
+            PUT UNFORMATTED "<!-- " wz-message " -->".
+            OUTPUT CLOSE.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message) 2.
+            MESSAGE PROGRAM-NAME(1) ":PCF missing :" lvlFile.
+            MESSAGE PROGRAM-NAME(1) ":Program stops here !".
+            PAUSE.
+            {quit.i &corrupt=TRUE}
+        END.
+        /* Read PCF-file */
+        INPUT FROM VALUE(lvlFile) NO-ECHO.
+        SET prg2check.
+        INPUT CLOSE.
+        /* Verify contents of PCF */
+        IF prg2check <> PROGRAM-NAME(2)
+    		THEN DO:
+            OUTPUT TO VALUE(logFile) APPEND.
+            PUT UNFORMATTED "<!-- " 
+                            "Program 2 find  : " PROGRAM-NAME(2) " (" sign2use ")" SKIP
+                            "Program 2 check : " prg2check
+                            " -->".
+            OUTPUT CLOSE.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Program 2 find  : " + PROGRAM-NAME(2)
+                                               + " (" + sign2use + ")") 2.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Program 2 check : " + prg2check) 2.
+    		    MESSAGE PROGRAM-NAME(1) ":Program 2 find  : " PROGRAM-NAME(2) " (" sign2use ")".
+    		    MESSAGE PROGRAM-NAME(1) ":Program 2 check : " prg2check.
+    		    PAUSE.
+            {quit.i &corrupt=TRUE}
+    		END.
+    END.
+END.
+
+call C_DEL VALUE(wz-list).
+
+/* Keep/Bundle all logFiles per date */
+IF sign2use = "000"
+THEN DO:
+    call C_TSTFN VALUE(logFile).
+    IF fileok = 1
+    THEN DO:
+        xmlFile = "C:\VOTE\TRACE.LOG\"
+                + STRING(YEAR(TODAY),"9999")
+                + STRING(MONTH(TODAY),"99")
+                + STRING(DAY(TODAY),"99").
+        call C_TSTFN VALUE(xmlFile + ".XML").
+        IF fileok = 1
+        THEN DO:
+            call C_COPY VALUE(xmlFile + ".XML") VALUE(xmlFile + ".OLD").
+            INPUT FROM VALUE(xmlFile + ".OLD") NO-ECHO.
+            OUTPUT TO VALUE(xmlFile + ".XML").
+            wz-level = 0.
+            REPEAT:
+                xml-part = "".
+                SET xml-part.
+                IF xml-part[1] = "]>"
+                THEN LEAVE.
+                wz-level = wz-level + 1.
+                IF wz-level = 1
+                THEN PUT UNFORMATTED 
+                     xml-part[1] " " 
+                     xml-part[2] " " 
+                     xml-part[3] 
+                     SKIP.
+                ELSE PUT UNFORMATTED 
+                     xml-part[1] " " 
+                     xml-part[2] " " 
+                     xml-part[3] " "
+                     """" xml-part[4] """>" 
+                     SKIP.
+            END.
+            PUT UNFORMATTED
+                "<!ENTITY TraceLog" STRING(wz-level,"99")
+                " SYSTEM ""C" SUBSTR(logFile,2,LENGTH(logFile) - 5) 
+                              STRING(wz-level,"99") ".XML"">" SKIP
+                "]>" SKIP.
+            REPEAT:
+                xml-part = "".
+                SET xml-part.
+                IF xml-part[1] = "</TRACE_LOG>"
+                THEN LEAVE.
+                PUT UNFORMATTED 
+                    xml-part[1] SKIP.
+            END.
+            PUT UNFORMATTED 
+                "&TraceLog" STRING(wz-level,"99") ";" SKIP
+                "</TRACE_LOG>".
+            OUTPUT CLOSE.
+            INPUT CLOSE.
+            call C_DEL VALUE(xmlFile + ".OLD").
+        END.
+        ELSE DO:
+            OUTPUT TO VALUE(xmlFile + ".XML").
+            PUT UNFORMATTED 
+                "<!DOCTYPE TRACE_LOG [" SKIP
+                "<!ENTITY TraceLog01 SYSTEM ""C" SUBSTR(logFile,2,LENGTH(logFile) - 5) "01.XML"">" SKIP
+                "]>" SKIP
+                "<TRACE_LOG>" SKIP
+                "&TraceLog01;" SKIP
+                "</TRACE_LOG>".
+            OUTPUT CLOSE.
+            wz-level = 1.
+        END.
+        call C_TSTFN VALUE(logFile).
+        IF fileok = 1
+        THEN call C_COPY VALUE(logFile) 
+                         VALUE("C" + SUBSTR(logFile,2,LENGTH(logFile) - 5) 
+                                   + STRING(wz-level,"99") + ".XML").
+    END.
+    /* Initialize logFile */
+    OUTPUT TO VALUE(logFile).
+    PUT UNFORMATTED SKIP 
+        "<!-- START " STRING(TODAY)
+                  " " STRING(TIME,"HH:MM:SS") " -->" SKIP.
+    IF NOT session.trace 
+    THEN PUT UNFORMATTED "<" PROGRAM-NAME(2) ">".
+    OUTPUT CLOSE.
+END.
+
+IF session.trace
+THEN DO:
+    OUTPUT TO VALUE(logFile) APPEND.
+    /* Don't log this program, but all it's predecessors */
+    prglvl = 2.
+    IF sign2use = "END"
+    THEN DO:
+        wz-level = 1.
+        REPEAT:
+            call C_TSTFN VALUE({runlevel.i wz-level}).
+            IF fileok = 1
+            THEN wz-level = wz-level + 1.
+            ELSE DO:
+                wz-level = wz-level - 1.
+                LEAVE.
+            END.
+        END.
+        prglvl = 0.
+        DO WHILE wz-level > 0:
+            INPUT FROM VALUE({runlevel.i wz-level}) NO-ECHO.
+            SET wz-file.
+            INPUT CLOSE.
+            IF (prglvl = 0 AND {PRGNAME.I wz-file} = {PRGNAME.I PROGRAM-NAME(2)})
+            OR  prglvl > 0
+            THEN PUT UNFORMATTED "</" {PRGNAME.I wz-file} ">".
+            ASSIGN
+            prglvl   = prglvl   + 1
+            wz-level = wz-level - 1.
+        END.
+        /* Don't forget to close THE program */
+        prglvl = 2.
+        REPEAT WHILE PROGRAM-NAME(prglvl + 1) <> ?:
+            prglvl = prglvl + 1.
+        END.
+        PUT UNFORMATTED "</" {PRGNAME.I PROGRAM-NAME(prglvl)} ">".
+    END.
+    ELSE DO:
+        IF sign2use =  "<<<"
+        THEN PUT UNFORMATTED 
+             "</" {PRGNAME.I PROGRAM-NAME(prglvl)} ">".
+        ELSE PUT UNFORMATTED 
+             "<" {PRGNAME.I PROGRAM-NAME(prglvl)} " lvl='" INT(sign2use) "'>".
+    END.
+    OUTPUT CLOSE.
+END.   
+
+/************************************************************************/
+/* Close session                                                        */
+IF (sign2use = "<<<" AND prglvl = 3)
+OR (sign2use = "END"               ) /* forced END using {QUIT.I}       */
+THEN DO:
+    prglvl = 2.
+    DO WHILE PROGRAM-NAME(prglvl + 1) <> ?:
+        prglvl = prglvl + 1.
+    END.
+    OUTPUT TO VALUE(logFile) APPEND.
+    IF NOT session.trace 
+    THEN PUT UNFORMATTED "</" PROGRAM-NAME(prglvl) ">".
+    PUT UNFORMATTED                                SKIP 
+        "<!-- END " STRING(TODAY) 
+                " " STRING(TIME,"HH:MM:SS") " -->" SKIP.
+    OUTPUT CLOSE.
+END.
+/************************************************************************/
+
+IF sign2use = "END"
+THEN call C_DEL VALUE(wz-running).
+
+RETURN. /* don't use {return.i} here */
+/* eof */

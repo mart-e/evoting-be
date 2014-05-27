@@ -1,0 +1,392 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >II.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >In ontvangstneming van de stemdiskettes en totalisatie van de stemmen.</String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Alle diskettes werden ontvangen tussen #HEURE_DEBUT_RECEPTION# en #HEURE_FIN_RECEPTION# .</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >OPMERKINGEN :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#OBSERVATIONS_RECEPTION#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Het bureau gaat vervolgens over tot de totalisatie van de stemmen voor de Kamer en de Senaat (4).  Nadat de uitslagen van alle stembureaus zijn geregistreerd drukt de voorzitter van het hoofdbureau het proces-verbaal af alsook de stemopnemingstabellen - Bijlagen 1 en 2 bij dit formulier (5). Bij elke lijst wordt het stemcijfer toegevoegd (5), alsmede voor elke kandidaat van ieder lijst, het totaal van de door hem/haar verkregen naamstemmen. (kandidaten en opvolgers)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De uitkomst van de stemopneming wordt vastgesteld zoals is aangeduid in bijgaande tabellen.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+		<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >20</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Elektronische mededeling van de resultaten</String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kantonhoofdbureau of de persoon die door hem wordt aangewezen deelt onverwijld via digitale weg, door gebruik te maken van de elektronische handtekening die aangebracht wordt door middel van zijn identiteitskaart, </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >i.</String1>
+		<Separateur colID="5" > </Separateur>
+		<String2 colID="6" >Het totaal aantal neergelegde stembiljetten, het aantal blanco of ongeldige biljetten en het aantal geldige stemmen;</String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >ii.</String1>
+		<Separateur colID="5" > </Separateur>
+		<String2 colID="6" >Het stemcijfer van elke lijst;</String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >iii. </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Het aantal naamstemmen behaald door elke kandidaat-titularis of -opvolger.</String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >20</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Het doorsturen van het proces-verbaal en de samenvattende tabel.</String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kantonhoofdbureau verstuurt onverwijld via digitale weg, door gebruik te maken van de elektronische handtekening die aangebracht wordt door middel van zijn identiteitskaart, het proces-verbaal van zijn bureau, dat een samenvattende tabel bevat:  </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >a. </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >naar de voorzitter van het kieskringhoofdbureau  en naar de Minister van Binnenlandse Zaken voor wat betreft de verkiezing van de Kamer;</String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >b. </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >naar de voorzitter van het provinciehoofdbureau en naar de Minister van Binnenlandse Zaken voor wat betreft het verkiezing van de Senaat;</String2>
+	</row>
+	<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kantonhoofdbureau steekt eveneens dat proces-verbaal, alsmede de dubbels van de stemopnemingstabellen en de samenvattende tabel in een omslag, verzegelt en stempelt deze en laat ze op de snelst mogelijke wijze afgeven </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >8</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >- aan de voorzitter van het hoofdbureau van de kieskring (witte omslag voor wat betreft de Kamer), die hiervoor ontvangst bevestigt;
+		     - aan de voorzitter van het provinciehoofdbureau (roze omslag voor wat betreft de Senaat), die hiervoor ontvangst bevestigt;
+		</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="38" rowFlags="">
+		<Break colID="1" >8</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="39" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Het publiek wordt toegelaten in de zaal waar het bureau zetelt en de voorzitter kondigt de vastgestelde uitkomsten af.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	row>
+	<row rowNumber="40" rowFlags="">
+		<Break colID="1" >8</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+
+	<row rowNumber="41" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Te #LIEU#, #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="42" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="43" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De secretaris,                De bijzitters,                De getuigen,                De voorzitter,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="44" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="45" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="46" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="47" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="48" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >P.S.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >DE VOORZITTER VAN HET KANTONHOOFDBUREAU MAG NIET VERGETEN DE OVERGEMAAKTE LIJSTEN VOOR DE BETALING VAN HET PRESENTIEGELD VAN ALLE KIESBUREAUS IN ZIJN KIESKANTON DE MAANDAG NA DE STEMMING TE OVERHANDIGEN AAN DE POSTONTVANGER VAN DE KANTONHOOFDPLAATS.  MAAK VOOR DE STEMMING DE NODIGE AFSPRAKEN MET DE POSTONTVANGER OM ELKE VERTRAGING IN DE UITBETALING VAN DE PRESENTIEGELDEN TE VERMIJDEN.</String2>
+	</row>
+	<row rowNumber="49" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="50" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="51" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="52" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(4)</String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >De afkondiging door de voorzitter van het kantonhoofdbureau van gedeeltelijke uitslagen die de lijsten hebben behaald, kan gebeuren na de registratie van ten minste 10 bureaus en nadien van 10 bijkomende stembureaus en zo verder tot alle stembureaus zijn geregistreerd.</String2>
+	</row>
+	<row rowNumber="53" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(5)</String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >Het stemcijfer van iedere lijst wordt bepaald door de optelling van het getal van de magneetkaarten waarop een geldige stem is uitgebracht bovenaan de lijst of op één of meer kandidaten (titularissen en/of opvolgers) van die lijst.
+ </String2>
+	</row>
+	<row rowNumber="54" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+</TD_XML_Table>

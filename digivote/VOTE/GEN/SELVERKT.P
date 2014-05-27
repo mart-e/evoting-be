@@ -1,0 +1,173 @@
+/* Filename            : SELVERKT.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM orgtype LIKE organisation.org-type                NO-UNDO.
+DEF INPUT PARAM area    AS C FORMAT "x(30)"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{disfram.i "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*      key_dis     : De variabele voor CHOOSE ROW van het scherm       */
+/*                    Indeling variabele :                              */
+/*                    1     : indicatie                                 */
+/*                    2     : Spatie                                    */
+/*                    3     : election.e-id                             */
+/*                    4-5   : Spatie                                    */
+/*                    6     : Naam verkiezing                           */
+/*      first-key   : De eerste RECID van de tabel                      */
+/*      sav-key     : De RECID van actuele types record                 */
+/*      beg-key     : De begin RECID van het scherm                     */
+/*      end-key     : De eind RECID van het scherm                      */
+/*      counter     : Een teller voor het opvullen van het scherm       */
+/*      down-num    : Het aantal down lijnen voor het scherm            */
+/************************************************************************/
+DEF VAR key_dis         AS C FORMAT "x(58)"                       NO-UNDO.
+DEF VAR down-num        AS I                                      NO-UNDO.
+
+DEF VAR wz-totlevel     LIKE election.totlevel                    NO-UNDO.
+DEF VAR wz-selected     AS L                                      NO-UNDO.
+DEF VAR wz-et-ids       LIKE election.et-id EXTENT 10             NO-UNDO.
+
+DEF VAR i               AS I                                      NO-UNDO.
+
+DEF VAR mes1            AS C FORMAT "x(38)"                       NO-UNDO.
+DEF VAR men_tit         AS C FORMAT "x(40)"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME totselvg 
+        SCROLL 1 
+        down-num DOWN 
+        ROW 9
+        TITLE men_tit 
+        NO-LABELS 
+        OVERLAY 
+        CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN 
+i         = 1
+wz-et-ids = 0.
+FOR EACH election WHERE election.s-id = verkdat :
+    ASSIGN
+    election.e-pr = FALSE
+    election.MAC  = "REFRESH"
+    wz-et-ids[i]  = election.et-id
+    i             = i + 1.
+END.
+{selel_t1.i}
+{call.i &prg="sec_elec"}
+
+FIND FIRST election WHERE election.e-pr     = FALSE
+                      AND election.totlevel = wz-totlevel 
+                    NO-LOCK NO-ERROR.
+IF NOT AVAILABLE election   /* All elections are already selected. */
+THEN DO:
+    {return.i}
+END.                 
+
+{call.i &prg="mesfil" &param=",'totselvg,mes01',38,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'totselvg,tit01',40,OUTPUT men_tit"}
+
+HIDE FRAME disframe NO-PAUSE.
+
+REPEAT:
+    {selitem.g
+     &tab_name     = "election"
+     &where        = "election.s-id     = verkdat AND
+                      election.totlevel = wz-totlevel"
+     &key_dis      = "(IF election.e-pr = TRUE THEN '* 'ELSE '  ')
+                     + STRING(election.e-id,'99')
+                     + FILL(' ',2)
+                     + election.long-name[taalkode]
+                     + ' '
+                     + election.coll_name[taalkode]"
+     &fkey         = "08"
+     &fra_name     = "totselvg"    
+     &fra_capture  = "wz-selected = (IF SUBSTR(key_dis,1,1) = '*' THEN TRUE ELSE FALSE)
+                      verknum = INT(SUBSTR(key_dis,3,2))
+                      verkben = SUBSTR(key_dis,7,38)"
+     &action_type  = " "
+     &action_flag  = 0
+     &action_keys  = "RETURN,F4"
+     &action_post  = "
+      FOR EACH election WHERE election.et-id = wz-et-ids[verknum]:
+          ASSIGN
+          election.e-pr = NOT wz-selected
+          election.MAC  = 'REFRESH'.
+      END.
+      LEAVE.
+     "
+     &extra_keys   = "
+      IF LASTKEY = KEYCODE('F1') THEN LEAVE.
+     "
+    }
+    IF      LASTKEY = KEYCODE("F1") 
+    THEN DO:
+        FIND FIRST election WHERE election.s-id = verkdat
+                              AND election.e-pr = TRUE
+                          NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE election
+        THEN DO:
+            {call.i &prg="disfram" &param=",'totselvg,err01','',
+                                            'totselvg,hulp2','',TRUE"}
+            NEXT.
+        END.
+        {selel_t2.i}
+        LEAVE.
+    END.
+    ELSE IF LASTKEY = KEYCODE("F4")
+    THEN DO:
+        {selel_t1.i}
+        {selel_t2.i}
+        LEAVE.
+    END.
+END.
+{call.i &prg="sec_elec"}
+
+call ADDTOLOG PROGRAM-NAME(1) "***************************" 0.
+call ADDTOLOG PROGRAM-NAME(1) "Overview of election info :" 0.
+call ADDTOLOG PROGRAM-NAME(1) "***************************" 0.
+FOR EACH election WHERE election.s-id = verkdat NO-LOCK:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Election " 
+                                       + STRING(election.e-id,">9") + " : "
+                                       + STRING(election.et-id,"99") + "/"
+                                       + STRING(election.coll-id) + " = "
+                                       + (IF election.e-pr THEN "" ELSE "NOT ")
+                                       + " selected for TOTALISATION !") 0.
+END.
+call ADDTOLOG PROGRAM-NAME(1) "***************************" 0.
+
+{return.i}
+/* eof */

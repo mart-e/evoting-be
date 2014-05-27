@@ -1,0 +1,323 @@
+/* Filename            : S_ACCEPT.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{cfvar.i "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR accepted-sys-type LIKE setup.sys-type                     NO-UNDO.
+DEF VAR wz-accepted       AS I                                    NO-UNDO.
+DEF VAR wz-total          AS I                                    NO-UNDO.
+
+DEF VAR wz-seldisk        AS C FORMAT "x(45)"                     NO-UNDO.
+DEF VAR wz-selprog        AS C FORMAT "x(12)"                     NO-UNDO.
+
+DEF VAR wz-status         AS I                                    NO-UNDO.
+DEF VAR wz-diskname-c     AS C FORMAT "x(45)"                     NO-UNDO.
+DEF VAR wz-diskname-d     AS C FORMAT "x(45)"                     NO-UNDO.
+DEF VAR wz-diskname-d-2   AS C FORMAT "x(45)"                     NO-UNDO.
+DEF VAR wz-custom-msg     AS C FORMAT "x(60)" EXTENT 2            NO-UNDO.
+
+DEF VAR wz-dummy          AS L                                    NO-UNDO.
+DEF VAR i                 AS I                                    NO-UNDO.
+
+DEF VAR on_resume         AS L INIT FALSE                         NO-UNDO.
+DEF VAR prglvl            AS I                                    NO-UNDO.
+DEF VAR resume-prg        AS C                                    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session NO-LOCK NO-ERROR.
+
+IF       session.hands_off[1] = TRUE
+     AND session.hands_off[2] = FALSE
+     AND session.hands_off[3] = FALSE
+THEN accepted-sys-type = "I".
+ELSE IF  session.hands_off[1] = TRUE
+     AND session.hands_off[2] = TRUE
+     AND session.hands_off[3] = FALSE
+THEN accepted-sys-type = "G".
+ELSE DO:
+    {call.i &prg="dispmes" &param=",'general,notavail',0"}
+    HIDE MESSAGE NO-PAUSE.
+    {return.i}
+END.
+
+{resume.i}
+IF on_resume
+THEN DO:
+    IF {prgname.i resume-prg} = "accept-i"
+    THEN DO:
+        INPUT FROM VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME") NO-ECHO.
+        REPEAT i = 1 TO 3:
+            SET ^. /* SKIP 3 lines */
+        END.
+        SET verkben.
+        INPUT CLOSE.
+        
+        DISPLAY verkben WITH FRAME pmgenein.
+        
+        {call_var.i &prg="resume-prg"} 
+    END.
+END.
+
+REPEAT:
+    {call.i &prg="mesfil" &param=",'pmgeneka,titmes' + accepted-sys-type,35,OUTPUT verkben"}
+    ASSIGN
+    verkben     = TRIM(verkben) + " "
+    wz-accepted = 0
+    wz-total    = 0.
+
+    FOR EACH organigram WHERE organigram.sys-type = accepted-sys-type 
+                          AND (   (    PROGRAM-NAME(2) BEGINS "struct"
+                                   AND organigram.orginator = 0        )
+                               OR (    PROGRAM-NAME(2) BEGINS "disketpr"
+                                   AND organigram.orginator > 0        ))
+                          AND organigram.l-disk   < 0
+                      NO-LOCK:
+        IF organigram.verwerkt
+        THEN wz-accepted = wz-accepted + 1.
+        wz-total = wz-total + 1.
+    END.
+
+    verkben = TRIM(verkben) + " "  + STRING(wz-accepted) + " / " + STRING(wz-total).
+    DISPLAY verkben partnam WITH FRAME pmgenein.
+
+    IF wz-accepted = wz-total
+    THEN DO:
+        FIND FIRST setup NO-LOCK NO-ERROR.
+        IF setup.sys-type = "S"
+        THEN DO:
+            {call.i &prg="disfram" &param=",'s_accept,alldone','s_accept,doblock','',
+                                            's_accept,digback',TRUE"}
+        END.
+        ELSE DO:
+            {call.i &prg="disfram" &param=",'s_accept,alldone','','','',TRUE"}
+        END.
+        verkben = "".
+        DISPLAY verkben WITH FRAME pmgenein.
+        LEAVE.
+    END.
+    
+    menleav = 0.
+    {call.i &prg="seldisk" &param=",INPUT  accepted-sys-type,
+                                    INPUT  PROGRAM-NAME(2),
+                                    OUTPUT wz-seldisk"}
+    IF menleav = 0 THEN LEAVE.
+    
+    IF accepted-sys-type = "I"
+    THEN DO:
+        /* Find out if input comes from an IMPORT diskette or not */
+        FIND FIRST organigram WHERE organigram.sys-type
+                                  + organigram.org-type
+                                  + organigram.area[taalkode]
+                                  + STRING(organigram.orginator,"999") = wz-seldisk
+                                AND organigram.s-disk = -9
+                                AND organigram.l-disk = -9
+                            NO-LOCK NO-ERROR.
+        IF AVAILABLE organigram
+        THEN DO:
+            {call.i &prg="import_i" &param=",organigram.disk-id"}
+            NEXT.
+        END.
+    END.
+    
+    {call.i &prg="disfram" &param=",'s_accept,askdisk',',' + wz-seldisk,'','',TRUE"}
+    IF key-cancel THEN NEXT.
+    
+    ASSIGN
+    wz-diskname-d   = ""
+    wz-diskname-d-2 = "".   
+    call C_TSTFN VALUE("D:\CONTENTS").
+    IF fileok = 1
+    THEN DO:
+        INPUT FROM VALUE("D:\CONTENTS") NO-ECHO.
+        SET wz-diskname-d wz-diskname-d-2.
+        INPUT CLOSE.
+        IF wz-diskname-d-2 <> ""
+        THEN wz-diskname-d = wz-diskname-d + " " + wz-diskname-d-2.
+    END.
+    
+    {call.i &prg="cfload" &param=",'D:\'"}
+    IF NOT db-version
+    OR wz-diskname-d <>   cf-sys-type
+                        + cf-org-type
+                        + cf-areaname
+                        + STRING(cf-orginator,"999")
+    THEN DO:
+        {call.i &prg="disfram" &param=",'s_accept,no_ver_1',
+                                        's_accept,no_ver_2',
+                                        '','',TRUE"}
+        NEXT.
+    END.
+
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    ASSIGN 
+    wz-status     = -1
+    wz-diskname-c = setup.sys-type
+                  + setup.org-type
+                  + setup.areaname
+                  + STRING(setup.orginator,"999")
+    wz-diskname-d = cf-sys-type
+                  + cf-org-type
+                  + cf-areaname
+                  + STRING(cf-orginator,"999").
+
+    IF cf-corrupt
+    THEN DO:
+        {call.i &prg="disfram" &param=",'s_accept,corrupt1',
+                                        's_accept,corrupt2',
+                                        ',=> ' + wz-diskname-d,
+                                        '',TRUE"}
+        NEXT.
+    END.
+    
+    FIND FIRST organigram WHERE     organigram.sys-type  = cf-sys-type
+                            AND     organigram.org-type  = cf-org-type
+                            AND (   organigram.area[1]   = cf-areaname
+                                 OR organigram.area[2]   = cf-areaname
+                                 OR organigram.area[3]   = cf-areaname)
+                            AND     organigram.orginator = cf-orginator
+                        NO-LOCK NO-ERROR.
+    IF AVAILABLE organigram
+    THEN DO:
+        wz-diskname-d = organigram.sys-type
+                      + organigram.org-type
+                      + organigram.area[taalkode]
+                      + STRING(organigram.orginator,"999").
+        IF organigram.disk-id = cf-disk-id
+        THEN IF wz-diskname-d <> wz-seldisk
+             THEN wz-status = 1.                     /* Not selected disk             */
+             ELSE DO:              
+                 OUTPUT TO VALUE(ramdrive + "DIGEST.SIG").
+                 PUT UNFORMATTED wz-diskname-c SKIP
+                                 cf-sys-type
+                                 cf-org-type
+                                 cf-areaname
+                                 STRING(cf-orginator,"999") SKIP.
+                 FOR EACH types WHERE types.used = 1 NO-LOCK:
+                     EXPORT types.
+                 END.
+                 {call.i &prg="cftypes" 
+                         &param=",'D:\VOTE\ELECT.CF',TRUE,FALSE,OUTPUT wz-dummy"}
+                 PUT UNFORMATTED (IF LOOKUP(cf-sys-type,"G,T") > 0 AND cf-orginator > 0
+                                  THEN ""
+                                  ELSE setup.password) SKIP
+                                 cf-password.
+                 OUTPUT CLOSE.
+                 call DIGEST VALUE(ramdrive + "DIGEST.SIG").
+                 call C_DEL VALUE(ramdrive + "DIGEST.SIG").
+ 
+                 IF         organigram.digest  = hex-digest
+                 AND LENGTH(organigram.digest) = 40
+                 AND LENGTH(hex-digest)        = 40
+                 THEN DO:
+                     IF      cf-sys-type = "I"
+                     THEN DO:
+                         IF cf-hands_off[1]
+                         THEN wz-status = 0.        /* EVERYTHING IS OK TO VALIDATE */
+                         ELSE wz-status = 5.        /* Data not yet approved        */
+                     END.
+                     ELSE DO:
+                         IF cf-sys-type = "G"
+                         THEN DO:
+                             IF cf-disk_read = cf-disk_made
+                             THEN wz-status = 0.   /* EVERYTHING IS OK TO VALIDATE  */
+                             ELSE DO:
+                                 wz-status = 4.    /* Not all disks are processed   */
+                                 call ADDTOLOG PROGRAM-NAME(1)
+                                      VALUE("disk_read : " + STRING(cf-disk_read) + " | "
+                                          + "disk_made : " + STRING(cf-disk_made)) 1.
+                             END.
+                         END.
+                         ELSE DO:
+                             wz-status = 6.
+                             call ADDTOLOG PROGRAM-NAME(1) 
+                                  VALUE("Unsupported sys-type : " + cf-sys-type) 1.
+                         END.
+                     END.
+                 END.
+                 ELSE DO:
+                     wz-status = 3.                   /* Digest verification error     */
+                     call ADDTOLOG PROGRAM-NAME(1) 
+                             VALUE("Organigram : " + organigram.digest + "|" 
+                                                   + STRING(LENGTH(organigram.digest))) 1.
+                     call ADDTOLOG PROGRAM-NAME(1) 
+                             VALUE("Other drive: " + hex-digest + "|" 
+                                                   + STRING(LENGTH(hex-digest))) 1.
+                 END.
+             END.
+        ELSE wz-status = 2.                           /* Disk not defined in structure */
+    END.
+    ELSE wz-status = 2.                                /* Disk not defined in structure */
+    
+    IF wz-status = -1
+    THEN DO:
+        call C_TSTFN VALUE("D:\VOTE\ELECT.DB").
+        IF fileok = 1
+        THEN wz-status = 0.
+    END.
+    
+    IF wz-status <> 0
+    THEN DO:
+        wz-custom-msg = "".
+       
+        IF      wz-status = 1
+        THEN ASSIGN 
+             wz-custom-msg[1] = ",   " + wz-diskname-d + " (D:)"
+             wz-custom-msg[2] = ",<> " + wz-seldisk.
+            
+        ELSE wz-custom-msg[1] = "," + wz-diskname-d.
+            
+        {call.i &prg="disfram" 
+                &param=",'s_accept,error' + STRING(wz-status),
+                         wz-custom-msg[1],
+                         wz-custom-msg[2],
+                         ',(E:' + STRING(wz-status) + ')',
+                         TRUE"}
+        NEXT.
+    END.
+
+    call C_TSTFN VALUE("D:\VOTE\ELECT.LK").
+    IF fileok = 1
+    THEN DO:
+        menleav = 0.
+        {call.i &prg="confirm" &param=",'s_accept,lockfile',
+                                        's_accept,unlock','',
+                                        'general,yes','general,no'"}
+        IF menleav = 1
+        THEN call C_DEL VALUE("D:\VOTE\ELECT.LK").
+        ELSE DO:
+            {call.i &prg="disfram" &param=",'s_accept,lockfile',
+                                            's_accept,unusable',
+                                            '','',TRUE"}
+            NEXT.
+        END.
+    END.
+
+    /* Everything checked out to be OK ... */
+    wz-selprog = "accept-" + accepted-sys-type.
+    {call_var.i &prg="wz-selprog"}
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+
+verkben = "".
+{return.i}
+/* eof */

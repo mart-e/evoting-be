@@ -1,0 +1,102 @@
+/* Filename            : SELPART.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-taalgroepsystem AS L INIT FALSE     NO-UNDO.
+DEF VAR wz-partnum         LIKE party.p-id     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAMES/FORMS VIA INCLUDE FILES                         */
+/*                                                                      */
+/************************************************************************/
+{pmlprtge.i "NEW"}    /* Shared frame PMLPRTGE                          */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="initpart"}         /* Initialisatie van een partij        */
+
+FIND FIRST election WHERE election.e-id = verknum.
+wz-taalgroepsystem = IF election.et-id = 1
+                     THEN TRUE
+                     ELSE FALSE.
+
+{call.i &prg="mesfil" &param=",'pmlprtge,mes01',27,OUTPUT mes1"}
+
+IF wz-taalgroepsystem
+THEN DO:
+    {call.i &prg="mesfil" &param=",'pmlprtge,mes02',20,OUTPUT mes2"}
+END.
+{call.i &prg="mesfil" &param=",'pmlprtge,mes03', 4,OUTPUT mes3"}
+{call.i &prg="mesfil" &param=",'pmlprtge,tit01',30,OUTPUT men_tit"}
+
+{selitem.g 
+ &tab_name     = "party"
+ &where        = "party.s-id = verkdat AND 
+                  party.e-id = verknum AND 
+                  party.p-id <> 0"
+ &key_dis      = "STRING(party.p-id,'Z9') + ' '
+                + STRING(party.party_name, 'x(25)')
+                + ' '
+                + STRING((IF wz-taalgroepsystem
+                          THEN party.taalgroep[taalkode]
+                          ELSE ''),        'x(20)')
+                + (IF party.logo_width  <> -1  AND
+                      party.logo_height <> -1  AND
+                      party.logo_bytes  <> -1
+                   THEN ' LOGO '
+                   ELSE ' ---- ')
+                + (IF       party.num_can > 0
+                        AND party.num_sup > 0
+                   THEN 'Û'
+                   ELSE IF  party.num_can > 0
+                        AND party.num_sup = 0
+                   THEN 'ß'
+                   ELSE IF  party.num_can = 0
+                        AND party.num_sup > 0
+                   THEN 'Ü'
+                   ELSE '-')"
+ &fkey         = "01"
+ &fra_name     = "pmlprtge"    
+ &fra_capture  = "partnum    = INTEGER(SUBSTRING(key_dis,1,2))
+                  wz-partnum = partnum
+                  partnam    = SUBSTRING(key_dis,4,25)"
+ &cursor_left  = 5
+ &cursor_right = 2
+ &action_type  = "P"
+ &action_flag  = 249
+ &action_keys  = "F5,F6,F7,F8,F9,F10,F11,F1,RETURN"
+ &action_prgs  = "partsel.r,crpart.r,delpart.r,chapart.r,partload.r,partlogo.r"
+ &extra_action = "
+  FIND FIRST party WHERE party.s-id = verkdat
+                     AND party.e-id = verknum
+                     AND party.p-id = wz-partnum NO-LOCK NO-ERROR.
+  "
+ &action_post  = "partnum = 0."
+}
+
+IF      menleav < 0 
+THEN    menleav = 0.
+ELSE IF menleav = 9
+THEN DO:
+    {quit.i &corrupt=FALSE}
+END.
+{return.i}
+/* eof */

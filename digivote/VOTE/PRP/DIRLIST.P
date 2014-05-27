@@ -1,0 +1,396 @@
+/* Filename            : DIRLIST.P                                      */
+
+{chklevel.i 1}
+
+
+/************************************************************************/
+/*                                                                      */
+/*        PARAMETERS                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM inputlist    AS C.
+DEF INPUT PARAM wz-dir-title AS C.
+DEF INPUT PARAM wz-dir-error AS C.
+DEF INPUT PARAM wz-lst-title AS C.
+DEF INPUT PARAM wz-lst-hulp  AS C.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR dirlist AS C FORMAT "x(12)".
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR sav-key   AS I                           NO-UNDO.
+DEF VAR beg-key   AS I                           NO-UNDO.
+DEF VAR end-key   AS I                           NO-UNDO.
+DEF VAR last-key  AS I                           NO-UNDO.
+DEF VAR down-num  AS I                           NO-UNDO.
+
+DEF VAR disnam    AS C FORMAT "x(12)"            NO-UNDO.
+DEF VAR naam      AS C FORMAT "x(12)" EXTENT 512 NO-UNDO.
+DEF VAR wz-dir    AS C FORMAT "x(40)"            NO-UNDO.
+
+DEF VAR men_tit   AS C FORMAT "x(26)"            NO-UNDO.
+DEF VAR wz-ingtit AS C FORMAT "x(30)"            NO-UNDO.
+
+DEF VAR i         AS I                           NO-UNDO.
+DEF VAR j         AS I                           NO-UNDO.
+DEF VAR wz-seldir AS C FORMAT "x(40)" EXTENT 6   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    disnam AT 5 SPACE(4)
+    WITH FRAME pmlprtna
+        NO-LABELS
+        ROW 6
+        COLUMN 58
+        down-num DOWN
+        TITLE men_tit
+        SCROLL 1
+        OVERLAY.
+
+FORM
+    wz-seldir AT 2 SPACE(1)
+    WITH FRAME ingavedir
+        NO-LABELS
+        ROW 14
+        COLUMN 2
+        TITLE wz-ingtit
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        STREAM DESCRIPTIONS                                           */
+/*                                                                      */
+/************************************************************************/
+DEFINE STREAM saveinfo.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+IF NUM-ENTRIES(inputlist) > 6
+THEN DO:
+    MESSAGE "Too much entries in inputlist ! (max. 6 allowed)".
+    PAUSE.
+    {return.i}
+END.
+
+dirkeuze:
+REPEAT:
+    {call.i &prg="mesfil" &param=", wz-lst-title, 0, OUTPUT men_tit  "}
+    {call.i &prg="mesfil" &param=", wz-dir-title, 0, OUTPUT wz-ingtit"}
+
+    dirlist = "".
+    REPEAT i=1 TO 6:
+        wz-seldir[i] = IF i <= NUM-ENTRIES(inputlist)
+                       THEN ENTRY(i,inputlist)
+                       ELSE "".
+    END.
+    wz-dir = wz-seldir[1].
+
+    i = 1.
+    KEUZE:
+    REPEAT ON ERROR  UNDO KEUZE, RETRY KEUZE
+           ON ENDKEY UNDO KEUZE, LEAVE KEUZE
+           WITH FRAME ingavedir:
+        HIDE MESSAGE.
+        DISPLAY wz-seldir.
+        IF      NUM-ENTRIES(inputlist) = 1
+        THEN DO:
+            CHOOSE FIELD wz-seldir[1 FOR 1]
+                   COLOR VALUE(menu_bg)
+                   GO-ON ("F4" "ESC")
+                   AUTO-RETURN.
+        END.
+        ELSE IF NUM-ENTRIES(inputlist) = 2
+        THEN DO:
+            CHOOSE FIELD wz-seldir[1 FOR 2]
+                   COLOR VALUE(menu_bg)
+                   GO-ON ("F4" "ESC")
+                   AUTO-RETURN.
+        END.
+        ELSE IF NUM-ENTRIES(inputlist) = 3
+        THEN DO:
+            CHOOSE FIELD wz-seldir[1 FOR 3]
+                   COLOR VALUE(menu_bg)
+                   GO-ON ("F4" "ESC")
+                   AUTO-RETURN.
+        END.
+        ELSE IF NUM-ENTRIES(inputlist) = 4
+        THEN DO:
+            CHOOSE FIELD wz-seldir[1 FOR 4]
+                   COLOR VALUE(menu_bg)
+                   GO-ON ("F4" "ESC")
+                   AUTO-RETURN.
+        END.
+        ELSE IF NUM-ENTRIES(inputlist) = 5
+        THEN DO:
+            CHOOSE FIELD wz-seldir[1 FOR 5]
+                   COLOR VALUE(menu_bg)
+                   GO-ON ("F4" "ESC")
+                   AUTO-RETURN.
+        END.
+        ELSE DO:
+            CHOOSE FIELD wz-seldir
+                   COLOR VALUE(menu_bg)
+                   GO-ON ("F4" "ESC")
+                   AUTO-RETURN.
+        END.
+        IF KEYFUNCTION(LASTKEY) = "END-ERROR" OR
+           KEYLABEL(LASTKEY)    = "ESC"
+        THEN DO:
+            dirlist = "".
+            HIDE FRAM ingavedir NO-PAUSE.
+            {return.i}
+        END.
+        ELSE wz-dir = FRAME-VALUE.
+        LEAVE KEUZE.
+    END.
+    HIDE FRAME ingavedir NO-PAUSE.
+
+    /* TESTEN bij inlezen van diskette of er wel ‚‚n in de drive zit */
+    IF INDEX(wz-dir,"A:") > 0 OR
+       INDEX(wz-dir,"B:") > 0
+    THEN DO ON ERROR  UNDO dirkeuze, RETRY dirkeuze
+            ON ENDKEY UNDO dirkeuze, RETURN:
+        CALL C_TSTFN VALUE(SUBSTRING(wz-dir,1,2) + "\NUL").
+        IF fileok = 0
+        THEN DO:
+            {call.i &prg="indmess" &param=",'errormsg,nodisk'"}
+            NEXT dirkeuze.
+        END.
+    END.
+    LEAVE dirkeuze.
+END.
+
+call C_DIR VALUE(wz-dir) VALUE(ramdrive + "DIRLIST").
+
+INPUT STREAM saveinfo FROM VALUE(ramdrive + "DIRLIST") NO-ECHO.
+
+end-key = 1.
+REPEAT :
+    IMPORT STREAM saveinfo disnam.
+    ASSIGN
+    naam[end-key] = SUBSTR(disnam,1,INDEX(disnam,".") - 1)
+                  + FILL(" ",10 - INDEX(disnam,"."))
+                  + SUBSTR(disnam,INDEX(disnam,".") + 1)
+    end-key       = end-key + 1.
+    IF end-key = 512 THEN LEAVE.
+END.
+
+INPUT STREAM saveinfo CLOSE.
+
+/* --------------------------------------------------------------- */
+/* sorteren van de bestandenlijst volgens de 'Bubble Sort'-methode */
+/* --------------------------------------------------------------- */
+REPEAT i = 1 TO end-key - 1:
+    REPEAT j = 1 TO end-key - 2:
+        IF naam[j + 1] < naam[j]
+        THEN ASSIGN
+             disnam      = naam[j    ]
+             naam[j    ] = naam[j + 1]
+             naam[j + 1] = disnam.
+    END.
+END.
+/* --------------------------------------------------------------- */
+
+ASSIGN
+disnam        = ""
+naam[end-key] = ""
+last-key      = end-key - 1.
+
+CALL C_DEL VALUE(ramdrive + "DIRLIST").
+
+HIDE FRAME pmlprtna NO-PAUSE.
+HIDE FRAME ingavedir NO-PAUSE.
+
+IF naam[1] <> ""
+THEN DO :
+    down-num = 1.
+    REPEAT:
+        IF naam[down-num + 1] <> ""
+        THEN down-num = down-num + 1.
+        ELSE LEAVE.
+
+        IF down-num = 13 THEN LEAVE.
+    END.
+
+    CLEAR FRAME pmlprtna ALL NO-PAUSE.
+    ASSIGN
+    sav-key = 1
+    beg-key = sav-key
+    end-key = sav-key.
+    DISPLAY naam[sav-key] @ disnam WITH FRAME pmlprtna.
+    DOWN WITH FRAME pmlprtna.
+    PAUSE 0 NO-MESSAGE.
+    REPEAT :
+        IF sav-key = down-num
+        THEN LEAVE.
+        ELSE DO :
+            sav-key = sav-key + 1.
+            IF naam[sav-key] <> ""
+            THEN DO :
+                DISPLAY naam[sav-key] @ disnam WITH FRAME pmlprtna.
+                DOWN WITH FRAME pmlprtna.
+                PAUSE 0 NO-MESSAGE.
+                end-key = sav-key.
+            END.
+            ELSE LEAVE.
+        END.
+    END.
+    UP sav-key WITH FRAME pmlprtna.
+    sav-key = beg-key.
+    REPEAT WITH FRAME pmlprtna:
+        {call.i &prg="discolme" &param=", wz-lst-hulp, 0"}
+
+        CHOOSE ROW disnam
+            COLOR VALUE(menu_bg)
+            NO-ERROR
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "HOME" "END" "F4" "ESC")
+            AUTO-RETURN.
+        COLOR DISPLAY VALUE(menu_fg) disnam.
+        PAUSE 0 NO-MESSAGE.
+
+        IF LASTKEY = KEYCODE("CURSOR-UP")
+        THEN DO:
+            IF sav-key > 1
+            THEN DO:
+                sav-key = sav-key - 1.
+                UP.
+                DISPLAY naam[sav-key] @ disnam.
+                PAUSE 0 NO-MESSAGE.
+                IF sav-key < beg-key
+                THEN ASSIGN
+                     beg-key = sav-key
+                     end-key = end-key - 1.
+            END.
+        END.
+
+        IF LASTKEY = KEYCODE("PAGE-UP")
+        THEN DO:
+            IF sav-key > beg-key
+            THEN DO:
+                UP sav-key - beg-key.
+                sav-key = beg-key.
+                DISPLAY naam[sav-key] @ disnam.
+                PAUSE 0 NO-MESSAGE.
+            END.
+            ELSE DO:
+                IF sav-key > 1
+                THEN DO:
+                    REPEAT i = 1 TO down-num WITH FRAME pmlprtna:
+                        IF sav-key > 1
+                        THEN DO:
+                            sav-key = sav-key - 1.
+                            UP.
+                            DISPLAY naam[sav-key] @ disnam.
+                            PAUSE 0 NO-MESSAGE.
+                            ASSIGN
+                            beg-key = sav-key
+                            end-key = end-key - 1.
+                        END.
+                        ELSE LEAVE.
+                    END.
+                END.
+            END.
+        END.
+
+        IF LASTKEY = KEYCODE("CURSOR-DOWN")
+        THEN DO:
+            IF sav-key < last-key
+            THEN DO:
+                sav-key = sav-key + 1.
+                IF naam[sav-key] <> ""
+                THEN DO :
+                    DOWN.
+                    PAUSE 0 NO-MESSAGE.
+                    DISPLAY naam[sav-key] @ disnam.
+                    PAUSE 0 NO-MESSAGE.
+                    IF sav-key > end-key
+                    THEN ASSIGN
+                         end-key = sav-key
+                         beg-key = beg-key + 1.
+                END.
+            END.
+        END.
+
+        IF LASTKEY = KEYCODE("PAGE-DOWN")
+        THEN DO:
+            IF sav-key < end-key
+            THEN DO:
+                DOWN end-key - sav-key.
+                sav-key = end-key.
+                PAUSE 0 NO-MESSAGE.
+                DISPLAY naam[sav-key] @ disnam.
+                PAUSE 0 NO-MESSAGE.
+            END.
+            ELSE DO:
+                IF sav-key < last-key
+                THEN DO:
+                    REPEAT i = 1 TO down-num WITH FRAME pmlprtna:
+                        IF sav-key < last-key
+                        THEN DO:
+                            sav-key = sav-key + 1.
+                            DOWN.
+                            DISPLAY naam[sav-key] @ disnam.
+                            PAUSE 0 NO-MESSAGE.
+                            ASSIGN
+                            end-key = sav-key
+                            beg-key = beg-key + 1.
+                        END.
+                        ELSE LEAVE.
+                    END.
+                END.
+            END.
+        END.
+
+        IF LASTKEY = KEYCODE("F1") OR
+           LASTKEY = KEYCODE("RETURN")
+        THEN DO:
+            COLOR DISPLAY VALUE(menu_bg) disnam.
+            PAUSE 0 NO-MESSAGE.
+            /* return full pathname + filename */
+            dirlist = SUBSTR(wz-dir,1,R-INDEX(wz-dir,"\")) 
+                    + TRIM(SUBSTR(FRAME-VALUE,1,8))
+                    + "." + TRIM(SUBSTR(FRAME-VALUE,10)).
+            LEAVE.
+        END.
+
+        IF KEYFUNCTION(LASTKEY) = "END-ERROR" OR
+           KEYLABEL(LASTKEY)    = "ESC"
+        THEN DO:
+            dirlist = "".
+            LEAVE.
+        END.
+    END.
+    PAUSE 0 NO-MESSAGE.
+END.
+ELSE DO :
+    {call.i &prg="dispmes" &param=", wz-dir-error, 0"}
+    HIDE MESSAGE NO-PAUSE.
+END.
+
+HIDE FRAME pmlprtna NO-PAUSE.
+
+{return.i}
+/* eof */

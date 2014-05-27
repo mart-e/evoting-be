@@ -1,0 +1,57 @@
+/* Filename            : BIJLAGE1.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM wz-forced-et-ids   AS C FORMAT "x(20)"           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST session-exceptions
+    WHERE     session-exceptions.setup-id    = setup.setup-id
+      AND (   session-exceptions.heading3[1] = setup.areaname
+           OR session-exceptions.heading3[2] = setup.areaname
+           OR session-exceptions.heading3[3] = setup.areaname)
+    NO-LOCK NO-ERROR.
+
+/* Pre-fill needed query-fields for 'usage'                                */
+ASSIGN wz-doc-type      = (IF AVAILABLE session-exceptions
+                           THEN IF session-exceptions.prt-mav = 1
+                                THEN 92  /* BIJLAGE (Ticketing)            */
+                                ELSE  2  /* BIJLAGE                        */
+                           ELSE       2  /* BIJLAGE                        */
+                          )
+       wz-setup-id      = setup.setup-id /* Relation to MAMA               */
+       wz-et-combi      = FALSE          /* Only document for one election */
+       wz-et-ids        = ""
+       wz-forced-et-ids = "".
+
+FOR EACH election NO-LOCK
+                    WHERE election.s-id         = verkdat
+                      AND election.e-pr         = TRUE
+                      AND election.mandatory    = FALSE
+                      AND election.separate_TOT = FALSE:
+    IF LENGTH( wz-forced-et-ids) > 0
+    THEN wz-forced-et-ids = wz-forced-et-ids + ",".
+
+    wz-forced-et-ids = wz-forced-et-ids + STRING(election.et-id).
+END.
+
+{return.i}
+/* eof */

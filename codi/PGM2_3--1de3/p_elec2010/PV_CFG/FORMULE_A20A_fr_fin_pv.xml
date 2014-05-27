@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" >*</Separateur>
+		<String2 colID="6" >Suite à cette première répartition est directement attribué le nombre de sièges suivant :</String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LISTES_SIEGES#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Le nombre total des sièges à conférer :</String1>
+		<Separateur colID="5" >*</Separateur>
+		<String2 colID="6" >#NB_SIEGES_A_CONFERER#</String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Le nombre de sièges attribués lors de cette première répartition :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >-    #NB_SIEGES_ATTRIBUER#</String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >22</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Nombre de sièges restant à conférer :</String1>
+		<Separateur colID="5" >*</Separateur>
+		<String2 colID="6" >#NB_SIEGES_RESTANT#</String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >22</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le public est admis dans la salle où siège le bureau et le président proclame les résultats constatés(6).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >14</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le président du bureau principal de circonscription électorale transmet sans délai par la voie digitale, en utilisant la signature électronique émise au moyen de sa carte d'identité électronique, le procès-verbal complet de son bureau au président du bureau central provincial à Bruxelles, au greffier de la Chambre des Représentants et au Ministre de l'Intérieur (Article 177, premier alinéa du Code électoral).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De tout quoi, une version papier du présent procès-verbal a également été rédigée séance tenante (en double exemplaire) et signée par tous les membres du bureau et par les témoins. Un exemplaire papier de ce procès-verbal sera immédiatement transmis au président du bureau central provincial à Bruxelles. Les tableaux des résultats du dépouillement, les procès-verbaux des bureaux de vote et des bureaux de dépouillement, les actes de présentation des candidats et les bulletins contestés concernant l'élection pour cette Chambre, seront adressés directement, endéans les cinq jours, au greffier de la Chambre des Représentants.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" > A #LIEU#, le #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le Secrétaire,      Les assesseurs,      Les témoins,      Le Président,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >P.S.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >En vue du paiement des jetons de présence, n'oubliez pas de procurer la liste ci-jointe, dûment complétée, au président du bureau principal de canton du chef-lieu de la circonscription électorale au plus tard le jour du scrutin.</String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >18</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(6)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Les résultats à proclamer comprennent, outre les chiffres indiqués dans le tableau ci-dessus, l'indication du total des votes valables, du diviseur électoral, et, pour chacune des listes, du nombre des votes de listes ainsi que des votes nominatifs obtenus par chacun des candidats. Les élus ne sont pas proclamés.</String2>
+	</row>
+</TD_XML_Table>

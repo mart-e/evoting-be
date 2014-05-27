@@ -1,0 +1,117 @@
+/* Filename            : S_CHECK.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}              /* Variabelen voor het TOT hoofdmenu TOGENEME */
+{selvar.i}                    /* De variabelen voor de selection record */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+DEF BUFFER stembureau     FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-title          AS C FORMAT "x(50)"                     NO-UNDO.
+DEF VAR wz-types          AS C INIT "G,T"                         NO-UNDO.
+DEF VAR wz-counter        AS C FORMAT "x(15)"                     NO-UNDO.
+DEF VAR wz-levels         AS C FORMAT "x(10)"                     NO-UNDO.
+DEF VAR wz-level          AS I EXTENT 3                           NO-UNDO.
+DEF VAR i                 AS I                                    NO-UNDO.
+
+DEF VAR wz-empty-leading  AS C INIT "     "                       NO-UNDO.
+DEF VAR wz-error-leading  AS C INIT "¯¯¯¯¯"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+/* Ask for confirmation if not run from s_block */
+IF NOT PROGRAM-NAME(2) BEGINS "s_block"
+THEN DO:
+    {call.i &prg="confirm" &param=",'general,printmsg','','','general,yes','general,no'"}
+    IF menleav = 0
+    THEN DO:
+        {return.i}
+    END.
+END.
+{call.i &prg="disfram" &param=",'tprtlstm,prlstmsg','','','',FALSE"}
+FIND FIRST setup NO-LOCK.
+ASSIGN
+PagHeader = setup.sys-type 
+          + setup.org-type 
+          + setup.areaname 
+          + STRING(setup.orginator,"999")
+          + " - "
+          + STRING(today,"99/99/9999")
+          + " - "
+          + STRING(time,"HH:MM")
+PagHeader = FILL(" ", 75 - LENGTH(PagHeader)) + PagHeader.
+
+FIND FIRST session NO-LOCK NO-ERROR.
+IF session.hands_off[1] = TRUE
+THEN DO:
+		{call.i &prg="mesfil" &param=",'s_check,approved',0,OUTPUT SubHeader"}
+END.
+ELSE DO:
+		{call.i &prg="mesfil" &param=",'s_check,not_appr',0,OUTPUT SubHeader"}
+END.
+
+SubHeader = FILL(" ", 75 - LENGTH(SubHeader)) + SubHeader.
+
+{BEGPRT.I "Y" 85 0}
+
+/* Print all STRUCTURE information IF sub-STRUCTURES are defined */
+FIND FIRST organigram WHERE organigram.sys-type =  "I"
+                        AND organigram.s-disk   <> -1
+                        AND organigram.l-disk   =  -1
+                    NO-LOCK NO-ERROR.
+IF AVAILABLE organigram
+THEN DO:
+    {call.i &prg="s_chk_s"}
+END.
+
+/* Print all INTRODUCTION information */
+{call.i &prg="s_chk_i"}
+
+/* Print all GENERATION, TOTALISATION and POLLING STATION information */
+{call.i &prg="s_chk_gt"}
+
+{call.i &prg="mesfil" &param=",'s_check,polling',0,OUTPUT wz-title"}
+PUT UNFORMATTED (IF setup.organigram[i + 1] = 0
+                 THEN wz-error-leading
+                 ELSE wz-empty-leading) 
+    "4. " TRIM(wz-title) " (" STRING(setup.organigram[4]) ")" SKIP(3).
+
+{call.i &prg="mesfil" &param=",'s_check,list_end',0,OUTPUT wz-title"}
+PUT UNFORMATTED wz-empty-leading wz-title " (" setup.sys-type 
+                                               setup.org-type 
+                                               setup.areaname 
+                                               STRING(setup.orginator,"999")")"
+                SKIP.
+/*******************************/
+/* ALWAYS perform a PAGE-BREAK */
+/* --------------------------- */
+PAGE.
+/*******************************/
+
+{ENDPRT.I}
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,280 @@
+/* Filename            : INITEL_N.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}
+{vargener.i}
+{selvar.i}
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR systeem AS C FORMAT "x(3)" INITIAL "NON"       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        VARIABLES / FORMS VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{initelec.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM old-systype   LIKE setup.sys-type                NO-UNDO.
+DEF INPUT  PARAM old-area      LIKE setup.areaname                NO-UNDO.
+DEF INPUT  PARAM old-orginator LIKE setup.orginator               NO-UNDO.
+
+DEF INPUT  PARAM systype       LIKE setup.sys-type                NO-UNDO.
+DEF INPUT  PARAM orgtype       LIKE setup.org-type                NO-UNDO.
+DEF INPUT  PARAM area          LIKE setup.areaname                NO-UNDO.
+DEF INPUT  PARAM area-id       LIKE setup.orginator               NO-UNDO.
+
+DEF INPUT  PARAM oldname       AS C FORMAT "x(40)"                NO-UNDO.
+DEF INPUT  PARAM newname       AS C FORMAT "x(40)"                NO-UNDO.
+
+DEF INPUT  PARAM wz-fase       AS I                               NO-UNDO.
+DEF INPUT  PARAM wz-sub-struct AS L                               NO-UNDO.
+
+DEF INPUT  PARAM orgfault      AS C FORMAT "x(70)"                NO-UNDO.
+
+DEF OUTPUT PARAM diskid        LIKE setup.disk-id                 NO-UNDO.
+DEF OUTPUT PARAM wz-again      AS L                               NO-UNDO.
+DEF OUTPUT PARAM wz-status     AS L                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES AND WORKFILES                                 */
+/*                                                                      */
+/************************************************************************/
+DEF VAR fra_var                AS C FORMAT "x(20)"                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*              START PROCEDURE                                         */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-again  = TRUE
+wz-status = FALSE.
+
+/* ensure that an empty 'orgtype' is converted to 'space' */
+IF LENGTH(orgtype) = 0
+THEN orgtype = " ".
+
+/* ------------------------------------------------- */
+/* Same 'systype' is allowed for following reasons : */
+/* => as a copy of MAMA for backup reason            */
+/* => after a copy from G000 to Gxxx where xxx > 0   */
+/* ------------------------------------------------- */
+IF NOT (        systype = old-systype
+        OR (    systype = "S"            AND old-systype  = "M")
+        OR ((   systype = "I"
+             OR systype = "G"
+             OR systype = "T")           AND old-systype  = "S"))
+THEN DO:
+    /* invalid name of copy */
+    BELL.
+    faultmes = orgfault.
+    DISPLAY faultmes WITH FRAME fault.
+    PAUSE NO-MESSAGE.
+    HIDE FRAME FAULT NO-PAUSE.
+    {return.i}
+END.
+
+/* ------------------------------------------------- */
+/* Only an exact copy of MAMA as a backup is allowed */
+/* ------------------------------------------------- */
+IF  old-systype <> "M"
+AND oldname     =  newname
+THEN DO:
+    /* Not an exact copy */
+    BELL.
+    /* "Alleen identieke namen zijn toegestaan" */
+    {call.i &prg="mesfil" &param=",'initelec,onlycopy',80,OUTPUT faultmes"}
+    DISPLAY faultmes WITH FRAME fault.
+    PAUSE NO-MESSAGE.
+    HIDE FRAME FAULT NO-PAUSE.
+    {return.i}
+END.
+
+IF newname BEGINS "MAMA-"
+THEN DO: /* Geen checks op MAMA-schijf */
+		ASSIGN
+		wz-again  = FALSE
+		wz-status = TRUE.
+		{return.i}
+END.
+
+IF oldname BEGINS "MAMA-"
+THEN DO:
+    IF NOT (    systype = "S"
+            AND orgtype = " "
+            AND area    = SUBSTR(old-area,4))
+    THEN DO:
+        BELL.
+        /* "Opgegeven naam (vanaf de 3de letter) is onbekend voor deze verkiezing" */
+        {call.i &prg="mesfil" &param=",'initelec,noname',80,OUTPUT faultmes"}
+        DISPLAY faultmes WITH FRAME fault.
+        PAUSE NO-MESSAGE.
+        HIDE FRAME FAULT NO-PAUSE.
+        {return.i}
+    END.
+END.
+ELSE DO:
+    FIND FIRST organigram WHERE organigram.sys-type = "I"
+                            AND organigram.s-disk   >  0 
+                            AND organigram.l-disk   = -1
+                        NO-LOCK NO-ERROR.
+		IF AVAILABLE organigram
+		THEN wz-sub-struct = TRUE.
+		ELSE wz-sub-struct = FALSE.
+    
+		IF systype = "S" AND wz-sub-struct
+		THEN DO:
+				FIND FIRST organigram WHERE organigram.sys-type = "I" 
+				                        AND organigram.s-disk   = area-id
+				                        AND organigram.l-disk   = -1
+				                    NO-LOCK NO-ERROR.
+				IF NOT AVAILABLE organigram
+				THEN DO:
+						BELL.
+						/* "Opgegeven naam (vanaf de 3de letter) is onbekend voor deze verkiezing" */
+						{call.i &prg="mesfil" &param=",'initelec,noname',80,OUTPUT faultmes"}
+						DISPLAY faultmes WITH FRAME fault.
+						PAUSE NO-MESSAGE.
+						HIDE FRAME FAULT NO-PAUSE.
+						{return.i}
+				END.
+				IF old-area <> area
+				OR orgtype  <> " "
+				THEN DO:
+						BELL.
+						/* "Opgegeven naam (vanaf de 3de letter) is onbekend voor deze verkiezing" */
+						{call.i &prg="mesfil" &param=",'initelec,noname',80,OUTPUT faultmes"}
+						DISPLAY faultmes WITH FRAME fault.
+						PAUSE NO-MESSAGE.
+						HIDE FRAME FAULT NO-PAUSE.
+						{return.i}
+				END.
+		END.
+		ELSE DO:
+				/* Check different levels of approval points */
+				IF NOT (   ( systype = "I" AND wz-fase = 2)
+								OR ( systype = "G" AND wz-fase = 3)
+								OR ( systype = "T" AND wz-fase = 4))
+				THEN DO:
+						BELL.
+						/* 1 : De kieslijsten zijn reeds allemaal aanwezig    */
+						/* 2 : De kieslijsten zijn nog niet allemaal aanwezig */
+						/* 3 : De generatie is nog niet helemaal afgelopen    */
+						fra_var = "pmdexpur,noblock" + STRING(wz-fase - 1).
+						{call.i &prg="mesfil" &param=",fra_var,80,OUTPUT faultmes"}
+						DISPLAY faultmes WITH FRAME fault.
+						PAUSE NO-MESSAGE.
+						HIDE FRAME FAULT NO-PAUSE.
+						{return.i}
+				END.
+
+				/* Check availability of given name */        
+				FIND FIRST organigram WHERE     organigram.sys-type  = systype
+																AND     organigram.org-type  = orgtype
+																AND (   organigram.area[1]   = area
+																		 OR organigram.area[2]   = area
+																		 OR organigram.area[3]   = area)
+																AND     organigram.orginator = area-id
+																AND     organigram.l-disk    < 0
+														NO-LOCK NO-ERROR.
+				IF NOT AVAILABLE organigram
+				THEN DO:
+						BELL.
+						/* "Opgegeven naam (vanaf de 3de letter) is onbekend voor deze verkiezing" */
+						{call.i &prg="mesfil" &param=",'initelec,noname',80,OUTPUT faultmes"}
+						DISPLAY faultmes WITH FRAME fault.
+						PAUSE NO-MESSAGE.
+						HIDE FRAME FAULT NO-PAUSE.
+						{return.i}
+				END.
+				
+				/* Creation of INTRODUCTION-disk not allowed : create INTRODUCTION from sub-STRUCTURE ! */
+				IF  organigram.sys-type  = "I"
+				AND organigram.s-disk    >  0
+				AND organigram.l-disk    = -1
+				THEN DO:
+						IF organigram.s-disk <> old-orginator
+						THEN DO:
+    						{call.i &prg="mesfil" &param=",'initelec,invalid',80,OUTPUT faultmes"}
+    						call ADDTOLOG PROGRAM-NAME(1) VALUE("I exists, but not meant from this S") 0.
+    						call ADDTOLOG PROGRAM-NAME(1) VALUE("setup.orginator:" + STRING(old-orginator) + "/" +
+    						                                    "s-disk:" + STRING(organigram.s-disk) + "/" + 
+    						                                    "l-disk:" + STRING(organigram.l-disk)) 0.
+    						DISPLAY faultmes WITH FRAME fault.
+    						PAUSE NO-MESSAGE.
+    						HIDE FRAME FAULT NO-PAUSE.
+								{return.i}
+						END.
+				END.
+				
+				/* Creation of INTRODUCTION-disk not allowed : IMPORT is required ! */
+				IF  organigram.sys-type  = "I"
+				AND organigram.s-disk    = -9
+				AND organigram.l-disk    = -9
+				THEN DO:
+						{call.i &prg="mesfil" &param=",'initelec,invalid',80,OUTPUT faultmes"}
+						call ADDTOLOG PROGRAM-NAME(1) VALUE("Import required !") 0.
+						call ADDTOLOG PROGRAM-NAME(1) VALUE("s-disk:" + STRING(organigram.s-disk) + "/" + 
+						                                    "l-disk:" + STRING(organigram.l-disk)) 0.
+						DISPLAY faultmes WITH FRAME fault.
+						PAUSE NO-MESSAGE.
+						HIDE FRAME FAULT NO-PAUSE.
+						{return.i}
+				END.
+				
+				diskid = organigram.disk-id.
+
+				/* Check if 'new' disk has already been made */
+				IF LENGTH(organigram.digest) = 40
+				AND organigram.master-key <> "-1"
+				THEN DO:
+						IF  organigram.verwerkt
+						AND organigram.sys-type = "I"
+						THEN DO:
+								{call.i &prg="disfram"
+												&param=",'initelec,exists1',
+																 ',' + systype + orgtype + area + STRING(area-id,'999'),
+																 'initelec,verwerkt',
+																 'initelec,other',
+																 TRUE"}
+								{return.i}
+						END.
+						ELSE DO:
+								{call.i &prg="confirm" 
+												&param=",'initelec,exists1',
+																 systype + orgtype + area + STRING(area-id,'999'),
+																 'initelec,exists2',
+																 'general,yes','general,no'"}
+								IF menleav = 0 
+								THEN DO:
+										{return.i}
+								END.
+						END.
+				END.
+		END.
+END.
+
+ASSIGN
+wz-again  = FALSE
+wz-status = TRUE.
+
+{return.i}
+/* eof */

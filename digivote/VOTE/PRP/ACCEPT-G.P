@@ -1,0 +1,87 @@
+/* Filename            : ACCEPT-G.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{cfvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST organigram WHERE organigram.disk-id = cf-disk-id
+                   NO-ERROR.
+IF AVAILABLE organigram
+THEN DO:
+    ASSIGN
+    organigram.verwerkt = TRUE
+    organigram.MAC      = "REFRESH".
+    /**********************************************************************/
+    /* If it concerns a generation disk (G = 000)                         */
+    /* ==> Update all its children (sub-generations AND polling stations) */
+    /**********************************************************************/
+    IF organigram.orginator = 0
+    THEN DO:
+        FOR EACH organigram WHERE organigram.g-disk = cf-disk-id:
+            ASSIGN 
+            organigram.verwerkt = TRUE
+            organigram.MAC      = "REFRESH".
+            IF organigram.sys-type = "G"
+            THEN FOR EACH sub-organigram WHERE sub-organigram.sys-type = "U"
+                                           AND sub-organigram.g-disk   = organigram.disk-id:
+                     ASSIGN 
+                     sub-organigram.verwerkt = TRUE
+                     sub-organigram.MAC      = "REFRESH".
+                 END.
+        END.            
+    END.
+    /**********************************************************************/
+    /* If it concerns a sub-generation disk (G > 000)                     */
+    /* ==> Update all its children (ONLY polling stations)                */
+    /**********************************************************************/
+    ELSE DO:
+        FOR EACH organigram WHERE organigram.sys-type = "U"
+                              AND organigram.g-disk   = cf-disk-id:
+            ASSIGN 
+            organigram.verwerkt = TRUE
+            organigram.MAC      = "REFRESH".
+        END.            
+    END.
+    {call.i &prg="sec_orga"}
+    
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    IF setup.sys-type <> "S"
+    THEN DO:
+        FIND FIRST session NO-ERROR.
+        IF AVAILABLE session
+        THEN DO:
+            ASSIGN
+            session.disk_read = session.disk_read + 1
+            session.MAC       = "REFRESH".
+            {call.i &prg="sec_sess"}
+        END.
+        ELSE DO:
+            call ADDTOLOG PROGRAM-NAME(1) "Session not found ! Unable to update 'disk_read' !" 1.
+            {call.i &prg="interror" &param=",'','internal,errmsg','(session)'"}
+        END.
+    END.
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) "Organigram not found ! Unable to update 'verwerkt' !" 1.
+    {call.i &prg="interror" &param=",'','internal,errmsg','(organigram)'"}
+END.
+
+{return.i}
+/* eof */

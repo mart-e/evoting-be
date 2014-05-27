@@ -1,0 +1,82 @@
+/* Filename            : CPURN.P                                        */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-flop     AS C FORMAT "x(3)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM wz-copystat AS L                                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR copystat            AS L                                  NO-UNDO.
+DEF VAR wz-source           AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR wz-destination      AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR i                   AS I                                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-copystat    = FALSE
+wz-flop        = IF wz-flop BEGINS "B"
+                 THEN "B:\"
+                 ELSE "A:\"
+wz-source      = "B006,B002,B012,B022,B021,B121,SETLANG,URNECONT"
+wz-destination = "B006,B002,B012,B022,B021,B121,SETTINGS.BAT,CONTENTS".
+
+OUTPUT TO VALUE(ramdrive + "COPYLIST").
+DO i = 1 TO NUM-ENTRIES(wz-source):
+    IF i > 1 THEN PUT UNFORMATTED SKIP.
+    PUT UNFORMATTED
+        ramdrive ENTRY(i,wz-source) "~t" wz-flop ENTRY(i,wz-destination).
+END.
+OUTPUT CLOSE.
+
+{call.i &prg="copyfile" &param=", OUTPUT copystat "}
+IF copystat
+THEN DO:
+    call C_ATTRIB VALUE(wz-flop + "CONTENTS")     3.
+    call C_ATTRIB VALUE(wz-flop + "SETTINGS.BAT") 3.
+
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    DO i = 1 TO NUM-ENTRIES(wz-destination):
+        call C_TOUCH VALUE(wz-flop + ENTRY(i,wz-destination))
+                     VALUE(  DAY(setup.v-date))
+                     VALUE(MONTH(setup.v-date))
+                     VALUE( YEAR(setup.v-date))
+                     VALUE(setup.version[1])
+                     VALUE(setup.version[2])
+                     VALUE(setup.version[3]).
+    END.
+    
+    wz-copystat = TRUE.
+END.
+ELSE DO:
+    call C_DEL VALUE(wz-flop + ENTRY(NUM-ENTRIES(wz-destination),wz-destination)).
+    {call.i &prg="disfram" &param=",'digivote,cpbser01','digivote,cpbser02','','',TRUE"}
+END.
+
+{return.i}
+/* eof */

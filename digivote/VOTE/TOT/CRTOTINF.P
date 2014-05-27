@@ -1,0 +1,176 @@
+/* Filename            : CRTOTINF.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   CRTOTINF.P  $</workFile>
+<revision>$Revision: 1.8 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:24:32  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/CRTOTINF.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/07/11 15:18:33 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-file   AS C FORMAT "x(40)"                    NO-UNDO.
+DEF INPUT  PARAM torig     AS C FORMAT "x(40)"                    NO-UNDO.
+DEF INPUT  PARAM tdest     AS C FORMAT "x(40)"                    NO-UNDO.
+DEF OUTPUT PARAM wz-qadmk  LIKE meta.aesKey                       NO-UNDO.
+DEF OUTPUT PARAM wz-fileok AS L INIT FALSE                        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR i                  AS I FORMAT "(99)"                     NO-UNDO.
+/*@source sec=1*/
+DEF VAR wz-tot-cards       AS I                                   NO-UNDO.
+DEF VAR wz-count           AS I EXTENT 16                         NO-UNDO.
+/*@source sec=0*/
+DEF VAR wz-file-open       AS L INIT FALSE                        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+
+/*@source sec=1*/
+/* Totalise counters of all urnedest records of this disk for export */
+ASSIGN
+wz-tot-cards = 0
+wz-count     = 0
+crypStat     = 0.
+
+ElectLst:
+REPEAT:
+    FOR EACH urnedest NO-LOCK :
+        call CRYPDEC PRPTOT urnedest.total-cards 1.
+        IF crypStat <> 0 THEN LEAVE ElectLst.
+        wz-tot-cards = wz-tot-cards + INT(result4).
+        DO i = 1 to 16:
+            call CRYPDEC PRPTOT urnedest.count-card[i] 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            wz-count[i] = wz-count[i] + INT(result4).
+        END. /* i */
+    END. /* urnedest */
+    /*@source sec=0*/
+    
+    {call.i &prg="rnd" &param=",'Master',OUTPUT wz-qadmk"}
+    
+    OUTPUT TO VALUE(wz-file).
+    wz-file-open = TRUE.
+
+    PUT UNFORMATTED "// " wz-qadmk SKIP.
+    
+    /* Counters in A record linenr 0 - Max 16 used for the moment*/
+    PUT UNFORMATTED "A~t0~t" wz-tot-cards.
+    DO i = 1 TO 16:
+        PUT UNFORMATTED  "~t" wz-count[i].
+    END.
+
+    PUT UNFORMATTED                  SKIP
+        "A~t1~t""" torig """"        SKIP
+        "A~t2~t""" torig """"        SKIP
+        "A~t3~t""" tdest """"        SKIP
+        "A~t9~t""" session.s-id """" SKIP.
+
+    FOR EACH election NO-LOCK WHERE election.s-id = verkdat
+                                AND election.e-pr = TRUE
+                              BREAK BY election.et-id:
+        IF FIRST-OF(election.et-id)
+        THEN DO:
+            call CRYPDEC PRPTOT election.vote 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            PUT UNFORMATTED "B~t" election.et-id 
+                             "~t" election.e-type
+                             "~t" result4
+                             "~t".
+            IF      session.lang2 < 3
+            THEN PUT UNFORMATTED  election.long-name[session.lang2 + 1] 
+                             "~t" election.short-name[session.lang2 + 1].
+            ELSE IF session.lang2 = 3
+            THEN PUT UNFORMATTED  election.long-name[1] 
+                             "~t" election.short-name[1] 
+                             "~t" election.long-name[2] 
+                             "~t" election.short-name[2].
+            ELSE IF session.lang2 = 4
+            THEN PUT UNFORMATTED  election.long-name[2] 
+                             "~t" election.short-name[2] 
+                             "~t" election.long-name[3] 
+                             "~t" election.short-name[3].
+            PUT UNFORMATTED SKIP.
+        END.
+        
+        FOR EACH party OF election NO-LOCK :
+            PUT UNFORMATTED "D~t" election.et-id 
+                             "~t" election.coll-id 
+                             "~t" party.p-id.
+    /*@source sec=1*/
+            /*********************************/
+            call CRYPDEC PRPTOT party.vote_top 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            PUT UNFORMATTED  "~t" result4.
+            /*********************************/
+            call CRYPDEC PRPTOT party.vote_can 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            PUT UNFORMATTED  "~t" result4.
+            /*********************************/
+            call CRYPDEC PRPTOT party.vote_sup 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            PUT UNFORMATTED  "~t" result4.
+            /*********************************/
+            call CRYPDEC PRPTOT party.vote_cs 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            PUT UNFORMATTED  "~t" result4 SKIP.
+            /*********************************/
+    /*@source sec=0*/
+        END.
+    END.
+
+    FOR EACH election NO-LOCK WHERE election.s-id = verkdat
+                                AND election.e-pr = TRUE :
+        FOR EACH party OF election NO-LOCK,
+            EACH candidate OF party NO-LOCK :
+            PUT UNFORMATTED "E~t" election.et-id
+                             "~t" election.coll-id
+                             "~t" party.p-id
+                             "~t" candidate.c-type
+                             "~t" candidate.c-id.
+            /*@source sec=1*/
+            call CRYPDEC PRPTOT candidate.vote 1.
+            IF crypStat <> 0 THEN LEAVE ElectLst.
+            PUT UNFORMATTED  "~t" result4 SKIP.
+            /*@source sec=0*/
+        END.
+    END.
+
+    wz-fileok = TRUE.
+    LEAVE ElectLst.
+END.
+
+IF wz-file-open
+THEN OUTPUT CLOSE.
+
+IF NOT wz-fileok
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-file + " deleted !") 1.
+    call C_DEL VALUE(wz-file).
+END.
+
+{return.i}
+/* eof */

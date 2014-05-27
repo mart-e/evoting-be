@@ -1,0 +1,20 @@
+/* Filename : AINSCAND.P */
+
+{ins_cand.g
+ &append_cand = "
+  IF selnum = endnum
+  THEN DO:
+      {call.i &prg='crcand'}   /* Toevoegen van meerdere kandidaten/opvolgers */
+  END.
+  ELSE DO :
+ "
+ &compare     = " endnum <> selnum "
+ &set_candnum = " 
+  candnum = selnum + 1.
+ "
+ &end_append  = "
+  END.
+ "
+}
+
+/* eof */

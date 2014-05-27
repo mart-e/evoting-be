@@ -1,0 +1,250 @@
+/* Filename            : BIJLMCOL.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   BIJLMCOL.P  $</workFile>
+<revision>$Revision: 1.3 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 02 2004 11:13:20  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/BIJLMCOL.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/03/01 16:11:56 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-election-recid AS RECID                       NO-UNDO.
+DEF INPUT PARAM wz-taalgroep      AS I                           NO-UNDO.
+DEF INPUT PARAM wz-TaalGr         AS C FORMAT "x(45)"            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-totcol              AS I FORMAT "z,zzz,zz9" EXTENT 3  NO-UNDO.
+                                  /* 1. Ned. college, 2 Frans, 3 Duits  */
+DEF VAR blanco                 AS I EXTENT 4                     NO-UNDO.
+DEF VAR tot_vote               AS I                              NO-UNDO.
+DEF VAR wz-total-cards         AS I FORMAT "Z,ZZZ,ZZ9"           NO-UNDO.
+DEF VAR wz-count-card          AS I FORMAT "Z,ZZZ,ZZ9" EXTENT 16 NO-UNDO.
+DEF VAR wz-index               AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        TEMPORARY BUFFERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER all_election FOR election.  /* Buffer overlopen van election */
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+
+{selvar.i}
+{typvar.i}
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup
+    NO-LOCK NO-ERROR.
+FIND FIRST session  WHERE session.s-id = verkdat
+    NO-LOCK NO-ERROR.
+FIND FIRST election WHERE RECID(election) = wz-election-recid
+    NO-LOCK NO-ERROR.
+
+/*@source sec=1*/
+/* May I have your vote please ...*/
+blanco = 0.
+    {call.i &prg="Blanco" &param=", INPUT election.et-id, INPUT -1, OUTPUT blanco[4]"}
+IF election.et-id = 1
+THEN DO:
+    {call.i &prg="Blanco" &param=", INPUT election.et-id, INPUT  1, OUTPUT blanco[1]"}
+    {call.i &prg="Blanco" &param=", INPUT election.et-id, INPUT  2, OUTPUT blanco[2]"}
+    {call.i &prg="Blanco" &param=", INPUT election.et-id, INPUT  3, OUTPUT blanco[3]"}
+END.
+ELSE DO:
+    ASSIGN
+    blanco[1] = blanco[4]
+    blanco[2] = blanco[4]
+    blanco[3] = blanco[4].
+END.
+
+ASSIGN
+tot_vote      = 0
+wz-count-card = 0
+wz-totcol     = 0.
+
+TotalenLoop:
+FOR EACH urnedest NO-LOCK :
+    /* Do it completely different for BHR */
+    IF election.et-id = 1
+    THEN DO:
+        /* Uitsplitsen tot_vote in aparte totalen bij meerdere        */
+        /* taalgroepen van hetzelfde verkiezingstype                  */
+        /* ********** NL Taalgroep ********** */
+        call CRYPDEC PRPTOT urnedest.elects[11] 1.
+        IF crypStat <> 0
+        THEN DO:
+            OK2Print = FALSE.
+            LEAVE TotalenLoop.
+        END.
+        wz-totcol[1] = wz-totcol[1] + INT(result4). 
+        /* ********** FR Taalgroep ********** */
+        call CRYPDEC PRPTOT urnedest.elects[10] 1.
+        IF crypStat <> 0
+        THEN DO:
+            OK2Print = FALSE.
+            LEAVE TotalenLoop.
+        END.
+        wz-totcol[2] = wz-totcol[2] + INT(result4). 
+        /* ********** DU Taalgroep (N/A) ********** */
+        call CRYPDEC PRPTOT urnedest.elects[9] 1.
+        IF crypStat <> 0
+        THEN DO:
+            OK2Print = FALSE.
+            LEAVE TotalenLoop.
+        END.
+        wz-totcol[3] = wz-totcol[3] + INT(result4). 
+    END.
+    ELSE DO:
+        /* Uitsplitsen tot_vote in aparte totalen bij meerdere */
+        /* kiescolleges van hetzelfde verkiezingstype          */
+        FOR EACH all_election NO-LOCK
+            WHERE all_election.et-id = election.et-id :
+
+            IF all_election.coll-id >= 0 AND
+               all_election.coll-id <= 2
+            THEN DO:
+                call CRYPDEC PRPTOT urnedest.elects[all_election.e-id] 1. 
+                IF crypStat <> 0
+                THEN DO:
+                    OK2Print = FALSE.
+                    LEAVE TotalenLoop.
+                END.
+                wz-totcol[all_election.coll-id + 1] =
+                wz-totcol[all_election.coll-id + 1] + INT(result4).
+            END.
+        END. /* all_election */
+    END.
+    /* Gather information for labels 80 -> 96 */
+    wz-index = (IF election.et-id = 1
+                THEN (IF      wz-taalgroep = 1 THEN 11
+                      ELSE IF wz-taalgroep = 2 THEN 10
+                      ELSE IF wz-taalgroep = 3 THEN 9
+                      ELSE election.e-id
+                     )
+                ELSE       election.e-id
+               ).
+    call CRYPDEC PRPTOT urnedest.elects[wz-index] 1.
+    IF crypStat <> 0
+    THEN DO:
+        OK2Print = FALSE.
+        LEAVE TotalenLoop.
+    END.
+    tot_vote = tot_vote + INT(result4).
+    call CRYPDEC PRPTOT urnedest.total-cards 1.
+    IF crypStat <> 0
+    THEN DO:
+        OK2Print = FALSE.
+        LEAVE TotalenLoop.
+    END.
+    wz-total-cards = wz-total-cards + 
+                     INT(result4).
+    DO wz-index = 1 TO 16:
+        call CRYPDEC PRPTOT urnedest.count-card[wz-index] 1.
+        IF crypStat <> 0
+        THEN DO:
+            OK2Print = FALSE.
+            LEAVE TotalenLoop.
+        END.
+        wz-count-card[wz-index] = wz-count-card[wz-index] + 
+                                  INT(result4).
+    END.
+    /* Be aware of the fact that, if Voeren is active as in 13/06/1999, */
+    /* you have to add multiple counters to get some specific results.  */
+END. /* urnedest info */
+/*@source sec=0*/
+
+IF NOT Ok2Print 
+THEN DO:
+    {return.i}
+END.
+
+/* SECTIE 9 */
+FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                  AND layout.sect-nbr = 9
+              NO-LOCK:
+    wz-lijn = layout.contents.
+    {PAGEBRK.I}
+    {LBLCONV.I 91}
+    LBLCONV92:
+    REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+        ASSIGN
+        wz-convto   = ""
+        wz-startpos = INDEX(wz-lijn,"@F")
+        wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+        wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+        ASSIGN
+        wz-convto =
+            IF      wz-label = "50" /* College informatie */
+            THEN STRING(IF election.colls
+                        THEN ( IF wz-doc-lang = 2
+                               THEN election.head0[wz-doc-lang] + " " +
+                                    election.coll_name[wz-doc-lang]
+                               ELSE election.coll_name[wz-doc-lang] + "e " +
+                                    election.head0[wz-doc-lang]             )
+                        ELSE ( IF election.et-id = 1
+                               THEN wz-TaalGr
+                               ELSE ""
+                             ),
+                        "x(45)")
+            ELSE IF wz-label = "52" /* Heading2 informatie */
+            THEN STRING(( IF election.heading2[wz-doc-lang] = ""
+                          THEN ""
+                          ELSE election.head2[wz-doc-lang] + " : ") +
+                        election.heading2[wz-doc-lang],"x(45)")
+            ELSE IF wz-label = "53" /* Heading3 informatie */
+            THEN STRING(election.head3[wz-doc-lang] + " : " +
+                        election.heading3[wz-doc-lang],"x(45)")
+            ELSE IF wz-label = "60" /* Totaal ALLE Colleges */
+            THEN STRING(wz-totcol[1] +
+                        wz-totcol[2] +
+                        wz-totcol[3] -
+                        (IF election.et-id =  1
+                         OR election.et-id = 12
+                         THEN 0
+                         ELSE blanco[4]
+                        ),
+                        "Z,ZZZ,ZZ9")
+
+            ELSE IF LOOKUP(wz-label,"61,62,63") > 0 /* Totaal per College */
+            THEN STRING(wz-totcol[INT(wz-label) - 60] -
+                        blanco[INT(wz-label) - 60],"Z,ZZZ,ZZ9")
+            ELSE IF wz-label = "79" /* Blanco stemmen */
+            THEN STRING(blanco[4],"Z,ZZZ,ZZ9")
+            ELSE IF wz-label = "80" /* Geregistreerde kaarten */
+            THEN STRING(wz-total-cards,"Z,ZZZ,ZZ9")
+            ELSE IF LOOKUP(wz-label,
+                 "81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96") > 0
+            THEN STRING(wz-count-card[INT(wz-label) - 80],"Z,ZZZ,ZZ9")
+            ELSE "N/A".
+        {REPLLBL.I}
+    END. /* REPEAT while index - LBLCONV92 */
+    {LINEPRT.I 1}
+END. /* FOR EACH layout */
+
+{return.i}
+/* eof */

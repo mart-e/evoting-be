@@ -1,0 +1,30 @@
+/* Filename            : DELRESF.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-results-file   AS C FORMAT "x(45)"             NO-UNDO.
+DEF INPUT PARAM wz-result-path    AS C FORMAT "x(45)"             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+IF wz-results-file <> ? 
+THEN call C_DEL VALUE(wz-results-file).
+
+IF wz-result-path <> ?
+THEN DO:
+    call C_DEL VALUE(wz-result-path + "CONTENTS").
+    call C_DEL VALUE(wz-result-path + "B001").
+    call C_DEL VALUE(wz-result-path + "B006").
+    call C_DEL VALUE(wz-result-path + "B009").
+END.
+
+{return.i}
+/* eof */

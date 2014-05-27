@@ -1,0 +1,117 @@
+/* Filename            : CFLOAD.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-drive       AS C                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES VIA INCLUDE FILES                                */
+/*                                                                      */
+/************************************************************************/
+{cfvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-filename             AS C FORMAT "x(50)"               NO-UNDO.
+DEF VAR db-last-change          AS I FORMAT ">>>>>>>>>>>>>>9"     NO-UNDO.
+DEF VAR cf-last-change          AS I FORMAT ">>>>>>>>>>>>>>9"     NO-UNDO.
+DEF VAR cf-digest               AS C FORMAT "x(40)"               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+db-version     = FALSE
+cf-signature   = FALSE
+cf-version     = 0
+cf-sys-type    = ?
+cf-org-type    = ?
+cf-areaname    = ?
+cf-orginator   = 0
+cf-corrupt     = yes
+cf-hands_off   = no
+cf-disk_read   = 0
+cf-disk_made   = 0
+cf-password    = ?
+cf-local-types = FALSE.
+
+call C_TSTFN VALUE(wz-drive + "VOTE\ELECT.SG").
+IF fileok = 1
+THEN DO:
+    call C_TSTFN VALUE(wz-drive + "VOTE\ELECT.CF").
+    IF fileok = 1
+    THEN DO:
+        call DIGEST VALUE(wz-drive + "VOTE\ELECT.CF").
+        INPUT FROM VALUE(wz-drive + "VOTE\ELECT.SG") NO-ECHO.
+        SET cf-digest.
+        INPUT CLOSE.
+        IF cf-digest = hex-digest
+        AND LENGTH(cf-digest)  = 40
+        AND LENGTH(hex-digest) = 40
+        THEN cf-signature = TRUE.
+        ELSE call ADDTOLOG PROGRAM-NAME(1) "Digest nog correct !" 1.
+    END.
+    ELSE call ADDTOLOG PROGRAM-NAME(1) "Config file not found !" 1.
+END.
+ELSE call ADDTOLOG PROGRAM-NAME(1) "Signature file not found !" 1.
+
+IF cf-signature
+THEN DO:
+    db-last-change = 0.
+    FOR EACH _file NO-LOCK:
+        db-last-change = MAX(db-last-change,_last-change).
+    END.
+    FIND FIRST setup NO-LOCK NO-ERROR.
+
+    wz-filename = ramdrive + "$_TMP_$.CF".
+    call CRYPFILE "D" RECEXE VALUE(wz-drive + "VOTE\ELECT.CF") VALUE(wz-filename) 0.
+    IF crypStat = 0
+    THEN DO:
+        INPUT FROM VALUE(wz-filename) NO-ECHO.
+        SET cf-last-change.
+        db-version = (cf-last-change = db-last-change).
+        IF NOT db-version
+        THEN call ADDTOLOG PROGRAM-NAME(1) "db version not the same !" 1.
+        ELSE DO:
+            SET cf-version.
+            db-version = (    setup.version[1] = cf-version[1]
+                          AND setup.version[2] = cf-version[2]).
+            IF NOT db-version
+            THEN call ADDTOLOG PROGRAM-NAME(1) "prg version not the same !" 1.
+            ELSE DO:
+                SET cf-disk-id cf-sys-type cf-org-type cf-areaname cf-orginator.
+                IF LENGTH(cf-org-type) = 0
+                THEN cf-org-type = " ".
+                SET cf-corrupt cf-hands_off.
+                IF cf-corrupt
+                THEN call ADDTOLOG PROGRAM-NAME(1) "db in corrupt mode !" 1.
+                ELSE DO:
+                    SET cf-disk_read cf-disk_made.
+                    SET cf-password.
+                END.
+            END.
+        END.
+        INPUT CLOSE.
+        IF cf-password = ?
+        THEN call ADDTOLOG PROGRAM-NAME(1) "Possible incorrect structure in config file !" 1.
+        ELSE DO:
+            {call.i &prg="cftypes" 
+                    &param=",wz-filename,FALSE,TRUE,OUTPUT cf-local-types"}
+        END.
+        call C_DEL VALUE(wz-filename).
+    END.
+END.
+
+{return.i}
+/* eof */

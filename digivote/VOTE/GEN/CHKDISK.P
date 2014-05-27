@@ -1,0 +1,144 @@
+/************************************************************************/
+/*                                                                      */
+/* Filename            : CHKDISK.P                                      */
+/*                                                                      */
+/* Check contents of diskette in drive A: and return TRUE if clean,     */
+/* FALSE if something is on diskette (label, file(s), ...)              */
+/*                                                                      */
+/************************************************************************/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM diskdrive         AS C FORMAT "x(2)"             NO-UNDO.
+DEF INPUT  PARAM allowed_disklabel AS C FORMAT "x(11)"            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM diskstat          AS L INIT FALSE                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}                    /* De variabelen voor de selection record */
+{vargener.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-files                   AS I                           NO-UNDO.
+DEF VAR contents                   AS C FORMAT "x(78)" EXTENT 5   NO-UNDO.
+
+DEF VAR wz-untouchable             AS L                           NO-UNDO.
+DEF VAR wz-contents                AS L                           NO-UNDO.
+
+DEF VAR words                      AS C FORMAT "x(78)" EXTENT 8   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+diskstat = FALSE.
+
+/* Pre-test om te zien of er wel een schijf in de A: zit */
+CALL C_TSTFN VALUE(diskdrive + "\NUL").
+IF fileok = 0
+THEN DO:
+    /* Geen diskette in de lezer */
+    call ADDTOLOG PROGRAM-NAME(1) "No disk in drive" 1.
+    {call.i &prg="disfram" &param=",'errormsg,nodisk',',' + diskdrive,'','',TRUE"}
+    {return.i}
+END.
+
+/*
+/* check if disklabel matches allowed_disklabel */
+CALL C_LABEL.
+IF TRIM(dsklbl) <> TRIM(allowed_disklabel)
+THEN DO:
+    /* Ongeoorloofd disklabel aanwezig ! */
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Label '" + dsklbl + "' <> '" + allowed_disklabel + "'") 1.
+    {call.i &prg="disfram" &param=",'errormsg,badlabel','','','',TRUE"}
+    {return.i}
+END.
+*/
+
+/* check if any files are present on diskette */
+call C_DIR VALUE(diskdrive + "\*.*") VALUE(ramdrive + "DRIVE").
+ASSIGN
+wz-files       = 0
+wz-untouchable = FALSE
+wz-contents    = FALSE.
+INPUT FROM VALUE(ramdrive + "DRIVE") NO-ECHO.
+REPEAT:
+    SET contents.
+
+    IF LOOKUP(contents[1],"B002,B012,B022,B021,B121," +
+                          "B003,B013,B005,B015,"      +
+                          "B001,B011,"                +
+                          "MAV.EXE,URN.EXE,REC.EXE")  > 0 
+    THEN wz-untouchable = TRUE.
+
+    IF contents[1] = "CONTENTS"   
+    THEN wz-contents = TRUE.
+
+    wz-files = wz-files + 1.
+END.
+INPUT CLOSE.
+call C_DEL VALUE(ramdrive + "DRIVE").
+
+IF wz-untouchable = FALSE
+THEN diskstat = TRUE.
+ELSE DO:
+    IF wz-contents = TRUE
+    THEN DO:
+        diskstat = TRUE.
+        INPUT FROM VALUE(diskdrive + "\CONTENTS") NO-ECHO.
+        REPEAT:
+            SET words.
+
+            IF  words[1] = "Election"
+            AND words[2] = "Date"
+            THEN IF words[4] = STRING(verkdat,"99/99/9999")
+                 THEN DO:
+                     diskstat = FALSE.
+                     LEAVE.
+                 END.
+        END.
+        INPUT CLOSE.
+    END.
+    IF diskstat = FALSE
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Diskette in drive " + diskdrive + " not empty !") 1.
+        {call.i &prg="disfram" &param=",'errormsg,notempty',',' + diskdrive,'','',TRUE"}
+    END.
+END.
+
+IF  diskstat = TRUE
+AND wz-files > 0
+THEN DO:
+    {call.i &prg="confirm" &param=",'errormsg,notempty',diskdrive,'chkdisk,format',
+                                    'general,yes','general,no'"}
+    IF menleav = 0
+    THEN diskstat = FALSE.
+    ELSE DO:
+        {call.i &prg="confirm" &param=",'errormsg,notempty',diskdrive,'chkdisk,sure',
+                                        'general,yes','general,no'"}
+        IF menleav = 0
+        THEN diskstat = FALSE.
+    END.
+END.
+
+{return.i}
+/* eof */

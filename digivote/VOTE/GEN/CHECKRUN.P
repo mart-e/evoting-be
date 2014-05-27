@@ -1,0 +1,91 @@
+/* Filename            : CHECKRUN.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM prg2find  AS C                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR         prg2check AS C FORMAT "x(20)" NO-UNDO.
+DEF VAR         jump2prg  AS C FORMAT "x(20)" NO-UNDO.
+DEF VAR         prglvl    AS I                NO-UNDO.
+DEF VAR         chkFile   AS C                NO-UNDO.
+DEF VAR         jump      AS L                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+REPEAT WHILE PROGRAM-NAME(prglvl + 1) <> ?:
+    prglvl = prglvl + 1.
+END.
+prglvl = prglvl - 1.
+
+chkFile = {runlevel.i prglvl}.
+INPUT FROM VALUE(chkFile) NO-ECHO.
+SET prg2check.
+INPUT CLOSE.
+call C_DEL VALUE(chkFile).
+
+prg2check = CAPS(prg2check).
+IF prg2find <> prg2check
+THEN DO:
+    jump = FALSE.
+    /* If ESC or F4 has been pressed, this will not be considered as a malicious jump */
+    IF LOOKUP(KEYFUNCTION(LASTKEY),"ESC,END-ERROR") > 0
+    THEN DO:
+        prglvl = prglvl - 1.
+        chkFile = {runlevel.i prglvl}.
+				INPUT FROM VALUE(chkFile) NO-ECHO.
+				SET jump2prg.
+				INPUT CLOSE.
+
+        IF PROGRAM-NAME(2) = jump2prg
+        THEN jump = TRUE.
+    END.
+    
+    IF NOT jump
+    THEN DO:
+        MESSAGE PROGRAM-NAME(1) ": Program 2 find  : " prg2find.
+        MESSAGE PROGRAM-NAME(1) ": Program 2 check : " prg2check.
+        PAUSE.
+        RUN cleanup. /* Don't use {call.i ...} because we do a forced 'rollback' */
+        STOP.
+    END.
+END.
+
+IF prgSTAT <> 0
+THEN DO:
+    IF      prgSTAT = 1 /* STOP and return to TOP level  */
+    THEN DO:
+        /******************/
+        /* ToDo : message */
+        /******************/
+        STOP.
+    END.
+    
+    ELSE IF prgSTAT = 2 /* QUIT with RETRY-option        */
+    THEN DO:
+        {quit.i &corrupt=FALSE}
+    END.
+    
+    ELSE DO:            /* QUIT and CORRUPT  */
+        /******************/
+        /* ToDo : message */
+        /******************/
+        {quit.i &corrupt=TRUE}
+    END.
+END.
+prgSTAT = ?.
+
+{return.i}
+/* eof */

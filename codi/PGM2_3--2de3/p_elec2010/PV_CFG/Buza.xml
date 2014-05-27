@@ -1,0 +1,1060 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  col1_ColFlags=" COL_Editable COL_Invisible" col2_ColFlags=" COL_Editable COL_Invisible" col3_ColFlags=" COL_Editable COL_Invisible" col4_ColFlags=" COL_Editable COL_Invisible" col5_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="ROW_Edited">
+		<col1 colID="1" >Berlin</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="2" rowFlags="ROW_Edited">
+		<col1 colID="1" >Cologne</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="3" rowFlags="ROW_Edited">
+		<col1 colID="1" >Vienne</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="4" rowFlags="ROW_Edited">
+		<col1 colID="1" >Sofia</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="5" rowFlags="ROW_Edited">
+		<col1 colID="1" >Nicosie</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="6" rowFlags="ROW_Edited">
+		<col1 colID="1" >Copenhague</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="7" rowFlags="ROW_Edited">
+		<col1 colID="1" >Madrid</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="8" rowFlags="ROW_Edited">
+		<col1 colID="1" >Barcelone</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="9" rowFlags="ROW_Edited">
+		<col1 colID="1" >Alicante</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="10" rowFlags="ROW_Edited">
+		<col1 colID="1" >Las Palmas de Grande Canarie</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="11" rowFlags="ROW_Edited">
+		<col1 colID="1" >Palma de Majorque</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="12" rowFlags="ROW_Edited">
+		<col1 colID="1" >Sainte Croix de Tenerife</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="13" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tarragone</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="14" rowFlags="ROW_Edited">
+		<col1 colID="1" >Grenade</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="15" rowFlags="ROW_Edited">
+		<col1 colID="1" >Santa Cruz de la Palma</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="16" rowFlags="ROW_Edited">
+		<col1 colID="1" >Helsinki</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="17" rowFlags="ROW_Edited">
+		<col1 colID="1" >Paris</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="18" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lille</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="19" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lyon</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="20" rowFlags="ROW_Edited">
+		<col1 colID="1" >Strasbourg</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="21" rowFlags="ROW_Edited">
+		<col1 colID="1" >Nice</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="22" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bordeaux</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="23" rowFlags="ROW_Edited">
+		<col1 colID="1" >Toulouse</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="24" rowFlags="ROW_Edited">
+		<col1 colID="1" >Perpignan</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="25" rowFlags="ROW_Edited">
+		<col1 colID="1" >Londres</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="26" rowFlags="ROW_Edited">
+		<col1 colID="1" >Luxembourg (ville)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="27" rowFlags="ROW_Edited">
+		<col1 colID="1" >Athènes</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="28" rowFlags="ROW_Edited">
+		<col1 colID="1" >Budapest</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="29" rowFlags="ROW_Edited">
+		<col1 colID="1" >Dublin</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="30" rowFlags="ROW_Edited">
+		<col1 colID="1" >La Valette</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="31" rowFlags="ROW_Edited">
+		<col1 colID="1" >Oslo</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="32" rowFlags="ROW_Edited">
+		<col1 colID="1" >Varsovie</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="33" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lisbonne</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="34" rowFlags="ROW_Edited">
+		<col1 colID="1" >Porto</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="35" rowFlags="ROW_Edited">
+		<col1 colID="1" >Faro</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="36" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bucarest</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="37" rowFlags="ROW_Edited">
+		<col1 colID="1" >Stockholm</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="38" rowFlags="ROW_Edited">
+		<col1 colID="1" >Berne</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="39" rowFlags="ROW_Edited">
+		<col1 colID="1" >Genève</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="40" rowFlags="ROW_Edited">
+		<col1 colID="1" >Zürich</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="41" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bâle</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="42" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lausanne</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="43" rowFlags="ROW_Edited">
+		<col1 colID="1" >Neuchâtel</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="44" rowFlags="ROW_Edited">
+		<col1 colID="1" >Saint-Gall</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="45" rowFlags="ROW_Edited">
+		<col1 colID="1" >Rome</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="46" rowFlags="ROW_Edited">
+		<col1 colID="1" >Milan</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="47" rowFlags="ROW_Edited">
+		<col1 colID="1" >Cagliari</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="48" rowFlags="ROW_Edited">
+		<col1 colID="1" >Pescara</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="49" rowFlags="ROW_Edited">
+		<col1 colID="1" >La Haye</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="50" rowFlags="ROW_Edited">
+		<col1 colID="1" >Rotterdam</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="51" rowFlags="ROW_Edited">
+		<col1 colID="1" >Roosendaal</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="52" rowFlags="ROW_Edited">
+		<col1 colID="1" >Nimègue</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="53" rowFlags="ROW_Edited">
+		<col1 colID="1" >Belgrade</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="54" rowFlags="ROW_Edited">
+		<col1 colID="1" >Riga</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="55" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tallinn</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="56" rowFlags="ROW_Edited">
+		<col1 colID="1" >Vilnius</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="57" rowFlags="ROW_Edited">
+		<col1 colID="1" >Prague</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="58" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bratislava</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="59" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kiev</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="60" rowFlags="ROW_Edited">
+		<col1 colID="1" >Moscou</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="61" rowFlags="ROW_Edited">
+		<col1 colID="1" >Zagreb</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="62" rowFlags="ROW_Edited">
+		<col1 colID="1" >Ljubljana</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="63" rowFlags="ROW_Edited">
+		<col1 colID="1" >Taipei</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="64" rowFlags="ROW_Edited">
+		<col1 colID="1" >Singapour</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="65" rowFlags="ROW_Edited">
+		<col1 colID="1" >Séoul</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="66" rowFlags="ROW_Edited">
+		<col1 colID="1" >New Delphi</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="67" rowFlags="ROW_Edited">
+		<col1 colID="1" >Mumbai</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="68" rowFlags="ROW_Edited">
+		<col1 colID="1" >Jakarta</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="69" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tokyo</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="70" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kuala Lumpur</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="71" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kathmandu</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="72" rowFlags="ROW_Edited">
+		<col1 colID="1" >Manille</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="73" rowFlags="ROW_Edited">
+		<col1 colID="1" >Pékin</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="74" rowFlags="ROW_Edited">
+		<col1 colID="1" >Shanghaï</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="75" rowFlags="ROW_Edited">
+		<col1 colID="1" >Canton(Guangzhou)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="76" rowFlags="ROW_Edited">
+		<col1 colID="1" >Hanoï</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="77" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bangkok</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="78" rowFlags="ROW_Edited">
+		<col1 colID="1" >Riyad</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="79" rowFlags="ROW_Edited">
+		<col1 colID="1" >Téhéran</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="80" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tel Aviv</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="81" rowFlags="ROW_Edited">
+		<col1 colID="1" >Jérusalem</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="82" rowFlags="ROW_Edited">
+		<col1 colID="1" >Amman</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="83" rowFlags="ROW_Edited">
+		<col1 colID="1" >Beyrouth</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="84" rowFlags="ROW_Edited">
+		<col1 colID="1" >Islamabad</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="85" rowFlags="ROW_Edited">
+		<col1 colID="1" >Abou Dhabi</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="86" rowFlags="ROW_Edited">
+		<col1 colID="1" >Doubaï</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="87" rowFlags="ROW_Edited">
+		<col1 colID="1" >Damas</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="88" rowFlags="ROW_Edited">
+		<col1 colID="1" >Alep</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="89" rowFlags="ROW_Edited">
+		<col1 colID="1" >Ankara</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="90" rowFlags="ROW_Edited">
+		<col1 colID="1" >Istambul</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="91" rowFlags="ROW_Edited">
+		<col1 colID="1" >Koweït</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="92" rowFlags="ROW_Edited">
+		<col1 colID="1" >Muscat</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="93" rowFlags="ROW_Edited">
+		<col1 colID="1" >Doha</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="94" rowFlags="ROW_Edited">
+		<col1 colID="1" >Hong-kong</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="95" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bujumbura</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="96" rowFlags="ROW_Edited">
+		<col1 colID="1" >Yaoundé</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="97" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kinshasa</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="98" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lubumbashi</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="99" rowFlags="ROW_Edited">
+		<col1 colID="1" >Brazzaville</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="100" rowFlags="ROW_Edited">
+		<col1 colID="1" >Ouagadougou</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="101" rowFlags="ROW_Edited">
+		<col1 colID="1" >Abidjan</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="102" rowFlags="ROW_Edited">
+		<col1 colID="1" >Addis-Abeba</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="103" rowFlags="ROW_Edited">
+		<col1 colID="1" >Libreville</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="104" rowFlags="ROW_Edited">
+		<col1 colID="1" >Port Louis</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="105" rowFlags="ROW_Edited">
+		<col1 colID="1" >Dakar</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="106" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lagos</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="107" rowFlags="ROW_Edited">
+		<col1 colID="1" >Abuja</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="108" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kampala</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="109" rowFlags="ROW_Edited">
+		<col1 colID="1" >Le cap</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="110" rowFlags="ROW_Edited">
+		<col1 colID="1" >Johannesburg</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="111" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kigali</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="112" rowFlags="ROW_Edited">
+		<col1 colID="1" >Dar es Salaam</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="113" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lomé</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="114" rowFlags="ROW_Edited">
+		<col1 colID="1" >Nairobi</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="115" rowFlags="ROW_Edited">
+		<col1 colID="1" >Luanda</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="116" rowFlags="ROW_Edited">
+		<col1 colID="1" >Alger</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="117" rowFlags="ROW_Edited">
+		<col1 colID="1" >Le Caire</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="118" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tripoli</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="119" rowFlags="ROW_Edited">
+		<col1 colID="1" >Rabat</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="120" rowFlags="ROW_Edited">
+		<col1 colID="1" >Casablanca</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="121" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tanger</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="122" rowFlags="ROW_Edited">
+		<col1 colID="1" >Tunis</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="123" rowFlags="ROW_Edited">
+		<col1 colID="1" >Ottawa</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="124" rowFlags="ROW_Edited">
+		<col1 colID="1" >Montréal</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="125" rowFlags="ROW_Edited">
+		<col1 colID="1" >Toronto</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="126" rowFlags="ROW_Edited">
+		<col1 colID="1" >Edmonton</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="127" rowFlags="ROW_Edited">
+		<col1 colID="1" >Québec (Ville)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="128" rowFlags="ROW_Edited">
+		<col1 colID="1" >Washington D.C.</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="129" rowFlags="ROW_Edited">
+		<col1 colID="1" >Atlanta (Géorgie)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="130" rowFlags="ROW_Edited">
+		<col1 colID="1" >Chicago</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="131" rowFlags="ROW_Edited">
+		<col1 colID="1" >Los Angeles</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="132" rowFlags="ROW_Edited">
+		<col1 colID="1" >New York</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="133" rowFlags="ROW_Edited">
+		<col1 colID="1" >Norfolk</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="134" rowFlags="ROW_Edited">
+		<col1 colID="1" >San José</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="135" rowFlags="ROW_Edited">
+		<col1 colID="1" >La Havane</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="136" rowFlags="ROW_Edited">
+		<col1 colID="1" >Kingston</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="137" rowFlags="ROW_Edited">
+		<col1 colID="1" >Mexico-Ville</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="138" rowFlags="ROW_Edited">
+		<col1 colID="1" >Willemstad (Curaçao)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="139" rowFlags="ROW_Edited">
+		<col1 colID="1" >Buenos Aires</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="140" rowFlags="ROW_Edited">
+		<col1 colID="1" >Cordoba</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="141" rowFlags="ROW_Edited">
+		<col1 colID="1" >Santa Cruz de la Sierra</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="142" rowFlags="ROW_Edited">
+		<col1 colID="1" >Brasilia</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="143" rowFlags="ROW_Edited">
+		<col1 colID="1" >Sao Paulo</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="144" rowFlags="ROW_Edited">
+		<col1 colID="1" >Rio de janeiro</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="145" rowFlags="ROW_Edited">
+		<col1 colID="1" >Salvador de Bahia</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="146" rowFlags="ROW_Edited">
+		<col1 colID="1" >Santiago du Chili</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="147" rowFlags="ROW_Edited">
+		<col1 colID="1" >Bogota (Cundinamarca)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="148" rowFlags="ROW_Edited">
+		<col1 colID="1" >Quito</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="149" rowFlags="ROW_Edited">
+		<col1 colID="1" >Lima (Lima)</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="150" rowFlags="ROW_Edited">
+		<col1 colID="1" >Caracas</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+	<row rowNumber="151" rowFlags="ROW_Edited">
+		<col1 colID="1" >Canberra</col1>
+		<col2 colID="2" >0</col2>
+		<col3 colID="3" >0</col3>
+		<col4 colID="4" ></col4>
+		<col5 colID="5" ></col5>
+	</row>
+</TD_XML_Table>

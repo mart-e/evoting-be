@@ -1,0 +1,175 @@
+/* Filename             : chkgroup                              */
+
+{chklevel.i 1}
+
+/****************************************************************/
+/*              SHARED VARIABLES                                */
+/****************************************************************/
+{disfram.i}
+{selvar.i}
+
+/****************************************************************/
+/*              WORKFILES                                       */
+/****************************************************************/
+DEF WORKFILE panache NO-UNDO
+    FIELD    election_id      AS I
+    FIELD    election_type    AS I
+    FIELD    election_maxpar  AS I.
+
+/****************************************************************/
+/*              LOCAL VARIABLES                                 */
+/****************************************************************/
+DEF VAR avgroups   AS I                         NO-UNDO.
+DEF VAR counter    AS I                         NO-UNDO.
+DEF VAR down_num   AS I                         NO-UNDO.
+DEF VAR NbrPan     AS I                         NO-UNDO.
+DEF VAR NbrPanPar  AS I                         NO-UNDO.
+DEF VAR NbrNotPan  AS I                         NO-UNDO.
+DEF VAR totgroups  AS I                         NO-UNDO.
+DEF VAR usedgroups AS I                         NO-UNDO.
+
+DEF VAR key_dis    AS C FORMAT "x(35)"          NO-UNDO.
+DEF VAR mes1       AS C FORMAT "x(40)"          NO-UNDO.
+DEF VAR mes2       AS C FORMAT "x(40)"          NO-UNDO.
+DEF VAR mes3       AS C FORMAT "x(10)"          NO-UNDO.
+DEF VAR mes4       AS C FORMAT "x(50)"          NO-UNDO.
+DEF VAR mes5       AS C FORMAT "x(50)"          NO-UNDO.
+
+DEF VAR eltype  AS LOGICAL FORMAT "Uni/Multi"   NO-UNDO.
+
+/****************************************************************/
+/*              LOCAL FORMS                                     */
+/****************************************************************/
+
+FORM
+    SKIP
+    key_dis                 AT 2
+    eltype                  AT 38
+    panache.election_maxpar AT 45 FORMAT ">>>9"
+    usedgroups              AT 50 FORMAT ">>>9"
+    HEADER "Type" AT 38 
+           "Max"  AT 45 
+           mes3   AT 50 SPACE(2)
+    WITH FRAME panlst2 
+        SCROLL 1 
+        down_num DOWN 
+        ROW 7
+        NO-LABELS 
+        OVERLAY 
+        CENTERED.
+
+FORM
+    SKIP
+    mes1 AT 2 totgroups AT 46 SPACE(2) SKIP
+    mes2 AT 2 avgroups  AT 46 SPACE(2) SKIP
+    mes4 AT 2 SKIP
+    mes5 AT 2 SKIP
+    WITH FRAME panlst1 NO-LABELS OVERLAY CENTERED ROW 16.
+
+/****************************************************************/
+/*              START PROCEDURE                                 */
+/****************************************************************/
+
+call C_TSTFN "C:\PANACHE".
+IF fileok = 0
+THEN DO:
+    {call.i &prg="disfram" &param=",'chkgroup,panache','','','',TRUE"}
+    {return.i}
+END.
+
+/* Read/Import current PANACHE-file into WORKFILE */
+INPUT FROM C:\PANACHE NO-ECHO.
+REPEAT:
+    CREATE panache.
+    IMPORT panache.
+END.
+INPUT CLOSE.
+
+FIND FIRST panache WHERE panache.election_id = elecid NO-ERROR.
+IF AVAILABLE panache
+THEN DO:
+    panache.election_maxpar = maxpar.
+    
+    /* Recreate the PANACHE-file with the new information */
+    CALL C_ATTRIB "C:\PANACHE" 0.
+    OUTPUT TO C:\PANACHE.
+    FOR EACH panache WHERE panache.election_id > 0 NO-LOCK:
+        PUT UNFORMATTED STRING(panache.election_id) 
+                    " " STRING(panache.election_type) 
+                    " " STRING(panache.election_maxpar) SKIP.
+        IF      panache.election_type = 0 
+        THEN NbrNotPan = NbrNotPan + 8.
+        ELSE IF panache.election_type = 1 
+        THEN ASSIGN
+             NbrPan    = NbrPan + 1
+             NbrPanPar = NbrPanPar + TRUNCATE( ( panache.election_maxpar + 2) / 3, 0) + 4.
+    END.
+    OUTPUT CLOSE.
+    CALL C_ATTRIB "C:\PANACHE" 3.
+
+    /******************************************************************/
+    /*                    Magnetic Card Contents                      */
+    /*                    ----------------------                      */
+    /*  8 bytes for MAV_SESSION_KEY                                   */
+    /*  8 bytes for MAC                                               */
+    /*  1 byte reserved for Type Elector                              */
+    /* ==================================                             */
+    /* 17 bytes of 104 bytes reserved      ==> 87 bytes available     */
+    /*                                         for election data      */
+    /******************************************************************/
+    IF (NbrNotPan + NbrPanPar) > 87
+    THEN DO:
+        {call.i &prg="mesfil" &param=",'panalist,mes03',10,OUTPUT mes3"}
+        ASSIGN
+        counter  = 0
+        down_num = 0.
+        FOR EACH panache WHERE panache.election_id > 0 NO-LOCK:
+            down_num = down_num + 1.
+        END.
+        BELL.
+        FOR EACH panache NO-LOCK:
+            IF counter = down_num
+            THEN DO:
+                {call.i &prg="mesfil" &param=",'panalist,mes01',40,OUTPUT mes1"}
+                {call.i &prg="mesfil" &param=",'panalist,mes02',40,OUTPUT mes2"}
+                {call.i &prg="mesfil" &param=",'panalist,mes04',65,OUTPUT mes4"}
+                {call.i &prg="mesfil" &param=",'panalist,mes05',65,OUTPUT mes5"}
+                avgroups = 87 - NbrNotPan - (4 * NbrPan).
+
+                HIDE FRAME disframe NO-PAUSE.
+                DISPLAY mes1 mes2 totgroups avgroups mes4 mes5 WITH FRAME panlst1.
+                LEAVE.
+            END.
+            ELSE DO:
+                FIND FIRST election WHERE panache.election_id = election.et-id 
+                                  NO-LOCK NO-ERROR.
+                ASSIGN
+                key_dis    = STRING(panache.election_id) 
+                           + " " 
+                           + election.long-name[taalkode]
+                counter    = counter + 1
+                eltype     = (IF panache.election_type = 0 
+                              THEN TRUE 
+                              ELSE FALSE)
+                usedgroups = (IF panache.election_type = 0
+                              THEN 8
+                              ELSE (panache.election_maxpar + 2) / 3)
+                totgroups  = totgroups + usedgroups.
+
+                HIDE FRAME disframe NO-PAUSE.
+                DISPLAY key_dis eltype panache.election_maxpar usedgroups 
+                    WITH FRAME panlst2.
+                DOWN WITH FRAME panlst2.
+                PAUSE 0 NO-MESSAGE.
+            END.
+        END.
+        {call.i &prg="discolme" &param=",'general,keypress', 0"}
+        PAUSE NO-MESSAGE.
+        HIDE FRAME panlst1 NO-PAUSE.
+        HIDE FRAME panlst2 NO-PAUSE.
+        maxpar = 0.
+    END.
+END.
+
+{return.i}
+/* eof */

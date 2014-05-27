@@ -1,0 +1,79 @@
+/* Filename            : SET_VBL.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAMETER new-v-major    AS I FORMAT "999"              NO-UNDO.
+DEF INPUT PARAMETER new-v-minor    AS I FORMAT "999"              NO-UNDO.
+DEF INPUT PARAMETER new-v-build    AS I FORMAT "999"              NO-UNDO.
+DEF INPUT PARAMETER exec-runtools  AS L                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR updatefile                 AS C FORMAT "x(78)"            NO-UNDO.
+DEF VAR filename                   AS C FORMAT "x(15)"            NO-UNDO.
+DEF VAR i                          AS i                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   START PROCEDURE                                                    */
+/*                                                                      */
+/************************************************************************/
+/* If it concerns an update, exec-runtools should be true           */
+/* so that Progress-updates can be executed as a part of the update */
+IF exec-runtools = TRUE
+THEN DO:
+    CALL C_DEL VALUE(ramdrive + "FILE.LST").
+    /* Gather directory information of \VOTE\RTUPDATE */
+    call C_DIR "C:\VOTE\RTUPDATE\*.*" VALUE(ramdrive + "FILE.LST").
+    IF SEARCH(ramdrive + "FILE.LST") <> ?
+    THEN DO:
+        INPUT FROM VALUE(ramdrive + "FILE.LST") NO-ECHO.
+        REPEAT:
+            SET updatefile.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Executing UpdateFile " + updatefile) 0.
+            /*@call=P999999_.p*/
+            {call_var.i &prg="updatefile"}
+            CALL C_DEL VALUE("\VOTE\RTUPDATE\" + updatefile).
+        END.
+        INPUT CLOSE.
+        CALL C_DEL VALUE(ramdrive + "FILE.LST").
+    END.
+END.
+
+IF NOT(    new-v-major = 0
+       AND new-v-minor = 0
+       AND new-v-build = 0)
+THEN DO:
+    FIND FIRST setup NO-ERROR.
+    ASSIGN
+    setup.version[1] = new-v-major
+    setup.version[2] = new-v-minor
+    setup.version[3] = new-v-build
+    setup.MAC        = "REFRESH".
+    {call.i &prg="sec_setu"}
+END.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+filename = "C:\VOTE\MENU.VER," + ramdrive + "VOTE\MENU.VER".
+DO i = 1 TO NUM-ENTRIES(filename):
+    call C_ATTRIB VALUE(ENTRY(i,filename)) 0.
+    OUTPUT TO VALUE(ENTRY(i,filename)).
+    PUT UNFORMATTED
+        setup.version[1] "."
+        setup.version[2] "." 
+        setup.version[3].
+    OUTPUT CLOSE.
+    call C_ATTRIB VALUE(ENTRY(i,filename)) 3.
+END.
+
+{return.i}
+/* eof */

@@ -1,0 +1,235 @@
+/* Filename            : S_INPUT.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}              /* Variabelen voor het TOT hoofdmenu TOGENEME */
+{selvar.i}              /* De variabelen voor de selection record       */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{mencolor.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR dirlist AS C FORMAT "x(12)".
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-type-records AS C INIT "I,G,T,U"                       NO-UNDO.
+DEF VAR the-sys-type    AS C                                      NO-UNDO.
+
+DEF VAR wz-seltit       AS C FORMAT "x(30)"                       NO-UNDO.
+DEF VAR wz-seltype      AS C FORMAT "x(40)" EXTENT 4              NO-UNDO.
+DEF VAR wz-type         AS I                                      NO-UNDO.
+DEF VAR i               AS I                                      NO-UNDO.
+DEF VAR wz-org-file     AS C FORMAT "x(40)"                       NO-UNDO.
+DEF VAR wz-filename     AS C FORMAT "x(40)"                       NO-UNDO.
+DEF VAR wz-lijn         AS C                                      NO-UNDO.
+DEF VAR wz-delimit      AS C FORMAT "X"  INIT ";"                 NO-UNDO.
+DEF VAR inx-sys-type    AS I                                      NO-UNDO.
+
+DEF VAR on_resume       AS L INIT FALSE                           NO-UNDO.
+DEF VAR prglvl          AS I                                      NO-UNDO.
+DEF VAR resume-prg      AS C                                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+                             SKIP(1)
+    wz-seltype AT 2 SPACE(1) SKIP(1)
+    WITH FRAME seltype
+        NO-LABELS
+        ROW 7
+        CENTERED
+        TITLE wz-seltit
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{resume.i}
+IF on_resume
+THEN DO:
+    IF {prgname.i resume-prg} = "import2s"
+    THEN DO:
+        INPUT FROM VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME") NO-ECHO.
+        REPEAT i = 1 TO 3:
+            SET ^. /* SKIP 3 lines */
+        END.
+        SET verkben.
+        SET wz-lijn.
+        SET wz-org-file.
+        SET wz-filename.
+        SET the-sys-type.
+        INPUT CLOSE.
+        
+        DISPLAY verkben WITH FRAME pmgenein.
+        
+        {call.i &prg="import2s" 
+                &param=",wz-org-file,wz-filename,the-sys-type,wz-type-records"}
+        
+        verkben = "".
+        
+        HIDE FRAME disframe NO-PAUSE.
+        HIDE FRAME pmgenein NO-PAUSE.
+
+        {return.i}
+    END.
+END.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+{call.i &prg="mesfil" &param=",'s_input,title',30,OUTPUT wz-seltit"}
+REPEAT i = 1 TO 4:
+    {call.i &prg="mesfil" &param=",'s_input,item' + STRING(i),40,OUTPUT wz-seltype[i]"}
+    SUBSTRING(wz-seltype[i],31) = STRING(setup.organigram[i],">>>>>>9").
+END.
+
+KEUZE:
+REPEAT ON ERROR  UNDO KEUZE, RETRY KEUZE
+       ON ENDKEY UNDO KEUZE, LEAVE KEUZE
+       WITH FRAME seltype:
+    HIDE MESSAGE.
+    DISPLAY wz-seltype.
+    CHOOSE FIELD wz-seltype[1 FOR 4]
+           COLOR VALUE(menu_bg)
+           GO-ON ("F4" "ESC")
+           AUTO-RETURN.
+    IF KEYFUNCTION(LASTKEY) = "END-ERROR" OR
+       KEYLABEL(LASTKEY)    = "ESC"
+    THEN DO:
+        HIDE FRAM seltype NO-PAUSE.
+        {return.i}
+    END.
+    ELSE wz-type = FRAME-INDEX.
+    LEAVE KEUZE.
+END.
+HIDE FRAME seltype NO-PAUSE.
+
+verkben = SUBSTRING(wz-seltype[wz-type],1,30).
+DISPLAY verkben WITH FRAME pmgenein.
+     
+IF wz-type > 1
+THEN IF setup.organigram[wz-type - 1] = 0
+     THEN DO:
+         REPEAT i = 1 TO wz-type - 1:
+            IF setup.organigram[i] = 0
+            THEN DO:
+                {call.i &prg="disfram" 
+                        &param=",'s_input,item' + STRING(i),
+                                 's_input,noimport',
+                                 's_input,item' + STRING(wz-type),'',TRUE"}
+                /* Cleanup temporary file */
+                call C_DEL VALUE(wz-filename).
+                verkben = "".
+                {return.i}
+            END.
+         END.
+     END.
+
+/* Ask confirmation if there are already records present */
+REPEAT inx-sys-type = wz-type TO NUM-ENTRIES(wz-type-records):
+    
+    FIND FIRST organigram 
+         WHERE organigram.sys-type = ENTRY(inx-sys-type,
+                                           wz-type-records)
+       NO-LOCK NO-ERROR.
+    IF AVAILABLE organigram
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) 
+             VALUE("Cleanup of " + ENTRY(inx-sys-type,
+                                         wz-type-records) + " records") 0.
+        IF inx-sys-type = wz-type
+        THEN DO:
+            {call.i &prg="confirm" &param=",'import2s,present',
+                                            '=> ' + wz-seltype[inx-sys-type],
+                                            'import2s,replace',
+                                            'general,yes','general,no'"}
+        END.
+        ELSE DO:
+            {call.i &prg="confirm" &param=",'import2s,others',
+                                            '=> ' + wz-seltype[inx-sys-type],
+                                            'import2s,delete',
+                                            'general,yes','general,no'"}
+        END.
+        IF menleav = 0
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Import aborted by the user !") 0.
+            {call.i &prg="disfram" 
+                    &param=",'import2s,aborted','','','',TRUE"}
+            /* Cleanup temporary file */
+            call C_DEL VALUE(wz-filename).
+            verkben = "".
+            {return.i}
+        END.
+    END.
+END.
+
+{call.i &prg="dirlist" &param=",'A:\*.CSV,B:\*.CSV,C:\VOTE\FILES\*.CSV',
+             's_input,item' + STRING(wz-type),  's_input,errmsg',
+             's_input,titlist',                 's_input,tithelp'"}
+IF dirlist <> "" 
+THEN DO:
+    {call.i &prg="disfram" &param=",'digivote,copbes20','','','',FALSE"}
+
+    /* Copy file to be imported to ramdrive to speed up process */
+    wz-filename = ramdrive + "S-IMPORT.CSV".
+
+    /* Check if file is still available ... */
+    call C_TSTFN VALUE(dirlist).
+    IF fileok = 0
+    THEN DO:
+        {call.i &prg="disfram" &param=",'digivote,cpbser01',
+                                        'digivote,cpbser02',
+                                        ',' + dirlist,
+                                        '',TRUE"}
+    END.
+    ELSE DO:
+        INPUT FROM VALUE(dirlist) NO-ECHO.
+        IMPORT wz-lijn.
+        INPUT CLOSE.
+
+        /* input file possible in 3 different formats                            */
+        /* 1ø ; seperated  (MS-DOS .CSV export from Excell)                      */
+        /* 2ø , seperated  (MS-DOS .CSV export from Excell)                      */
+        /* 3ø blanko seperated, string between quotes ""   (MS-DOS edited ASCII) */
+        wz-delimit = IF      INDEX(wz-lijn,";") > 0 THEN ";"
+                     ELSE IF INDEX(wz-lijn,",") > 0 THEN ","
+                     ELSE                                "".
+
+        IF TRIM(wz-delimit) = ""
+        THEN call C_COPY VALUE(dirlist) VALUE(wz-filename).
+        ELSE call QUOTD "-d" wz-delimit dirlist wz-filename.
+
+        {call.i &prg="import2s" 
+                &param=",dirlist,
+                         wz-filename,
+                         ENTRY(wz-type,wz-type-records),
+                         wz-type-records"}
+    END.
+END.
+
+call C_DEL VALUE(wz-filename).
+
+verkben = "".
+
+HIDE FRAME disframe NO-PAUSE.
+HIDE FRAME pmgenein NO-PAUSE.
+
+{return.i}
+/* eof */

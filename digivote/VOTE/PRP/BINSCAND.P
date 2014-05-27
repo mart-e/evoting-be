@@ -1,0 +1,12 @@
+/* Filename : BINSCAND.P */
+
+{ins_cand.g
+ &append_cand = " "
+ &compare     = " endnum >= selnum "
+ &set_candnum = " 
+  candnum = selnum.
+ "
+ &end_append  = " "
+}
+
+/* eof */

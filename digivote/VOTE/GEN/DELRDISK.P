@@ -1,0 +1,40 @@
+/* Filename            : DELRDISK.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR i       AS I                NO-UNDO.
+DEF VAR wz-file AS C FORMAT "x(78)" NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+/*@source sec=1*/
+wz-file = "URNECONT,LISTES.IMP,INPUT.LST,SESKEY,KEYFILE,KEYF,INFPAS,"    +
+          "INFPAS.TXT,FORMDISK.INP,INFLIS,INFLIS.TXT,INFURN,INFURN.TXT," +
+          "B006,B002,B012,B022,B021,B021.AR,B121,ELECT.LST,ELECT1.DAT,"  +
+          "TOTAL.DAT,TOTAL.DEC,TOTAL.LST,SETLANG".
+/*@source sec=0*/
+
+DO i = 1 TO NUM-ENTRIES(wz-file) :
+    CALL C_DEL VALUE(ramdrive + ENTRY(i,wz-file)).
+END.
+
+call C_DIR VALUE(ramdrive + "ID??????.DSK") 
+           VALUE(ramdrive + "DISKLIST.DIR").
+INPUT FROM VALUE(ramdrive + "DISKLIST.DIR") NO-ECHO.
+REPEAT:
+    SET wz-file.
+    call C_DEL VALUE(ramdrive + wz-file).
+END.
+INPUT CLOSE.
+call C_DEL VALUE(ramdrive + "DISKLIST.DIR").
+
+{return.i}
+/* eof */

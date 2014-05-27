@@ -1,0 +1,174 @@
+/* Filename            : MAKELOGO.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{makelogo.i}          /* De RECID variabelen voor exporteren logo's     */
+
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT-OUTPUT PARAM wz-sign-pos    AS I               NO-UNDO.
+DEF INPUT-OUTPUT PARAM wz-sign        AS I               NO-UNDO.
+DEF       OUTPUT PARAM wz-stat-logo   AS I               NO-UNDO.
+DEF       OUTPUT PARAM wz-nbr-of-logo AS I               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-exefile     AS C FORMAT "x(35)"               NO-UNDO.
+DEF VAR wz-datafile    AS C FORMAT "x(35)"               NO-UNDO.
+DEF VAR wz-resultfile  AS C FORMAT "x(35)"               NO-UNDO.
+DEF VAR wz-rasterdata  AS C FORMAT "x(35)"               NO-UNDO.
+DEF VAR wz-import      AS C FORMAT "x(70)" EXTENT 3      NO-UNDO.
+DEF VAR wz-index       AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-nbr-of-logo = 0
+wz-exefile     = (IF SEARCH(ramdrive + "VOTE\RUN\PARTLOGO.EXE") = ?
+                  THEN "\"
+                  ELSE ramdrive)
+               + "VOTE\RUN\PARTLOGO.EXE".
+
+{PROGBUSY.I}
+FIND FIRST session 
+     WHERE RECID(session) = sessionrecid  
+           NO-LOCK NO-ERROR.
+/* get related election record if known */
+{PROGBUSY.I}
+IF electionrecid <> ?
+THEN FIND FIRST election 
+          WHERE RECID(election) = electionrecid 
+                NO-LOCK NO-ERROR.
+/* get releated party record if known */
+{PROGBUSY.I}
+IF partyrecid <> ?
+THEN FIND FIRST party 
+          WHERE RECID(party) = partyrecid 
+                NO-LOCK NO-ERROR.
+
+/* ================================= */
+/* Eventuele partijlogo's exporteren */
+/* ================================= */
+ASSIGN
+wz-datafile   = ramdrive + "PARTLOGO.DAT"
+wz-resultfile = ramdrive + "PARTLOGO.RES"
+wz-rasterdata = ramdrive + "LOGODATA.DAT".
+
+OUTPUT TO VALUE(wz-datafile).
+PUT UNFORMATTED "A~tDAT~t" wz-rasterdata.
+OUTPUT CLOSE.
+
+OUTPUT TO VALUE(wz-rasterdata).
+/* ===================================== */
+/* only session record has been provided */
+/* ===================================== */
+IF electionrecid = ? AND
+   partyrecid    = ? 
+THEN FOR EACH election NO-LOCK WHERE session.s-id       = election.s-id:
+         FOR EACH party NO-LOCK WHERE party.s-id        = session.s-id
+                                  AND party.e-id        = election.e-id
+                                  AND party.p-id        > 0 
+                                  AND party.logo_width  > 0 
+                                  AND party.logo_height > 0:
+             {PROGBUSY.I}
+             wz-nbr-of-logo = wz-nbr-of-logo + 1.
+             PUT UNFORMATTED "A~t" ramdrive 
+                                   "PL" STRING(election.et-id,   "99")
+                                        STRING(election.coll-id, "99")
+                                        STRING(party.p-id,       "99") 
+                                   ".DAT" SKIP.
+             REPEAT wz-index = 1 TO party.logo_bytes:
+                 PUT UNFORMATTED "D~t" STRING(party.logo[wz-index]) SKIP.
+             END.
+         END.
+     END.
+/* ============================================== */
+/* session and election record have been provided */
+/* ============================================== */
+ELSE IF electionrecid <> ? AND
+        partyrecid    =  ?
+THEN FOR EACH party NO-LOCK WHERE party.s-id        = session.s-id
+                              AND party.e-id        = election.e-id
+                              AND party.p-id        > 0 
+                              AND party.logo_width  > 0 
+                              AND party.logo_height > 0:
+         {PROGBUSY.I}
+         wz-nbr-of-logo = wz-nbr-of-logo + 1.
+         PUT UNFORMATTED "A~t" ramdrive 
+                               "PL" STRING(election.et-id,   "99")
+                                    STRING(election.coll-id, "99")
+                                    STRING(party.p-id,       "99") 
+                               ".DAT" SKIP.
+         REPEAT wz-index = 1 TO party.logo_bytes:
+             PUT UNFORMATTED "D~t" STRING(party.logo[wz-index]) SKIP.
+         END.
+     END.
+/* ===================================================== */
+/* session, election and party record have been provided */
+/* ===================================================== */
+ELSE IF electionrecid <> ? AND
+        partyrecid    <> ?
+THEN IF party.logo_width  > 0 AND
+        party.logo_height > 0
+     THEN DO:
+         {PROGBUSY.I}
+         wz-nbr-of-logo = wz-nbr-of-logo + 1.
+         PUT UNFORMATTED "A~t" ramdrive 
+                               "PL" STRING(election.et-id,   "99")
+                                    STRING(election.coll-id, "99")
+                                    STRING(party.p-id,       "99") 
+                               ".DAT" SKIP.
+         REPEAT wz-index = 1 TO party.logo_bytes:
+             PUT UNFORMATTED "D~t" STRING(party.logo[wz-index]) SKIP.
+         END.
+     END.
+OUTPUT CLOSE. /* Einde logo-bestand */
+
+IF wz-nbr-of-logo = 0
+THEN DO:
+    wz-stat-logo = 1.
+END.
+ELSE DO:
+    CALL C_DEL VALUE(wz-resultfile).
+    DOS SILENT VALUE(wz-exefile).
+
+    {PROGBUSY.I}
+    IF SEARCH(wz-resultfile) <> ?
+    THEN DO:
+        INPUT FROM VALUE(wz-resultfile) NO-ECHO.
+        SET wz-import.
+        INPUT CLOSE.
+
+        wz-stat-logo = INTEGER(wz-import[2]).
+    END.
+    ELSE DO:
+        {call.i &prg="interror" &param=", 'edit_epc,menu_128', 
+                      'internal,errmsg', 
+                      '          MAKELOGO : ' + wz-resultfile"}
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("MAKELOGO Resultfile not found ! (" + wz-resultfile + ")") 2.
+        wz-stat-logo = 0.
+    END.
+END.
+{PROGBUSY.I}
+CALL C_DEL VALUE(wz-datafile).
+CALL C_DEL VALUE(wz-rasterdata).
+CALL C_DEL VALUE(wz-resultfile).
+
+{return.i}
+/* eof */

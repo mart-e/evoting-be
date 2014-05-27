@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >BIJLAGE  BIJ FORMULIER CF/18Bbis</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >FRANSE KIESCOLLEGE</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Kieskring Brussel-Halle-Vilvoorde</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Kieskanton : #CANTON#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Kantonhoofdbureau</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >VERKIEZING VAN HET EUROPESE PARLEMENT VAN 7 JUNI 2009</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >GEZAMENLIJKE RESULTATEN VOOR HET NEDERLANDSE</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >EN HET FRANSE KIESCOLLEGE.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Geldige kaarten voor het Nederlandse kiescollege: </String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >#CARTES_VALABLES_NN#</String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Geldige kaarten voor het Franse kiescollege : </String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >#CARTES_VALABLES_FF#</String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Kaarten met blanco stemmen : </String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >#CARTES_BLANCS#</String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Kaarten met ongeldig verklaarde stemmen : </String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >#CARTES_NULS#</String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >23</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Geregistreerde kaarten : </String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >#CARTES_TOT#</String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De secretaris,                De bijzitters,                De getuigen,                De voorzitter,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+</TD_XML_Table>

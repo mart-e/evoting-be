@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Nachdem der Vorstand gemäß den Angaben der Tabelle mit den Ergebnissen der Stimmenauszählung die Wahlziffer jeder der Listen festgelegt hat, ermittelt er den Wahldivisor. Dieser Wahldivisor ist: (2) (3) #DIVISEUR_ELECTORAL#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Anschließend bestimmt der Vorstand die Kandidaten, die die ihrer Liste zuerkannten Sitze erhalten, und die Kandidaten, die gemäß den Bestimmungen des Artikels 45 des Gesetzes vom 6. Juli 1990 zur Regelung der Modalitäten für die Wahl des Parlaments der Deutschsprachigen Gemeinschaft zu Ersatzmitgliedern des Parlaments erklärt werden (3) .</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Die Öffentlichkeit wird in den Tagungsraum des Vorstandes eingelassen und der Vorsitzende macht der Versammlung folgende Mitteilung :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Aus den Zahlenangaben in der Tabelle mit den Ergebnissen der Stimmenauszählung ergibt sich Folgendes :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LISTEN_SITZE#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >- Zu Mitgliedern des Parlaments der Deutschsprachigen Gemeinschaft werden ausgerufen  : (1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LISTEN ELUS#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Folgende Kandidaten werden zu Ersatzmitgliedern des Parlaments der Deutschsprachigen Gemeinschaft ausgerufen  : (1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LISTEN_STELLVERTRETER#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >16</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorsitzende des Hauptwahlvorstandes des Wahlkreises übermittelt dem Greffier des Parlaments, dem Minister-Präsidenten der Regierung und dem Minister des Innern unverzüglich auf digitalem Weg   durch Gebrauch der elektronischen Signatur, die anhand des Personalausweises angebracht wird   das vollständige Protokoll seines Wahlvorstandes. </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >16</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Eine Papierfassung dieses während der Sitzung in doppelter Ausfertigung verfassten und von allen Mitgliedern des Wahlvorstandes und den Zeugen unterzeichneten Protokolls und die in Artikel 47 des vorerwähnten Gesetzes vom 6. Juli 1990 erwähnten Unterlagen werden dem Greffier des Parlaments innerhalb fünf Tagen übermittelt.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Auszüge aus diesem Protokoll werden jedem der Gewählten zugesandt.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LIEU#, den #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Sekretär,                Die Beisitzer,                Die Zeugen,                Der Vorsitzende,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >P.S.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >Vergessen Sie bitte nicht, im Hinblick auf die Zahlung der Anwesenheitsgelder dem Vorsitzenden des Hauptwahlvorstandes des Kantons Eupen spätestens am Tag der Wahl die in der Anlage beigefügte Liste - ordnungsgemäß ausgefüllt - zu übergeben.</String2>
+	</row>
+	<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Vor Name und Vornamen ist der Vermerk "Herr" oder "Frau" anzubringen.</String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(2)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Der Wahldivisor entspricht dem letzten Quotienten, den man durch den in Artikel 167 Absatz 1 des Wahlgesetzbuches angegebenen Rechenvorgang erhält.</String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(3)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Siehe Anweisungen an die Hauptwahlvorstände in Bezug auf die allgemeine Stimmenauszählung, die Verteilung und die Zuteilung der Sitze.</String2>
+	</row>
+	<row rowNumber="38" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="39" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >19</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >WICHTIGE HINWEISE !</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="40" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >14</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorstand wird besonders auf folgende Bestimmungen aufmerksam gemacht:</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="41" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="42" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >18</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >1°</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Was die Übertragung der Hälfte der zugunsten der Vorschlagsreihenfolge der Kandidaten (ordentlicher Kandidat und Ersatzkandidaten) abgegebenen Anzahl Stimmzettel betrifft, ist nicht mehr der Wahldivisor als Grundlage zu nehmen, sondern für jede Liste eine ihr eigene Wählbarkeitsziffer, die man erhält durch die Teilung der Wahlziffer der Liste durch die um eins erhöhte Anzahl Sitze, die der Liste endgültig zugeteilt worden sind (Art. 172 des Wahlgesetzbuches).</String2>
+	</row>
+	<row rowNumber="43" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="44" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >18</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >2°</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Nach der Bestimmung des ordentlichen Mitglieds werden auf die gleiche Art und Weise die Ersatzmitglieder bestimmt (Art. 173 des Wahlgesetzbuches). Die Ersatzkandidaten mit den meisten Stimmen oder bei Stimmengleichheit in der Reihenfolge der Eintragung auf dem Stimmzettel werden zum ersten, zweiten, dritten Ersatzmitglied und so weiter erklärt.</String2>
+	</row>
+</TD_XML_Table>

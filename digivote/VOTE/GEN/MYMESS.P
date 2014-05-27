@@ -1,0 +1,32 @@
+/*
+<pvcs>
+<workFile>$Workfile:   mymess.p  $</workFile>
+<revision>$Revision: 1.4 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 10 2002 15:33:10  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/Dev/Vote/Gen/mymess.p-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/03/01 16:11:46 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+/************************************************************************/
+/*                                                                      */
+/* Filename            : mymess.p                                       */
+/*                                                                      */
+/* Functionality       : displays messages on red background            */
+/*                                                                      */
+/* Usage               : run MyMess( "Hello world").                    */
+/*                                                                      */
+/************************************************************************/
+
+{chklevel.i 1}
+
+
+define input parameter txt as character.
+
+message color white/red
+  txt.
+pause.
+
+{return.i}
+/* eof */

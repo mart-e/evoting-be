@@ -1,0 +1,149 @@
+/* Filename            : ENDPRT.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*     SHARED VARIABLES                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR offset  AS I NO-UNDO.
+DEF NEW SHARED VAR flength AS I NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*     LOCAL VARIABLES                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-message         AS C FORMAT "x(65)" EXTENT 4           NO-UNDO.
+DEF VAR wz-status          AS C FORMAT "x(65)" EXTENT 3           NO-UNDO.
+DEF VAR wz-c_print         AS C FORMAT "x(65)" EXTENT 6           NO-UNDO.
+DEF VAR wz-title           AS C FORMAT "x(50)"                    NO-UNDO.
+DEF VAR wz-print           AS L                                   NO-UNDO.
+
+DEF VAR wz-loop            AS I INIT 0                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*     LOCAL FORMS                                                      */
+/*                                                                      */
+/************************************************************************/
+FORM
+                                SKIP(1)
+    wz-message[1] AT 2 SPACE(1) SKIP
+    wz-message[2] AT 3 SPACE(1) SKIP(1)
+    wz-message[3] AT 2 SPACE(1) SKIP(1)
+    wz-message[4] AT 2 SPACE(1)
+    WITH FRAME prt_status
+        OVERLAY CENTERED
+        NO-LABELS
+        ROW 6
+        TITLE wz-title.
+
+/************************************************************************/
+/* If in DebugMode, ask if job should be printed or not                 */
+/************************************************************************/
+IF DebugMode = 1
+THEN DO:
+    HIDE MESSAGE NO-PAUSE.
+    wz-print = FALSE.
+    MESSAGE "We're in DebugMode ! You can save some trees ... (Print it/Save paper)".
+    MESSAGE "What do you want to do ? " UPDATE wz-print FORMAT "Print it/Save paper".
+    IF NOT wz-print
+    THEN DO:
+        {return.i}
+    END.
+END.
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'tprtlstm,prlstit2',0,OUTPUT wz-title"}
+{call.i &prg="mesfil" &param=",'prt_file,problem1',0,OUTPUT wz-message[1]"}
+{call.i &prg="mesfil" &param=",'prt_file,problem2',0,OUTPUT wz-message[3]"}
+{call.i &prg="mesfil" &param=",'general,keypress', 0,OUTPUT wz-message[4]"}
+{call.i &prg="mesfil" &param=",'prt_file,time_out',0,OUTPUT wz-status[1]"}
+{call.i &prg="mesfil" &param=",'prt_file,io_error',0,OUTPUT wz-status[2]"}
+{call.i &prg="mesfil" &param=",'prt_file,no_paper',0,OUTPUT wz-status[3]"}
+{call.i &prg="mesfil" &param=",'prt_file,c_print1',0,OUTPUT wz-c_print[1]"}
+{call.i &prg="mesfil" &param=",'prt_file,c_print2',0,OUTPUT wz-c_print[2]"}
+{call.i &prg="mesfil" &param=",'prt_file,c_print3',0,OUTPUT wz-c_print[3]"}
+{call.i &prg="mesfil" &param=",'prt_file,c_print4',0,OUTPUT wz-c_print[4]"}
+{call.i &prg="mesfil" &param=",'prt_file,c_print5',0,OUTPUT wz-c_print[5]"}
+{call.i &prg="mesfil" &param=",'prt_file,c_print6',0,OUTPUT wz-c_print[6]"}
+
+ASSIGN
+stat   = 9
+offset = -1.
+
+PAUSE 0 NO-MESSAGE.
+
+REPEAT WHILE stat <> 0:
+    ASSIGN
+    stat    = 0
+    wz-loop = wz-loop + 1.
+    
+    CALL C_PRINT "\VOTE\SPOOL\PRINT.JOB".
+    IF stat <> 0
+    THEN DO:
+        wz-message[2] = "".
+        IF      stat = 1
+        THEN wz-message[2] = wz-status[1].
+        ELSE IF stat = 2
+        THEN wz-message[2] = wz-status[2].
+        ELSE IF stat = 3
+        THEN wz-message[2] = wz-status[1] + " "
+                           + wz-status[2].
+        ELSE IF stat = 4
+        THEN wz-message[2] = wz-status[3].
+        ELSE IF stat = 5
+        THEN wz-message[2] = wz-status[1] + " "
+                           + wz-status[3].
+        ELSE IF stat = 6
+        THEN wz-message[2] = wz-status[2] + " "
+                           + wz-status[3].
+        ELSE IF stat = 7
+        THEN wz-message[2] = wz-status[1] + " "
+                           + wz-status[2] + " "
+                           + wz-status[3].
+        ELSE IF stat = -1
+        THEN wz-message[2] = wz-c_print[1].
+        ELSE IF stat = -2
+        THEN wz-message[2] = wz-c_print[2].
+        ELSE IF stat = -3
+        THEN wz-message[2] = wz-c_print[3].
+        ELSE IF stat = -4
+        THEN wz-message[2] = wz-c_print[4].
+        ELSE IF stat = -5
+        THEN wz-message[2] = wz-c_print[5].
+        ELSE IF stat = -6
+        THEN wz-message[2] = wz-c_print[6].
+        ELSE wz-message[2] = "N/A".
+
+        /* Ignore 1st TIME OUT */
+        IF wz-loop = 1 AND stat = 1 THEN NEXT.
+        
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message[2] + 
+                                            " [Offset="    + STRING(offset)  +
+                                            "/FileLength=" + STRING(flength) + 
+                                            "/Status="     + STRING(stat)    + "]") 2.
+                                            
+        DISPLAY wz-message
+            WITH FRAME prt_status.
+        REPEAT:
+            PAUSE NO-MESSAGE.
+            LEAVE.
+        END.
+        HIDE FRAME prt_status NO-PAUSE.
+
+        IF LASTKEY = KEYCODE("F4") OR
+           LASTKEY = KEYCODE("ESC")
+        THEN stat = 0.
+    END.
+    
+END.
+
+IF debugmode = 0
+THEN CALL C_DEL "\VOTE\SPOOL\PRINT.JOB".
+
+HIDE FRAME prt_status NO-PAUSE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,86 @@
+/* Filename            : ELECMODE.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-selected AS L                                 NO-UNDO.
+DEF OUTPUT PARAM wz-el-type  AS C FORMAT "x(16)"                  NO-UNDO.
+DEF OUTPUT PARAM wz-el-mode  AS I INIT -1                         NO-UNDO.
+DEF OUTPUT PARAM wz-totlvls  AS I INIT -1                         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-prev-el-mode      AS I                                 NO-UNDO.
+DEF VAR wz-remainder         AS I                                 NO-UNDO.
+DEF VAR wz-index             AS I                                 NO-UNDO.
+DEF VAR wz-unique-el-mode    AS L                                 NO-UNDO.
+DEF VAR wz-elect-counter     AS I                                 NO-UNDO.
+DEF VAR wz-totlevel          AS C INIT "FFF"                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-prev-el-mode   = -1
+wz-unique-el-mode = TRUE
+wz-el-type        = FILL( "F", 16).
+
+/* Find out how many different type of electors there are present */
+FOR EACH election NO-LOCK WHERE      election.s-id = verkdat
+                            AND (   (    wz-selected   = TRUE
+                                     AND election.e-pr = wz-selected)
+                                 OR (    wz-selected   = FALSE      )):
+    IF      wz-prev-el-mode =  -1
+    THEN wz-prev-el-mode = election.el-mode.
+    ELSE IF wz-prev-el-mode <> election.el-mode
+    THEN wz-unique-el-mode = FALSE.
+
+    ASSIGN
+    SUBSTRING( wz-totlevel , election.totlevel, 1) = "T"
+    wz-el-mode = election.el-mode
+    wz-index   = 1.
+    REPEAT WHILE wz-el-mode > 0:
+        ASSIGN
+        wz-remainder = wz-el-mode MODULO 2.
+        IF wz-remainder = 1
+        THEN SUBSTRING( wz-el-type, wz-index, 1) = "T".
+        ASSIGN
+        wz-index     = wz-index + 1
+        wz-el-mode   = ( wz-el-mode - wz-remainder ) / 2.
+    END.
+END.
+IF wz-unique-el-mode = TRUE
+THEN wz-el-mode = 1.
+ELSE DO:
+    wz-el-mode = 0.
+    DO wz-index = 0 TO 15:
+        IF SUBSTRING( wz-el-type, wz-index + 1, 1) = "T"
+        THEN IF wz-selected = TRUE
+             THEN wz-el-mode = wz-el-mode + 1.
+             ELSE wz-el-mode = wz-el-mode + EXP( 2, wz-index).
+    END.
+END.
+wz-totlvls = 0.
+DO wz-index = 1 TO 3:
+    IF SUBSTRING( wz-totlevel, wz-index, 1) = "T" 
+    THEN wz-totlvls = wz-totlvls + 1.
+END.
+
+{return.i}
+/* eof */

@@ -1,0 +1,120 @@
+/* Filename            : FORMDISK.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-drive    AS C FORMAT "x(2)"                   NO-UNDO.
+DEF INPUT  PARAM wz-label    AS C FORMAT "x(11)"                  NO-UNDO.
+DEF INPUT  PARAM wz-system   AS L                                 NO-UNDO.
+
+DEF OUTPUT PARAM wz-status   AS L INIT FALSE                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLE                                                */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-the-image-file   AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR wz-new-image-file   AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR wz-result-file      AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR wz-ima-result       AS I                                  NO-UNDO.
+
+DEF VAR wz-message          AS C FORMAT "x(65)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+DOS SILENT "\DOS\AR.EXE" "x \DOS\EMPTY.DSK".
+
+ASSIGN
+wz-the-image-file = "FFORMAT.IMA"
+wz-new-image-file = ramdrive + "EMPTYDSK.IMA"
+wz-result-file    = ramdrive + "RAWRITE.RES".
+
+call MK_IMAGE VALUE(wz-the-image-file)
+              VALUE(wz-new-image-file)
+              VALUE(wz-label)
+              VALUE(setup.version[1])
+              VALUE(setup.version[2])
+              VALUE(setup.version[3])
+              VALUE(  DAY(setup.v-date))
+              VALUE(MONTH(setup.v-date))
+              VALUE( YEAR(setup.v-date))
+              VALUE(0).
+IF fileok <> 0
+THEN DO:
+    {call.i &prg="interror" 
+            &param=",'digivote,copbes10','internal,errmsg',
+                     '(MK_IMA' + STRING(fileok) + ')'"}
+END.
+ELSE DO:
+		call C_DEL VALUE(wz-result-file).
+		DOS SILENT "\DOS\RAWRITE.EXE" VALUE(wz-new-image-file    + " " 
+																			+ SUBSTR(wz-drive,1,1) + " "
+																			+ wz-result-file).
+		call C_TSTFN VALUE(wz-result-file).
+		IF fileok = 0
+		THEN DO:
+				fileok = -1.
+				call ADDTOLOG PROGRAM-NAME(1) "RAWRITE did not execute !" 0.
+				{call.i &prg="interror" 
+								&param=",'errormsg,format','internal,errmsg',
+												 wz-drive + ' (WR_IMA)'"}
+		END.
+		ELSE DO:
+				INPUT FROM VALUE(wz-result-file) NO-ECHO.
+				SET wz-ima-result wz-message.
+				INPUT CLOSE.
+				call C_DEL VALUE(wz-result-file).
+
+				call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message) 
+																			VALUE(IF wz-ima-result = 0 THEN 0 ELSE 2).
+				IF          wz-ima-result <> 0
+				THEN DO:
+						IF      wz-ima-result = 3
+						THEN DO: /* Diskette schrijf beveiligd */
+								{call.i &prg="mesfil" &param=",'pmdexpdi,ermes03', 65,OUTPUT wz-message"}
+								wz-message = wz-message + " : " + wz-drive + ":".
+								{call.i &prg="disfram" &param=",'errormsg,writprot',
+																								',' + wz-message,
+																								'pmdexpdi,ermes04','',TRUE"}
+						END.
+						ELSE IF wz-ima-result = 3841
+						THEN DO: /* Geen diskette in drive */
+								{call.i &prg="mesfil" &param=",'errormsg,nodisk', 65,OUTPUT wz-message"}
+								wz-message = wz-message + " : " + wz-drive + ":".
+								{call.i &prg="disfram" &param=",',' + wz-message,'','','',TRUE"}
+						END.
+						ELSE DO:
+								{call.i &prg="interror" 
+												&param=",'digivote,copbes10','internal,errmsg',
+																 wz-drive + ' (WR_IMA' + STRING(wz-status) + ')'"}
+						END.
+				END.
+				ELSE DO:
+				    call C_LABEL VALUE(SUBSTR(wz-drive,1,1)) VALUE(wz-label).
+				    wz-status = TRUE.
+				END.
+		END.
+END.
+
+call C_DEL VALUE(wz-new-image-file).
+
+{return.i}
+/* eof */

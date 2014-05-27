@@ -1,0 +1,351 @@
+/* Filename            : PARTLOAD.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR dirlist AS CHARACTER FORMAT "x(12)".
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR College     LIKE candidate.coll-id                  NO-UNDO.
+DEF VAR wz-ctype    LIKE candidate.c-type                   NO-UNDO.
+DEF VAR wz-cid      LIKE candidate.c-id                     NO-UNDO.
+DEF VAR wz-naam1    LIKE candidate.c_name1                  NO-UNDO.
+DEF VAR wz-naam2    LIKE candidate.c_name2                  NO-UNDO.
+DEF VAR backname    AS C FORMAT "x(20)"                     NO-UNDO.
+DEF VAR wz-lijn     AS C                                    NO-UNDO.
+DEF VAR wz-delimit  AS C FORMAT "X"  INIT ";"               NO-UNDO.
+DEF VAR wz-file     AS C FORMAT "x(35)" INIT "A:\PARTY.CSV" NO-UNDO.
+DEF VAR wz-volgnr   AS I EXTENT 2                           NO-UNDO.
+DEF VAR wz-label    AS C EXTENT 2                           NO-UNDO.
+DEF VAR wz-limit    AS I                                    NO-UNDO.
+DEF VAR wz-index    AS I INIT 1                             NO-UNDO.
+DEF VAR i           AS I                                    NO-UNDO.
+DEF VAR maxcs       AS I INIT 0                             NO-UNDO.
+
+DEF VAR wz-records  AS I                                    NO-UNDO.
+DEF VAR wz-current  AS I                                    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmlprtge.i}            /* Shared frame PMLPRTGE                        */ 
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+start:
+DO:
+    STATUS INPUT OFF.
+    {call.i &prg="dirlist" &param=",'A:\*.CSV,A:\*.PRT,' +
+                 'B:\*.CSV,B:\*.PRT,' +
+                 'C:\VOTE\FILES\*.CSV,C:\VOTE\FILES\*.PRT',
+                 'partlis,tit01',  'pmlprtna,errmes01',
+                 'pmlprtna,tit01', 'pmlprtna,hulp2'"}
+    VIEW FRAME pmlprtge.
+    PAUSE 0 NO-MESSAGE.
+    {PARTHEAD.I}
+    IF dirlist = "" THEN LEAVE Start.
+    wz-file = dirlist.
+
+    call C_TSTFN VALUE(wz-file).
+    IF fileok = 0
+    THEN DO:
+        /* message "Bestand niet gevonden. Probeer opnieuw.". */
+        HIDE MESSAGE NO-PAUSE.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("File not found (" + wz-file + ")") 2.
+        {call.i &prg="dispmes" &param=",'partload,errmes01',0"}
+        LEAVE Start.
+    END.
+
+    INPUT FROM VALUE(wz-file) no-echo.
+    IMPORT wz-lijn.
+    INPUT CLOSE.
+
+    /* input file possible in 3 different formats                            */
+    /* 1ø ; seperated  (MS-DOS .CSV export from Excell)                      */
+    /* 2ø , seperated  (MS-DOS .CSV export from Excell)                      */
+    /* 3ø blanko seperated, string between quotes ""   (MS-DOS edited ASCII) */
+    wz-delimit = IF      INDEX(wz-lijn,";") > 0 THEN ";"
+                 ELSE IF INDEX(wz-lijn,",") > 0 THEN ","
+                 ELSE                                "".
+
+    IF TRIM(wz-delimit) = ""
+    THEN CALL C_COPY VALUE(wz-file) VALUE(ramdrive + "PARTY.QTR").
+    ELSE CALL QUOTD "-d" wz-delimit wz-file VALUE(ramdrive + "PARTY.QTR").
+
+    {call.i &prg="getbsize" &param=",INPUT wz-file,                OUTPUT wz-records"}
+    {call.i &prg="getbsize" &param=",INPUT ramdrive + 'PARTY.QTR', OUTPUT wz-current"}
+
+    IF wz-current <> wz-records
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Records originally : " + STRING(wz-records)) 2.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Records quoted     : " + STRING(wz-current)) 2.
+        {call.i &prg="disfram" &param=",'import2s,not_ok',
+                                        '','',',' + wz-file,TRUE"}
+        {return.i}
+    END.
+
+    call C_DFREE VALUE(SUBSTR(ramdrive,1,1)).
+    call C_FSIZE VALUE(ramdrive + "PARTY.QTR").
+    IF filesize * 100 > diskfree
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("FileSize     : " + STRING(filesize))       1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Needed space : " + STRING(filesize * 100)) 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("DiskFree     : " + STRING(diskfree))       1.
+        {call.i &prg="interror" &param=",'pmslstge,mes05','internal,errmsg','>> ! QUIT ! <<'"}
+        menleav = 9.
+        {return.i}
+    END.
+
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    
+    main:
+    DO TRANSACTION ON ERROR  UNDO main, LEAVE main
+                   ON ENDKEY UNDO main, LEAVE main :
+
+        /* ************************************ */
+        /* Oude lijst voor die partij leegmaken */
+        /* ************************************ */
+        FIND FIRST party WHERE party.disk-id = setup.disk-id
+                           AND party.s-id    = verkdat
+                           AND party.e-id    = verknum
+                           AND party.p-id    = partnum.
+        ASSIGN
+        college       = party.coll-id
+        party.num_can = 0
+        party.num_sup = 0
+        party.MAC     = "REFRESH".
+
+        FOR EACH candidate WHERE candidate.disk-id = setup.disk-id
+                             AND candidate.s-id    = verkdat
+                             AND candidate.e-id    = verknum
+                             AND candidate.p-id    = partnum :
+            DELETE candidate.
+        END.
+        /* ************************************ */
+
+        /* LIJST INLEZEN */
+        wz-volgnr = 0.
+
+        FIND FIRST election WHERE election.s-id = verkdat
+                              AND election.e-id = verknum
+                          NO-LOCK NO-ERROR.
+
+        /********************************************************/
+        /* IF Brusselse Hoofdstedelijke Raad => TAALGROEPEN !!! */                      
+        /* Only consider the top max can+sup                    */ 
+        /********************************************************/
+        IF election.et-id = 1
+        THEN DO:
+             REPEAT i = 1 TO 3:
+                 IF (election.maxcan[i] + election.maxsup[i]) > maxcs
+                 THEN DO:
+                     ASSIGN
+                     maxcs    = election.maxcan[wz-index] + election.maxsup[wz-index]
+                     wz-index = i.
+                 END.
+             END.
+        END.
+        
+        wz-limit = (IF (election.maxcan[wz-index] + election.maxsup[wz-index])
+                     < (IF election.supps 
+                        THEN 64 
+                        ELSE 66)
+                    THEN 22
+                    ELSE 18).
+        
+        {call.i &prg="getbsize" &param=",INPUT ramdrive + 'PARTY.QTR',
+                                         OUTPUT wz-records"}
+        wz-current = 0.                                 
+        INPUT FROM VALUE(ramdrive + "PARTY.QTR") NO-ECHO.
+        inlees:
+        REPEAT:
+            ASSIGN
+            wz-ctype = 0
+            wz-cid   = 0
+            wz-naam1 = ""
+            wz-naam2 = "".
+
+            IMPORT wz-ctype wz-cid wz-naam1 wz-naam2.
+            wz-current = wz-current + 1.
+            
+            IF wz-naam1 = ""
+            THEN DO:
+                INPUT CLOSE.
+                call ADDTOLOG PROGRAM-NAME(1) "First part of name may not be empty !" 2.
+                {call.i &prg="dispmes" &param=",'partload,errmes03',0"}
+                UNDO main,LEAVE main.
+            END.
+
+            IF LENGTH(wz-naam1) > wz-limit OR
+               LENGTH(wz-naam2) > wz-limit
+            THEN DO:
+                INPUT CLOSE.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("Length of name may not pass limit ! " +
+                                    "(Limit = " + STRING(wz-limit) + ")") 2.
+                {call.i &prg="dispmes" &param=",'partload,errmes04',0"}
+                UNDO main,LEAVE main.
+            END.
+
+            wz-volgnr[wz-ctype + 1] = wz-volgnr[wz-ctype + 1] + 1.
+            IF wz-cid <> wz-volgnr[wz-ctype + 1]
+            THEN DO:
+                INPUT CLOSE.
+                call ADDTOLOG PROGRAM-NAME(1) "Incorrect order of candidates/suppliants !" 2.
+                {call.i &prg="dispmes" &param=",'partload,errmes02',0"}
+                UNDO main,LEAVE main.
+            END.
+            
+            IF INDEX( wz-naam1, """") > 0 OR
+               INDEX( wz-naam2, """") > 0
+            THEN DO:
+                INPUT CLOSE.
+                call ADDTOLOG PROGRAM-NAME(1) "Double quote not allowed in names" 2.
+                {call.i &prg="dispmes" &param=",'partload,errmes03',0"}
+                UNDO main,LEAVE main.
+            END.
+
+/*@source sec=1*/
+            CREATE candidate.
+
+            /* encrypt an initialised totals counter */
+            call CRYPENC PRPTOT fill("0", AESKEYLEN).
+
+            ASSIGN
+            candidate.disk-id  = setup.disk-id
+            candidate.s-id     = verkdat
+            candidate.e-id     = verknum
+            candidate.coll-id  = College
+            candidate.p-id     = partnum
+            candidate.c-type   = wz-ctype
+            candidate.c-id     = wz-cid
+            candidate.c_name1  = wz-naam1
+            candidate.c_name2  = wz-naam2
+            candidate.vote     = result3
+            candidate.tmp_vote = result3
+            candidate.MAC      = "REFRESH".
+/*@source sec=0*/
+
+            FIND FIRST party WHERE party.disk-id = setup.disk-id
+                               AND party.s-id    = verkdat
+                               AND party.e-id    = candidate.e-id
+                               AND party.p-id    = candidate.p-id
+                          NO-ERROR.
+            IF AVAILABLE party AND party.p-id <> 0
+            THEN DO:
+                wz-index = (IF election.et-id = 1
+                            THEN (IF      SUBSTR(party.taalgroep[1],1,1) = "N" THEN 1
+                                  ELSE IF SUBSTR(party.taalgroep[1],1,1) = "F" THEN 2
+                                  ELSE                                              3)
+                            ELSE 1).
+                IF candidate.c-type = 0
+                THEN DO:
+                    ASSIGN
+                    party.num_can = party.num_can + 1
+                    party.MAC     = "REFRESH".
+                    FIND FIRST election WHERE election.s-id = party.s-id
+                                          AND election.e-id = party.e-id
+                                      NO-LOCK NO-ERROR.
+                    IF party.num_can > election.maxcan[wz-index]
+                    THEN DO:
+                        INPUT CLOSE.
+                        {call.i &prg="dispmes" &param=",'digivote,canmax',0"}
+                        UNDO main,LEAVE main.
+                    END.
+                END.
+                ELSE DO:
+                    ASSIGN
+                    party.num_sup = party.num_sup + 1
+                    party.MAC     = "REFRESH".
+                    FIND FIRST election WHERE election.s-id = party.s-id
+                                          AND election.e-id = party.e-id
+                                      NO-LOCK NO-ERROR.
+                    IF party.num_sup > election.maxsup[wz-index]
+                    THEN DO:
+                        INPUT CLOSE.
+                        {call.i &prg="dispmes" &param=",'digivote,supmax',0"}
+                        UNDO main,LEAVE main.
+                    END.
+                END.
+            END. /* AVAIL party */
+            RELEASE candidate.
+        END. /* inlees */
+        INPUT CLOSE.
+
+        IF wz-current <> wz-records
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Records processed : " + STRING(wz-current)) 2.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Records expected  : " + STRING(wz-records)) 2.
+            {call.i &prg="disfram" &param=",'import2s,not_ok',
+                                            ',' + TRIM(mes1) + ' : ' + STRING(party.p-id) 
+                                                               + ' ' + party.party_name,
+                                            '',
+                                            ',' + wz-file,TRUE"}
+            UNDO main,LEAVE main.
+        END.
+        
+        /* Bericht aantal ingelezen kandidaten/opvolgers */
+        {call.i &prg="mesfil" &param=",'partload,mes01',60,OUTPUT wz-label[1] "}
+        {call.i &prg="mesfil" &param=",'partload,mes02',60,OUTPUT wz-label[2] "}
+        ASSIGN
+        wz-label[1] = wz-label[1] + " " + STRING(party.num_can,">>9")
+        wz-label[2] = wz-label[2] + " " + STRING(party.num_sup,">>9").
+
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Import Candidates/Suppliants = OK ! " +
+                            "(Party=" + STRING(party.p-id) + " "   +
+                            "<" + party.party_name + ">" +
+                            " #Cand=" + STRING(party.num_can)      +
+                            "-#Supp=" + STRING(party.num_sup)      +
+                            " File=" + wz-file + ")") 0.
+        HIDE MESSAGE NO-PAUSE.
+        
+        {call.i &prg="disfram" &param=",',' + TRIM(mes1) + ' : ' + STRING(party.p-id) 
+                                                           + ' ' + party.party_name,
+                                        ',' + wz-label[1],
+                                        ',' + wz-label[2],
+                                        ',' + wz-file,TRUE"}
+    END. /* main */
+END. /* start */
+
+{call.i &prg="sec_cand"}
+{call.i &prg="sec_part"}
+
+/* Opkuisen inlees werkfile */
+/* 
+CALL C_DEL VALUE(ramdrive + "PARTY.QTR"). 
+*/
+
+/* Verwijderen party file indien die in \vote\files\ staat */
+IF INDEX(wz-file,"\VOTE\FILES\") > 0
+THEN CALL C_DEL VALUE(wz-file).
+
+menleav = -3.
+
+STATUS INPUT OFF.
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,46 @@
+/* Filename            : PARTLOGO.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmlprtge.i}            /* Shared frame PMLPRTGE                        */ 
+{pmgeneka.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgeneme.i}            /* Shared frame voor PRP-systeem general menu   */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+FIND FIRST party WHERE party.s-id = verkdat
+                   AND party.e-id = verknum
+                   AND party.p-id = partnum.
+IF party.logo_width  > 0 AND
+   party.logo_height > 0 AND
+   party.logo_bytes  > 0
+THEN DO:
+    {call.i &prg="del_logo" &param=", RECID( party)"}
+END.
+ELSE DO:
+    {call.i &prg="add_logo" &param=", RECID( party)"}
+END.
+
+STATUS INPUT OFF.
+
+{return.i}
+/* eof */

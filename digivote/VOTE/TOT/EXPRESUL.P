@@ -1,0 +1,274 @@
+/* Filename            : EXPRESUL.P                                    */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT  PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM fileName    AS C                                 NO-UNDO.
+DEF INPUT  PARAM wz-orig     AS C FORMAT "x(50)"                  NO-UNDO.  
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM wz-status   AS L INIT FALSE                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-file-open         AS L INIT FALSE                      NO-UNDO.
+DEF VAR wz-error             AS I INIT -1                         NO-UNDO.
+/*@source sec=1*/
+DEF VAR wz-tot-cards         AS I                                 NO-UNDO.
+DEF VAR wz-count             AS I EXTENT 16                       NO-UNDO.
+/*@source sec=0*/
+DEF VAR i                    AS I                                 NO-UNDO.
+
+DEF VAR wz-sign-pos          AS I                                 NO-UNDO.
+DEF VAR wz-sign              AS I INIT 32                         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST selection NO-LOCK NO-ERROR.
+FIND FIRST session WHERE session.s-id = selection.s-id NO-LOCK NO-ERROR.
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+OUTPUT TO VALUE(fileName).
+
+ExportLst:
+REPEAT:
+    {PROGBUSY.I}
+    PUT UNFORMATTED "//"                                   SKIP
+                    "// A : CONFIGURATION DATA"            SKIP
+                    "//"                                   SKIP.
+
+    FOR EACH urnedest NO-LOCK :
+        {PROGBUSY.I}
+        call CRYPDEC PRPTOT urnedest.total-cards 1.
+        IF crypStat <> 0 THEN LEAVE ExportLst.
+        wz-tot-cards = wz-tot-cards + INT(result4).
+        DO i = 1 to 16:
+            call CRYPDEC PRPTOT urnedest.count-card[i] 1.
+            IF crypStat <> 0 THEN LEAVE ExportLst.
+            wz-count[i] = wz-count[i] + INT(result4).
+        END. /* i */
+    END. /* urnedest */
+    /* Counters in A record linenr 0 - Max 16 used for the moment*/
+    PUT UNFORMATTED "A~t0~t" wz-tot-cards.
+    DO i = 1 TO 16:
+        PUT UNFORMATTED  "~t" wz-count[i].
+    END.
+    
+    {PROGBUSY.I}
+    PUT UNFORMATTED                                        SKIP
+                    "A~t1~t" wz-orig                       SKIP
+                    "A~t2~t" wz-orig                       SKIP
+                    "A~t3~t"                               SKIP
+                    "A~t4~t"                               SKIP
+                    "A~t5~t"                               SKIP
+                    "A~t6~t"                               SKIP
+                    "A~t7~t"                               SKIP
+                    "A~t8~t"                               SKIP
+                    "A~t9~t" session.s-id                  SKIP
+                    "A~t10~t"                              SKIP
+                    "//"                                   SKIP
+                    "// B : ELECTION DATA"                 SKIP
+                    "//"                                   SKIP.
+    FOR EACH election NO-LOCK 
+                        WHERE election.s-id = session.s-id
+                          AND election.e-pr = TRUE
+                        BREAK BY election.et-id
+                           BY election.e-id:
+        IF FIRST-OF(election.et-id)
+        THEN DO:
+            {PROGBUSY.I}
+            call CRYPDEC PRPTOT election.vote 1.
+            IF crypStat <> 0 THEN LEAVE ExportLst.
+            PUT UNFORMATTED "B~t" election.et-id 
+                             "~t" election.e-type
+                             "~t" INT(result4)
+                             "~t".
+            IF      session.lang2 < 3
+            THEN PUT UNFORMATTED  election.long-name[session.lang2 + 1] 
+                             "~t" election.short-name[session.lang2 + 1].
+            ELSE IF session.lang2 = 3
+            THEN PUT UNFORMATTED  election.long-name[1] 
+                             "~t" election.short-name[1] 
+                             "~t" election.long-name[2] 
+                             "~t" election.short-name[2].
+            ELSE IF session.lang2 = 4
+            THEN PUT UNFORMATTED  election.long-name[2] 
+                             "~t" election.short-name[2] 
+                             "~t" election.long-name[3] 
+                             "~t" election.short-name[3].
+            PUT UNFORMATTED SKIP.
+        END.
+    END.
+
+    {PROGBUSY.I}
+    PUT UNFORMATTED "//"                  SKIP
+                    "// C : COLLEGE DATA" SKIP
+                    "//"                  SKIP.
+    FOR EACH election WHERE election.s-id = session.s-id
+                        AND election.e-pr = TRUE
+                    NO-LOCK:
+        {PROGBUSY.I}
+        PUT UNFORMATTED "C~t" election.et-id 
+                         "~t" election.coll-id 
+                         "~t".
+        IF election.colls = FALSE
+        THEN DO:
+            PUT UNFORMATTED "Geen College".
+            IF session.lang2 > 2
+            THEN PUT UNFORMATTED "~t" "Aucun Collège".
+        END.
+        ELSE DO:
+            IF      session.lang2 = 0
+            THEN PUT UNFORMATTED election.coll_name[1] " Kiescollege".
+            ELSE IF session.lang2 = 1
+            THEN PUT UNFORMATTED "CollŠge ‚lectoral" election.coll_name[2].
+            ELSE IF session.lang2 = 2
+            THEN PUT UNFORMATTED election.coll_name[3] "es Wahlkollegium".
+            ELSE IF session.lang2 = 3
+            THEN PUT UNFORMATTED election.coll_name[1] " Kiescollege" 
+                            "~t" "CollŠge ‚lectoral" election.coll_name[2].
+            ELSE IF session.lang2 = 4
+            THEN PUT UNFORMATTED "Collège électoral" election.coll_name[2] 
+                            "~t" election.coll_name[3] "es Wahlkollegium".
+        END.
+        PUT UNFORMATTED SKIP.
+    END.
+
+    {PROGBUSY.I}
+    PUT UNFORMATTED "//"                SKIP
+                    "// D : PARTY DATA" SKIP
+                    "//"                SKIP.
+    FOR EACH election WHERE election.s-id = session.s-id
+                        AND election.e-pr = TRUE,
+        EACH party OF election
+            NO-LOCK:
+        {PROGBUSY.I}
+        PUT UNFORMATTED "D~t" election.et-id
+                         "~t" election.coll-id
+                         "~t" party.p-id
+                         "~t" party.party_name SKIP.
+    END.
+
+    {PROGBUSY.I}
+    PUT UNFORMATTED "//"                    SKIP
+                    "// E : CANDIDATE DATA" SKIP
+                    "//"                    SKIP.
+    FOR EACH election WHERE election.s-id = session.s-id
+                        AND election.e-pr = TRUE,
+        EACH party OF election,
+            EACH candidate OF party
+                NO-LOCK:
+        {PROGBUSY.I}
+        PUT UNFORMATTED "E~t" election.et-id
+                         "~t" election.coll-id
+                         "~t" party.p-id
+                         "~t" candidate.c-type
+                         "~t" candidate.c-id
+                         "~t" candidate.c_name1
+                         "~t" candidate.c_name2 SKIP.
+    END.
+
+    {PROGBUSY.I}
+    PUT UNFORMATTED "//"                   SKIP
+                    "// F : PARTY RESULTS" SKIP
+                    "//"                   SKIP.
+    FOR EACH election  WHERE election.s-id = session.s-id
+                         AND election.e-pr = TRUE,
+        EACH party OF election
+            NO-LOCK:
+        {PROGBUSY.I}
+        PUT UNFORMATTED "F~t" election.et-id
+                         "~t" election.coll-id
+                         "~t" party.p-id.
+        call CRYPDEC PRPTOT party.vote_top 1.
+        IF crypStat <> 0
+        THEN DO:
+            wz-error = 101.
+            LEAVE ExportLst.
+        END.
+        PUT UNFORMATTED  "~t" INT(result4).
+        /*****************************************************/
+        call CRYPDEC PRPTOT party.vote_can 1.
+        IF crypStat <> 0
+        THEN DO:
+            wz-error = 102.
+            LEAVE ExportLst.
+        END.
+        PUT UNFORMATTED  "~t" INT(result4).
+        /*****************************************************/
+        call CRYPDEC PRPTOT party.vote_sup 1.
+        IF crypStat <> 0
+        THEN DO:
+            wz-error = 103.
+            LEAVE ExportLst.
+        END.
+        PUT UNFORMATTED  "~t" INT(result4).
+        /*****************************************************/
+        call CRYPDEC PRPTOT party.vote_cs 1.
+        IF crypStat <> 0
+        THEN DO:
+            wz-error = 104.
+            LEAVE ExportLst.
+        END.
+        PUT UNFORMATTED  "~t" INT(result4) SKIP.
+        /*****************************************************/
+    END.
+
+    {PROGBUSY.I}
+    PUT UNFORMATTED "//"                         SKIP
+                    "// G : CANDIDATE RESULTS  " SKIP
+                    "//"                         SKIP.
+    FOR EACH election  WHERE election.s-id = session.s-id
+                         AND election.e-pr = TRUE,
+        EACH party OF election,
+            EACH candidate OF party
+                NO-LOCK:
+        {PROGBUSY.I}
+        call CRYPDEC PRPTOT candidate.vote 1.
+        IF crypStat <> 0
+        THEN DO:
+            wz-error = 201.
+            LEAVE ExportLst.
+        END.
+
+        PUT UNFORMATTED "G~t" election.et-id
+                         "~t" election.coll-id
+                         "~t" party.p-id
+                         "~t" candidate.c-type
+                         "~t" candidate.c-id
+                         "~t" INT(result4) SKIP.
+    END.
+    
+    LEAVE ExportLst.
+END. /* REPEAT ExportLst */
+
+IF wz-file-open
+THEN OUTPUT CLOSE.
+
+{BUSYENDS.I}
+PAUSE 0 NO-MESSAGE.
+
+IF wz-error = -1
+THEN wz-status = TRUE.
+ELSE DO:
+    call C_DEL VALUE(fileName).
+    {call.i &prg="interror" &param=",'trdresul,mes05','internal,errmsg',
+                                     '(ERR-' + STRING(wz-error) + ')'"}
+END.
+
+{return.i}
+/* eof */

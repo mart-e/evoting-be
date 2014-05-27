@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Nom_ColFlags=" COL_Editable COL_Invisible" Adresse_ColFlags=" COL_Editable COL_Invisible" Fonction_ColFlags=" COL_Editable COL_Invisible" Commune_ColFlags=" COL_Editable COL_Invisible" Compte_ColFlags=" COL_Editable COL_Invisible" Montant_ColFlags=" COL_Editable COL_Invisible" Tel_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags=" ROW_New">
+		<Nom colID="1" >M. EVRARD Philippe</Nom>
+		<Adresse colID="2" >58100102767</Adresse>
+		<Fonction colID="3" >P</Fonction>
+		<Commune colID="4" >5377 Somme-Leuze</Commune>
+		<Compte colID="5" >001181909432</Compte>
+		<Montant colID="6" >78</Montant>
+		<Tel colID="7" >084/31 30 32</Tel>
+	</row>
+	<row rowNumber="2" rowFlags=" ROW_New">
+		<Nom colID="1" >Mme Degive Martine</Nom>
+		<Adresse colID="2" >58100102767</Adresse>
+		<Fonction colID="3" >S</Fonction>
+		<Commune colID="4" >6900 Marche </Commune>
+		<Compte colID="5" >001181909432</Compte>
+		<Montant colID="6" >31,5</Montant>
+		<Tel colID="7" ></Tel>
+	</row>
+	<row rowNumber="3" rowFlags=" ROW_New">
+		<Nom colID="1" >Mme / M. Gévisse</Nom>
+		<Adresse colID="2" >58100102767</Adresse>
+		<Fonction colID="3" >S</Fonction>
+		<Commune colID="4" ></Commune>
+		<Compte colID="5" >001181909432</Compte>
+		<Montant colID="6" >31,2</Montant>
+		<Tel colID="7" ></Tel>
+	</row>
+	<row rowNumber="4" rowFlags=" ROW_New">
+		<Nom colID="1" >Mme  Dupont </Nom>
+		<Adresse colID="2" >58100102767</Adresse>
+		<Fonction colID="3" >A</Fonction>
+		<Commune colID="4" >6900 Marche</Commune>
+		<Compte colID="5" >001181909432</Compte>
+		<Montant colID="6" >31,5</Montant>
+		<Tel colID="7" ></Tel>
+	</row>
+	<row rowNumber="5" rowFlags=" ROW_New">
+		<Nom colID="1" > M. Jacques</Nom>
+		<Adresse colID="2" >58100102767</Adresse>
+		<Fonction colID="3" >A</Fonction>
+		<Commune colID="4" >6900 Marche</Commune>
+		<Compte colID="5" >001181909432</Compte>
+		<Montant colID="6" >31,5</Montant>
+		<Tel colID="7" ></Tel>
+	</row>
+</TD_XML_Table>

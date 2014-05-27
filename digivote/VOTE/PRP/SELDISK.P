@@ -1,0 +1,94 @@
+/* Filename            : SELDISK.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-sys-type    LIKE organigram.sys-type          NO-UNDO.
+DEF INPUT  PARAM wz-program     AS C FORMAT "x(15)"               NO-UNDO.
+
+DEF OUTPUT PARAM wz-seldisk     AS C FORMAT "x(45)"               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR key_dis         AS C FORMAT "x(45)"                       NO-UNDO.
+DEF VAR down-num        AS I                                      NO-UNDO.
+
+DEF VAR mes1            AS C FORMAT "x(38)"                       NO-UNDO.
+DEF VAR men_tit         AS C FORMAT "x(38)"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME accept_disk SCROLL 1 down-num DOWN ROW 5
+    TITLE men_tit NO-LABELS OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+IF wz-program BEGINS 's_xchnge'
+THEN DO:
+		{call.i &prg="mesfil" &param=",'seldisk,mes02',38,OUTPUT mes1"}
+		{call.i &prg="mesfil" &param=",'copylis,tit01',38,OUTPUT men_tit"}
+END.
+ELSE DO:
+		{call.i &prg="mesfil" &param=",'seldisk,mes01',38,OUTPUT mes1"}
+		{call.i &prg="mesfil" &param=",'seldisk,tit01',38,OUTPUT men_tit"}
+END.
+
+{selitem.g
+ &tab_name     = "organigram"
+ &where        = "         organigram.sys-type  = wz-sys-type AND
+                  (   (    wz-program BEGINS 'struct'
+                       AND organigram.orginator = 0
+                       AND organigram.verwerkt  = FALSE)
+                   OR (    wz-program BEGINS 's_xchnge'
+                       AND organigram.verwerkt  = TRUE) 
+                   OR (    wz-program BEGINS 'disketpr'
+                       AND organigram.orginator > 0
+                       AND organigram.verwerkt  = FALSE))     AND
+                           organigram.l-disk    < 0"
+ &key_dis      = "(IF LENGTH(organigram.digest) = 40
+                   THEN '  '
+                   ELSE '! ')
+               +  organigram.sys-type
+               +  organigram.org-type
+               +  organigram.area[taalkode] 
+               +  STRING(organigram.orginator,'999')"
+ &fkey         = "01"
+ &fra_name     = "accept_disk"  
+ &fra_capture  = "wz-seldisk = SUBSTRING(key_dis,3)"
+ &action_flag  = 0
+ &action_keys  = "F1,RETURN"
+ &action_prgs  = " "
+ &action_post  = "
+  menleav = 1.
+  LEAVE.
+ "
+}
+
+{return.i}
+/* eof */

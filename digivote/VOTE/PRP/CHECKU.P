@@ -1,0 +1,89 @@
+/* Filename : CHECKU.P */
+
+{chklevel.i 1}
+
+/***************************************************************************/
+/*                                                                         */
+/*      OUTPUT PARAMETERS                                                  */
+/*                                                                         */
+/***************************************************************************/
+DEF OUTPUT PARAM wz-status  AS L                                     NO-UNDO.
+
+/***************************************************************************/
+/*                                                                         */
+/*      LOCAL VARIABLES                                                    */
+/*                                                                         */
+/***************************************************************************/
+DEF VAR wz-location         AS C FORMAT "x(20)" 
+                                 INIT "\VOTE\FILES\BAT\"             NO-UNDO.
+DEF VAR wz-secured-items    AS I                                     NO-UNDO.
+DEF VAR wz-detected-items   AS I                                     NO-UNDO.
+DEF VAR wz-filename         AS C FORMAT "x(45)"                      NO-UNDO.
+DEF VAR check-DIR           AS C                                     NO-UNDO.
+
+/***************************************************************************/
+/*                                                                         */
+/*      PROGRAM                                                            */
+/*                                                                         */
+/***************************************************************************/
+ASSIGN 
+wz-status         = FALSE
+wz-secured-items  = 0
+wz-detected-items = 0
+check-DIR         = ramdrive + "CHECK.DIR".
+ 
+FOR EACH urnechku NO-LOCK:
+    wz-secured-items = wz-secured-items + 1.
+END.
+
+/* Check whether there are NOT TOO MUCH files present */
+call C_DIR VALUE(wz-location + "*.*") VALUE(check-DIR).
+
+INPUT FROM VALUE(check-DIR) NO-ECHO.
+REPEAT:
+    SET wz-filename.
+    wz-detected-items = wz-detected-items + 1.
+END.
+INPUT CLOSE.
+
+IF wz-detected-items = wz-secured-items
+THEN DO:
+    wz-detected-items = 0.
+    FOR EACH urnechku NO-LOCK:
+        wz-filename = wz-location + urnechku.src-name.
+        
+        /* Check whether file exists */
+        call C_TSTFN VALUE(wz-filename).
+        IF fileok = 0 
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-filename + " not present !") 2.
+            LEAVE.
+        END.
+        /* Calculate MAC */
+        call CRYPMAC URNCHK VALUE(wz-filename) "NULL".
+        
+        IF urnechku.mac-source = formatMAC 
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-filename + " verified !") 0.
+            wz-detected-items = wz-detected-items + 1.
+        END.
+        ELSE DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-filename + " has changed !") 2.
+            LEAVE.
+        END.
+    END. /* FOR EACH urnechku */
+    
+    IF wz-detected-items = wz-secured-items
+    THEN wz-status = TRUE.
+    ELSE call ADDTOLOG PROGRAM-NAME(1) VALUE("Verification has failed ! (" 
+                                            + STRING(wz-secured-items)  + " <> "
+                                            + STRING(wz-detected-items) + ")") 1.
+END.
+ELSE call ADDTOLOG PROGRAM-NAME(1) VALUE("Incorrect number of files detected ! ("
+                                         + STRING(wz-secured-items)  + " <> "
+                                         + STRING(wz-detected-items) + ")") 2.
+
+CALL C_DEL VALUE(check-DIR).
+
+{return.i}
+/* eof */

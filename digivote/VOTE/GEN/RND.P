@@ -1,0 +1,46 @@
+/* Filename            : RND.P                                          */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        PARAMETERS                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM keyType     AS C                                 NO-UNDO.
+DEF OUTPUT PARAM newKey      LIKE meta.aesKey                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/* set key material if this is first pass */
+IF iKeyCtr = 0 
+THEN DO:
+    /* no keys have been generated yet so try to find some material first */
+    FIND FIRST sysinfo NO-LOCK NO-ERROR.
+    IF AVAILABLE sysinfo
+    THEN ASSIGN
+         cUserName   = sysinfo.userName
+         cRandChars  = sysinfo.licenseNo
+         cRandDigits = sysinfo.serialNo
+         iKeyCtr     = sysinfo.offSet.
+    ELSE DO:
+        call ADDTOLOG PROGRAM-NAME(1) "'sysinfo' does not contain enough information !" 2.
+        {call.i &prg="interror" 
+                &param=", 'initelec,badmama','internal,errmsg',''"}
+        {quit.i &corrupt=FALSE}
+    END.
+END.
+ASSIGN
+rndKey  = ""
+iKeyCtr = iKeyCtr + 1.
+
+call C_KEYGEN string( iKeyCtr) ( keyType + "Key" + cUserName + cRandChars + cRandDigits).
+
+newKey = rndKey.
+
+{return.i}
+/* eof */

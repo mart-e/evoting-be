@@ -1,0 +1,133 @@
+/* Filename            : S_IMPORT.P
+   -------- 
+   
+   Purpose : Import election structure for I, G, U and T disks
+   -------
+             THE real import of organigram-records !
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM  wz-importfile AS C FORMAT "x(50)"                NO-UNDO.
+DEF INPUT PARAM  wz-tot-import AS I                               NO-UNDO.
+
+/************************************************************************/
+/* These INPUT PARAM's are only needed to be able to resume             */
+/************************************************************************/
+DEF INPUT PARAM wz-org-file    AS C FORMAT "x(50)"                NO-UNDO.
+DEF INPUT PARAM wz-filename    AS C FORMAT "x(50)"                NO-UNDO.
+DEF INPUT PARAM the-sys-type   LIKE organigram.sys-type           NO-UNDO.
+/************************************************************************/
+
+DEF OUTPUT PARAM wz-imported   AS I                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-bulkload-fd         AS C FORMAT "x(50)"                NO-UNDO.
+DEF VAR wz-errorfile           AS C FORMAT "x(50)"                NO-UNDO.
+DEF VAR wz-tmp-shell           AS C FORMAT "x(50)"                NO-UNDO.
+DEF VAR wz-resume              AS C FORMAT "x(50)"                NO-UNDO.
+DEF VAR wz-bulkload-log        AS C FORMAT "x(50)"                NO-UNDO.
+
+DEF VAR wz-table               AS C INIT "organigram"             NO-UNDO.
+
+DEF VAR wz-disk-id             LIKE organigram.disk-id            NO-UNDO.
+
+DEF VAR wz-loaded              AS I                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-bulkload-fd  = ramdrive + "IMPORT2S.FD"
+wz-errorfile    = ramdrive + "IMPORT2S.E"
+wz-tmp-shell    = ramdrive + "VOTE\$_TMPSH_.BAT"
+wz-resume       = ramdrive + "VOTE\TRACE.LOG\RESUME"
+wz-bulkload-log = ramdrive + "BULKLOAD.LOG".
+
+IF NUM-ENTRIES(resume-list) = 0
+THEN DO:
+    /* Create Bulk Loader Description File */
+    {call.i &prg="bulk-fd" &param=",wz-tmp-shell,
+                                    wz-bulkload-fd,wz-table,
+                                    wz-importfile,
+                                    wz-bulkload-log,wz-errorfile,
+                                    TRUE,TRUE"}
+
+    /* Create AutoRun */
+    {call.i &prg="resume" &param=",wz-resume"}
+    OUTPUT TO VALUE(wz-resume) APPEND.
+    PUT UNFORMATTED
+        wz-tot-import SKIP
+        wz-org-file   SKIP
+        wz-filename   SKIP
+        the-sys-type  SKIP.
+    OUTPUT CLOSE.
+    
+    call DIGEST VALUE(wz-resume).
+    FIND FIRST session.
+    ASSIGN
+    session.digest = hex-digest
+    session.MAC    = "REFRESH".
+    {call.i &prg="sec_sess"}
+    
+    /* Temporary quit PROGRESS and perform BulkLoad ... */
+    {quit.i &corrupt=FALSE}
+END.
+ELSE DO:
+    ASSIGN
+    wz-imported = 0
+    /* Prevent resuming a second time ... */
+    resume-list = "".
+    
+    /* Clean up temporary files ... */
+    call C_DEL VALUE(wz-resume).
+    call C_DEL VALUE(wz-tmp-shell).
+    call C_DEL VALUE(wz-bulkload-fd).
+    
+    call C_TSTFN VALUE(wz-errorfile).
+    IF fileok = 0
+    THEN DO:
+        /* Check if BulkLoad did end successfully */
+        INPUT FROM VALUE(wz-importfile) NO-ECHO.
+        ASSIGN
+        wz-imported = 0
+        wz-loaded   = 0.
+        REPEAT:
+            IF wz-imported <> wz-loaded THEN LEAVE.
+            wz-loaded = wz-loaded + 1.
+            PUT SCREEN COLOR GRAY/BLACK ROW 23 COLUMN 69 
+                STRING(wz-loaded, ">,>>9") + "/" + STRING(wz-tot-import,">,>>9").
+            SET wz-disk-id.
+            FIND FIRST organigram WHERE organigram.disk-id = wz-disk-id
+               NO-LOCK NO-ERROR.
+            IF AVAILABLE organigram
+            THEN wz-imported = wz-imported + 1.
+        END.
+        INPUT CLOSE.
+
+        IF wz-imported = wz-tot-import
+        THEN call C_DEL VALUE(wz-bulkload-log).
+        
+        PUT SCREEN ROW 23 COLUMN 69 FILL(" ",11).
+    END.
+END.
+
+{return.i}
+/* eof */

@@ -1,0 +1,227 @@
+/* Filename            : PV.P                                           */
+/*
+<pvcs>
+<workFile>$Workfile:   PV.P  $</workFile>
+<revision>$Revision: 1.6 $</revision>
+<workFileTimeStamp>$Modtime:   Feb 24 2004 09:06:26  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/PV.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/07/11 15:18:34 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR MeerdereColleges AS L    NO-UNDO.
+DEF VAR wz-afdrloop      AS C    NO-UNDO.  /* Afdruk aantal en taalinfo */
+DEF VAR wz-afdrvlg       AS I    NO-UNDO.  /* Afdruk volgorde           */
+
+DEF VAR wz-total-cards   AS I                                     NO-UNDO.
+DEF VAR wz-count-card    AS I EXTENT 16                           NO-UNDO.
+
+DEF VAR i                AS I                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{typvar.i}
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+STATUS INPUT OFF.
+PAUSE 0 NO-MESSAGE.
+
+
+FIND FIRST setup     NO-LOCK NO-ERROR.
+FIND FIRST selection NO-LOCK NO-ERROR.
+FIND FIRST session WHERE session.s-id = selection.s-id
+                   NO-LOCK NO-ERROR.
+
+/* Multicollege check */
+MeerdereColleges = FALSE.
+FOR EACH election NO-LOCK
+                  WHERE    election.s-id = verkdat
+                  BREAK BY election.et-id:
+    IF FIRST-OF(election.et-id) <> LAST-OF(election.et-id)
+    THEN DO:
+        MeerdereColleges = TRUE.
+        LEAVE.
+    END.
+END.
+
+/* Pre-fill needed query-fields for 'usage'                             */
+ASSIGN wz-doc-type = 1              /* PV                               */
+       wz-setup-id = setup.setup-id /* Relation to MAMA                 */
+       wz-et-combi = TRUE.          /* Only documents for all elections */
+
+/* Assemble ET-IDs */
+ASSIGN wz-et-ids = "".
+
+FOR EACH election NO-LOCK
+   WHERE election.s-id = verkdat 
+     AND election.e-pr = TRUE
+      BY election.et-id:
+
+    IF LOOKUP( STRING( election.et-id), wz-et-ids) = 0 
+    THEN DO:
+       /* election id's must be unique in assembled target */
+
+       IF LENGTH( wz-et-ids) > 0 
+       THEN ASSIGN wz-et-ids = wz-et-ids + ",".
+       ASSIGN wz-et-ids = wz-et-ids + STRING( election.et-id).
+    END.
+END.
+
+FIND FIRST election WHERE election.s-id = verkdat
+                      AND election.e-pr = TRUE
+                    NO-LOCK NO-ERROR.
+
+/* Afdrukloop bepalen aan de hand van session.lang2 */
+wz-afdrloop =
+    IF      session.lang2 = 0 THEN "1"   /* Nederlands  */
+    ELSE IF session.lang2 = 1 THEN "2"   /* Frans       */
+    ELSE IF session.lang2 = 2 THEN "3"   /* Duits       */
+    ELSE IF session.lang2 = 3 THEN "1,2" /* Ned. & Fr.  */
+    ELSE IF session.lang2 = 4 THEN "2,3" /* Fr. & Duits */
+    ELSE "1". /* Om toch een taal te hebben, maar kan normaal niet */
+
+AfdrukLoop:
+DO wz-afdrvlg = 1 TO NUM-ENTRIES(wz-afdrloop) : /* Aantal exemplaren */
+    /* Taalkode voor afdruk van dit exemplaar bepalen */
+
+    ASSIGN wz-doc-lang = INT(ENTRY(wz-afdrvlg, wz-afdrloop)).
+
+    {call.i &prg="getusage"}
+    IF wz-doc-id = -1
+    THEN LEAVE AfdrukLoop.
+
+    FIND FIRST layout WHERE layout.doc-id   = wz-doc-id
+                        AND layout.sect-nbr = 0
+                        AND layout.page-nbr = 0
+                        AND layout.line-nbr = 0
+                      NO-LOCK NO-ERROR.
+    IF AVAILABLE layout
+    THEN PagHeader = SUBSTRING(AllSpaces, 1, 75 - LENGTH(layout.contents)) +
+                     layout.contents.
+    ELSE PagHeader = "".
+    {BEGPRT.I "Y" 85 11}
+
+    ASSIGN wz-page-nbr = 0
+           wz-line-nbr = 0.
+    FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                      AND layout.sect-nbr = 1
+                    NO-LOCK:
+        wz-lijn = layout.contents.
+        {PAGEBRK.I}
+        {LBLCONV.I 11}
+        LBLCONV12:
+        REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+            ASSIGN
+            wz-convto   = ""
+            wz-startpos = INDEX(wz-lijn,"@F")
+            wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+            wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+            ASSIGN
+            wz-convto =
+                IF      wz-label = "50" /* College informatie */
+                THEN STRING(IF election.colls
+                            THEN ( IF wz-doc-lang = 2
+                                   THEN election.head0[wz-doc-lang] + " " +
+                                        election.coll_name[wz-doc-lang]
+                                   ELSE election.coll_name[wz-doc-lang] + " " +
+                                        election.head0[wz-doc-lang]             )
+                            ELSE "","x(45)")
+                ELSE IF wz-label = "52" /* Heading2 informatie */
+                THEN STRING(( IF election.heading2[wz-doc-lang] = ""
+                              THEN ""
+                              ELSE election.head2[wz-doc-lang] + " : ") +
+                            election.heading2[wz-doc-lang],"x(45)")
+                ELSE IF wz-label = "53" /* Heading3 informatie */
+                THEN STRING(election.head3[wz-doc-lang] + " : " +
+                            election.heading3[wz-doc-lang],"x(45)")
+                ELSE "N/A".
+            {REPLLBL.I}
+        END. /* REPEAT while index - LBLCONV12 */
+        {LINEPRT.I 1}
+    END. /* FOR EACH layout */
+
+    FOR EACH urnedest, FIRST organigram OF urnedest NO-LOCK:
+        call CRYPDEC PRPTOT urnedest.total-cards 1.
+        IF crypStat <> 0 THEN LEAVE AfdrukLoop.
+        wz-total-cards = INT(result4).
+        DO i= 1 TO 16:
+            call CRYPDEC PRPTOT urnedest.count-card[i] 1.
+            IF crypStat <> 0 THEN LEAVE AfdrukLoop.
+            wz-count-card[i] = INT(result4).
+        END.
+        FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                          AND layout.sect-nbr = 2
+                        NO-LOCK:
+            wz-lijn = layout.contents.
+            {LBLCONV.I 21}
+            LBLCONV22:
+            REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+                ASSIGN
+                wz-convto   = ""
+                wz-startpos = INDEX(wz-lijn,"@F")
+                wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+                wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+                ASSIGN
+                wz-convto   =
+                    IF      wz-label = "01"
+                    THEN STRING(organigram.orginator,"(>>9)")
+                    ELSE IF wz-label = "02"
+                    THEN STRING(urnedest.time-rcv)
+                    ELSE IF wz-label = "03"
+                    THEN IF      urnedest.data-read = 1
+                         THEN "MASTER"
+                         ELSE IF urnedest.data-read = 2
+                         THEN "BACKUP"
+                         ELSE "(N/A)"
+                    ELSE IF wz-label = "80" /* Geregistreerde kaarten */
+ /*@source sec=1*/
+                    THEN STRING(wz-total-cards,"(>>>>>>9)")
+                    ELSE IF LOOKUP(wz-label,
+                         "81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96") > 0
+                    THEN STRING(wz-count-card[INT(wz-label) - 80],
+                                "(>>>>>>9)")
+ /*@source sec=0*/
+                   ELSE "N/A".
+                {REPLLBL.I}
+            END. /* REPEAT while index - LBLCONV22 */
+
+            ASSIGN wz-line-nbr = layout.line-nbr.
+            {LINEPRT.I 0}
+        END. /* FOR EACH layout */
+    END. /* FOR EACH urnedest */
+
+    FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                      AND layout.sect-nbr = 3
+                    NO-LOCK:
+        wz-lijn = layout.contents.
+        {PAGEBRK.I}
+        {LBLCONV.I 3}
+        {LINEPRT.I 1}
+    END. /* FOR EACH layout */
+
+    {ENDPRT.I}
+
+END.  /* DO wz-afdrvlg = 1 TO NUM-ENTRIES(wz-afdrloop) */
+
+{return.i}
+/* eof */

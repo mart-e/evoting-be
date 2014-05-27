@@ -1,0 +1,11 @@
+/* Filename            : CHKSEC02.P                                    */
+
+{chklevel.i 1}
+
+DEF INPUT PARAM stop_it AS C NO-UNDO.
+
+{SEC_CHK.I organigram}
+{SEC_CHK.I urnedest}
+
+{return.i}
+/* eof */

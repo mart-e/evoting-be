@@ -1,0 +1,247 @@
+/* Filename            : CREATTOT.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   CREATTOT.P  $</workFile>
+<revision>$Revision: 1.13 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:24:42  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/CREATTOT.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2008/11/21 09:52:39 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM torig          AS C FORMAT "x(40)"               NO-UNDO.
+DEF INPUT  PARAM tdest          AS C FORMAT "x(40)"               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-qadmk       LIKE meta.aesKey                           NO-UNDO.
+DEF VAR wz-status      AS L INIT FALSE                            NO-UNDO.
+DEF VAR wz-message     AS C FORMAT "x(65)"                        NO-UNDO.
+DEF VAR wz-dummy-recid AS RECID                                   NO-UNDO.
+
+DEF VAR wz-file        AS C FORMAT "x(40)"                        NO-UNDO.
+DEF VAR wz-dummy       AS I                                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{vcontents.i "NEW"}
+{selvar.i}
+{disfram.i}       /* Variabelen voor display frame disframe             */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-file = ramdrive + "ELECT.LST".
+
+/********************************************/
+/* Voorbereiden en controle van de gegevens */
+/********************************************/
+{call.i &prg="disfram" &param=",'digivote,copbes30','','','',FALSE"}
+
+{call.i &prg="compvote" &param=",OUTPUT wz-status"}
+IF NOT wz-status 
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Verification error !") 1.
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(VERIFY)'"}
+    {return.i}
+END.
+
+/* Stuur output naar tekstbestand */
+{call.i &prg="crtotinf" &param=",INPUT  wz-file,
+                                 INPUT  torig,
+                                 INPUT  tdest,
+                                 OUTPUT wz-qadmk,
+                                 OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    call C_DEL VALUE(wz-file).
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("An error has occured while making export file ! (CrTotInf)") 1.
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(MK_INF)'"}
+    {return.i}
+END.
+
+{call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+{call.i &prg="vexport" &param=",INPUT  wz-file,
+                                INPUT  TRUE,
+                                OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    call C_DEL VALUE(wz-file).
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("An error has occured while making export file ! (VExport)") 1.
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(CHK_INF_1)'"}
+    {return.i}
+END.
+
+/* Integriteitscontrole van export bestand */
+FIND FIRST session NO-LOCK NO-ERROR.
+ASSIGN 
+vc-creator     = torig
+vc-originator  = torig
+vc-destinators = tdest
+vc-e-date      = STRING(session.s-id,"99/99/9999").
+{call.i &prg="vresults" &param=",INPUT  wz-file,
+                                 OUTPUT wz-dummy,
+                                 OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    call C_DEL VALUE(wz-file).
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("An error has occured while making export file ! (VResults)") 1.
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(CHK_INF_2)'"}
+    {return.i}
+END.
+
+/*************************************************/
+/* De lijst wordt nu aangemaakt en ge‰ncrypteerd */
+/*************************************************/
+{call.i &prg="disfram" &param=",'pmdtot01,notfdsk1','','','',FALSE"}
+
+/* Kreatie contents file */
+{call.i &prg="contents" &param=", ramdrive + 'URNECONT', 'MASTER', torig, torig, tdest"}
+
+/*@source sec=1*/
+/*************/
+/* ENCRYPTIE */
+/*************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST organigram WHERE organigram.disk-id = setup.disk-id NO-LOCK NO-ERROR.
+call CRYPDEC PRPTOT organigram.master-key.
+IF crypStat <> 0 
+THEN DO:
+    call C_DEL VALUE(wz-file).
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(DEC-MK)'"}
+    {return.i}
+END.
+masterk  = result4.
+call CRYPDEC PRPTOT organigram.session-key.
+IF crypStat <> 0 
+THEN DO:
+    call C_DEL VALUE(wz-file).
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(DEC-SK)'"}
+    {return.i}
+END.
+sessionk = result4.
+
+/****************************/
+/* bereken key b001 bestand */
+/****************************/
+wz-status = FALSE.
+call CRYPKEYS masterk sessionk.
+IF crypStat = 0 THEN call CRYPFILE "E" URNTOT VALUE(wz-file) VALUE(ramdrive + "ELECT1.DAT").
+IF crypStat = 0 THEN call CRYPSK "E" VALUE(ramdrive + "KEYFILE").
+IF crypStat = 0 THEN call CRYPMAC RESMAC VALUE(ramdrive + "ELECT1.DAT") VALUE(ramdrive + "ELECT1.MAC").
+wz-status = (crypStat = 0).
+
+{call.i &prg="init_pwd"}
+
+IF NOT wz-status
+THEN DO:
+    call C_DEL VALUE(wz-file).
+    call C_DEL VALUE(ramdrive + "ELECT1.DAT").
+    call C_DEL VALUE(ramdrive + "KEYFILE").
+    call C_DEL VALUE(ramdrive + "ELECT1.MAC").
+    {call.i &prg="interror" &param=",'trdresul,mes04','internal,errmsg','(ENC)'"}
+    {return.i}
+END.
+
+REPEAT:
+    STATUS DEFAULT.
+    HIDE MESSAGE NO-PAUSE.
+
+    /*************************************/
+    /* STEEK DE DISKETTE MASTER IN DE PC */
+    /* en druk op een toets.             */
+    /*************************************/
+    {call.i &prg="disfram" &param=",'pmdtot01,notdsk01','','','',TRUE"}
+    IF key-cancel THEN LEAVE.
+    
+    /* Test disk in drive */
+    call C_TSTDSK "A".
+    IF fileok = 0
+    THEN DO:
+        {call.i &prg="disfram" &param=",'errormsg,nodisk','','','',TRUE"}
+        IF key-cancel THEN LEAVE.
+        UNDO, RETRY.
+    END.
+    ELSE IF fileok = 2
+    THEN DO:
+        {call.i &prg="mesfil" &param=", 'pmdexpdi,ermes03', 65,OUTPUT wz-message"}
+        wz-message = wz-message + ": A ".
+        {call.i &prg="disfram" &param=",'errormsg,writprot',',' + wz-message,
+                                        'pmdexpdi,ermes04','',TRUE"}
+        IF key-cancel THEN LEAVE.
+        UNDO, RETRY.
+    END.
+
+    {call.i &prg="chkdisk" &param=",'A:','',OUTPUT wz-status"}
+    IF NOT wz-status THEN UNDO, RETRY.
+    
+    {call.i &prg="disfram" &param=",'format,master','','','',FALSE"}
+    {call.i &prg="formdisk" &param=", 'A:','MASTER',FALSE,OUTPUT wz-status"}
+    IF NOT wz-status
+    THEN LEAVE. /* REPEAT */
+
+    {call.i &prg="disfram" &param=",'digivote,copbes10','','','',FALSE"}
+
+    OUTPUT TO VALUE(ramdrive + "COPYLIST").
+/*@source sec=1*/
+    PUT UNFORMATTED
+        ramdrive "ELECT1.DAT" "~t" "A:\B001"     SKIP
+        ramdrive "KEYFILE"    "~t" "A:\B006"     SKIP
+        ramdrive "ELECT1.MAC" "~t" "A:\B009"     SKIP
+        ramdrive "URNECONT"   "~t" "A:\CONTENTS".
+    OUTPUT CLOSE.
+
+    {call.i &prg="copyfile" &param=", OUTPUT wz-status"}
+    IF NOT wz-status
+    THEN DO:
+        call C_DEL "A:\B001".
+        call C_DEL "A:\B006".
+        call C_DEL "A:\B009".
+        call C_DEL "A:\CONTENTS".
+        LEAVE. /* REPEAT */
+    END.
+
+    CALL C_ATTRIB "A:\CONTENTS" 3.
+
+    /* Add Password to 'output' parameterfile for PRBRIEF */
+    OUTPUT TO VALUE(ramdrive + "TOTEXP.INF") APPEND.
+    PUT UNFORMATTED
+        """" wz-qadmk """".
+/*@source sec=0*/
+    OUTPUT CLOSE.
+
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Results exported ! (" + torig + ")") 0.
+    /* afdrukken van de begeleidings brief */
+    {call.i &prg="disfram" &param=",'digivote,prbrief1','','','',FALSE"}
+    PAUSE 0 NO-MESSAGE.
+/*@source sec=1*/
+    {call.i &prg="prbrief" &param=", '7,4,1',wz-dummy-recid,'MASTER'"}
+/*@source sec=0*/
+    HIDE FRAME disframe NO-PAUSE.
+    LEAVE.
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+{call.i &prg="delrdisk"}
+HIDE MESSAGE NO-PAUSE.
+
+{return.i}
+/* eof */

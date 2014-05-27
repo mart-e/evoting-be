@@ -1,0 +1,494 @@
+/************************************************************************/
+/*                                                                      */
+/* Filename            : CHKVOTES.P                                     */
+/*                                                                      */
+/* Check integrity of a result file                                     */
+/*                                                                      */
+/************************************************************************/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM fileName          AS C FORMAT "x(50)"             NO-UNDO.
+DEF INPUT PARAM ResultFile        AS L                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM filestat         AS L                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER elec_stemcijfer FOR stemcijfer.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-field                   AS C FORMAT "x(78)" EXTENT 20  NO-UNDO.
+DEF VAR wz-error                   AS L                           NO-UNDO.
+DEF VAR wz-stat                    AS L                           NO-UNDO.
+DEF VAR i                          AS I                           NO-UNDO.
+DEF VAR wz-diff-counters           AS I                           NO-UNDO.
+DEF VAR wz-card-count              AS I                           NO-UNDO.
+DEF VAR wz-counters                AS I EXTENT 16                 NO-UNDO.
+DEF VAR wz-cards                   AS I                           NO-UNDO.
+DEF VAR wz-el-cards                AS I                           NO-UNDO.
+DEF VAR wz-index-counters          AS C FORMAT "x(50)"            NO-UNDO.
+DEF VAR wz-el-types                AS C FORMAT "x(16)"            NO-UNDO.
+DEF VAR wz-el-type                 AS C FORMAT "x(16)" EXTENT 13  NO-UNDO.
+DEF VAR wz-el-mode                 AS I                           NO-UNDO.
+DEF VAR wz-remainder               AS I                           NO-UNDO.
+DEF VAR wz-index                   AS I                           NO-UNDO.
+
+DEF VAR wz-sign-pos                AS I                           NO-UNDO.
+DEF VAR wz-sign                    AS I INIT 32                   NO-UNDO.
+
+DEF VAR wz-party-type              AS C                           NO-UNDO.
+DEF VAR wz-candidate-type          AS C                           NO-UNDO.
+
+DEF VAR wz-permissions             AS C EXTENT 7 INIT
+[ /*                                      
+      +-------------------------  1 = Brussels Hoofdstekelijk Gewest
+      | +-----------------------  2 = Gemeenteraad
+      | | +---------------------  3 = Kamer van Volksvertegenwoordigers
+      | | | +-------------------  4 = Senaat
+      | | | | +-----------------  5 = Raad van de Duitstalige Gemeenschap
+      | | | | | +---------------  6 = Provincieraad
+      | | | | | | +-------------  7 = Europees Parlement
+      | | | | | | | +-----------  8 = Vlaamse Raad
+      | | | | | | | | +---------  9 = Waalse Gewestraad
+      | | | | | | | | | +------- 10 = OCMW
+      | | | | | | | | | | +----- 11 = Districtraad
+      | | | | | | | | | | | +--- 12 = brusselse Leden Vlaamse Raad ( 2004)
+      | | | | | | | | | | | | +- 13 = Referendum (! not implemented !)
+      | | | | | | | | | | | | |
+      1 2 3 4 5 6 7 8 9 A B C D                                        */  
+     "1,1,1,1,1,1,1,1,1,1,1,1,1" /* Belg                               */
+    ,"0,0,1,1,0,0,0,0,0,0,0,0,0" /* Belg in het buitenland             */
+    ,"0,1,0,0,0,0,1,0,0,0,1,0,0" /* Europeaan                          */
+    ,"0,0,0,0,0,0,0,0,0,0,0,0,0" /* Niet-Belg                          */
+    ,"0,0,0,0,0,0,0,1,0,0,0,0,0" /* Voeren 1 : Vlaamse Raad            */
+    ,"0,0,1,1,0,0,0,1,0,0,0,0,0" /* Voeren 2 : Vlaamse Raad + Kamers   */
+    ,"0,0,0,0,0,0,1,1,0,0,0,0,0" /* Voeren 3 : Vlaamse Raad + Europees */
+]                                                                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-error          = FALSE
+filestat          = FALSE
+wz-party-type     = (IF ResultFile THEN "D" ELSE "F")
+wz-candidate-type = (IF ResultFile THEN "E" ELSE "G").
+
+FOR EACH stemcijfer:
+    DELETE stemcijfer.
+END.
+
+INPUT FROM VALUE(fileName) NO-ECHO.
+
+ResultBlock:
+REPEAT:
+    {PROGBUSY.I}
+    wz-field = "".
+    SET wz-field.
+    IF      wz-field[1] = "A" /* General information   */
+    THEN DO:
+        IF wz-field[2] <> "0"
+        THEN NEXT.
+        
+        /* only check line 0 -> counters ! */
+        DO i = 2 TO 20:
+            IF TRIM(wz-field[i]) <> ""
+            THEN DO:
+                call C_CHECKINT VALUE(wz-field[i]).
+                IF NOT(stat = 0 OR (i > 2 AND wz-field[i] = "-1"))
+                THEN DO:
+                    call ADDTOLOG PROGRAM-NAME(1) VALUE("E010-'" + wz-field[i] + "' not numeric ! (A-record)") 2.
+                    wz-error = TRUE.
+                    LEAVE ResultBlock.
+                END.
+            END.
+        END.
+        ASSIGN
+        wz-diff-counters = 0
+        wz-card-count    = 0
+        wz-counters      = 0.
+        DO i = 1 TO 16:
+            wz-counters[i] = INTEGER(wz-field[i + 3]).
+            IF wz-counters[i] = -1 THEN NEXT. /* counter not in use */
+            IF i = 16              THEN NEXT. /* #cards NOT in MAV  */
+            ASSIGN
+            wz-diff-counters = wz-diff-counters + 1
+            wz-card-count    = wz-card-count
+                             + wz-counters[i].
+        END.
+        IF wz-card-count <> INTEGER(wz-field[3])
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "E020-Counter mismatch ! (A-record)" 2.
+            wz-error = TRUE.
+            LEAVE ResultBlock.
+        END.
+    END.                      /* General information   */
+    
+    ELSE IF wz-field[1] = "B" /* Election information  */
+    THEN DO:
+        IF NOT ResultFile 
+        THEN NEXT.
+        
+        /* 2   = election.et-id     */
+        /* 3   = election.e-type    */
+        /* 4   = election.vote      */
+        /* 5-> = election names ... */
+        DO i = 2 TO 4:
+            IF TRIM(wz-field[i]) <> ""
+            THEN DO:
+                call C_CHECKINT VALUE(wz-field[i]).
+                IF stat <> 0
+                THEN DO:
+                    call ADDTOLOG PROGRAM-NAME(1) VALUE("E030-'" + wz-field[i] + "' not numeric ! (B-record)") 2.
+                    wz-error = TRUE.
+                    LEAVE ResultBlock.
+                END.
+            END.
+        END.
+        CREATE stemcijfer.
+        ASSIGN
+        stemcijfer.et-id         = INTEGER(wz-field[2])
+        stemcijfer.coll-id       = -1
+        stemcijfer.p-id          = -1
+        stemcijfer.max_vote_elec = INTEGER(wz-field[4])
+        stemcijfer.cat           = 0
+        stemcijfer.max_vote[1]   = 0
+        stemcijfer.max_vote[2]   = 0
+        stemcijfer.vote          = 0.
+    END.
+    
+    ELSE IF wz-field[1] = wz-party-type /* Party information     */
+    THEN DO:
+        DO i = 2 TO 20:
+            IF TRIM(wz-field[i]) <> ""
+            THEN DO:
+                call C_CHECKINT VALUE(wz-field[i]).
+                IF stat <> 0
+                THEN DO:
+                    call ADDTOLOG PROGRAM-NAME(1) VALUE("E040-'" + wz-field[i] + "' not numeric !" +
+                                                        " (" + wz-party-type + "-record)") 2.
+                    wz-error = TRUE.
+                    LEAVE ResultBlock.
+                END.
+            END.
+        END.
+        FIND FIRST stemcijfer WHERE stemcijfer.et-id   = INTEGER(wz-field[2])
+                                AND stemcijfer.coll-id = INTEGER(wz-field[3])
+                                AND stemcijfer.p-id    = INTEGER(wz-field[4])
+                            NO-LOCK NO-ERROR.
+        IF AVAIL stemcijfer
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "E050-Duplicate value in 'stemcijfer' !" 1.
+            wz-error = TRUE.
+            LEAVE ResultBlock.
+        END.
+        CREATE stemcijfer.
+        ASSIGN
+        stemcijfer.et-id         = INTEGER(wz-field[2])
+        stemcijfer.coll-id       = INTEGER(wz-field[3])
+        stemcijfer.p-id          = INTEGER(wz-field[4])
+        stemcijfer.max_vote_elec = 0
+        /****************************************************************/
+        /* Cat. 1 : Het aantal kaarten met stemmen bovenaan de lijst    */
+        /* --------                                                     */
+        stemcijfer.cat[1]        = INTEGER(wz-field[5])
+        /****************************************************************/
+        /* Cat. 2 : Het aantal kaarten met stemmen voor ‚‚n of meerdere */
+        /* -------- kandidaattitularissen                               */
+        stemcijfer.cat[2]        = INTEGER(wz-field[6])
+        /****************************************************************/
+        /* Cat. 3 : Het aantal kaarten met stemmen voor ‚‚n of meerdere */
+        /* -------- kandidaattitularissen en voor ‚‚n of meerdere       */
+        /*          kandidaat-opvoglers                                 */
+        stemcijfer.cat[3]        = INTEGER(wz-field[8])
+        /****************************************************************/
+        /* Cat. 4 : Het aantal kaarten met stemmen voor ‚‚n of meerdere */
+        /* -------- kandidaat-opvolgers                                 */
+        stemcijfer.cat[4]        = INTEGER(wz-field[7])
+        /****************************************************************/
+        stemcijfer.max_vote[1]   = stemcijfer.cat[2] 
+                                 + stemcijfer.cat[3]
+        stemcijfer.max_vote[2]   = stemcijfer.cat[3]
+                                 + stemcijfer.cat[4]
+        stemcijfer.vote          = 0.
+    END.                      /* Party information     */
+    
+    ELSE IF wz-field[1] = wz-candidate-type /* Candidate information */
+    THEN DO:
+        DO i = 2 TO 20:
+            IF TRIM(wz-field[i]) <> ""
+            THEN DO:
+                call C_CHECKINT VALUE(wz-field[i]).
+                IF stat <> 0
+                THEN DO:
+                    call ADDTOLOG PROGRAM-NAME(1) VALUE("E060-'" + wz-field[i] + "' not numeric !" +
+                                                        " (" + wz-candidate-type + "-record)") 2.
+                    wz-error = TRUE.
+                    LEAVE ResultBlock.
+                END.
+            END.
+        END.
+        wz-stat = FALSE.
+        IF AVAIL stemcijfer
+        THEN wz-stat = (    stemcijfer.et-id   = INTEGER(wz-field[2])
+                        AND stemcijfer.coll-id = INTEGER(wz-field[3])
+                        AND stemcijfer.p-id    = INTEGER(wz-field[4])).
+        IF NOT wz-stat
+        THEN DO:
+            FIND FIRST stemcijfer WHERE stemcijfer.et-id   = INTEGER(wz-field[2])
+                                    AND stemcijfer.coll-id = INTEGER(wz-field[3])
+                                    AND stemcijfer.p-id    = INTEGER(wz-field[4])
+                               NO-ERROR.
+            IF NOT AVAIL stemcijfer
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) "E070-'stemcijfer' not found in WORKFILE !" 2.
+                wz-error = TRUE.
+                LEAVE ResultBlock.
+            END.
+        END.
+
+        /******************************************************************************/
+        /* Cross check of voting material ... (1/3)                                   */
+        /******************************************************************************/
+        /* 1) het aantal voorkeurstemmen voor een kandidaattitularis mag niet groter  */
+        /*    zijn dan de som van categorie‰n 2 en 3                                  */
+        /* 2) het aantal voorkeurstemmen voor een kandidaat-opvolger mag niet groter  */
+        /*    zijn dan de som van categorie‰n 3 en 4                                  */
+        /******************************************************************************/
+        IF ( INTEGER(wz-field[7]) > stemcijfer.max_vote[1] AND wz-field[5] = "0") OR
+           ( INTEGER(wz-field[7]) > stemcijfer.max_vote[2] AND wz-field[5] = "1")
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("E080-" +
+                                wz-field[2] + "/"  +
+                                wz-field[3] + "/"  +
+                                wz-field[4] + "/"  +
+                                wz-field[5] + "/"  + 
+                                wz-field[6] + ") " + 
+                                STRING(INTEGER(wz-field[7])) 
+                                + " > " + STRING(stemcijfer.max_vote[INT(wz-field[5]) + 1])) 1.
+            wz-error = TRUE.
+            LEAVE ResultBlock.
+        END.
+        /******************************************************************************/
+        stemcijfer.vote[INTEGER(wz-field[5]) + 1] = 
+            stemcijfer.vote[INTEGER(wz-field[5]) + 1]
+            + INTEGER(wz-field[7]).
+    END.                      /* Candidate information */
+END.
+INPUT CLOSE.
+
+IF wz-error 
+THEN DO:
+    {return.i}
+END.
+
+/**************************************************************************************/
+/* Cross check of voting material ... (2/3)                                           */
+/**************************************************************************************/
+/* 1) Het totaal van de voorkeurstemmen van de kandidaattitularissen mag niet kleiner */
+/*    zijn dan de som van categorie‰n 2 en 3                                          */
+/* 2) Het totaal van de voorkeurstemmen van de kandidaat-opvolgers mag niet kleiner   */
+/*    zijn dan de som van categorie‰n 3 en 4                                          */
+/**************************************************************************************/
+FOR EACH stemcijfer WHERE stemcijfer.coll-id <> -1
+                      AND stemcijfer.p-id    <> -1
+                  NO-LOCK:
+    {PROGBUSY.I}
+    IF stemcijfer.vote[1] < stemcijfer.max_vote[1]
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("E090-" +
+                            STRING(stemcijfer.et-id)   + "/"    +
+                            STRING(stemcijfer.coll-id) + "/"    +
+                            STRING(stemcijfer.p-id)    + ") "   + 
+                            STRING(stemcijfer.vote[1]) + " < "  + 
+                            STRING(stemcijfer.max_vote[1])) 1.
+        wz-error = TRUE.
+        LEAVE.
+    END.
+    IF stemcijfer.vote[2] < stemcijfer.max_vote[2]
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("E100-" +
+                            STRING(stemcijfer.et-id)   + "/"    +
+                            STRING(stemcijfer.coll-id) + "/"    +
+                            STRING(stemcijfer.p-id)    + ") "   + 
+                            STRING(stemcijfer.vote[2]) + " < "  + 
+                            STRING(stemcijfer.max_vote[2])) 1.
+        wz-error = TRUE.
+        LEAVE.
+    END.
+END.
+/**************************************************************************************/
+
+/**************************************************************************************/
+/* Cross check of voting material ... (3/3)                                           */
+/**************************************************************************************/
+/* Het totaal van alle categorie‰n en blanco stemmen per verkiezingstype dient gelijk */
+/* te zijn aan het overeenkomstig aantal kaarten in de urne van de voor dat type      */
+/* verkiezing toegelaten kiezers                                                      */ 
+/**************************************************************************************/
+wz-el-types = FILL( "F", 16).
+DO i = 1 TO 13:
+    wz-el-type[i] = FILL( "F", 16).
+END.
+FOR EACH election NO-LOCK WHERE election.s-id = verkdat BREAK BY election.et-id:
+    IF FIRST-OF(election.et-id)
+    THEN DO:
+        {PROGBUSY.I}
+        ASSIGN
+        wz-el-mode = election.el-mode
+        wz-index   = 1.
+        REPEAT WHILE wz-el-mode > 0:
+            ASSIGN
+            wz-remainder = wz-el-mode MODULO 2.
+            IF wz-remainder = 1
+            THEN SUBSTR( wz-el-type[election.et-id], wz-index, 1) = "T".
+            ASSIGN
+            wz-index     = wz-index + 1
+            wz-el-mode   = ( wz-el-mode - wz-remainder ) / 2.
+        END.
+        /* update global used elector types */
+        DO i = 1 TO 16:
+            IF SUBSTR(wz-el-type[election.et-id],i,1) =  "T"
+            THEN SUBSTR( wz-el-types, i, 1) = "T".
+        END.
+    END.
+END.
+
+/* in case of multiple counters ... */
+wz-index-counters = "".
+DO wz-index = 1 TO 16:
+    IF SUBSTRING( wz-el-types, wz-index, 1) = "T" 
+    THEN wz-index-counters = wz-index-counters + STRING(wz-index) + ",".
+END.
+/* strip trailing comma to avoid index overflow ... */
+IF NUM-ENTRIES( wz-index-counters) > 0 
+THEN wz-index-counters = SUBSTRING( wz-index-counters, 1, LENGTH( wz-index-counters) - 1). 
+call ADDTOLOG PROGRAM-NAME(1) VALUE("used elector types : " + wz-index-counters) 0.
+
+FOR EACH stemcijfer WHERE stemcijfer.coll-id <> -1
+                      AND stemcijfer.p-id    <> -1
+                  NO-LOCK   
+                    BREAK BY stemcijfer.et-id:
+    {PROGBUSY.I}
+    IF FIRST-OF(stemcijfer.et-id)
+    THEN ASSIGN
+         wz-cards = 0
+         wz-index = (IF wz-el-type[stemcijfer.et-id] = wz-el-types THEN 0 ELSE 1).
+         
+    DO i = 1 TO 4:
+        wz-cards = wz-cards + stemcijfer.cat[i].
+        IF stemcijfer.p-id = 0 THEN LEAVE. /* blanco's only in 1st cat. */
+    END.
+    
+    IF LAST-OF(stemcijfer.et-id)
+    THEN DO:
+        FIND FIRST elec_stemcijfer 
+             WHERE elec_stemcijfer.et-id   = stemcijfer.et-id
+               AND elec_stemcijfer.coll-id = -1
+               AND elec_stemcijfer.p-id    = -1
+           NO-LOCK NO-ERROR.
+        IF AVAIL elec_stemcijfer
+        THEN DO:
+            IF wz-cards <> elec_stemcijfer.max_vote_elec
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("E110-" + STRING(stemcijfer.et-id) + ") wz-index = " +
+                                    STRING(wz-index)) 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-cards      = " + 
+                              STRING(wz-cards,                      ">>>>>>>>9")) 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("max_vote_elec = " + 
+                              STRING(elec_stemcijfer.max_vote_elec,">>>>>>>>9")) 1.
+                wz-error = TRUE.
+                LEAVE.
+            END.
+        END.
+        IF wz-index = 0
+        THEN DO:
+            IF wz-cards <> wz-card-count
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("E120-" + STRING(stemcijfer.et-id) + ") wz-index = 0") 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-cards      = " + 
+                              STRING(wz-cards,     ">>>>>>>>9")) 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-card-count = " + 
+                              STRING(wz-card-count,">>>>>>>>9")) 1.
+                wz-error = TRUE.
+                LEAVE.
+            END.
+        END.
+        ELSE DO:
+            wz-el-cards = 0.
+            DO wz-index = 1 TO NUM-ENTRIES( wz-index-counters):
+                IF ENTRY( stemcijfer.et-id, wz-permissions[INTEGER( ENTRY( wz-index, wz-index-counters))]) = "1"
+                THEN DO:
+                    call ADDTOLOG PROGRAM-NAME(1) VALUE( STRING(stemcijfer.et-id,"99") + "|index " + STRING(wz-index) + 
+                                                         " = " + ENTRY( wz-index, wz-index-counters) + "|" +
+                                                         STRING(wz-counters[wz-index],">>>>>>>>9")) 0.
+                    wz-el-cards = wz-el-cards + wz-counters[wz-index].
+                END.
+            END.
+            /* ********************************************************************* */
+            /* ATTENTION - ATTENTION - ATTENTION - ATTENTION - ATTENTION - ATTENTION */
+            /* ********************************************************************* */
+            /* If we're checking the number of cards of election type 12, then we    */
+            /* can only check if the number of voted cards is not greater than the   */
+            /* global number of voted cards for that type of elector, because access */
+            /* to this election type depends on the choice of the elector for        */
+            /* election type 1.                                                      */
+            /* ********************************************************************* */
+            /* el-type 12 = Brusselse Leden Vlaamse Raad                             */
+            /* el-type  1 = Brussels Hoofdstedelijk Gewest                           */
+            /* ********************************************************************* */
+            /*              Access to el-type 12 is only granted when chosen for     */
+            /*              dutch language group                                     */
+            /* ********************************************************************* */
+            IF (stemcijfer.et-id =  12 AND wz-cards  > wz-el-cards)
+            OR (stemcijfer.et-id <> 12 AND wz-cards <> wz-el-cards)
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("E130-" + STRING(stemcijfer.et-id) + ") wz-index-counters = " +
+                                    wz-index-counters)) 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-cards    = " + STRING(wz-cards,   ">>>>>>>>9")) 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-el-cards = " + STRING(wz-el-cards,">>>>>>>>9")) 1.
+                wz-error = TRUE.
+                LEAVE.
+            END.
+        END.
+    END.
+END.
+/**************************************************************************************/
+
+{BUSYENDS.I}
+
+FOR EACH stemcijfer:
+    DELETE stemcijfer.
+END.
+
+filestat = NOT wz-error.
+
+{return.i}
+/* eof */

@@ -1,0 +1,119 @@
+/* Filename            : DISFRAM.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES  VIA INCLUDE FILES                               */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}       /* Variabelen voor display frame disframe             */
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM fra_var_1           AS C FORMAT "x(20)" NO-UNDO.
+DEF INPUT PARAM fra_var_2           AS C FORMAT "x(20)" NO-UNDO.
+DEF INPUT PARAM fra_var_3           AS C FORMAT "x(20)" NO-UNDO.
+DEF INPUT PARAM fra_var_4           AS C FORMAT "x(20)" NO-UNDO.
+DEF INPUT PARAM pause-after-display AS L                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR fra_var_5                   AS C FORMAT "x(20)" NO-UNDO.
+DEF VAR error_message               AS C FORMAT "x(78)" NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    EXTERNAL PROCEDURES                                               */
+/*                                                                      */
+/*    mesfil    Invullen van berichten                                  */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+PAUSE 0 NO-MESSAGE.
+
+ASSIGN
+messages   = ""
+key-cancel = FALSE.
+
+/* Fill empty with "," before checking number of entries (force 2 empty entries) */
+IF fra_var_1 = "" THEN fra_var_1 = ",".
+IF fra_var_2 = "" THEN fra_var_2 = ",".
+IF fra_var_3 = "" THEN fra_var_3 = ",".
+IF fra_var_4 = "" THEN fra_var_4 = ",".
+
+/* Check whether every parameter has 2 entries, otherwise ABORT */
+IF NUM-ENTRIES(fra_var_1) <> 2 
+OR NUM-ENTRIES(fra_var_2) <> 2
+OR NUM-ENTRIES(fra_var_3) <> 2
+OR NUM-ENTRIES(fra_var_4) <> 2
+THEN DO:
+    error_message = "DISFRAM: " + PROGRAM-NAME(2) +
+                    " <" + fra_var_1 + ">-<" + fra_var_2 + ">" +
+                    " <" + fra_var_3 + ">-<" + fra_var_4 + ">".
+    HIDE MESSAGE NO-PAUSE.
+    MESSAGE SUBSTR(error_message,1,78).
+    {call.i &prg="stathelp" &param=",TRUE"}
+    HIDE MESSAGE NO-PAUSE.
+END.
+
+IF fra_var_1 <> ","
+THEN IF ENTRY(1,fra_var_1) = ""
+     THEN messages[1] = ENTRY(2,fra_var_1).
+     ELSE DO:
+         {call.i &prg="mesfil" &param=",fra_var_1,0,OUTPUT messages[1]"}
+     END.
+IF fra_var_2 <> ","
+THEN IF ENTRY(1,fra_var_2) = ""
+     THEN messages[2] = ENTRY(2,fra_var_2).
+     ELSE DO:
+         {call.i &prg="mesfil" &param=",fra_var_2,0,OUTPUT messages[2]"}
+     END.
+IF fra_var_3 <> ","
+THEN IF ENTRY(1,fra_var_3) = ""
+     THEN messages[3] = ENTRY(2,fra_var_3).
+     ELSE DO:
+         {call.i &prg="mesfil" &param=",fra_var_3,0,OUTPUT messages[3]"}
+     END.
+IF fra_var_4 <> ","
+THEN IF ENTRY(1,fra_var_4) = ""
+     THEN messages[4] = ENTRY(2,fra_var_4).
+     ELSE DO:
+         {call.i &prg="mesfil" &param=",fra_var_4,0,OUTPUT messages[4]"}
+     END.
+fra_var_5 = (IF pause-after-display
+             THEN "general,keypress"
+             ELSE "general,wait").
+{call.i &prg="mesfil" &param=",fra_var_5,0,OUTPUT messages[5]"}
+HIDE FRAME disframe NO-PAUSE.
+DISPLAY messages
+    WITH FRAME disframe.
+IF pause-after-display
+THEN DO:
+    /* Don't activate ESC if calling program starts with INITEL */
+    /* (initelec, initel_i, initel_g, ...                       */
+    IF NOT PROGRAM-NAME(2) BEGINS "initel"
+    THEN ON ESC END-ERROR.
+    REPEAT :
+        PAUSE NO-MESSAGE.
+        LEAVE.
+    END.
+    IF KEYFUNCTION(LASTKEY) = "END-ERROR"
+    THEN key-cancel = TRUE.
+
+    HIDE FRAME disframe NO-PAUSE.
+END.
+
+{return.i}
+/* eof */

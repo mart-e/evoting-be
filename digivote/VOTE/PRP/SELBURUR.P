@@ -1,0 +1,91 @@
+/* Filename            : SELBURUR.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR key_dis   AS C FORMAT "x(45)"                             NO-UNDO.
+DEF VAR down-num  AS I                                            NO-UNDO.
+
+DEF VAR titel     AS C FORMAT "x(40)"                             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS DESCRIPTIONS                                      */
+/*                                                                      */
+/************************************************************************/
+FORM
+                          SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    WITH FRAME pmdexpid 
+        SCROLL 1 
+        down-num DOWN 
+        ROW 5
+        TITLE titel 
+        NO-LABELS 
+        OVERLAY 
+        CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="mesfil" &param=",'pmdexpid,tit01',40,OUTPUT titel"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+{selitem.g
+ &tab_name     = "organigram"
+ &where        = "organigram.g-disk   = setup.disk-id AND
+                  organigram.sys-type = 'U'"
+ &key_dis      = "(IF organigram.verwerkt THEN '  ' ELSE '! ')
+               +  organigram.sys-type
+               +  organigram.org-type
+               +  organigram.area[taalkode]
+               +  STRING(organigram.orginator,'999')"
+ &fkey         = "01"
+ &fra_name     = "pmdexpid"    
+ &fra_capture  = " "
+ &cursor_left  = 5
+ &cursor_right = 2
+ &action_type  = " "
+ &action_flag  = 0
+ &action_keys  = "F1,RETURN"
+ &action_prgs  = " "
+ &action_post  = "
+  COLOR DISPLAY VALUE(menu_bg) key_dis WITH FRAME pmdexpid.
+  PAUSE 0 NO-MESSAGE.
+  FIND FIRST organigram WHERE organigram.sys-type 
+                            + organigram.org-type 
+                            + organigram.area[taalkode]
+                            + STRING(organigram.orginator,'999') = TRIM(SUBSTR(key_dis,3))
+     NO-LOCK NO-ERROR.
+  IF AVAILABLE organigram
+  THEN DO:
+      HIDE FRAME pmdexpid NO-PAUSE.
+      {call.i &prg=""creaturn"" &param="",RECID(organigram),TRUE""}
+      LEAVE.
+  END.
+ "
+ &action_else  = "
+  ELSE DO:
+      {call.i &prg=""indmess"" &param="",'digivote,errmes02'""}
+  END.
+ "
+}
+          
+{return.i}
+/* eof */

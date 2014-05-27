@@ -1,0 +1,159 @@
+/* Filename            : CRBFILES.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-image-file AS C FORMAT "x(45)"                NO-UNDO.
+DEF INPUT  PARAM enc-maskey    LIKE organigram.master-key         NO-UNDO.
+DEF INPUT  PARAM enc-seskey    LIKE organigram.session-key        NO-UNDO.
+DEF OUTPUT PARAM wz-extra-free AS I                               NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg     AS C FORMAT "x(60)"                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR maskey       LIKE meta.aesKey                      NO-UNDO.
+DEF SHARED VAR seskey       LIKE meta.aesKey                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-source-list      AS C                                  NO-UNDO.
+DEF VAR wz-destination-list AS C                                  NO-UNDO.
+DEF VAR wz-security-list    AS C                                  NO-UNDO.
+
+DEF VAR wz-sizeURN          AS I                                  NO-UNDO.
+DEF VAR wz-sizeREC          AS I                                  NO-UNDO.
+
+DEF VAR i                   AS I                                  NO-UNDO.
+
+DEF VAR wz-status           AS L                                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-status = FALSE.
+
+wz-errmsg = "MK".
+call CRYPDEC PRPTOT enc-maskey.
+IF crypStat = 0
+THEN DO:
+    ASSIGN
+    maskey    = result4
+    wz-errmsg = "SK".
+    call CRYPDEC PRPTOT enc-seskey.
+END.
+IF crypStat = 0
+THEN DO:
+    ASSIGN
+    seskey    = result4
+    wz-errmsg = "KEYS".
+    /* generate encryption keys for destination system */
+    call CRYPKEYS maskey seskey.
+END.
+IF crypStat = 0
+THEN DO:
+    wz-errmsg = "B006".
+    /* encrypt and store session key */
+    call CRYPSK "E" VALUE(ramdrive + "B006").
+END.
+IF crypStat = 0
+THEN DO:
+    wz-errmsg = "B021 (1)".
+    call C_TSTFN VALUE(ramdrive + "B021.AR").
+    IF fileok = 1
+    THEN DO:
+        wz-errmsg = "B021 (2)".
+        call C_DEL VALUE(ramdrive + "B021").
+        call CRYPBINF GENDAT VALUE(ramdrive + "B021.AR")
+                             VALUE(ramdrive + "B021").
+        call C_DEL VALUE(ramdrive + "B021.AR").
+    END.
+    ELSE crypStat = -1.
+END.
+IF crypStat = 0
+THEN DO:
+    /* Avoid working with incorrect files ... */
+    call C_DEL VALUE(ramdrive + "MAV.EXE").
+    call C_DEL VALUE(ramdrive + "URN.EXE").
+    call C_DEL VALUE(ramdrive + "REC.EXE").
+
+    /* Extract MAV/URN/REC from original Disk Image File */
+    ASSIGN
+    wz-source-list      = "MAV,URN,REC"
+    wz-destination-list = ramdrive + "MAV.EXE,"
+                        + ramdrive + "URN.EXE,"
+                        + ramdrive + "REC.EXE".
+    REPEAT i = 1 TO NUM-ENTRIES(wz-source-list):
+        wz-errmsg = ENTRY(i,wz-source-list).
+        call GET_FROM_IMAGE VALUE(wz-image-file) 
+                            VALUE(ENTRY(i,wz-source-list)) "EXE"
+                            VALUE(ENTRY(i,wz-destination-list)).
+        IF fileok <> 0
+        THEN DO:
+            wz-errmsg = wz-errmsg + STRING( fileok).
+            LEAVE.
+        END.
+    END.
+    IF fileok <> 0 THEN crypStat = -1.
+END.
+call C_FSIZE VALUE(ramdrive + "URN.EXE").
+wz-sizeURN = filesize.
+call C_FSIZE VALUE(ramdrive + "REC.EXE").
+wz-sizeREC = filesize.
+IF wz-sizeURN > wz-sizeREC
+THEN wz-extra-free = wz-sizeREC.
+ELSE wz-extra-free = wz-sizeURN. 
+
+IF crypStat = 0
+THEN DO:
+    ASSIGN
+    wz-source-list      = ramdrive + "B021,"
+                        + ramdrive + "MAV.EXE,"
+                        + ramdrive + "URN.EXE,"
+                        + ramdrive + "REC.EXE"
+    wz-destination-list = ramdrive + "B121,"
+                        + ramdrive + "B002," 
+                        + ramdrive + "B012," 
+                        + ramdrive + "B022"
+    wz-security-list    = GENDAT   + ","
+                        + MAVEXE   + ","
+                        + URNEXE   + ","
+                        + URNEXE.
+    REPEAT i = 1 TO NUM-ENTRIES(wz-source-list):
+        wz-errmsg = ENTRY(i,wz-source-list).
+        call C_TSTFN VALUE(ENTRY(i,wz-source-list)).
+        IF fileok = 0    THEN LEAVE.
+
+        wz-errmsg = ENTRY(i,wz-destination-list).        
+        call CRYPMAC VALUE(ENTRY(i,wz-security-list   ))
+                     VALUE(ENTRY(i,wz-source-list     ))
+                     VALUE(ENTRY(i,wz-destination-list)).
+        IF crypStat <> 0 THEN LEAVE.
+    END.
+    IF crypStat = 0 AND fileok = 1 THEN wz-status = TRUE.
+    
+END.
+
+IF wz-status THEN wz-errmsg = ?.
+
+/* Cleanup temporary files */
+call C_DEL VALUE(ramdrive + "MAV.EXE").
+call C_DEL VALUE(ramdrive + "URN.EXE").
+call C_DEL VALUE(ramdrive + "REC.EXE").
+
+/* re-generate encryption keys for current system */
+{call.i &prg="init_pwd"}
+
+{return.i}
+/* eof */

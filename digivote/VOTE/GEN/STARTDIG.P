@@ -1,0 +1,203 @@
+/* Filename            : STARTDIG.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR statmes    AS C FORMAT "x(65)"                            NO-UNDO.
+DEF VAR mes1       AS C FORMAT "x(65)"                            NO-UNDO.
+DEF VAR mes2       AS C FORMAT "x(30)"                            NO-UNDO.
+
+DEF VAR badmama    AS C FORMAT "x(70)"                            NO-UNDO.
+
+/*@source sec=1*/
+DEF VAR password   LIKE elect.meta.aesKey                         NO-UNDO.
+DEF VAR adminpwd   LIKE elect.setup.password                      NO-UNDO.
+DEF VAR adminchr   AS C FORMAT "x(64)"                            NO-UNDO.
+DEF VAR adminseq   AS C FORMAT "x(64)"                            NO-UNDO.
+/*@source sec=0*/
+
+DEF VAR interval   AS I                                           NO-UNDO.
+DEF VAR cnt        AS I                                           NO-UNDO.
+DEF VAR i          AS I                                           NO-UNDO.
+DEF VAR j          AS I                                           NO-UNDO.
+DEF VAR k          AS I                                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR systeem AS CHARACTER FORMAT "x(3)" INITIAL "NON"   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILE'S                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}     /* De variabelen voor het kleuren van de schermen */
+{selvar.i}       /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    mes1 AT 2 SPACE(2) SKIP(3)
+    mes2 AT 2 ":" AT 33 password AT 35
+    WITH FRAME digvotpa NO-LABELS ROW 8 CENTERED OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*       START PROCEDURE                                                */
+/*                                                                      */
+/************************************************************************/
+STATUS INPUT OFF.
+{call.i &prg="mesfil" &param=",'digvotpa,mes01',35,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'digvotpa,mes02',30,OUTPUT mes2"}
+
+/*************************************/
+/* Weergeven van welkoms scherm.     */
+/* Vragen naar paswoord en kontrole. */
+/*************************************/
+cnt = 0.
+FOR EACH from_elect.setup NO-LOCK:
+    cnt = cnt + 1.
+END.
+IF cnt = 1
+THEN DO:
+    FIND FIRST from_elect.setup NO-LOCK.
+    mes1 = mes1 + " " + from_elect.setup.sys-type +
+                        from_elect.setup.org-type +
+                        from_elect.setup.areaname +
+                        STRING(from_elect.setup.orginator,"999").
+END.
+ELSE DO:
+    IF PROGRAM-NAME(2) BEGINS "digtools"
+    THEN DO:
+        IF cnt = 0
+        THEN DO:
+            systeem = "N/A".
+            {return.i}
+        END.
+        ELSE DO:
+            /* Find first setup-record so we can at least check a password */
+            FIND FIRST from_elect.setup NO-LOCK.
+            mes1 = mes1 + " SuperMAMA".
+        END.    
+    END.
+    ELSE DO:
+        /* "De database bevat onvoldoende gegevens" */
+        {call.i &prg="mesfil" &param=",'initelec,badmama',70,OUTPUT badmama"}
+        DISPLAY badmama WITH ROW 10 CENTERED NO-LABELS.
+        IF cnt = 0
+        THEN call ADDTOLOG PROGRAM-NAME(1) VALUE("NO SETUP-record available") 1.
+        ELSE call ADDTOLOG PROGRAM-NAME(1) VALUE("TOO MUCH SETUP-records available") 1.
+        PAUSE NO-MESSAGE.
+        {quit.i &corrupt=FALSE}
+    END.
+END.
+
+DISPLAY mes1 mes2  
+    WITH FRAME digvotpa.
+PAUSE 0  NO-MESSAGE.
+
+systeem = "NON".
+{call.i &prg="discolme" &param=",'digvotpa,hulp01',0"}
+KEUZE:
+REPEAT cnt = 1 TO 3 ON ENDKEY UNDO KEUZE, LEAVE KEUZE: /* Bij F4 leave */
+
+/*@source sec=1*/
+    call CRYPDEC PRPTOT from_elect.setup.password.
+
+    /************************************************/
+    /*                                              */
+    /* ALSO CHECK TOT\TOTURNE.P -> ASK PASSWORD     */
+    /* ----------------------------------------     */
+    /*                                              */
+    /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+    /************************************************/
+    /*
+    PUT SCREEN COLOR GRAY/BLACK ROW 15 COLUMN 41 STRING(result4,"x(4) x(4) x(4) x(4)").
+    */
+    /*************************************************/
+    /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+    
+    {GetPasw.i "set" "password" "digvotpa"}. /* includes custom password editing */
+    
+    /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+    /************************************************/
+    /*
+    PUT SCREEN ROW 15 COLUMN 35 FILL(" ",35).
+    */
+    /*************************************************/
+    /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+    
+    IF password = "ABORTED"
+    THEN DO:
+        systeem = "NON".
+        LEAVE KEUZE.
+    END.
+
+    IF password = result4
+    THEN DO:
+        IF from_elect.setup.sys-type = "T"
+        THEN systeem = "TOT".
+        ELSE systeem = "PRP".
+        LEAVE.
+    END.
+    ELSE DO:
+        IF PROGRAM-NAME(2) = "digtools"
+        THEN DO:
+            ASSIGN
+            adminchr = "G,H,C,E,N,@,D,D,B,M,D,G,J,@,M,M,J,K,P,G,M,?,K,@,C,J,N,N,G,D"
+            adminseq = "1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,1,1,2,1,1,1,1,1,1,1,1,1,1,1,1"
+            j        = NUM-ENTRIES(adminseq)
+            adminpwd = "".
+            REPEAT i = 1 TO NUM-ENTRIES(adminchr):
+                interval = (IF i MODULO 2 = 1 THEN -1 ELSE 1).
+                REPEAT k = 1 TO INT(ENTRY(j,adminseq)):
+                   adminpwd = adminpwd + CHR(ASC(ENTRY(i,adminchr)) + interval).
+                END.
+                j = j - 1.
+            END.
+            call CRYPDEC PRPTOT adminpwd.
+            IF password = result4
+            THEN DO:
+                systeem = "ADM".
+                LEAVE.
+            END.
+        END.
+/*@source sec=0*/
+        IF cnt = 3
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Wrong password entered ! " +
+                                "(" + STRING(cnt) + ") "    +
+                                "System will be locked after disconnect !") 2.
+            {call.i &prg="dispmes" &param=",'digvotpa,err01',0"} /* bericht 3* fout */
+            DISCONNECT from_elect.
+            DISCONNECT      elect.
+            PAUSE 1 NO-MESSAGE.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Status database = " + ( IF CONNECTED("elect")
+                                                         THEN "CONNECTED"
+                                                         ELSE "DISCONNECTED" ) + " !") 0.
+            {call.i &prg="mesfil" &param=",'digvotpa,blocage',0,OUTPUT statmes"}
+            STATUS DEFAULT statmes.
+            RUN cleanup. /* Don't use {call.i ...} because we're gonna end 'abnormally' */
+            DOS SILENT VALUE("\DOS\GEDAAN.EXE").
+        END.
+        ELSE DO :
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Wrong password entered ! (" + STRING(cnt) + ")") 2.
+            {call.i &prg="dispmes" &param=",'digvotpa,err02',0"} /* bericht fout paswoord */
+        END.
+    END.
+END.
+
+HIDE FRAME digvotpa NO-PAUSE.
+
+{return.i}
+/* eof */

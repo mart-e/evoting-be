@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Tot de zetelverdeling worden enkel de lijsten toegestaan die minstens 5 % van het algemeen totaal van de geldig uitgedrukte stemmen in de kieskring behaald hebben (Artikel 165bis - Kieswetboek).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Het algemeen totaal van de geldig uitgedrukte stembiljetten in de kieskring bedraagt : #TOT_VOTES#. De drempel van 5 % bedraagt dus : #SEUIL_5PC#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >De volgende lijsten behalen minstens 5 % terzake en doen mee aan de zetelverdeling : #LISTES_5PC#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Het bureau na, overeenkomstig de aanduidingen van de tabel van de stemmenoptelling, het stemcijfer van elk der lijsten te hebben vastgesteld, bepaalt de kiesdeler. Deze deler is (2)(3)  #DIVISEUR_ELECTORAL#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Vervolgens gaat het, overeenkomstig de beschikkingen van de hoofdstukken V en VII, Titel IV van het Kieswetboek, over tot de verdeling van de zetels over de lijsten, alsmede tot de aanwijzing van de kandidaten aan wie de zetels, aan hun lijst toegekend, toekomen en van de kandidaten, die opvolgers zullen verklaard worden(3) .</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Het publiek wordt in de zaal, waar het bureau zetelt, toegelaten en de voorzitter geeft aan de vergadering kennis van hetgeen volgt.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Uit de cijfers opgegeven in de tabel der stemmenoptelling, blijkt dat :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >- Wat de verkiezing voor de Kamer van Volksvertegenwoordigers betreft : (4)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LIJSTEN_SIEGES#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >- Worden gekozen tot leden van de Kamer van Volksvertegenwoordigers en aangewezen : (1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LIJSTEN_ELUS#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >- Worden als opvolgers aangewezen voor de Kamer van Volksvertegenwoordigers, de kandidaten waarvan de namen volgen : (1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LIJSTEN_SUPPLEANTS#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >16</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kieskringhoofdbureau stuurt onverwijld via de digitale weg, door gebruik te maken van de elektronische handtekening die aangebracht wordt door middel van zijn identiteitskaart, het volledige proces-verbaal van zijn bureau naar de griffier van de Kamer van Volksvertegenwoordigers en naar de Minister van Binnenlandse Zaken (Artikel 177, eerste lid Kieswetboek).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Een papieren exemplaar van dit proces-verbaal, gedurende de zitting in tweevoud opgemaakt en ondertekend door de leden van het hoofdbureau en door de getuigen, met hier bijgevoegd de processen-verbaal van de stembureaus en de stemopnemingsbureaus, de akten van voordracht en de betwiste stembiljetten worden binnen vijf dagen toegezonden aan de griffier van de Kamer van Volksvertegenwoordigers.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Aan iedere gekozene wordt een uittreksel uit dit proces-verbaal gezonden.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Te #LIEU#, #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De Secretaris,                De bijzitters,                 De getuigen,                De Voorzitter,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="38" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="39" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="40" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >P.S.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >Vergeet niet de hierbijgevoegde lijst voor de betaling van het presentiegeld uiterlijk op de dag van de stemming - volledig ingevuld -te bezorgen aan de voorzitter van het kantonhoofdbureau van de kieskringhoofdplaats.</String2>
+	</row>
+	<row rowNumber="41" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="42" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="43" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="44" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >18</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(*)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Dit proces-verbaal geldt voor alle kieskringen bij de Kamerverkiezingen, behalve voor de kieskringen Leuven, Brussel-Halle-Vilvoorde en Waals-Brabant (zie formulier A/20).</String2>
+	</row>
+	<row rowNumber="45" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Naam en voornaam worden voorafgegaan door de vermelding : Mevrouw (Mw.) of Mijnheer (M.).</String2>
+	</row>
+	<row rowNumber="46" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(2)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Cijfer gelijk aan het laatste quotiënt bekomen door de bewerking aangeduid in het eerste lid van artikel 167 van het Kieswetboek, of zo het laatste lid van dit artikel toegepast werd, van het laatste quotiënt bekomen door de aanvullende bewerking, voorgeschreven bij dit lid.</String2>
+	</row>
+	<row rowNumber="47" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(3)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Zie de onderrichtingen voor de hoofdbureaus, betreffende de algemene optelling van de stemmen, de verdeling en de toekenning van de zetels.</String2>
+	</row>
+	<row rowNumber="48" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(4)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >In geval van toepassing van het laatste lid van artikel 167 van het Kieswetboek, is het hier te vermelden aantal zetels, voor de lijst die er meer zou bekomen hebben dan zij kandidaten (titularissen en opvolgers) telt, het aantal van de zetels die zij wezenlijk krijgt, dat is een aantal gelijk aan dit van haar kandidaten (titularissen en opvolgers).</String2>
+	</row>
+	<row rowNumber="50" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="51" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >19</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >ZEER BELANGRIJKE OPMERKINGEN.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="52" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De bijzondere aandacht van het bureau wordt gevestigd op de volgende regelen :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="53" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="54" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >1°</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Wat betreft de overdracht van de helft van de stembiljetten met loutere lijststemmen op de kandidaten (titularissen en opvolgers) moet men als basis nemen niet de kiesdeler, maar voor iedere lijst een verkiesbaarheidscijfer dat haar eigen is en dat cijfer bekomt het hoofdbureau door het stemcijfer van de lijst te delen door het aantal van de haar definitief toegekende zetels plus één (Artikel 172 Kieswetboek).</String2>
+	</row>
+	<row rowNumber="55" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >2°</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Na de aanwijzing van de gekozenen onder de kandidaat-titularissen, geschiedt de aanwijzing van de kandidaatopvolgers op dezelfde wijze (Artikel 173 Kieswetboek). Alle kandidaat-opvolgers worden gekozen verklaard als eerste, tweede, derde, enz.. opvolger. Bij gelijk stemmenaantal primeert de volgorde van inschrijving op het stembiljet.</String2>
+	</row>
+</TD_XML_Table>

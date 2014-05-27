@@ -1,0 +1,4813 @@
+.head 0 +  Application Description: Gupta SQLWindows Standard Application Template
+.data CLASSPROPSSIZE
+0000: 1901
+.enddata
+.data CLASSPROPS
+0000: 5761746368566172 730071006C73456C 656374696F6E006C 506172616D00636F
+0020: 6C457865006C7355 736572006C735265 706F6E736500676E 4874747054696D65
+0040: 6F7574006C6E5072 6F7879506F727400 707355726C006C73 50726F7879557365
+0060: 72006C6E52657475 726E002074626C46 696C65732E636F6C 46696C6500005573
+0080: 65476C6F62616C50 6174680004000100 0000004170705061 74684C656E000400
+00A0: 2400000000417070 5061746800240063 3A5C705F6C696233 322E34323B633A5C
+00C0: 705F6C696233322E 34325C5265736F75 7263650057617463 68566172734C656E
+00E0: 0004007100000000 4442475F504C4159 4241434B5F475549 44001000ECFA832B
+0100: E1CA954BA65E24D7 6C8F7FC300000000 0000000000000000 00
+.enddata
+.head 1 -  Outline Version - 4.0.35
+.head 1 +  Design-time Settings
+.data VIEWINFO
+0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
+0020: 0000000000A80000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
+0040: FFE5FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
+0060: 000F4170706C6963 6174696F6E497465 6D00000000
+.enddata
+.data DT_MAKERUNDLG
+0000: 0900001000000000 1F433A5C705F6C69 6233322E34325C52 45534F555243455C
+0020: 4C6F63332E69636F 294C3A5C456C6563 323031305C707763 5C43445F434F4449
+0040: 5F31313035323031 305C4C4F43332E65 78652D4C3A5C456C 6563323031305C70
+0060: 77635C43445F434F 44495F3131303532 3031305C4C4F4331 5F3030322E646C6C
+0080: 2D4C3A5C456C6563 323031305C707763 5C43445F434F4449 5F31313035323031
+00A0: 305C4C4F43315F30 30322E6170630000 0101010064000000 0000000101010101
+00C0: 01202020200C4C4F 43315F3030322E61 70640C4C4F43315F 3030322E646C6C0C
+00E0: 4C4F43315F303032 2E61706300000101 0100640000000C4C 4F43315F3030322E
+0100: 61706C0C4C4F4331 5F3030322E646C6C 0C4C4F43315F3030 322E617063000001
+0120: 010100640000000C 4C4F43315F303032 2E6578650C4C4F43 315F3030322E646C
+0140: 6C0C4C4F43315F30 30322E6170630000 0101010064000000 0C4C4F43315F3030
+0160: 322E646C6C0C4C4F 43315F3030322E64 6C6C0C4C4F43315F 3030322E61706300
+0180: 0001010100640000 000C4C4F43315F30 30322E646C6C0C4C 4F43315F3030322E
+01A0: 646C6C0C4C4F4331 5F3030322E617063 0000010101006400 0000000000000000
+01C0: 0000000000000000 0000000000000000 0000000001000000 0100000001000100
+01E0: 0000000000000001 0000100000000000 00000000000000
+.enddata
+.head 2 -  Outline Window State: Normal
+.head 2 +  Outline Window Location and Size
+.data VIEWINFO
+0000: 6600040003002D00 0000000000000000 0000B71E5D0E0500 1D00FFFF4D61696E
+0020: 0000000000000000 0000000000000000 0000003B00010000 00000000000000E9
+0040: 1E800A00008600FF FF496E7465726E61 6C2046756E637469 6F6E730000000000
+0060: 0000000000000000 0000000000003200 0100000000000000 0000E91E800A0000
+0080: DF00FFFF56617269 61626C6573000000 0000000000000000 0000000000000000
+00A0: 3000010000000000 00000000F51E100D 0000F400FFFF436C 6173736573000000
+00C0: 0000000000000000 0000000000000000
+.enddata
+.data VIEWSIZE
+0000: D000
+.enddata
+.head 3 -  Left: -0.013"
+.head 3 -  Top: 0.0"
+.head 3 -  Width:  8.013"
+.head 3 -  Height: 4.969"
+.head 2 +  Options Box Location
+.data VIEWINFO
+0000: D4180909B80B1A00
+.enddata
+.data VIEWSIZE
+0000: 0800
+.enddata
+.head 3 -  Visible? Yes
+.head 3 -  Left: 4.15"
+.head 3 -  Top: 1.885"
+.head 3 -  Width:  3.8"
+.head 3 -  Height: 2.073"
+.head 2 +  Class Editor Location
+.head 3 -  Visible? No
+.head 3 -  Left: 0.575"
+.head 3 -  Top: 0.094"
+.head 3 -  Width:  5.063"
+.head 3 -  Height: 2.719"
+.head 2 +  Tool Palette Location
+.head 3 -  Visible? No
+.head 3 -  Left: 6.388"
+.head 3 -  Top: 0.729"
+.head 2 -  Fully Qualified External References? Yes
+.head 2 -  Reject Multiple Window Instances? No
+.head 2 -  Enable Runtime Checks Of External References? Yes
+.head 2 -  Use Release 4.0 Scope Rules? No
+.head 2 -  Edit Fields Read Only On Disable? No
+.head 1 +  Libraries
+.head 2 -  File Include: BASECLAS.APL
+.head 2 -  File Include: base64.apl
+.head 2 -  File Include: HTTP_COCKPIT.apl
+.head 2 -  File Include: mtbl.apl
+.head 2 -  File Include: mimg.apl
+.head 2 -  File Include: WinInet_Constants.apl
+.head 2 -  File Include: WinInet_Functions.apl
+.head 1 +  Global Declarations
+.head 2 +  Window Defaults
+.head 3 +  Tool Bar
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Form Window
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Dialog Box
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Top Level Table Window
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Data Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Multiline Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Spin Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Background Text
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Pushbutton
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Radio Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Check Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Option Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Group Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Child Table Window
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  List Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Combo Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Line
+.head 4 -  Line Color: Use Parent
+.head 3 +  Frame
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: 3D Face Color
+.head 3 +  Picture
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 2 +  Formats
+.head 3 -  Number: 0'%'
+.head 3 -  Number: #0
+.head 3 -  Number: ###000
+.head 3 -  Number: ###000;'($'###000')'
+.head 3 -  Date/Time: hh:mm:ss AMPM
+.head 3 -  Date/Time: M/d/yy
+.head 3 -  Date/Time: MM-dd-yy
+.head 3 -  Date/Time: dd-MMM-yyyy
+.head 3 -  Date/Time: MMM d, yyyy
+.head 3 -  Date/Time: MMM d, yyyy hh:mm AMPM
+.head 3 -  Date/Time: MMMM d, yyyy hh:mm AMPM
+.head 3 -  Number: #0
+.head 3 -  Number: #0
+.head 3 -  Number: #0
+.head 2 +  External Functions
+.head 2 +  Constants
+.data CCDATA
+0000: 3000000000000000 0000000000000000 00000000
+.enddata
+.data CCSIZE
+0000: 1400
+.enddata
+.head 3 +  System
+.head 3 +  User
+.head 4 -  String: VERSION = 'V2.14'
+.head 4 -  String: DATE_VERSION = '15/12/2009'
+.head 3 -  Enumerations
+.head 2 +  Resources
+.head 3 +  Bitmap: resExitWin
+.head 4 -  File Name: Exit_Menu.bmp
+.head 2 +  Variables
+.data RESOURCE 0 0 1 2254916359
+0000: 84010000FE000000 0000000000000000 0200000C00000023 0600001019000000
+0020: 012606E8140C0000 0073000000010000 00A33C0600192500 0126C80CBA000073
+0040: D100010000085506 0004000000810226 06C90C006E007300 36010059065A0019
+0060: 00018226630D0000 001B730001008D00 7206009619000126 E00A100000004673
+0080: 00010000A38B0600 0421000102260B10 FA00000780010000 00FF688F06001900
+00A0: 890126E510006E00 730034010000A806 1A0004000102A3E6 1000007F80F20100
+00C0: 008FAC0600961900 0126E0BD11000000 467300010000A3C5 06000431000102BE
+00E0: 11FA000027800100 00FF68C906000400 0D02061200006E00 730034010000CD06
+0100: 5A00040002A31B12 00009B7300010D00
+.enddata
+.head 3 -  String: gsModuleNom
+.head 3 -  String: gsModuleLigne
+.head 3 -  Sql Handle: ghSqlMaj
+.head 3 -  Window Handle: ghSqlSecondaire
+.head 3 -  Number: Btmp
+.head 3 -  ! !
+.head 2 +  Internal Functions
+.head 3 +  Function: PalMakeAllDir
+.head 4 -  Description: Création de répertoire non existant
+.head 4 -  Returns
+.head 4 +  Parameters
+.head 5 -  String: sPath
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 +  If SalStrRightX( sPath, 1 ) = '\\'
+.head 6 -  Set sPath= SalStrLeftX(sPath, SalStrLength( sPath)-1)
+.head 5 -  Call VisDosMakeAllDir( sPath )
+.head 3 -  !
+.head 2 +  Named Menus
+.head 2 +  Class Definitions
+.data RESOURCE 0 0 1 1530552124
+0000: C40B000034070000 0000000000000000 0200001A00FFFF01 00160000436C6173
+0020: 73566172004F7574 6C696E6552006567 496E666F3E003C00 000A63006C734261
+0040: 7365436F006C9A00 00000500001E0004 0000020002260609 000006009C027300
+0060: 0060000100000004 B300040086020A00 00003D9C00011B00 080000AC00040002
+0080: 610B0000009CCF00 0106000C00000019 080000000126060C DA00009CA3000100
+00A0: 00C1250000001912 0001260D0000F600 9C68000100000180 803A0000000100F0
+00C0: 000D636C01446644 61746584B0000000 0400B71900800426 060700000031FC02
+00E0: 730001DB0019A800 0400000269080000 FCCF000106001D00 0000044300010226
+0100: 09FB00C901000001 DE0001C000210000 0019D20001260AF6 00FC680001000001
+0120: 0880210000020000 F00011636C7F5400 696D656600000003 78000000194B0004
+0140: 26071B000E0373A2 00000100008D1900 0400D200022608F6 000E6C0001001D33
+0160: 00040001B6020900 9F0100EC0001000D 0100018021330003 000C04636C436163
+0180: 686540506F6F6C66 0000F60300048400 0001072606000500 0100E00600001E00
+01A0: 800100FC00009B04 0004850003260607 0D00EC067300D900 0100660800190069
+01C0: 012608007BEC0034 0100000180640400 0004001812636C62 4D75006C74694C61
+01E0: 6E67750061676522 000000017A000004 6B0002061A00003A 0773B20000010031
+0200: 0180040005C10000 18636C0068696C64 54626C4DFE757F00 F4010000D6040002
+0220: 3609004C07667300 0100630180040084 06000013636CF56F 4DFF47000100006F
+0240: 04006D020700635E 0773003601000180 4604000700001E13 6D624DFF7F00F401
+0260: 0000D60400023700 7007667300010063 01800400E6080012 F044664D75FFA300
+0280: 010000B70400BE02 003182077300011B 0001800423000900 00130F6C674D75FF
+02A0: 3F00017A0000046B 0002091B00940773 B300010031018004 000A7200001346F0
+02C0: 726D4D75FFA30001 0000B70400B6020A 0031AC077300011B 0001800423000B00
+02E0: 0012C74C624DFF1F 000100BD0004B500 02078D00CA0773D9 0001001801800400
+0300: 0C003900134D64F8 694D75FFD1000100 005B040002DB0900 98DC077300018D00
+0320: 01800491000D0000 12E76C4DFF8F0001 00DE0004DA000207 C600FA07736C0001
+0340: 00010C8004000E00 001C00124F624DFF 7F00F4010000D604 00023608000C0864
+0360: 7300000100630180 0400E00F00000012 F850624DFFA30001 0000B70400B60207
+0380: 00311E087300011B 0001800403001000 00001D04636C5175 6573741C4368576E
+03A0: 64FC4D75FFE80001 0000AD0400026D08 0030CC08730001C6 00018004C0001100
+03C0: 00001D3F5461E062 6C65576EFF3F0001 7A0000046B000209 1B00420873B30001
+03E0: 0031018004001260 000000126352FC62 4DFFD1000100005B 040002DB07009860
+0400: 087300018D000180 0401001300000013 63D354624DFF1F00 0100BD0004B50002
+0420: 0A8D00720873D900 0100200180130100 14000000000F6344 65736B00746F704C
+0440: 69737442A06F784E 01000BBD0019A500 0126070D00341973 00D1000100006619
+0460: 0019006901260800 7B34003401000032 00580000190001DA 2609001E34000100
+0480: 0D004B0000009619 000126B60A003447 0001000083640000 0019A50001260BED
+04A0: 0034D10001000060 7D00000019006901 260C007B34003401 0000960058000019
+04C0: 0001DA260D001E34 0001000D00AF0000 009619000126B40E 0000344700010000
+04E0: 83C8000000192500 01260F00ED0034D1 0001000060E10000 0019004901261000
+0500: 007B340034010000 FA00580000190001 D2261100001E3400 01000D0001806400
+0520: 0100150000000B63 E04469724C69837C 00000004BD0019A5 000126078D004619
+0540: 73D1000100006619 0019006901260800 7B4600B401000032 5900190001DA2609
+0560: 001E460001006D00 4B009619000126B6 0A00464700010000 4301804B0000E216
+0580: 00000F8154726565 4C690F5E000000F4 0300009619000126 3607005819467300
+05A0: 0100009B190019A5 00012608ED0058D1 0001000066320019 0069012609007B58
+05C0: 0034010000018004 AF00001700000080 0C6346696C654C1F D60000EC0007002D
+05E0: 190001266D06007C 8C19730001003600 1900194B00012607 DB007CA300010000
+0600: CD320019D2000126 08F6007C68000100 004BB3001900B401 2609003D7C0001DA
+0620: 0000642C00190001 266D0A007C8F0001 0036007D00194B00 01260BDB007CA300
+0640: 010000CD960019D2 0001260CF6007C68 000100000108807D 000018000000000D
+0660: 63526164696F7C4C 699AB200000500B7 1900B40126060021 481A73000001DA00
+0680: 00192C0019000126 6D0700488F000100 36003200194B0001 2608DB0048A30001
+06A0: 0000CD4B0019D200 012609F600486800 01000064B3001900 B401260A003D4800
+06C0: 011A000001808130 0000001900080063 514F456D61696C60 C000000006006F19
+06E0: 0069012605004368 1B730000B4010000 195900190001DA26 08001E680001006D
+0700: 0032009619000126 B60B006847000100 009B4B0019A50001 260EED0068D10001
+0720: 0000666400190069 012611007B6800B4 0100007D19000400 0102D2261400007F
+0740: 80F20100000F
+.enddata
+.head 3 +  General Window Class: CValueList
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: AddValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  String: spText
+.head 7 -  Number: npValue
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return VisListAddValue( hWndItem, spText, npValue )
+.head 5 +  Function: FindValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Number: npValue
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return VisListFindValue( hWndItem, 0, npValue )
+.head 5 +  Function: GetSelectedValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nIdx
+.head 7 -  Number: nValue
+.head 6 +  Actions
+.head 7 -  Set nIdx = SalListQuerySelection( hWndItem )
+.head 7 +  If nIdx >= 0
+.head 8 -  Set nValue = GetValue( nIdx )
+.head 7 -  Return nValue
+.head 5 +  Function: GetValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Number: npIdx
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return VisListGetValue( hWndItem, npIdx )
+.head 5 +  Function: SelectValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Number: npValue
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nIdx
+.head 6 +  Actions
+.head 7 -  Set nIdx = FindValue( npValue )
+.head 7 +  If nIdx >= 0
+.head 8 -  Call SalListSetSelect( hWndItem, nIdx )
+.head 7 -  Return nIdx
+.head 4 -  Message Actions
+.head 3 +  General Window Class: CHandleList
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CValueList
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: AddHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  String: spText
+.head 7 -  Window Handle: hWndp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return AddValue( spText, SalWindowHandleToNumber( hWndp ) )
+.head 5 +  Function: FindHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Window Handle: hWndp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return FindValue( SalWindowHandleToNumber( hWndp ) )
+.head 5 +  Function: GetHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Window Handle:
+.head 6 +  Parameters
+.head 7 -  Number: npIdx
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SalNumberToWindowHandle( GetValue( npIdx ) )
+.head 5 +  Function: GetSelectedHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Window Handle:
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SalNumberToWindowHandle( GetSelectedValue( ) )
+.head 5 +  Function: SelectHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Window Handle: hWndp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SelectValue( SalWindowHandleToNumber( hWndp ) )
+.head 4 -  Message Actions
+.head 3 +  General Window Class: CWindow
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: AddMsgToLog
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  String: spMsg
+.head 7 -  Number: npwParam
+.head 7 -  Number: nplParam
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: sItemName
+.head 6 +  Actions
+.head 7 +  If TRUE
+.head 8 -  Call SalGetItemName( hWndItem, sItemName )
+.head 8 -  Return FALSE
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call AddMsgToLog( "SAM_Click", wParam, lParam )
+.head 5 +  On SAM_ContextMenu
+.head 6 -  Call AddMsgToLog( "SAM_ContextMenu", wParam, lParam )
+.head 5 +  On SAM_DoubleClick
+.head 6 -  Call AddMsgToLog( "SAM_DoubleClick", wParam, lParam )
+.head 5 +  On SAM_DropDown
+.head 6 -  Call AddMsgToLog( "SAM_DropDown", wParam, lParam )
+.head 5 +  On SAM_KillFocus
+.head 6 -  Call AddMsgToLog( "SAM_KillFocus", wParam, lParam )
+.head 5 +  On SAM_SetFocus
+.head 6 -  Call AddMsgToLog( "SAM_SetFocus", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_KeyDown
+.head 6 -  Call AddMsgToLog( "MTM_KeyDown", wParam, lParam )
+.head 3 +  General Window Class: CEditWindow
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CWindow
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 -  Functions
+.head 4 +  Message Actions
+.head 5 +  ! On SAM_AnyEdit
+.head 6 -  Call AddMsgToLog( "SAM_AnyEdit", wParam, lParam )
+.head 5 +  On SAM_Validate
+.head 6 -  Call AddMsgToLog( "SAM_Validate", wParam, lParam )
+.head 3 +  Column Class: CColumn
+.head 4 -  Title:
+.head 4 -  Visible? Class Default
+.head 4 -  Editable? Class Default
+.head 4 -  Maximum Data Length: Class Default
+.head 4 -  Data Type: Class Default
+.head 4 -  Justify: Class Default
+.head 4 -  Width:  Class Default
+.head 4 -  Width Editable? Class Default
+.head 4 -  Format: Class Default
+.head 4 -  Country: Class Default
+.head 4 -  Input Mask: Class Default
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Cell Options
+.head 5 -  Cell Type? Class Default
+.head 5 -  Multiline Cell? Class Default
+.head 5 -  Cell DropDownList
+.head 6 -  Sorted? Class Default
+.head 6 -  Vertical Scroll? Class Default
+.head 6 -  Auto Drop Down? Class Default
+.head 6 -  Allow Text Editing? Class Default
+.head 5 -  Cell CheckBox
+.head 6 -  Check Value:
+.head 6 -  Uncheck Value:
+.head 6 -  Ignore Case? Class Default
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CEditWindow
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: OnQuerySortString
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  Number: p_nRow
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: sText
+.head 6 +  Actions
+.head 7 -  Call SalTblGetColumnText( hWndForm, SalTblQueryColumnID( hWndItem ), sText )
+.head 7 -  Return SalHStringToNumber( sText )
+.head 5 +  Function: OnQuerySortValue
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  Number: p_nRow
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Date/Time: dt
+.head 7 -  Number: nColType
+.head 7 -  Number: nDataType
+.head 7 -  String: sText
+.head 6 +  Actions
+.head 7 +  If SalTblQueryColumnCellType( hWndItem, nColType )
+.head 8 +  If nColType = COL_CellType_DropDownList
+.head 9 -  Return SalListQuerySelection( hWndItem )
+.head 7 -  !
+.head 7 -  Set nDataType = SalGetDataType( hWndItem )
+.head 7 -  Call SalTblGetColumnText( hWndForm, SalTblQueryColumnID( hWndItem ), sText )
+.head 7 +  Select Case nDataType
+.head 8 +  Case DT_String
+.head 9 -  Return SalStrLength( sText )
+.head 8 +  Case DT_DateTime
+.head 9 -  Set dt = SalStrToDate( sText )
+.head 9 -  Return ( dt - 1970-01-01 ) * 86400
+.head 8 +  Case DT_Number
+.head 9 -  Return SalStrToNumber( sText )
+.head 8 +  Default
+.head 9 -  Return 0
+.head 4 -  List Values
+.head 4 +  Message Actions
+.head 5 +  On MTM_QuerySortString
+.head 6 -  Return OnQuerySortString( lParam )
+.head 5 +  On MTM_QuerySortValue
+.head 6 -  Return OnQuerySortValue( lParam )
+.head 3 +  Child Table Class: CTable
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left:
+.head 6 -  Top:
+.head 6 -  Width:  Class Default
+.head 6 -  Width Editable? Class Default
+.head 6 -  Height: Class Default
+.head 6 -  Height Editable? Class Default
+.head 5 -  Visible? Class Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Class Default
+.head 5 -  Font Enhancement: Class Default
+.head 5 -  Text Color: Class Default
+.head 5 -  Background Color: Class Default
+.head 5 -  View: Class Default
+.head 5 -  Allow Row Sizing? Class Default
+.head 5 -  Lines Per Row: Class Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 32000
+.head 5 -  Discardable? No
+.head 4 -  Next Class Child Key: 0
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CWindow
+.head 4 -  Contents
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  Number: m_hPal
+.head 4 +  Functions
+.head 5 +  Function: QueryFocusRow
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nRow
+.head 7 -  Window Handle: hWndCol
+.head 6 +  Actions
+.head 7 +  If NOT SalTblQueryFocus( hWndForm, nRow, hWndCol )
+.head 8 -  Set nRow = TBL_Error
+.head 7 -  Return nRow
+.head 4 +  Message Actions
+.head 5 +  On SAM_CacheFull
+.head 6 -  Call AddMsgToLog( "SAM_CacheFull", wParam, lParam )
+.head 5 +  On SAM_ColumnSelectClick
+.head 6 -  Call AddMsgToLog( "SAM_ColumnSelectClick", wParam, lParam )
+.head 5 +  On SAM_CornerClick
+.head 6 -  Call AddMsgToLog( "SAM_CornerClick", wParam, lParam )
+.head 5 +  On SAM_CornerDoubleClick
+.head 6 -  Call AddMsgToLog( "SAM_CornerDoubleClick", wParam, lParam )
+.head 5 +  On SAM_CountRows
+.head 6 -  Call AddMsgToLog( "SAM_CountRows", wParam, lParam )
+.head 5 +  On SAM_EndCellTab
+.head 6 -  Call AddMsgToLog( "SAM_EndCellTab", wParam, lParam )
+.head 5 +  On SAM_FetchDone
+.head 6 -  Call AddMsgToLog( "SAM_FetchDone", wParam, lParam )
+.head 5 +  On SAM_FetchRow
+.head 6 -  Call AddMsgToLog( "SAM_FetchRow", wParam, lParam )
+.head 5 +  On SAM_FetchRowDone
+.head 6 -  Call AddMsgToLog( "SAM_FetchRowDone", wParam, lParam )
+.head 5 +  On SAM_RowHeaderClick
+.head 6 -  Call AddMsgToLog( "SAM_RowHeaderClick", wParam, lParam )
+.head 5 +  On SAM_RowHeaderDoubleClick
+.head 6 -  Call AddMsgToLog( "SAM_RowHeaderDoubleClick", wParam, lParam )
+.head 5 +  On SAM_RowSetContext
+.head 6 -  Call AddMsgToLog( "SAM_RowSetContext", wParam, lParam )
+.head 5 +  On SAM_RowValidate
+.head 6 -  Call AddMsgToLog( "SAM_RowValidate", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_AreaLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_AreaLBtnDown", wParam, lParam )
+.head 5 +  On MTM_AreaLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_AreaLBtnUp", wParam, lParam )
+.head 5 +  On MTM_AreaLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_AreaLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_AreaRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_AreaRBtnDown", wParam, lParam )
+.head 5 +  On MTM_AreaRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_AreaRBtnUp", wParam, lParam )
+.head 5 +  On MTM_AreaRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_AreaRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_CornerLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_CornerLBtnDown", wParam, lParam )
+.head 5 +  On MTM_CornerLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_CornerLBtnUp", wParam, lParam )
+.head 5 +  On MTM_CornerLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_CornerLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_CornerRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_CornerRBtnDown", wParam, lParam )
+.head 5 +  On MTM_CornerRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_CornerRBtnUp", wParam, lParam )
+.head 5 +  On MTM_CornerRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_CornerRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColHdrLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrLBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrLBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_ColHdrRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrRBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrRBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColHdrSepLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepLBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepLBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepLBtnDblClk", wParam, lParam )
+.head 6 -  Call MTblAutoSizeColumn( hWndForm, SalNumberToWindowHandle( wParam ), MTASC_SPLITROWS )
+.head 5 +  On MTM_ColHdrSepRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepRBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepRBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_RowHdrLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrLBtnDown", wParam, lParam )
+.head 5 +  On MTM_RowHdrLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrLBtnUp", wParam, lParam )
+.head 5 +  On MTM_RowHdrLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_RowHdrRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrRBtnDown", wParam, lParam )
+.head 5 +  On MTM_RowHdrRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrRBtnUp", wParam, lParam )
+.head 5 +  On MTM_RowHdrRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_SplitBarLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarLBtnDown", wParam, lParam )
+.head 5 +  On MTM_SplitBarLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarLBtnUp", wParam, lParam )
+.head 5 +  On MTM_SplitBarLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_SplitBarRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarRBtnDown", wParam, lParam )
+.head 5 +  On MTM_SplitBarRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarRBtnUp", wParam, lParam )
+.head 5 +  On MTM_SplitBarRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColMoved
+.head 6 -  Call AddMsgToLog( "MTM_ColMoved", wParam, lParam )
+.head 5 +  On MTM_ColPosChanged
+.head 6 -  Call AddMsgToLog( "MTM_ColPosChanged", wParam, lParam )
+.head 5 +  On MTM_ColSized
+.head 6 -  Call AddMsgToLog( "MTM_ColSized", wParam, lParam )
+.head 5 +  On MTM_Reset
+.head 6 -  Call AddMsgToLog( "MTM_Reset", wParam, lParam )
+.head 5 +  On MTM_RowDeleted
+.head 6 -  Call AddMsgToLog( "MTM_RowDeleted", wParam, lParam )
+.head 5 +  On MTM_RowInserted
+.head 6 -  Call AddMsgToLog( "MTM_RowInserted", wParam, lParam )
+.head 5 +  On MTM_RowsSwapped
+.head 6 -  Call AddMsgToLog( "MTM_RowsSwapped", wParam, lParam )
+.head 5 +  On MTM_SplitBarMoved
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarMoved", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_CollapseRow
+.head 6 -  Call AddMsgToLog( "MTM_CollapseRow", wParam, lParam )
+.head 5 +  On MTM_CollapseRowDone
+.head 6 -  Call AddMsgToLog( "MTM_CollapseRowDone", wParam, lParam )
+.head 5 +  On MTM_ExpandRow
+.head 6 -  Call AddMsgToLog( "MTM_ExpandRow", wParam, lParam )
+.head 5 +  On MTM_ExpandRowDone
+.head 6 -  Call AddMsgToLog( "MTM_ExpandRowDone", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_QuerySortValue
+.head 6 -  Return SalSendMsg( SalNumberToWindowHandle( wParam ), MTM_QuerySortValue, 0, lParam )
+.head 5 +  On MTM_QuerySortString
+.head 6 -  Return SalSendMsg( SalNumberToWindowHandle( wParam ), MTM_QuerySortString, 0, lParam )
+.head 5 -  !
+.head 5 +  On MTM_BtnClick
+.head 6 -  Call AddMsgToLog( "MTM_BtnClick", wParam, lParam )
+.head 5 +  On MTM_HyperlinkClick
+.head 6 -  Call AddMsgToLog( "MTM_HyperlinkClick", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_Paint
+.head 6 -  Call AddMsgToLog( "MTM_Paint", wParam, lParam )
+.head 5 +  On MTM_PaintDone
+.head 6 -  Call AddMsgToLog( "MTM_PaintDone", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_LoadChildRows
+.head 6 -  Call AddMsgToLog( "MTM_LoadChildRows", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ShowCellTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellBtnTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellBtnTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellImageTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellImageTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellTextTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellTextTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellCompleteTextTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellCompleteTextTip", wParam, lParam )
+.head 5 +  On MTM_ShowColHdrTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowColHdrTip", wParam, lParam )
+.head 5 +  On MTM_ShowColHdrGrpTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowColHdrGrpTip", wParam, lParam )
+.head 5 +  On MTM_ShowCornerTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCornerTip", wParam, lParam )
+.head 5 +  On MTM_ShowRowHdrTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowRowHdrTip", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_DrawItem
+.head 6 -  Call AddMsgToLog( "MTM_DrawItem", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_QueryBestCellWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryBestCellWidth", wParam, lParam )
+.head 5 +  On MTM_QueryBestColHdrWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryBestColHdrWidth", wParam, lParam )
+.head 5 +  On MTM_QueryBestCellHeight
+.head 6 -  Call AddMsgToLog( "MTM_QueryBestCellHeight", wParam, lParam )
+.head 5 +  On MTM_QueryMaxColWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryMaxColWidth", wParam, lParam )
+.head 5 +  On MTM_QueryMaxRowHeight
+.head 6 -  Call AddMsgToLog( "MTM_QueryMaxRowHeight", wParam, lParam )
+.head 5 +  On MTM_QueryMinColWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryMinColWidth", wParam, lParam )
+.head 5 +  On MTM_QueryMinRowHeight
+.head 6 -  Call AddMsgToLog( "MTM_QueryMinRowHeight", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColSelChanged
+.head 6 -  Call AddMsgToLog( "MTM_ColSelChanged", wParam, lParam )
+.head 5 +  On MTM_RowSelChanged
+.head 6 -  Call AddMsgToLog( "MTM_RowSelChanged", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_FocusCellChanged
+.head 6 -  Call AddMsgToLog( "MTM_FocusCellChanged", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_LButtonDown
+.head 6 -  Call AddMsgToLog( "MTM_LButtonDown", wParam, lParam )
+.head 3 +  Functional Class: CFont
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  String: Name
+.head 5 -  Number: Size
+.head 5 -  Number: Enh
+.head 4 -  Functions
+.head 3 +  Custom Control Class: ccImage
+.head 4 -  DLL Name:
+.head 4 -  Display Settings
+.head 5 -  DLL Name:
+.head 5 -  MS Windows Class Name:
+.head 5 -  Style:  Class Default
+.head 5 -  ExStyle:  Class Default
+.head 5 -  Title:
+.head 5 -  Window Location and Size
+.head 6 -  Left:
+.head 6 -  Top:
+.head 6 -  Width:  Class Default
+.head 6 -  Width Editable? Class Default
+.head 6 -  Height: Class Default
+.head 6 -  Height Editable? Class Default
+.head 5 -  Visible? Class Default
+.head 5 -  Border? Class Default
+.head 5 -  Etched Border? Class Default
+.head 5 -  Hollow? Class Default
+.head 5 -  Vertical Scroll? Class Default
+.head 5 -  Horizontal Scroll? Class Default
+.head 5 -  Tab Stop? Class Default
+.head 5 -  Tile To Parent? Class Default
+.head 5 -  Font Name: Class Default
+.head 5 -  Font Size: Class Default
+.head 5 -  Font Enhancement: Class Default
+.head 5 -  Text Color: Class Default
+.head 5 -  Background Color: Class Default
+.head 5 -  DLL Settings
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CMImgCtl
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: OnCreate
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Call SetBackBrush( MIMG_BRUSH_DIAGCROSS, COLOR_Gray )
+.head 7 -  Call SetAlignFlags( MIMG_ALIGN_HCENTER | MIMG_ALIGN_VCENTER, TRUE )
+.head 4 +  Message Actions
+.head 5 +  On SAM_Create
+.head 6 -  Call OnCreate( )
+.head 3 +  Child Table Class: CImageTbl
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left:
+.head 6 -  Top:
+.head 6 -  Width:  5.867"
+.head 6 -  Width Editable? Class Default
+.head 6 -  Height: 1.976"
+.head 6 -  Height Editable? Class Default
+.head 5 -  Visible? Class Default
+.head 5 -  Font Name: Class Default
+.head 5 -  Font Size: Class Default
+.head 5 -  Font Enhancement: Class Default
+.head 5 -  Text Color: Class Default
+.head 5 -  Background Color: Class Default
+.head 5 -  View: Class Default
+.head 5 -  Allow Row Sizing? Yes
+.head 5 -  Lines Per Row: 1
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 32500
+.head 5 -  Discardable? No
+.head 4 -  Next Class Child Key: 7
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 +  Contents
+.head 5 +  Column: colImage
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 1
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Image
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? Yes
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colHandle
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 2
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Handle
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colType
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 3
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? Yes
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colSize
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 5
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Size
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? Yes
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colBpp
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 7
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Bpp
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? Yes
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: OnCreate
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Call MTblSubClass( hWndForm )
+.head 7 -  Call MTblSetFlags( hWndForm, MTBL_FLAG_CLIP_FOCUS_AREA, TRUE )
+.head 7 -  Call MTblEnableMWheelScroll( hWndForm, TRUE )
+.head 5 -  !
+.head 5 +  Function: GetColorText
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  String:
+.head 6 +  Parameters
+.head 7 -  Number: p_nColor
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: sColor
+.head 6 +  Actions
+.head 7 +  If p_nColor = MIMG_COLOR_UNDEF
+.head 8 -  Set sColor = "<undefined>"
+.head 7 +  Else
+.head 8 -  Set sColor = STRING_Null
+.head 7 -  Return sColor
+.head 5 +  Function: GetSizeText
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  String:
+.head 6 +  Parameters
+.head 7 -  Number: p_nWid
+.head 7 -  Number: p_nHt
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SalNumberToStrX( p_nWid, 0 ) || " X " || SalNumberToStrX( p_nHt, 0 )
+.head 5 +  Function: GetTypeText
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  String:
+.head 6 +  Parameters
+.head 7 -  Number: p_nType
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 +  Select Case p_nType
+.head 8 +  Case MIMG_TYPE_UNKNOWN
+.head 9 -  Return "<Unknown>"
+.head 8 +  Case MIMG_TYPE_BMP
+.head 9 -  Return "BMP"
+.head 8 +  Case MIMG_TYPE_GIF
+.head 9 -  Return "GIF"
+.head 8 +  Case MIMG_TYPE_JPG
+.head 9 -  Return "JPG"
+.head 8 +  Case MIMG_TYPE_PNG
+.head 9 -  Return "PNG"
+.head 8 +  Case MIMG_TYPE_ICO
+.head 9 -  Return "ICO"
+.head 8 +  Case MIMG_TYPE_TIF
+.head 9 -  Return "TIF"
+.head 8 +  Case MIMG_TYPE_TGA
+.head 9 -  Return "TGA"
+.head 8 +  Case MIMG_TYPE_PCX
+.head 9 -  Return "PCX"
+.head 8 +  Case MIMG_TYPE_WBMP
+.head 9 -  Return "WBMP"
+.head 8 +  Case MIMG_TYPE_WMF
+.head 9 -  Return "WMF"
+.head 8 +  Default
+.head 9 -  Return "<Unknown>"
+.head 5 +  Function: ReadImage
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  Number: p_nImage
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Boolean: bOk
+.head 7 -  Number: nAttr
+.head 7 -  Number: nHt
+.head 7 -  Number: nRow
+.head 7 -  Number: nTextColor
+.head 7 -  Number: nType
+.head 7 -  Number: nTrColor
+.head 7 -  Number: nWid
+.head 7 -  String: sText
+.head 6 +  Actions
+.head 7 -  Set nRow = SalTblQueryContext( hWndForm )
+.head 7 -  !
+.head 7 -  Call MTblSetCellImage( colImage, nRow, p_nImage, MTSI_REDRAW | MTSI_ALIGN_HCENTER | MTSI_ALIGN_VCENTER | MTSI_NOLEAD_LEFT | MTSI_NOLEAD_TOP )
+.head 7 -  Set colHandle = p_nImage
+.head 7 -  !
+.head 7 -  Set nType = MImgGetType( p_nImage )
+.head 7 -  Set colType = GetTypeText( nType )
+.head 7 -  !
+.head 7 +  If MImgGetSize( p_nImage, nWid, nHt )
+.head 8 -  Set colSize = GetSizeText( nWid, nHt )
+.head 7 -  !
+.head 7 -  Set colBpp = MImgGetBpp( p_nImage )
+.head 5 +  Function: ReadImages
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: n
+.head 7 -  Number: nImages
+.head 7 -  Number: nRow
+.head 7 -  Number: naImages[*]
+.head 6 +  Actions
+.head 7 -  Call SalTblReset( hWndForm )
+.head 7 -  !
+.head 7 -  Set nImages = MImgEnum( naImages )
+.head 7 +  While n < nImages
+.head 8 -  Set nRow = SalTblInsertRow( hWndForm, TBL_MaxRow )
+.head 8 +  If nRow != TBL_Error
+.head 9 -  Call SalTblSetRowFlags( hWndForm, nRow, ROW_New, FALSE )
+.head 9 -  Call ReadImage( naImages[n] )
+.head 8 -  Set n = n + 1
+.head 7 -  ! Call MTblAutoSizeColumn( hWndForm, hWndNULL, MTASC_ALLROWS )
+.head 4 +  Message Actions
+.head 5 +  On SAM_Create
+.head 6 -  Call OnCreate( )
+.head 2 +  Default Classes
+.head 3 -  MDI Window: cBaseMDI
+.head 3 -  Form Window:
+.head 3 -  Dialog Box:
+.head 3 -  Table Window:
+.head 3 -  Quest Window:
+.head 3 -  Data Field:
+.head 3 -  Spin Field:
+.head 3 -  Multiline Field:
+.head 3 -  Pushbutton:
+.head 3 -  Radio Button:
+.head 3 -  Option Button:
+.head 3 -  Check Box:
+.head 3 -  Child Table:
+.head 3 -  Quest Child Window: cQuickDatabase
+.head 3 -  List Box:
+.head 3 -  Combo Box:
+.head 3 -  Picture:
+.head 3 -  Vertical Scroll Bar:
+.head 3 -  Horizontal Scroll Bar:
+.head 3 -  Column:
+.head 3 -  Background Text:
+.head 3 -  Group Box:
+.head 3 -  Line:
+.head 3 -  Frame:
+.head 3 -  Custom Control:
+.head 3 -  ActiveX:
+.head 2 -  Application Actions
+.head 1 +  Form Window: frmLOC3
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: LOC 3
+.head 2 -  Icon File:
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Automatically Created at Runtime? Yes
+.head 3 -  Initial State: Normal
+.head 3 -  Maximizable? No
+.head 3 -  Minimizable? No
+.head 3 -  Allow Child Docking? No
+.head 3 -  Docking Orientation: All
+.head 3 -  System Menu? No
+.head 3 -  Resizable? No
+.head 3 -  Window Location and Size
+.head 4 -  Left: 9.513"
+.head 4 -  Top: 1.542"
+.head 4 -  Width:  8.283"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 3.679"
+.head 4 -  Height Editable? Yes
+.head 3 -  Form Size
+.head 4 -  Width:  Default
+.head 4 -  Height: Default
+.head 4 -  Number of Pages: Dynamic
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 2 -  Description:
+.head 2 -  Named Menus
+.head 2 -  Menu
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Data Field: dfIn
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.533"
+.head 6 -  Top: 0.036"
+.head 6 -  Width:  4.8"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 -  Background Text: IN
+.head 4 -  Resource Id: 43643
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.083"
+.head 5 -  Top: 0.06"
+.head 5 -  Width:  0.4"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfOut
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.533"
+.head 6 -  Top: 0.321"
+.head 6 -  Width:  4.85"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 -  Background Text: Histo
+.head 4 -  Resource Id: 43644
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.083"
+.head 5 -  Top: 0.31"
+.head 5 -  Width:  0.4"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfLoc5
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 1.383"
+.head 6 -  Top: 0.321"
+.head 6 -  Width:  6.7"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 -  Background Text: --> Loc5
+.head 4 -  Resource Id: 31667
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.383"
+.head 5 -  Top: 0.345"
+.head 5 -  Width:  1.0"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? No
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfFichier
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.183"
+.head 6 -  Top: 4.738"
+.head 6 -  Width:  5.3"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbAction
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Action
+.head 4 -  Window Location and Size
+.head 5 -  Left: 5.433"
+.head 5 -  Top: 0.024"
+.head 5 -  Width:  1.1"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.714"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Light Gray
+.head 4 -  Background Color: Salmon
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call PalHttpCockpit( 601, '', '', '', '', gsModuleNom, gsModuleLigne, '' )
+.head 6 -  Call SalDisableWindow( hWndItem)
+.head 6 -  Call SalHideWindow( hWndItem)
+.head 6 -  Call SalEnableWindow( pbStop )
+.head 6 -  Call SalShowWindow( pbStop )
+.head 6 -  Call SalTimerSet( hWndForm, 1, 100 )
+.head 3 +  Pushbutton: pbStop
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Stop
+.head 4 -  Window Location and Size
+.head 5 -  Left: 5.433"
+.head 5 -  Top: 0.024"
+.head 5 -  Width:  1.1"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.714"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Light Green
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call PalHttpCockpit( 699, '', '', '', '', gsModuleNom, gsModuleLigne, '' )
+.head 6 -  Call SalDisableWindow( hWndItem)
+.head 6 -  Call SalHideWindow( hWndItem)
+.head 6 -  Call SalEnableWindow( pbAction )
+.head 6 -  Call SalShowWindow( pbAction )
+.head 6 -  Call SalTimerKill( hWndForm, 1 )
+.head 5 +  On SAM_Create
+.head 6 -  Call SalDisableWindow( hWndItem )
+.head 6 -  Call SalHideWindow( hWndItem)
+.head 3 +  Child Table: tblFiles
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.083"
+.head 6 -  Top: 1.06"
+.head 6 -  Width:  7.8"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 2.0"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  View: Table
+.head 5 -  Allow Row Sizing? No
+.head 5 -  Lines Per Row: Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 10000
+.head 5 -  Discardable? No
+.head 4 +  Contents
+.head 5 +  Column: colFile
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Fichier
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.867"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colExt
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Ext.
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  0.533"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colSize
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Taille
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Left
+.head 6 -  Width:  0.8"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colDateC
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Date - Heure Création
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Date/Time
+.head 6 -  Justify: Center
+.head 6 -  Width:  1.933"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colDate
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Date - Heure Copie
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Date/Time
+.head 6 -  Justify: Center
+.head 6 -  Width:  1.817"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 4 -  Functions
+.head 4 +  Window Variables
+.head 5 -  Number: tnRow
+.head 4 -  Message Actions
+.head 3 +  Data Field: dfNbFichier
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 2.283"
+.head 6 -  Top: 0.988"
+.head 6 -  Width:  4.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Data Field: dfNbRestant
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: Number
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 7.533"
+.head 6 -  Top: 4.738"
+.head 6 -  Width:  1.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: #0
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbQuit
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Quitter
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.633"
+.head 5 -  Top: 0.024"
+.head 5 -  Width:  1.217"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.714"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 6 -  Call DispatchMessage(  )
+.head 6 -  Call SalModalDialog(dlgPW, hWndForm, 'MASTER', wbOkQuit)
+.head 6 +  If wbOkQuit
+.head 7 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 6 +  Else
+.head 7 -  Call SalMessageBox('Mot de passe erroné !!','ERREUR', MB_Ok )
+.head 7 -  Call SalSendMsg( pbAction, SAM_Click,0,0)
+.head 5 +  On SAM_Create
+.head 6 -  Call SalPicSet( hWndItem, resExitWin , PIC_FormatBitmap )
+.head 3 -  ! ! ! Aide cockpit
+.head 3 +  Pushbutton: pbF1
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: F1
+.head 4 -  Window Location and Size
+.head 5 -  Left: 12.283"
+.head 5 -  Top: 7.821"
+.head 5 -  Width:  0.5"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? No
+.head 4 -  Keyboard Accelerator: F1
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( pbStop, SAM_Click , 0,0)
+.head 6 -  Call SalModalDialog( dlgCockpitAide, hWndForm , wsPathHTTP, wsPathTmp , '',  gsModuleNom, gsModuleLigne,
+	wsPathTmp || '\\T_' || gsModuleNom || '_'||gsModuleLigne || '.SRV',  'T_' || gsModuleNom || '_'||gsModuleLigne || '.SRV' )
+.head 6 -  Call SalSendMsg( pbAction, SAM_Click , 0,0)
+.head 3 +  Pushbutton: pbProfile
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Profiles Médias
+.head 4 -  Window Location and Size
+.head 5 -  Left: 5.433"
+.head 5 -  Top: 0.774"
+.head 5 -  Width:  2.4"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.262"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: System Window Color
+.head 4 -  Background Color: Charcoal
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 +  If SalIsWindowEnabled( pbStop )
+.head 7 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 6 -  Call SalModalDialog( dlgProfileMedia, hWndForm )
+.head 3 +  Data Field: dfLibelleR
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.633"
+.head 6 -  Top: 2.988"
+.head 6 -  Width:  8.0"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.393"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: 14
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Blue
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbViderHistoDB
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Vider Table TRAITEMENT
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.083"
+.head 5 -  Top: 0.631"
+.head 5 -  Width:  2.6"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: System Window Color
+.head 4 -  Background Color: Charcoal
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 6 -  Call SalModalDialog(dlgPW, hWndForm, 'MASTER', wbOkVider)
+.head 6 +  If wbOkVider
+.head 7 -  Call PalResetDB()
+.head 6 +  Else
+.head 7 -  Call SalMessageBox('Mot de passe erroné !!','ERREUR', MB_Ok )
+.head 3 +  Check Box: cbDelTraitement
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Delete lignes TRAITEMENT
+.head 4 -  Window Location and Size
+.head 5 -  Left: 2.733"
+.head 5 -  Top: 0.631"
+.head 5 -  Width:  2.55"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Message Actions
+.head 2 +  Functions
+.head 3 +  Function: PalPopulateTbl
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Number: lnFiles
+.head 5 -  Number: lnAttrib[*]
+.head 5 -  String: lsFiles[*]
+.head 5 -  Number: lnSize[*]
+.head 5 -  Date/Time: ldDateF[*]
+.head 5 -  Number: lnI
+.head 5 -  Number: lnRow
+.head 5 -  String: lsDebut
+.head 5 -  String: lsFin
+.head 4 +  Actions
+.head 5 -  Set lnFiles = VisDosEnumFileInfo (dfIn||"\\*.ZIP", FA_Standard, lsFiles, lnSize, ldDateF, lnAttrib)
+.head 5 -  Set lnI = 0
+.head 5 +  If lnFiles > 0
+.head 6 -  Set dfNbFichier = SalNumberToStrX( lnFiles, 0) ||" Fichier(s) à traiter ..."
+.head 6 -  Set dfNbRestant = lnFiles
+.head 6 -  Call SalTblReset( tblFiles )
+.head 6 +  While lnI < lnFiles
+.head 7 -  Set lnRow = SalTblInsertRow( tblFiles, TBL_MaxRow )
+.head 7 -  Call SalTblSetContext( tblFiles, lnRow )
+.head 7 -  Set tblFiles.colFile = lsFiles[lnI]
+.head 7 -  Set tblFiles.colExt = PalDtmExtension( lsFiles[lnI])
+.head 7 -  Set tblFiles.colSize = lnSize[lnI]
+.head 7 -  Set tblFiles.colDate = ldDateF[lnI]
+.head 7 -  Call SalFileGetDateTime( dfIn||"\\"|| lsFiles[lnI] , tblFiles.colDateC )
+.head 7 -  Set lnI = lnI +1
+.head 6 -  Call SalTblSortRows( tblFiles, 3, TBL_SortIncreasing  )
+.head 6 -  !
+.head 6 -  Set lnI = -1
+.head 6 +  While SalTblFindNextRow( tblFiles, lnI, 0,0 )
+.head 7 -  Call SalTblSetContext( tblFiles, lnI )
+.head 7 -  Call SalTblSetFocusRow(  tblFiles, lnI )
+.head 7 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_New, FALSE )
+.head 7 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_Selected, TRUE )
+.head 7 -  Call DispatchMessage(  )
+.head 7 +  If PalTraitementFile(  )
+.head 8 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_Edited, TRUE )
+.head 7 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_Selected, FALSE )
+.head 7 -  Set dfNbRestant = dfNbRestant - 1
+.head 6 -  Call SalTimerSet( hWndForm, 1, 1000 )
+.head 6 -  !
+.head 5 +  Else
+.head 6 -  Set dfNbFichier = "Aucun fichier à traiter ..."
+.head 6 -  Call SalTblReset( tblFiles )
+.head 6 -  Call SalTimerSet( hWndForm, 1, 1000 )
+.head 3 +  Function: PalTraitementFile
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  Boolean:
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  File Handle: lhFile
+.head 5 -  File Handle: lhFile2
+.head 5 -  String: lsFile
+.head 5 -  String: lsFileHisto
+.head 5 -  String: lsFileCopie
+.head 5 -  String: lsFileFormatF
+.head 5 -  String: lsFilePDF
+.head 5 -  String: lsDateHeure
+.head 5 -  String: lsSousRepertoireCopie
+.head 5 -  String: lsBatchUnsign
+.head 5 -  Long String: llsTraceAction
+.head 5 -  Long String: llsTraceActionFtp
+.head 5 -  Boolean: bCopie
+.head 5 -  Boolean: bContinue
+.head 5 -  Number: lnI
+.head 5 -  Number: nReturn
+.head 5 -  Long String: sBuffer
+.head 5 -  Long String: sData
+.head 5 -  Boolean: bXMLPhase[*]
+.head 5 -  Number: nDebut
+.head 5 -  Number: nLong
+.head 5 -  Number: nError
+.head 5 -  String: sError
+.head 5 -  String: lsExe
+.head 5 -  String: lsIP
+.head 5 -  String: lsUser
+.head 5 -  String: lsPW
+.head 5 -  String: lsDir
+.head 5 -  String: lsTrtId
+.head 5 -  String: lsPathExe
+.head 5 -  Number: lnTypeR
+.head 5 -  !
+.head 5 -  String: lsDescMedia
+.head 5 -  String: lsRepMedia
+.head 5 -  Number: lnIdMedia
+.head 5 -  Number: lnFTPMedia
+.head 5 -  Number: lnIntervMedia
+.head 5 -  String: lsFileMaj
+.head 5 -  Date/Time: ldDateMaj
+.head 5 -  Boolean: bGoExe
+.head 5 -  Boolean: bTraite
+.head 5 -  String: lsElection
+.head 4 +  Actions
+.head 5 -  Set lsFile = dfIn || "\\" || tblFiles.colFile
+.head 5 -  Set dfFichier = lsFile
+.head 5 -  !
+.head 5 -  Set llsTraceAction = "FICHIER: "|| lsFile
+.head 5 -  Set bContinue = TRUE
+.head 5 -  Call SalDateToStr( SalDateCurrent(  ),  lsDateHeure )
+.head 5 +  If llsTraceAction != ''
+.head 6 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 5 -  Set llsTraceAction = llsTraceAction || "Heure début : "|| lsDateHeure
+.head 5 -  ! Phase 1: Copie / transfert
+.head 5 +  If bContinue
+.head 6 -  ! Set lsFileCopie = wsPhase[2]  ||"\\"|| tblFiles.colFile
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 2: Copie / Transfert"
+.head 6 -  !
+.head 6 -  ! Copie FTP STESUD vers Web5
+.head 6 +  If SalStrLeftX( tblFiles.colFile, 1) = 'R' or  SalStrLeftX( tblFiles.colFile, 1) = 'I'
+.head 7 -  Call SqlPrepareAndExecute( ghSqlMain, "Select prm_ftp, prm_exe,Prm_Ftp_IP, Prm_Ftp_User, Prm_Ftp_PW, prm_Ftp_Dir, prm_PathExe, prm_repertoireOut, Prm_Type_R
+	from profile_Media
+	where prm_Actif = 1 and prm_id = 0
+	into :lnFTPMedia, :lsExe, :lsIP, :lsUser, :lsPW, :lsDir, :lsPathExe, :lsRepMedia, :lnTypeR  ")
+.head 7 +  If SqlFetchNext( ghSqlMain, Btmp )
+.head 8 +  If (SalStrLeftX( tblFiles.colFile, 1) = 'R' ) or
+   (SalStrLeftX( tblFiles.colFile, 1) = 'I' ) 
+.head 9 -  Set bGoExe = FALSE
+.head 9 -  Set lsElection = SalStrUpperX( SalStrLeftX( SalStrRightX( tblFiles.colFile, 6 ) , 2) )
+.head 9 +  If lnFTPMedia
+.head 10 +  If NOT PalPutFileByFTP(lsIP, lsUser, lsPW, lsDir, lsFile, tblFiles.colFile, llsTraceActionFtp)
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || llsTraceActionFtp
+.head 11 -  Call PalHttpCockpit( 605, '', '1', llsTraceActionFtp , '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 10 +  Else
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Transfert FTP stésud Ok vers "|| lsIP
+.head 11 -  Set bGoExe = TRUE
+.head 9 +  If lsRepMedia != ''
+.head 10 +  If SalStrRightX( lsRepMedia, 1 ) != '\\'
+.head 11 -  Set lsRepMedia = lsRepMedia ||'\\'
+.head 10 +  If VisFileCopy( lsFile , lsRepMedia||"*.*" ) =1
+.head 11 -  ! Call SalMessageBox( "Fichier copie de "||lsFile ||"
+à "|| lsRepMedia , "", MB_Ok )
+.head 11 -  Set bGoExe = TRUE
+.head 9 -  !
+.head 9 +  If lsExe != '' and bGoExe
+.head 10 -  Call PalNextValueApplParm( 'TRT_ID', lsTrtId )
+.head 10 +  If SqlPrepareAndExecute( ghSqlMaj, "Insert into Traitement( trt_id, trt_fichier, trt_applic, TRT_DateHeure, TRT_el )
+	values ( :lsTrtId , :tblFiles.colFile , :lsExe , sysdatetime, :lsElection ) " )
+.head 11 -  Call SqlCommit( ghSqlMaj )
+.head 11 -  Call PalStartExe( lsExe, lsPathExe )
+.head 6 -  !
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  ! Phase 2 : analyse des profils actif
+.head 5 +  If bContinue
+.head 6 +  If SalStrLeftX( tblFiles.colFile, 1) = 'R' or  SalStrLeftX( tblFiles.colFile, 1) = 'I' 
+	OR SalStrLeftX( tblFiles.colFile, 5) = 'COORD'
+.head 7 -  Call SqlPrepareAndExecute( ghSqlMain, "Select  prm_desc, prm_id, prm_repertoireOut , prm_ftp, prm_interval_Tps, prm_MajDate , prm_DernierFichier, prm_exe, prm_pathExe,
+				Prm_Ftp_IP, Prm_Ftp_User, Prm_Ftp_PW, prm_Ftp_Dir, Prm_Type_R
+	from Profile_Media
+	where prm_Actif = 1 and prm_id > 0
+	order by prm_interval_Tps,prm_id 
+	into :lsDescMedia, :lnIdMedia, :lsRepMedia, :lnFTPMedia, :lnIntervMedia, :ldDateMaj, :lsFileMaj, :lsExe, :lsPathExe,
+		:lsIP, :lsUser, :lsPW, :lsDir, :lnTypeR  " )
+.head 7 +  While SqlFetchNext( ghSqlMain, Btmp )
+.head 8 -  Set bTraite = FALSE
+.head 8 +  If SalStrLeftX( tblFiles.colFile, 1) = 'R'
+.head 9 +  If lnTypeR = 1
+.head 10 -  Set bTraite = TRUE
+.head 8 +  Else
+.head 9 -  Set bTraite = TRUE
+.head 8 +  If bTraite
+.head 9 -  Set bGoExe = FALSE
+.head 9 -  Set lsElection = SalStrUpperX( SalStrLeftX( SalStrRightX( tblFiles.colFile, 6 ) , 2) )
+.head 9 +  If lnFTPMedia
+.head 10 +  If NOT PalPutFileByFTP(lsIP, lsUser, lsPW, lsDir, lsFile, tblFiles.colFile, llsTraceActionFtp)
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || llsTraceActionFtp
+.head 11 -  Call PalHttpCockpit( 605, '', '1', llsTraceActionFtp , '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 10 +  Else
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Transfert FTP "||lsDescMedia ||"  Ok vers "|| lsIP
+.head 11 -  Set bGoExe = TRUE
+.head 9 +  If lsRepMedia != ''
+.head 10 +  If SalStrRightX( lsRepMedia, 1 ) != '\\'
+.head 11 -  Set lsRepMedia = lsRepMedia ||'\\'
+.head 10 +  If VisFileCopy( lsFile , lsRepMedia ||"*.*" ) =1
+.head 11 -  ! Call SalMessageBox( "Fichier copie de "||lsFile ||"
+à "|| lsRepMedia , "", MB_Ok )
+.head 11 -  Set bGoExe = TRUE
+.head 9 +  If lsExe != '' and bGoExe
+.head 10 -  Call PalNextValueApplParm( 'TRT_ID', lsTrtId )
+.head 10 +  If SqlPrepareAndExecute( ghSqlMaj, "Insert into Traitement( trt_id, trt_fichier, trt_applic, TRT_DateHeure, TRT_el )
+	values ( :lsTrtId , :tblFiles.colFile , :lsExe , sysdatetime, :lsElection  ) " )
+.head 11 -  Call SqlCommit( ghSqlMaj )
+.head 11 -  Call PalStartExe( lsExe , lsPathExe )
+.head 5 -  ! Phase 3: Histo
+.head 5 +  If bContinue
+.head 6 -  Set lsFileHisto = dfOut  ||"\\"|| tblFiles.colFile
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 2: Mise en Historique"
+.head 6 +  If VisFileCopy( lsFile, lsFileHisto ) = 1
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - Fichier Copié en historique dans "|| dfOut
+.head 6 +  Else
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la copie en historique dans "|| dfOut
+.head 7 -  Call PalHttpCockpit( 605, '1', '', "ERR copie dans "|| dfOut, '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 7 -  Set bContinue = FALSE
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  !
+.head 5 -  ! Phase 5: Cockpit OK
+.head 5 +  If llsTraceAction != ''
+.head 6 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 5 -  Set llsTraceAction = llsTraceAction || "Phase 5: Cockpit + Suppression fichier IN"
+.head 5 +  If bContinue
+.head 6 -  Call PalHttpCockpit( 690, '', '', '', PalDtmExtension(tblFiles.colFile) , gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 5 -  ! Phase terminale - suppression fichier
+.head 5 +  If bContinue
+.head 6 +  If VisFileDelete( lsFile ) = 1
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - Fichier Supprimé dans "|| dfIn
+.head 6 +  Else
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la suppression du fichier dans "|| dfIn
+.head 7 -  Set bContinue = FALSE
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  !
+.head 5 -  Return bContinue
+.head 3 +  ! Function: PalMajDBLoc1
+.head 4 -  Description: 
+.head 4 -  Returns 
+.head 4 +  Parameters 
+.head 5 -  Number: nPhase
+.head 5 -  String: sFile
+.head 5 -  Number: nWarning
+.head 5 -  Number: nError
+.head 5 -  Long String: sInfo
+.head 4 -  Static Variables 
+.head 4 -  Local variables 
+.head 4 +  Actions 
+.head 5 -  Call SqlPrepareAndExecute( ghSqlMaj, "Insert Into HISTO ( His_Etape_Id , His_Fichier, His_Warning, His_Error, HIS_Info , His_dateHeure)
+	values ( :nPhase, :sFile, :nWarning, :nError, :sInfo , sysdate ) " )
+.head 5 -  Call SqlCommit( ghSqlMaj )
+.head 3 +  Function: PalDtmExtension
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  String:
+.head 4 +  Parameters
+.head 5 -  String: sFile
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Number: nCar
+.head 5 -  String: sExt
+.head 5 -  String: sCaract
+.head 4 +  Actions
+.head 5 -  Set sCaract = ''
+.head 5 -  Set nCar = SalStrLength( sFile )
+.head 5 +  While sCaract != '.' and nCar > 0
+.head 6 -  Set sCaract = SalStrMidX( sFile, nCar-1, 1)
+.head 6 +  If sCaract != '.'
+.head 7 -  Set sExt = sCaract || sExt
+.head 6 -  Set nCar = nCar -1
+.head 5 -  Set sExt = SalStrUpperX( sExt )
+.head 5 -  Return (sExt )
+.head 3 +  Function: PalNoteVersion
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call SalSetWindowText( hWndForm, gsModuleNom ||' - '|| gsModuleLigne || '   -    Version: '|| VERSION || ' '|| DATE_VERSION )
+.head 3 -  !
+.head 3 +  Function: PalVerifStructureDb
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Boolean: bExist
+.head 5 -  Number: lnId
+.head 5 -  String: lsEl
+.head 5 -  Number: lnI
+.head 5 -  Number: lnJ
+.head 4 +  Actions
+.head 5 -  Call SalShowWindow( dfLibelleR )
+.head 5 -  Set dfLibelleR = "Vérification de la structure de la DB ... "
+.head 5 -  Call SalBringWindowToTop( dfLibelleR )
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  !
+.head 5 -  Call SqlExists(  "Select * from syscolumns where tbname = 'PROFILE_MEDIA' and NAME = 'PRM_EXE' ", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlSecondaire, "Alter table PROFILE_MEDIA add PRM_EXE char(50) ")
+.head 7 -  Call SqlCommit( ghSqlSecondaire )
+.head 5 -  Call SqlExists(  "Select * from PROFILE_MEDIA where PRM_ID = 0 and PRM_EXE is not null ", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlSecondaire, "Update PROFILE_MEDIA Set PRM_EXE ='LOC3_W5.EXE' where PRM_ID = 0  ")
+.head 7 -  Call SqlCommit( ghSqlSecondaire )
+.head 5 -  Call SqlExists(  "Select * from syscolumns where tbname = 'PROFILE_MEDIA' and NAME = 'PRM_FTP_IP' ", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlSecondaire, "Alter table PROFILE_MEDIA 
+	add PRM_FTP_IP char(20), PRM_FTP_User char(50), PRM_FTP_PW char(50), PRM_FTP_DIR char(50) ")
+.head 7 -  Call SqlCommit( ghSqlSecondaire )
+.head 5 -  Call SqlExists(  "Select * from systables where name = 'TRAITEMENT'", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlSecondaire, "Create table TRAITEMENT
+	(TRT_Applic char(50),
+	TRT_Fichier char(50),
+	TRT_Status Char(1),
+	TRT_DateHeure timestamp,
+	TRT_Id integer ) ")
+.head 7 +  If SqlPrepareAndExecute( ghSqlSecondaire, "create public synonym TRAITEMENT for sysadm.TRAITEMENT ")
+.head 8 +  If SqlPrepareAndExecute( ghSqlSecondaire, "grant all on TRAITEMENT to public ")
+.head 9 -  Call SqlCommit( ghSqlSecondaire )
+.head 8 +  If SqlPrepareAndExecute( ghSqlSecondaire,
+"Insert into appl_parm ( NAME, LABEL_NL, LABEL_FR, DESC_NL, DESC_FR, VALUE, VALUE_DATATYPE, USER_YN, SYSMAN_YN, ORDER)
+	values( 'TRT_ID','Id traitement externe','Id traitement externe', '', '', '1', 'N', 'N','Y',7) " )
+.head 9 -  Call SqlCommit( ghSqlSecondaire )
+.head 5 -  Call SqlExists(  "Select * from syscolumns where tbname = 'PROFILE_MEDIA' and NAME = 'PRM_PATHEXE' ", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlSecondaire, "Alter table PROFILE_MEDIA add PRM_PATHEXE char(250) ")
+.head 7 -  Call SqlCommit( ghSqlSecondaire )
+.head 5 -  Call SqlExists(  "Select * from syscolumns where tbname = 'PROFILE_MEDIA' and NAME = 'PRM_TYPE_R' ", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlSecondaire, "Alter table PROFILE_MEDIA add PRM_TYPE_R integer ")
+.head 7 -  Call SqlCommit( ghSqlSecondaire )
+.head 5 -  Call SqlExists(  "Select * from syscolumns where tbname = 'TRAITEMENT' and NAME = 'TRT_EL' ", bExist)
+.head 5 +  If Not bExist
+.head 6 +  If SqlPrepareAndExecute( ghSqlMaj, "Alter table TRAITEMENT
+	Add TRT_EL char(2)")
+.head 7 -  Call SqlCommit( ghSqlMaj )
+.head 5 -  !
+.head 5 -  Call PalUpdateStatistics(  )
+.head 5 -  Call SalHideWindow( dfLibelleR )
+.head 3 +  Function: PalUpdateStatistics
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Sql Handle: lhSql
+.head 4 +  Actions
+.head 5 +  If SqlConnect( lhSql )
+.head 6 -  Call SalShowWindow( dfLibelleR )
+.head 6 -  Set dfLibelleR = "Update statistics sur la Base de Données ... "
+.head 6 -  Call SalBringWindowToTop( dfLibelleR )
+.head 6 -  Call DispatchMessage(  )
+.head 6 -  Call SqlSetParameter( lhSql, DBP_FETCHTHROUGH, TRUE, '' )
+.head 6 -  Call SqlSetParameter( lhSql, DBP_PRESERVE, TRUE, '' )
+.head 6 -  Call SqlSetIsolationLevel( lhSql, 'RL' )
+.head 6 +  If SqlPrepareAndExecute( lhSql, "Update Statistics on Database ")
+.head 7 -  Call SqlCommit( lhSql )
+.head 6 +  Else
+.head 7 -  Call SqlPrepareAndExecute( lhSql, "ROLLBACK" )
+.head 7 -  Call SalMessageBox( "Erreur dans l'update statistics", "ERREUR", MB_Ok | MB_IconHand )
+.head 6 -  Call SqlDisconnect( lhSql )
+.head 3 -  !
+.head 3 +  Function: PalPutFileByFTP
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  Boolean:
+.head 4 +  Parameters
+.head 5 -  String: psIP
+.head 5 -  String: psUser
+.head 5 -  String: psPW
+.head 5 -  String: psRep
+.head 5 -  String: sFileIN
+.head 5 -  String: sFileOUT
+.head 5 -  Receive String: sMsg
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  String: lsNumServeurFtp
+.head 5 -  Long String: lsPasswordFtp
+.head 5 -  Long String: lsPasswordFtp2
+.head 5 -  Long String: lsPasswordFtp3
+.head 5 -  Long String: lsUserFtp
+.head 5 -  Long String: lsUserFtp2
+.head 5 -  Long String: lsUserFtp3
+.head 5 -  Long String: lsServeurFtp
+.head 5 -  Long String: lsServeurFtp2
+.head 5 -  Long String: lsServeurFtp3
+.head 5 -  Long String: lsServeurFtpC
+.head 5 -  Number: lnhOpenFtp
+.head 5 -  Number: lnhConnectFtp
+.head 5 -  Number: lnhFile
+.head 5 -  Number: lnPortFtp
+.head 5 -  Number: lnSemanFtp
+.head 5 -  Number: lnI
+.head 5 -  Number: nSizeOrigine
+.head 5 -  Number: nSizeArrivee
+.head 5 -  String: lsDirFtp
+.head 5 -  File Handle: lhFile
+.head 5 -  Boolean: bContinue
+.head 4 +  Actions
+.head 5 -  Set sMsg =''
+.head 5 -  Set bContinue = TRUE
+.head 5 -  Call VisWaitCursor( TRUE )
+.head 5 -  ! FTP PARAMETRES
+.head 5 +  If bContinue
+.head 6 -  Set lsServeurFtp = psIP
+.head 6 -  Set lsUserFtp = psUser
+.head 6 -  Set lsPasswordFtp = psPW
+.head 6 -  Set lsDirFtp = psRep
+.head 6 -  Set lnPortFtp= 21
+.head 6 -  Set lnSemanFtp= 0
+.head 5 -  !
+.head 5 -  ! OPEN
+.head 5 +  If bContinue
+.head 6 -  Set lnhOpenFtp = InternetOpenA( 'Stesud FTP', 1, '', '', 0 )
+.head 6 +  If lnhOpenFtp =0
+.head 7 -  Set sMsg = "Erreur lors de l'ouverture de la ligne FTP" ||' ('|| lsServeurFtp ||')'
+.head 7 -  Set bContinue =  FALSE
+.head 5 -  ! CONNECT
+.head 5 +  If bContinue
+.head 6 -  Set lsNumServeurFtp = '1'
+.head 6 -  Set lnhConnectFtp = InternetConnectA( lnhOpenFtp,lsServeurFtp,lnPortFtp, lsUserFtp, lsPasswordFtp, INTERNET_SERVICE_FTP,lnSemanFtp,0 )
+.head 6 +  If lnhConnectFtp =0
+.head 7 -  Set sMsg = "Erreur de Connection vers le serveur FTP"  ||' ('|| lsServeurFtp ||')'
+.head 7 -  Set bContinue =  FALSE
+.head 6 +  Else
+.head 7 -  Set lsServeurFtpC = lsServeurFtp
+.head 5 -  ! CD
+.head 5 +  If bContinue
+.head 6 +  If NOT FtpSetCurrentDirectoryA( lnhConnectFtp, lsDirFtp )
+.head 7 -  Set sMsg = "Erreur lors du Changement de répertoire : "|| lsDirFtp  || " - " ||' ('|| lsServeurFtpC ||')'
+.head 7 -  Set bContinue =  FALSE
+.head 5 -  ! PUT FILE
+.head 5 +  If bContinue
+.head 6 +  If NOT FtpPutFileA( lnhConnectFtp, sFileIN, sFileOUT, FTP_TRANSFER_TYPE_BINARY, 0 ) 
+.head 7 -  Set sMsg = "Erreur lors du transfert du fichier : "||  sFileIN  ||' ('|| lsServeurFtpC ||')'
+.head 7 -  Set bContinue = FALSE
+.head 5 -  !
+.head 5 -  Call VisWaitCursor( FALSE )
+.head 5 -  Return bContinue
+.head 3 -  !
+.head 3 +  Function: PalStartExe
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 +  Parameters
+.head 5 -  String: sNomExe
+.head 5 -  String: sPathExe
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  File Handle: hFile
+.head 5 -  String: sCurrentDir
+.head 4 +  Actions
+.head 5 +  If sPathExe != ''
+.head 6 +  If SalStrRightX( sPathExe, 1 ) != "\\"
+.head 7 -  Set sPathExe = sPathExe ||"\\"
+.head 5 -  Call SalFileGetCurrentDirectory( sCurrentDir )
+.head 5 +  If SalFileOpen( hFile, sPathExe || sNomExe, OF_Exist )
+.head 6 +  If SalAppFind( sNomExe , TRUE) = hWndNULL
+.head 7 -  Call SalFileSetCurrentDirectory( sPathExe )
+.head 7 -  Call SalLoadApp( sPathExe ||  sNomExe, "" )
+.head 7 -  Call SalFileSetCurrentDirectory( sCurrentDir )
+.head 6 -  !
+.head 3 +  Function: PalResetDB
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call VisWaitCursor( TRUE )
+.head 5 +  If cbDelTraitement
+.head 6 -  Call SqlPrepareAndExecute( ghSqlMaj, "delete from Traitement" )
+.head 5 +  Else
+.head 6 -  Call SqlPrepareAndExecute( ghSqlMaj, "Update Traitement 
+Set TRT_STATUS = 'N' , TRT_DATEHEURE = sysdate, TRT_DH_TRAITE = sysdate
+where TRT_STATUS is null " )
+.head 5 -  Call SqlCommit( ghSqlMaj )
+.head 5 -  Set cbDelTraitement = FALSE
+.head 5 -  Call VisWaitCursor( FALSE )
+.head 5 -  Call SalMessageBox( "Reset Ok", "Msg", MB_Ok )
+.head 2 -  Window Parameters
+.head 2 +  Window Variables
+.head 3 -  Window Handle: whPhase[*]
+.head 3 -  String: wsPhase[*]
+.head 3 -  String: wsPath
+.head 3 -  String: wsPathTmp
+.head 3 -  String: wsPathHTTP
+.head 3 -  File Handle: whFile
+.head 3 -  String: wsPathINI
+.head 3 -  String: wsExeUNsign
+.head 3 -  String: wsExeOpenXml
+.head 3 -  Boolean: wbOkQuit
+.head 3 -  Boolean: wbOkVider
+.head 2 +  Message Actions
+.head 3 +  On SAM_CreateComplete
+.head 4 -  Set wsPath = PalGetPrgmDirectory()
+.head 4 +  If NOT SalFileOpen( whFile, wsPath ||"\\LOC3.INI", OF_Exist )
+.head 5 -  Call SalMessageBox( "Aucun LOC3.INI trouvé !!", "ERREUR", MB_Ok )
+.head 5 -  Call SalSendMsg( hWndForm, SAM_Close , 0,0 )
+.head 4 -  Set wsPathINI = wsPath ||'\\LOC3.ini'
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'DATABASE', 'DB',  'LOC3', SqlDatabase, wsPathINI )
+.head 4 -  Call SalGetProfileString( 'DATABASE', 'USER',  'SYSADM', SqlUser, wsPathINI )
+.head 4 -  Set SqlPassword = SqlUser
+.head 4 +  If SqlConnect( ghSqlMain )
+.head 5 -  Call SqlSetParameter( ghSqlMain, DBP_FETCHTHROUGH, TRUE, '' )
+.head 5 -  Call SqlSetParameter( ghSqlMain, DBP_PRESERVE, TRUE, '' )
+.head 5 -  Call SqlSetIsolationLevel( ghSqlMain, 'RL' )
+.head 5 -  !
+.head 5 -  Call SqlConnect( ghSqlSecondaire )
+.head 5 -  Call SqlSetParameter( ghSqlSecondaire, DBP_FETCHTHROUGH, TRUE, '' )
+.head 5 -  Call SqlSetParameter( ghSqlSecondaire, DBP_PRESERVE, TRUE, '' )
+.head 5 -  Call SqlSetIsolationLevel( ghSqlSecondaire, 'RL' )
+.head 5 -  !
+.head 5 -  Call SqlConnect( ghSqlMaj )
+.head 5 -  Call SqlSetParameter( ghSqlMaj, DBP_FETCHTHROUGH, TRUE, '' )
+.head 5 -  Call SqlSetParameter( ghSqlMaj, DBP_PRESERVE, TRUE, '' )
+.head 5 -  Call SqlSetIsolationLevel( ghSqlMaj, 'RL' )
+.head 4 +  Else
+.head 5 -  Call SalMessageBox( "Aucune connection à la base de données !!","Message", MB_Ok | MB_IconExclamation )
+.head 5 -  Call SalQuit(  )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'APPLIC', 'MODULE',  "LOC3", gsModuleNom, wsPathINI )
+.head 4 -  Call SalGetProfileString( 'APPLIC', 'LIGNE',  "", gsModuleLigne, wsPathINI )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_HTTP', wsPath||"\\HTTP.INI" , wsPathHTTP, wsPathINI )
+.head 4 -  Call PalHttpIniRead( wsPathHTTP, wsPathINI )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_IN',  wsPath||'\\IN', dfIn, wsPathINI )
+.head 4 -  Call PalMakeAllDir( dfIn )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_HISTO',  wsPath||'\\OUT', dfOut, wsPathINI )
+.head 4 -  Call PalMakeAllDir( dfOut )
+.head 4 -  !
+.head 4 -  Set wsPathTmp = wsPath||'\\TMP'
+.head 4 -  Call PalMakeAllDir( wsPathTmp )
+.head 4 -  !
+.head 4 -  ! Call SalGetProfileString( 'PATH', 'PATH_LOC5',  wsPath||'\\IN_LOC5', wsPhase[2], wsPathINI )
+.head 4 -  ! Call PalMakeAllDir( wsPhase[2] )
+.head 4 -  ! Set dfLoc5 = wsPhase[2]
+.head 4 -  Call PalNoteVersion(  )
+.head 4 -  !
+.head 4 -  Call PalVerifStructureDb()
+.head 4 -  !
+.head 3 +  On SAM_Close
+.head 4 -  Call SqlDisconnect( ghSqlSecondaire )
+.head 4 -  Call SqlDisconnect( ghSqlMaj )
+.head 4 -  Call SqlDisconnect( ghSqlMain )
+.head 3 +  On SAM_Timer
+.head 4 -  Call SalDisableWindow( hWndForm )
+.head 4 -  Call SalTimerKill( hWndForm, 1 )
+.head 4 -  Call PalPopulateTbl()
+.head 4 -  Call SalEnableWindow( hWndForm )
+.head 3 +  On 17
+.head 4 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 4 -  Call PalHttpCockpit( 698, '', '', '', '',  gsModuleNom, gsModuleLigne, '' )
+.head 4 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 1 +  Dialog Box: dlgProfileMedia
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Profiles Médias
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Type of Dialog: Modal
+.head 3 -  Allow Dock to Parent? No
+.head 3 -  Docking Orientation: All
+.head 3 -  Window Location and Size
+.head 4 -  Left: 7.8"
+.head 4 -  Top: 2.344"
+.head 4 -  Width:  13.183"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 4.31"
+.head 4 -  Height Editable? Yes
+.head 3 -  Absolute Screen Location? Yes
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 3 -  Resizable? No
+.head 3 -  Vertical Scroll? Yes
+.head 3 -  Horizontal Scroll? Yes
+.head 2 -  Description:
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Child Table: tblProfile
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class: CTable
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.0"
+.head 6 -  Top: Default
+.head 6 -  Width:  6.533"
+.head 6 -  Width Editable? Class Default
+.head 6 -  Height: 3.667"
+.head 6 -  Height Editable? Class Default
+.head 5 -  Visible? Class Default
+.head 5 -  Font Name: Class Default
+.head 5 -  Font Size: Class Default
+.head 5 -  Font Enhancement: Class Default
+.head 5 -  Text Color: Class Default
+.head 5 -  Background Color: Class Default
+.head 5 -  View: Class Default
+.head 5 -  Allow Row Sizing? Class Default
+.head 5 -  Lines Per Row: Class Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: Class Default
+.head 5 -  Discardable? Class Default
+.head 4 +  Contents
+.head 5 +  Column: colId
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title:
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colDesc
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Description
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: 30
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  3.067"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_SetFocus
+.head 8 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 7 +  On SAM_AnyEdit
+.head 8 -  Call PalMajProfile( )
+.head 5 +  Column: colIntervTps
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Temps
+.head 6 -  Visible? No
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: 3
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Center
+.head 6 -  Width:  0.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: #0
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_AnyEdit
+.head 8 +  If colId = 0
+.head 9 -  Set colIntervTps = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Return FALSE
+.head 8 +  Else
+.head 9 -  Call PalMajProfile(  )
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Set colIntervTps = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 5 +  Column: colRepOut
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Répertoire Out
+.head 6 -  Visible? No
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  3.483"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Uppercase
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_AnyEdit
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 5 +  Column: colFTP
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: FTP
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Center
+.head 6 -  Width:  0.433"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Check Box
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value: 1
+.head 8 -  Uncheck Value: 0
+.head 8 -  Ignore Case? No
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_AnyEdit
+.head 8 +  If colId = 0
+.head 9 -  Set colFTP = FALSE
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 8 +  Else
+.head 9 -  Call PalMajProfile(  )
+.head 5 +  Column: colFtp_IP
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type Fichiers
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.583"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Drop Down List
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? No
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 +  List Values
+.head 7 -  Text: Tous fichiers
+.head 7 -  Text: Formats I et R
+.head 7 -  Text: Coordonnées
+.head 7 -  Text: Listes CSV
+.head 6 +  Message Actions
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_Validate
+.head 8 +  If colId != 0
+.head 9 -  Set tblProfile.colTypeF = SalListQuerySelection( tblProfile.colTypeFichier )
+.head 9 -  Call PalMajProfile( )
+.head 5 +  Column: colFtp_User
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type Fichiers
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.583"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Drop Down List
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? No
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 +  List Values
+.head 7 -  Text: Tous fichiers
+.head 7 -  Text: Formats I et R
+.head 7 -  Text: Coordonnées
+.head 7 -  Text: Listes CSV
+.head 6 +  Message Actions
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_Validate
+.head 8 +  If colId != 0
+.head 9 -  Set tblProfile.colTypeF = SalListQuerySelection( tblProfile.colTypeFichier )
+.head 9 -  Call PalMajProfile( )
+.head 5 +  Column: colFtp_PW
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type Fichiers
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.583"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Drop Down List
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? No
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 +  List Values
+.head 7 -  Text: Tous fichiers
+.head 7 -  Text: Formats I et R
+.head 7 -  Text: Coordonnées
+.head 7 -  Text: Listes CSV
+.head 6 +  Message Actions
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_Validate
+.head 8 +  If colId != 0
+.head 9 -  Set tblProfile.colTypeF = SalListQuerySelection( tblProfile.colTypeFichier )
+.head 9 -  Call PalMajProfile( )
+.head 5 +  Column: colFtp_Rep
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type Fichiers
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.583"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Drop Down List
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? No
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 +  List Values
+.head 7 -  Text: Tous fichiers
+.head 7 -  Text: Formats I et R
+.head 7 -  Text: Coordonnées
+.head 7 -  Text: Listes CSV
+.head 6 +  Message Actions
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_Validate
+.head 8 +  If colId != 0
+.head 9 -  Set tblProfile.colTypeF = SalListQuerySelection( tblProfile.colTypeFichier )
+.head 9 -  Call PalMajProfile( )
+.head 5 +  Column: colTypeFichier
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type Fichiers
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.583"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Drop Down List
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? No
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 +  List Values
+.head 7 -  Text: Tous fichiers
+.head 7 -  Text: Formats I et R
+.head 7 -  Text: Coordonnées
+.head 7 -  Text: Listes CSV
+.head 6 +  Message Actions
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_Validate
+.head 8 +  If colId != 0
+.head 9 -  Set tblProfile.colTypeF = SalListQuerySelection( tblProfile.colTypeFichier )
+.head 9 -  Call PalMajProfile( )
+.head 5 +  Column: colTypeF
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Type Fichiers
+.head 6 -  Visible? No
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.517"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? No
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colExe
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Exe associé
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.75"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Uppercase
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_AnyEdit
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 5 +  Column: colPathExe
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Path Exe
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.75"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Uppercase
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_AnyEdit
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Return FALSE
+.head 7 +  On SAM_SetFocus
+.head 8 +  If colId = 0
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 5 +  Column: colEtat
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Etat
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Center
+.head 6 -  Width:  0.967"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colMajDate
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Màj Date
+.head 6 -  Visible? No
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Date/Time
+.head 6 -  Justify: Center
+.head 6 -  Width:  1.683"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: DateTime
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colMajFichier
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Màj Fichier
+.head 6 -  Visible? No
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.767"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colActif
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Actif
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Center
+.head 6 -  Width:  0.433"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Check Box
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value: 1
+.head 8 -  Uncheck Value: 0
+.head 8 -  Ignore Case? No
+.head 6 -  List Values
+.head 6 +  Message Actions
+.head 7 +  On SAM_AnyEdit
+.head 8 +  If colId = 0
+.head 9 -  Set colActif = TRUE
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 9 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Selected, TRUE )
+.head 9 -  Call SalTblSetContext( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Call SalTblSetFocusRow( tblProfile, SalTblQueryContext( tblProfile ) )
+.head 9 -  Return FALSE
+.head 8 +  Else
+.head 9 -  Call PalMajProfile(  )
+.head 5 +  Column: colFormatR_Type
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Actif
+.head 6 -  Visible? No
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Center
+.head 6 -  Width:  0.433"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Check Box
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value: 1
+.head 8 -  Uncheck Value: 0
+.head 8 -  Ignore Case? No
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 4 +  Functions
+.head 5 +  Function: tfOnCreate
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Boolean: b
+.head 7 -  String: s
+.head 7 -  Number: nImg
+.head 7 -  Window Handle: hWndaCols[*]
+.head 6 +  Actions
+.head 7 -  ! Subclass
+.head 7 -  Call MTblSubClass( hWndForm )
+.head 7 -  ! Mousewheel scrolling
+.head 7 -  Call MTblEnableMWheelScroll( hWndForm, TRUE )
+.head 7 -  Call MTblSetMWheelOption( hWndForm, MTMW_PAGE_KEY, VK_Control )
+.head 7 -  ! Selection
+.head 7 -  Call MTblSetSelectionColors( hWndForm, COLOR_White, COLOR_DarkBlue )
+.head 7 -  Call MTblSetFlags( hWndForm, MTBL_FLAG_FULL_OVERLAP_SELECTION, TRUE )
+.head 5 +  Function: PalPopulateTbl
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Call SalTblPopulate( tblProfile, ghSqlMain, "Select prm_id, prm_desc,prm_interval_tps, prm_repertoireOut,  prm_Ftp, prm_MajDate,prm_DernierFichier,prm_Actif , prm_TypeFichier, prm_exe,prm_Pathexe,
+			Prm_Ftp_IP, Prm_Ftp_User, Prm_Ftp_PW, prm_Ftp_Dir, Prm_Type_R
+	from profile_Media 
+	order by prm_interval_Tps,prm_id 
+	into :tblProfile.colId,:tblProfile.colDesc,:tblProfile.colIntervTps,:tblProfile.colRepOut,:tblProfile.colFTP,:tblProfile.colMajDate,:tblProfile.colMajFichier
+		,:tblProfile.colActif,:tblProfile.colTypeF,:tblProfile.colExe,:tblProfile.colPathExe
+		,:tblProfile.colFtp_IP,:tblProfile.colFtp_User,:tblProfile.colFtp_PW,:tblProfile.colFtp_Rep, :tblProfile.colFormatR_Type ", TBL_FillAll )
+.head 7 +  If SalTblAnyRows( tblProfile, 0,0 )
+.head 8 -  Call SalTblSetContext( tblProfile, 0 )
+.head 8 -  Call SalTblSetFocusRow(  tblProfile, 0 )
+.head 8 -  Call SalTblSetRowFlags( tblProfile, 0, ROW_Selected, TRUE )
+.head 8 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0)
+.head 5 +  Function: PalFocusLine
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Set dfId = tblProfile.colId
+.head 7 -  Set dfDesc = tblProfile.colDesc
+.head 7 -  Set dfTemps = tblProfile.colIntervTps
+.head 7 -  Set cbActif = tblProfile.colActif
+.head 7 -  Set cbFTP = tblProfile.colFTP
+.head 7 -  Set dfRepOut = tblProfile.colRepOut
+.head 7 -  Set dfIP = tblProfile.colFtp_IP
+.head 7 -  Set dfUser = tblProfile.colFtp_User
+.head 7 -  Set dfPW = tblProfile.colFtp_PW
+.head 7 -  Set dfRepFTP = tblProfile.colFtp_Rep
+.head 7 -  Set dfExe = tblProfile.colExe
+.head 7 -  Set dfPathExe = tblProfile.colPathExe
+.head 7 -  Set cmbTypeFichier = tblProfile.colTypeFichier
+.head 7 -  Call SalHideWindow( pbStartExe )
+.head 7 -  !
+.head 7 +  If tblProfile.colId = 0
+.head 8 -  Call SalDisableWindow( dfDesc )
+.head 8 -  Call SalDisableWindow( dfTemps )
+.head 8 -  Call SalDisableWindow( cbActif )
+.head 8 -  Call SalDisableWindow( cbFTP )
+.head 8 -  Call SalDisableWindow( dfRepOut )
+.head 8 -  Call SalDisableWindow( pbRepOutRech )
+.head 8 -  Call SalDisableWindow( dfIP )
+.head 8 -  Call SalDisableWindow( dfUser )
+.head 8 -  Call SalDisableWindow( dfPW )
+.head 8 -  Call SalDisableWindow( dfRepFTP )
+.head 8 -  Call SalDisableWindow( dfExe )
+.head 8 -  Call SalDisableWindow( dfPathExe )
+.head 8 -  Call SalDisableWindow( cmbTypeFichier )
+.head 7 +  Else
+.head 8 -  Call SalEnableWindow( dfDesc )
+.head 8 -  Call SalEnableWindow( cbActif )
+.head 8 +  If cbActif
+.head 9 -  Call SalEnableWindow( dfTemps )
+.head 9 -  Call SalEnableWindow( dfRepOut )
+.head 9 -  Call SalEnableWindow( pbRepOutRech )
+.head 9 -  Call SalEnableWindow( cbFTP )
+.head 9 +  If cbFTP
+.head 10 -  Call SalEnableWindow( dfIP )
+.head 10 -  Call SalEnableWindow( dfUser )
+.head 10 -  Call SalEnableWindow( dfPW )
+.head 10 -  Call SalEnableWindow( dfRepFTP )
+.head 9 +  Else
+.head 10 -  Call SalDisableWindow( dfIP )
+.head 10 -  Call SalDisableWindow( dfUser )
+.head 10 -  Call SalDisableWindow( dfPW )
+.head 10 -  Call SalDisableWindow( dfRepFTP )
+.head 9 -  Call SalEnableWindow( dfExe )
+.head 9 -  Call SalEnableWindow( dfPathExe )
+.head 9 -  Call SalEnableWindow( cmbTypeFichier )
+.head 8 +  Else
+.head 9 -  Call SalDisableWindow( dfTemps )
+.head 9 -  Call SalDisableWindow( cbFTP )
+.head 9 -  Call SalDisableWindow( dfRepOut )
+.head 9 -  Call SalDisableWindow( pbRepOutRech )
+.head 9 -  Call SalDisableWindow( dfIP )
+.head 9 -  Call SalDisableWindow( dfUser )
+.head 9 -  Call SalDisableWindow( dfPW )
+.head 9 -  Call SalDisableWindow( dfRepFTP )
+.head 9 -  Call SalDisableWindow( dfExe )
+.head 9 -  Call SalDisableWindow( dfPathExe )
+.head 9 -  Call SalDisableWindow( cmbTypeFichier )
+.head 7 -  !
+.head 7 +  If tblProfile.colTypeF = 0 or tblProfile.colTypeF = 1
+.head 8 -  Call SalDisableWindow( rbAucun )
+.head 8 -  Call SalEnableWindow( rbFormatR)
+.head 8 -  ! Call SalEnableWindow( rbFormatRAvecGraph )
+.head 8 +  If tblProfile.colFormatR_Type = NUMBER_Null or tblProfile.colFormatR_Type = 1
+.head 9 -  Set rbFormatR = TRUE
+.head 9 -  Set tblProfile.colFormatR_Type = 1
+.head 8 +  Else If tblProfile.colFormatR_Type = 2
+.head 9 -  Set tblProfile.colFormatR_Type = 1
+.head 9 -  Set rbFormatR = TRUE
+.head 9 -  ! Set rbFormatRAvecGraph = TRUE
+.head 8 +  If tblProfile.colFormatR_Type = NUMBER_Null
+.head 9 -  Call PalMajProfile(  )
+.head 7 +  Else
+.head 8 -  Call SalEnableWindow( rbAucun )
+.head 8 -  Call SalDisableWindow( rbFormatR)
+.head 8 -  ! Call SalDisableWindow( rbFormatRAvecGraph )
+.head 8 -  Set rbAucun = TRUE
+.head 8 +  If tblProfile.colFormatR_Type = NUMBER_Null
+.head 9 -  Call PalMajProfile(  )
+.head 8 -  Set tblProfile.colFormatR_Type = 0
+.head 7 -  !
+.head 7 +  If cbActif
+.head 8 +  If tblProfile.colExe != ''
+.head 9 +  If SalAppFind( tblProfile.colExe, TRUE) != hWndNULL
+.head 10 -  Call MTblSetCellBackColor( tblProfile.colEtat , SalTblQueryContext( tblProfile), COLOR_LightGreen, 0  )
+.head 10 -  Set tblProfile.colEtat = "START"
+.head 9 +  Else
+.head 10 -  Call MTblSetCellBackColor( tblProfile.colEtat , SalTblQueryContext( tblProfile), COLOR_Salmon, 0  )
+.head 10 -  Set tblProfile.colEtat = "STOP"
+.head 8 +  If tblProfile.colEtat = 'STOP'
+.head 9 -  Call SalShowWindow( pbStartExe )
+.head 5 +  Function: PalMajProfile
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nTypeFR
+.head 6 +  Actions
+.head 7 +  If rbAucun
+.head 8 -  Set nTypeFR = 0
+.head 7 +  Else If rbFormatR
+.head 8 -  Set nTypeFR = 1
+.head 7 +  Else
+.head 8 -  Set nTypeFR = 2
+.head 7 -  Call SqlPrepareAndExecute( ghSqlMaj, "Update profile_Media 
+	Set prm_desc= :tblProfile.colDesc ,prm_repertoireOut= :tblProfile.colRepOut , prm_Ftp= :tblProfile.colFTP, prm_interval_tps=:tblProfile.colIntervTps ,
+		prm_MajDate= :tblProfile.colMajDate ,prm_DernierFichier= :tblProfile.colMajFichier ,prm_Actif= :tblProfile.colActif , prm_TypeFichier = :tblProfile.colTypeF,
+		prm_exe = :tblProfile.colExe, prm_ftp_ip =:tblProfile.colFtp_IP, prm_Ftp_User=:tblProfile.colFtp_User,prm_Ftp_Pw=:tblProfile.colFtp_PW,prm_ftp_Dir=:tblProfile.colFtp_Rep,
+		prm_Pathexe = :tblProfile.colPathExe, PRM_Type_R= :nTypeFR
+	Where prm_id = :tblProfile.colId " )
+.head 7 -  Call SqlCommit( ghSqlMaj )
+.head 7 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_Edited, FALSE )
+.head 5 +  Function: PalAddProfile
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: lsId
+.head 7 -  Number: lnRow
+.head 6 +  Actions
+.head 7 -  Set lnRow = SalTblInsertRow( tblProfile, TBL_MaxRow )
+.head 7 +  If lnRow != TBL_Error
+.head 8 -  Call SalTblSetContext( tblProfile, lnRow )
+.head 8 -  Call PalNextValueApplParm( "PRM_ID", lsId )
+.head 8 -  Set tblProfile.colDesc = 'Nouveau Profile'
+.head 8 -  Set tblProfile.colId = SalStrToNumber( lsId )
+.head 8 -  Set tblProfile.colIntervTps = 5
+.head 8 -  Set tblProfile.colTypeF = 1
+.head 8 -  Call SalListSetSelect( tblProfile.colTypeFichier, tblProfile.colTypeF )
+.head 8 -  Call SqlPrepareAndExecute( ghSqlMaj, "Insert into profile_Media ( prm_id, prm_Ftp, prm_Actif, prm_Desc, prm_Interval_tps, prm_TypeFichier) 
+	values ( :lsId, null, null, :tblProfile.colDesc, :tblProfile.colIntervTps, :tblProfile.colTypeF) " )
+.head 8 -  Call SqlCommit( ghSqlMaj )
+.head 8 -  Call SalTblSetRowFlags( tblProfile, SalTblQueryContext( tblProfile ), ROW_New, FALSE )
+.head 8 -  Call SalTblSetFocusCell( tblProfile, lnRow, tblProfile.colDesc , 0, -1 )
+.head 5 +  Function: PalDelProfile
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: lsId
+.head 7 -  Number: lnRow
+.head 6 +  Actions
+.head 7 +  If SalTblAnyRows( tblProfile, ROW_Selected, 0 )
+.head 8 +  If SalMessageBox( "Désirez-vous supprimer ce profile ?", "Question", MB_YesNo | MB_DefButton2 | MB_IconQuestion ) = IDYES
+.head 9 -  Call SqlPrepareAndExecute( ghSqlMaj, "delete from profile_Media where prm_id= :tblProfile.colId " )
+.head 9 -  Call SqlCommit( ghSqlMaj )
+.head 9 -  Call tblProfile.PalPopulateTbl(  )
+.head 4 -  Window Variables
+.head 4 +  Message Actions
+.head 5 +  On SAM_Create
+.head 6 -  Call tfOnCreate()
+.head 6 -  Call SalTblSetTableFlags( hWndForm, TBL_Flag_SingleSelection, TRUE )
+.head 6 -  Call SalTblSetTableFlags( hWndForm, TBL_Flag_MovableCols, FALSE )
+.head 5 +  On SAM_CreateComplete
+.head 6 -  Call tblProfile.PalPopulateTbl(  )
+.head 5 +  On SAM_FetchRowDone
+.head 6 +  If tblProfile.colId = 0
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colDesc , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colIntervTps , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colRepOut , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colFTP , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colMajDate , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colMajFichier , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colTypeFichier , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colActif , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colExe , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 7 -  Call MTblSetCellBackColor( tblProfile.colPathExe , SalTblQueryContext( tblProfile), COLOR_LightGray, 0  )
+.head 6 +  If tblProfile.colTypeF = NUMBER_Null
+.head 7 -  Set tblProfile.colTypeF = 0
+.head 6 -  Call SalListSetSelect( tblProfile.colTypeFichier, tblProfile.colTypeF )
+.head 6 +  If tblProfile.colExe != ''
+.head 7 +  If SalAppFind( tblProfile.colExe, TRUE) != hWndNULL
+.head 8 -  Call MTblSetCellBackColor( tblProfile.colEtat , SalTblQueryContext( tblProfile), COLOR_LightGreen, 0  )
+.head 8 -  Set tblProfile.colEtat = "START"
+.head 7 +  Else
+.head 8 -  Call MTblSetCellBackColor( tblProfile.colEtat , SalTblQueryContext( tblProfile), COLOR_Salmon, 0  )
+.head 8 -  Set tblProfile.colEtat = "STOP"
+.head 5 +  On SAM_Click
+.head 6 -  Call PalFocusLine(  )
+.head 5 +  On SAM_RowHeaderClick
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0)
+.head 3 +  Pushbutton: pbAdd
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Ajouter
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.683"
+.head 5 -  Top: 3.81"
+.head 5 -  Width:  1.35"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call tblProfile.PalAddProfile()
+.head 3 +  Pushbutton: pbDel
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Supprimer
+.head 4 -  Window Location and Size
+.head 5 -  Left: 2.383"
+.head 5 -  Top: 3.81"
+.head 5 -  Width:  1.3"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call tblProfile.PalDelProfile()
+.head 3 -  Background Text: Id:
+.head 4 -  Resource Id: 42190
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.633"
+.head 5 -  Top: 0.155"
+.head 5 -  Width:  0.9"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfId
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: Number
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 7.583"
+.head 6 -  Top: 0.095"
+.head 6 -  Width:  0.8"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Check Box: cbActif
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: ACTIF
+.head 4 -  Window Location and Size
+.head 5 -  Left: 11.083"
+.head 5 -  Top: 0.095"
+.head 5 -  Width:  1.4"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Set tblProfile.colActif = cbActif
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: Descript.:
+.head 4 -  Resource Id: 42191
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.633"
+.head 5 -  Top: 0.405"
+.head 5 -  Width:  0.9"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfDesc
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 30
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 7.583"
+.head 6 -  Top: 0.381"
+.head 6 -  Width:  4.75"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colDesc = dfDesc
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: Ordre:
+.head 4 -  Resource Id: 42192
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.633"
+.head 5 -  Top: 0.726"
+.head 5 -  Width:  0.9"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfTemps
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 2
+.head 5 -  Data Type: Number
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 7.583"
+.head 6 -  Top: 0.667"
+.head 6 -  Width:  0.8"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: #0
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colIntervTps = dfTemps
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: Rep. OUT:
+.head 4 -  Resource Id: 42194
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.633"
+.head 5 -  Top: 1.048"
+.head 5 -  Width:  0.9"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfRepOut
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 250
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 7.583"
+.head 6 -  Top: 0.988"
+.head 6 -  Width:  4.75"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colRepOut = dfRepOut
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 +  Pushbutton: pbRepOutRech
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: ...
+.head 4 -  Window Location and Size
+.head 5 -  Left: 12.333"
+.head 5 -  Top: 0.988"
+.head 5 -  Width:  0.35"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 -  On SAM_Click
+.head 3 +  Check Box: cbFTP
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Transfert FTP
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.633"
+.head 5 -  Top: 1.417"
+.head 5 -  Width:  1.95"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Set tblProfile.colFTP = cbFTP
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: IP Srv:
+.head 4 -  Resource Id: 42195
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 8.883"
+.head 5 -  Top: 1.44"
+.head 5 -  Width:  0.85"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfIP
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 20
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 9.933"
+.head 6 -  Top: 1.381"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colFtp_IP = dfIP
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: User:
+.head 4 -  Resource Id: 42196
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 8.883"
+.head 5 -  Top: 1.69"
+.head 5 -  Width:  0.9"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfUser
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 50
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 9.933"
+.head 6 -  Top: 1.631"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colFtp_User = dfUser
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: P.W.:
+.head 4 -  Resource Id: 42197
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 8.883"
+.head 5 -  Top: 1.94"
+.head 5 -  Width:  0.9"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfPW
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 9.933"
+.head 6 -  Top: 1.881"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Invisible
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colFtp_PW = dfPW
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: Repertoire :
+.head 4 -  Resource Id: 42198
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 8.883"
+.head 5 -  Top: 2.19"
+.head 5 -  Width:  1.083"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfRepFTP
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 9.933"
+.head 6 -  Top: 2.131"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colFtp_Rep = dfRepFTP
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 -  Background Text: Exe associé:
+.head 4 -  Resource Id: 42199
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.683"
+.head 5 -  Top: 2.369"
+.head 5 -  Width:  1.15"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 -  Background Text: Path:
+.head 4 -  Resource Id: 4501
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 7.0"
+.head 5 -  Top: 2.595"
+.head 5 -  Width:  0.883"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 -  Background Text: Nom Exe:
+.head 4 -  Resource Id: 4502
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 7.017"
+.head 5 -  Top: 2.821"
+.head 5 -  Width:  0.967"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.179"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfPathExe
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 50
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 8.033"
+.head 6 -  Top: 2.56"
+.head 6 -  Width:  4.35"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colPathExe = dfPathExe
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 +  Data Field: dfExe
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 50
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 8.033"
+.head 6 -  Top: 2.81"
+.head 6 -  Width:  3.0"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 +  Message Actions
+.head 5 +  On SAM_Validate
+.head 6 -  Set tblProfile.colExe = dfExe
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 +  Pushbutton: pbExeRech
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: ...
+.head 4 -  Window Location and Size
+.head 5 -  Left: 12.383"
+.head 5 -  Top: 2.56"
+.head 5 -  Width:  0.35"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 -  On SAM_Click
+.head 3 +  Pushbutton: pbStartExe
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Start EXE
+.head 4 -  Window Location and Size
+.head 5 -  Left: 11.533"
+.head 5 -  Top: 2.845"
+.head 5 -  Width:  1.2"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 +  If dfExe != ''
+.head 7 -  Call PalStartExe( dfExe, dfPathExe )
+.head 3 -  Background Text: Type de fichiers à transférer:
+.head 4 -  Resource Id: 42200
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.683"
+.head 5 -  Top: 3.19"
+.head 5 -  Width:  2.8"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.19"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Combo Box: cmbTypeFichier
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 9.733"
+.head 5 -  Top: 3.167"
+.head 5 -  Width:  2.75"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.893"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Editable? No
+.head 4 -  String Type: String
+.head 4 -  Maximum Data Length: Default
+.head 4 -  Sorted? No
+.head 4 -  Always Show List? No
+.head 4 -  Vertical Scroll? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Input Mask: Unformatted
+.head 4 +  List Initialization
+.head 5 -  Text: Tous fichiers
+.head 5 -  Text: Formats I et R
+.head 5 -  Text: Coordonnées
+.head 5 -  ! Text: Listes CSV
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Set tblProfile.colTypeF = SalListQuerySelection( cmbTypeFichier )
+.head 6 -  Set tblProfile.colTypeFichier = cmbTypeFichier
+.head 6 +  If tblProfile.colTypeF = 0 or tblProfile.colTypeF = 1
+.head 7 -  Call SalDisableWindow( rbAucun )
+.head 7 -  Call SalEnableWindow( rbFormatR)
+.head 7 -  ! Call SalEnableWindow( rbFormatRAvecGraph )
+.head 7 +  If tblProfile.colFormatR_Type = 0 or tblProfile.colFormatR_Type = 1
+.head 8 -  Set rbFormatR = TRUE
+.head 7 +  Else If tblProfile.colFormatR_Type = 2
+.head 8 -  Set rbFormatR = TRUE
+.head 8 -  ! Set rbFormatRAvecGraph = TRUE
+.head 6 +  Else
+.head 7 -  Call SalEnableWindow( rbAucun )
+.head 7 -  Call SalDisableWindow( rbFormatR)
+.head 7 -  ! Call SalDisableWindow( rbFormatRAvecGraph )
+.head 7 -  Set rbAucun = TRUE
+.head 7 -  Set tblProfile.colFormatR_Type = 0
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 3 +  Pushbutton: pbClose
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 12.117"
+.head 5 -  Top: 3.631"
+.head 5 -  Width:  0.867"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.571"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 5 +  On SAM_Create
+.head 6 -  Call SalPicSet( hWndItem, resExitWin , PIC_FormatBitmap )
+.head 3 +  Pushbutton: pbCtrlF10
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: F10
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.5"
+.head 5 -  Top: 3.821"
+.head 5 -  Width:  0.483"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalEnableWindow( dfDesc )
+.head 6 -  Call SalEnableWindow( cbActif )
+.head 6 -  Call SalEnableWindow( dfTemps )
+.head 6 -  Call SalEnableWindow( dfRepOut )
+.head 6 -  Call SalEnableWindow( pbRepOutRech )
+.head 6 -  Call SalEnableWindow( cbFTP )
+.head 6 -  Call SalEnableWindow( dfIP )
+.head 6 -  Call SalEnableWindow( dfUser )
+.head 6 -  Call SalEnableWindow( dfPW )
+.head 6 -  Call SalEnableWindow( dfRepFTP )
+.head 6 -  Call SalEnableWindow( dfExe )
+.head 6 -  Call SalEnableWindow( dfPathExe )
+.head 6 -  Call SalEnableWindow( cmbTypeFichier )
+.head 5 +  On SAM_Create
+.head 6 -  Call VisWinLoadAccelerator( pbCtrlF10, SAM_Click, KDS_Ctrl, VK_F10, 0)
+.head 3 +  Radio Button: rbAucun
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Aucun
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.833"
+.head 5 -  Top: 3.452"
+.head 5 -  Width:  0.983"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Create
+.head 6 -  Call SalDisableWindow( hWndItem )
+.head 5 +  On SAM_Click
+.head 6 -  Set tblProfile.colFormatR_Type = 0
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 3 +  Radio Button: rbFormatR
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Format R
+.head 4 -  Window Location and Size
+.head 5 -  Left: 7.883"
+.head 5 -  Top: 3.452"
+.head 5 -  Width:  1.4"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Create
+.head 6 -  Call SalDisableWindow( hWndItem )
+.head 5 +  On SAM_Click
+.head 6 -  Set tblProfile.colFormatR_Type = 1
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 3 +  ! Radio Button: rbFormatRAvecGraph
+.winattr
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Format R avec Evol. Graph
+.head 4 -  Window Location and Size
+.head 5 -  Left: 9.333"
+.head 5 -  Top: 3.452"
+.head 5 -  Width:  2.7"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.end
+.head 4 +  Message Actions 
+.head 5 +  On SAM_Create
+.head 6 -  Call SalDisableWindow( hWndItem )
+.head 5 +  On SAM_Click
+.head 6 -  Set tblProfile.colFormatR_Type = 2
+.head 6 -  Call tblProfile.PalMajProfile()
+.head 2 +  Functions
+.head 3 +  Function: PalStartExe
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 +  Parameters
+.head 5 -  String: sNomExe
+.head 5 -  String: sPathExe
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  File Handle: hFile
+.head 5 -  String: sCurrentDir
+.head 4 +  Actions
+.head 5 +  If sPathExe != ''
+.head 6 +  If SalStrRightX( sPathExe, 1 ) != "\\"
+.head 7 -  Set sPathExe = sPathExe ||"\\"
+.head 5 -  Call SalFileGetCurrentDirectory( sCurrentDir )
+.head 5 +  If SalFileOpen( hFile, sPathExe || sNomExe, OF_Exist )
+.head 6 +  If SalAppFind( sNomExe , TRUE) = hWndNULL
+.head 7 -  Call SalFileSetCurrentDirectory( sPathExe )
+.head 7 -  Call SalLoadApp( sPathExe ||  sNomExe, "" )
+.head 6 -  !
+.head 6 -  Call SalPause(2000)
+.head 6 -  Call SalFileSetCurrentDirectory( sCurrentDir )
+.head 6 -  Call SalSendMsg( tblProfile, SAM_Click, 0,0 )
+.head 5 +  Else
+.head 6 -  Call SalMessageBox(sNomExe || '
+Exe non trouvé "' , 'ERREUR', MB_Ok | MB_IconExclamation )
+.head 2 -  Window Parameters
+.head 2 -  Window Variables
+.head 2 +  Message Actions
+.head 3 +  On SAM_Create
+.head 4 -  Call SalCenterWindow( hWndForm )
+.head 1 +  ! Dialog Box: dlgPW
+.winattr
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Mot de passe
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Type of Dialog: Modal
+.head 3 -  Allow Dock to Parent? No
+.head 3 -  Docking Orientation: All
+.head 3 -  Window Location and Size
+.head 4 -  Left: 5.863"
+.head 4 -  Top: 2.719"
+.head 4 -  Width:  2.95"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 0.964"
+.head 4 -  Height Editable? Yes
+.head 3 -  Absolute Screen Location? Yes
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 3 -  Resizable? No
+.head 3 -  Vertical Scroll? Yes
+.head 3 -  Horizontal Scroll? Yes
+.end
+.head 2 -  Description: 
+.head 2 +  Tool Bar 
+.winattr
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.end
+.head 3 -  Contents 
+.head 2 +  Contents 
+.head 3 +  Data Field: dfPW
+.winattr
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 20
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.183"
+.head 6 -  Top: 0.071"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.31"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Invisible
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: 12
+.head 5 -  Font Enhancement: Bold
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.end
+.head 4 -  Message Actions 
+.head 3 +  Pushbutton: pbOk
+.winattr
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Ok
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.783"
+.head 5 -  Top: 0.512"
+.head 5 -  Width:  1.3"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: Enter
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.end
+.head 4 +  Message Actions 
+.head 5 +  On SAM_Click
+.head 6 -  Set wbOk = TRUE
+.head 6 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 2 -  Functions 
+.head 2 +  Window Parameters 
+.head 3 -  String: psType
+.head 3 -  Receive Boolean: wbOk
+.head 2 +  Window Variables 
+.head 3 -  Number: wnPassage
+.head 2 +  Message Actions 
+.head 3 +  On SAM_Create
+.head 4 -  Call SalCenterWindow( hWndForm )
+.head 4 -  Set wbOk = FALSE
+.head 4 -  Call SalSetWindowText( hWndItem, "Mot de passe")
+.head 3 +  On SAM_Close
+.head 4 +  If wbOk
+.head 5 -  Set wbOk = FALSE
+.head 5 +  If psType = 'MASTER' and SalStrUpperX(dfPW) = 'CODI_MASTER'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VIDER' and SalStrUpperX(dfPW) = 'CODI_RESET'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VALID' and SalStrUpperX(dfPW) = 'CODI_VALID'
+.head 6 -  Set wbOk = TRUE
+.head 1 +  Dialog Box: dlgPW
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Mot de passe
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Type of Dialog: Modal
+.head 3 -  Allow Dock to Parent? No
+.head 3 -  Docking Orientation: All
+.head 3 -  Window Location and Size
+.head 4 -  Left: 5.863"
+.head 4 -  Top: 2.719"
+.head 4 -  Width:  2.95"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 0.964"
+.head 4 -  Height Editable? Yes
+.head 3 -  Absolute Screen Location? Yes
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 3 -  Resizable? No
+.head 3 -  Vertical Scroll? Yes
+.head 3 -  Horizontal Scroll? Yes
+.head 2 -  Description:
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Data Field: dfPW
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 20
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.183"
+.head 6 -  Top: 0.071"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.31"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Invisible
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: 12
+.head 5 -  Font Enhancement: Bold
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbOk
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Ok
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.783"
+.head 5 -  Top: 0.512"
+.head 5 -  Width:  1.3"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: Enter
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Set wbOk = TRUE
+.head 6 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 5 +  On WM_RBUTTONDOWN
+.head 6 -  Call SalSendMsg( pbF10, SAM_Click, 0,0 )
+.head 3 +  Pushbutton: pbF10
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title:
+.head 4 -  Window Location and Size
+.head 5 -  Left: Default
+.head 5 -  Top: Default
+.head 5 -  Width:  Default
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: Default
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? No
+.head 4 -  Keyboard Accelerator: F10
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 +  If psType = 'MASTER'
+.head 7 -  Set dfPW = 'CODI_MASTER'
+.head 6 +  If psType = 'VIDER'
+.head 7 -  Set dfPW = 'CODI_RESET'
+.head 6 +  If psType = 'VALID'
+.head 7 -  Set dfPW = 'CODI_VALID'
+.head 2 -  Functions
+.head 2 +  Window Parameters
+.head 3 -  String: psType
+.head 3 -  Receive Boolean: wbOk
+.head 2 +  Window Variables
+.head 3 -  Number: wnPassage
+.head 2 +  Message Actions
+.head 3 +  On SAM_Create
+.head 4 -  Call SalCenterWindow( hWndForm )
+.head 4 -  Set wbOk = FALSE
+.head 4 -  Call SalSetWindowText( hWndItem, "Mot de passe")
+.head 3 +  On SAM_Close
+.head 4 +  If wbOk
+.head 5 -  Set wbOk = FALSE
+.head 5 +  If psType = 'MASTER' and SalStrUpperX(dfPW) = 'CODI_MASTER'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VIDER' and SalStrUpperX(dfPW) = 'CODI_RESET'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VALID' and SalStrUpperX(dfPW) = 'CODI_VALID'
+.head 6 -  Set wbOk = TRUE

@@ -1,0 +1,263 @@
+/* Filename            : PR_LISTS.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   PR_LISTS.P  $</workFile>
+<revision>$Revision: 1.11 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:25:18  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/PR_LISTS.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2008/11/04 13:17:04 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{disfram.i}
+{typvar.i   "NEW"}
+{selprtvk.i "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR menusel         AS I FORMAT "9" INIT 1                    NO-UNDO.
+DEF VAR menuexe         AS I FORMAT "9" INIT 0                    NO-UNDO.
+
+DEF VAR down-num        AS I                                      NO-UNDO.
+DEF VAR men_set         AS C FORMAT "x(50)" /* EXTENT 6 */              NO-UNDO.
+DEF VAR avail_men_set   AS C FORMAT "x(50)" EXTENT 6              NO-UNDO.
+
+DEF VAR prgs            AS C FORMAT "x(20)"                       NO-UNDO.
+DEF VAR proglist        AS C FORMAT "x(12)" EXTENT 6 INIT
+      ["vostreg","resulbur","resulbur","pv","bijlage","totontv"]  NO-UNDO.
+ 
+DEF VAR burinp1         AS C FORMAT "x(50)"                       NO-UNDO.
+DEF VAR burinp2         AS C FORMAT "x(50)"                       NO-UNDO.
+
+DEF VAR bureau-id       LIKE organigram.orginator                 NO-UNDO.
+DEF VAR sel-bureau      AS C FORMAT "x(50)"                       NO-UNDO.
+
+DEF VAR i               AS I                                      NO-UNDO.
+
+DEF VAR wz-child-type   LIKE organigram.sys-type                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    men_set AT 2 SPACE(1) SKIP
+    WITH FRAME tprtlsts 
+        COLOR DISPLAY VALUE(menu_fg)
+        NO-LABELS 
+        ATTR-SPACE 
+        ROW 4 
+        down-num DOWN
+        CENTERED 
+        OVERLAY.
+
+FORM
+    burinp1   AT 2 SKIP
+    burinp2   AT 2
+    SKIP(1)
+    bureau-id AT 22 SKIP
+    WITH FRAME prompt-fram 
+        NO-LABEL 
+        ROW 9 
+        CENTERED 
+        OVERLAY. 
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+DO i = 1 TO 6:
+    {call.i &prg="mesfil" &param=",'tprtlsts,list' + STRING(i),50,OUTPUT avail_men_set[i]"}
+END.
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST session WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+FIND FIRST urnedest NO-LOCK NO-ERROR.
+FIND FIRST organigram OF urnedest NO-LOCK NO-ERROR.
+
+/******************************************************/
+/*  1  :  Voorlopige staat per kanton                 */
+/*  2  :  Gedeeltelijke resultaten van de bureaus     */
+/*  3  :  Finale resultaten van de bureaus            */
+/*  4  :  Proces verbaal van telling                  */
+/*  5  :  Resultaten per kandidaat - Bijlagen         */
+/*  6  :  Ontvangstbewijs                             */
+/******************************************************/
+prgs = "1".
+
+IF         organigram.sys-type                    = "U"
+AND        session.disk_made                      >  0
+AND        session.disk_read                      >  0
+AND (      session.disk_read MODULO 10            =  0
+     AND ( session.disk_made - session.disk_read) >  2)
+AND        session.disk_read                      < session.disk_made
+THEN prgs = prgs + ",2".
+
+IF         organigram.sys-type                    = "T"
+AND        session.disk_made                      >  0
+AND        session.disk_read                      >  0
+AND        session.disk_read                      < session.disk_made
+THEN prgs = prgs + ",2".
+
+IF  session.disk_read = session.disk_made
+AND setup.orginator   = 0
+THEN prgs = prgs + ",3,4,5".
+
+ASSIGN
+prgs     = prgs + ",6"
+menusel  = 1
+down-num = NUM-ENTRIES(prgs).
+
+REPEAT i = 1 TO down-num WITH FRAME tprtlsts:
+    DISPLAY avail_men_set[INT(ENTRY(i,prgs))] @ men_set.
+    DOWN.
+    PAUSE 0 NO-MESSAGE.
+END.
+UP down-num WITH FRAME tprtlsts.
+
+MenuSelect:
+REPEAT WITH FRAME tprtlsts:
+    menuexe = 0.
+    STATUS INPUT OFF.
+    CHOOSE ROW men_set
+        COLOR VALUE(menu_bg)
+        NO-ERROR
+        GO-ON ("CURSOR-UP" "CURSOR-DOWN")
+        AUTO-RETURN.
+    COLOR DISPLAY VALUE(menu_fg) men_set.
+    PAUSE 0 NO-MESSAGE.
+
+    IF       LASTKEY = KEYCODE("TAB") 
+          OR LASTKEY = KEYCODE("CURSOR-DOWN")
+    THEN IF menusel = down-num
+         THEN DO:
+             menusel = 1.
+             UP down-num - 1.
+         END.
+         ELSE DO:
+             menusel = menusel + 1.
+             DOWN 1.
+         END.
+    ELSE IF LASTKEY = KEYCODE("BACK-TAB") 
+         OR LASTKEY = KEYCODE("CURSOR-UP")
+    THEN IF menusel = 1
+         THEN DO:
+             menusel = down-num.
+             DOWN down-num - 1.
+         END.
+         ELSE DO:
+             menusel = menusel - 1.
+             UP 1.
+         END.
+    ELSE IF  LASTKEY <> KEYCODE("CURSOR-LEFT") 
+         AND LASTKEY <> KEYCODE("CURSOR-RIGHT")
+         THEN menuexe = 1.
+
+    IF menuexe = 0
+    THEN DISPLAY avail_men_set[INT(ENTRY(menusel,prgs))] @ men_set.
+    ELSE DO:
+        HIDE MESSAGE NO-PAUSE.
+        HIDE FRAME tprtlsts NO-PAUSE.
+
+        IF LOOKUP(ENTRY(menusel,prgs),"5,6") = 0
+        THEN DO:
+            /* De lijst wordt nu afgedrukt, even wachten A.U.B. */
+            {call.i &prg="disfram" &param=",'tprtlstm,prlstmsg','','','',FALSE"}
+        END.
+        
+        IF LOOKUP(ENTRY(menusel,prgs),"2,3") > 0
+        THEN DO:
+            {call_var.i &prg="proglist[INT(ENTRY(menusel,prgs))]"
+                        &param=",(IF INT(ENTRY(menusel,prgs)) = 2 THEN FALSE ELSE TRUE)"}
+        END.
+        ELSE IF ENTRY(menusel,prgs) = "5"
+        THEN DO:
+            /* Selektie Afdruk Verkiezing */
+            {call.i &prg="selprtvk"}
+            IF selmenleav = 0
+            THEN LEAVE MenuSelect.
+
+            FOR EACH selection,
+                EACH election  NO-LOCK 
+                                 WHERE selection.s-id = election.s-id
+                                   AND selection.e-id = election.e-id
+                                   AND election.e-pr  = TRUE
+                              BREAK BY election.et-id:
+                IF FIRST-OF(election.et-id)
+                THEN DO:
+                    et-ind = election.et-id.
+
+                    {call.i &prg="disfram" &param=",'tprtlstm,prlstmsg','','','',FALSE"}
+                    {call_var.i &prg="proglist[INT(ENTRY(menusel,prgs))]"}
+                END.
+            END. /* EACH selection */
+        END.
+        ELSE IF ENTRY(menusel,prgs) = "6"
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'tprtlsti,burinp1',50,OUTPUT burinp1"}
+            {call.i &prg="mesfil" &param=",'tprtlsti,burinp2',50,OUTPUT burinp2"}
+            Ask-Block:
+            REPEAT ON ENDKEY UNDO, LEAVE MenuSelect:
+                {call.i &prg="mesfil" &param=",'pmdlxpdi,mes02',50,OUTPUT sel-bureau"}
+                DISPLAY burinp1 burinp2 WITH FRAME prompt-fram.
+                SET bureau-id           WITH FRAME prompt-fram.
+                sel-bureau = TRIM(sel-bureau) + " " + STRING(bureau-id,"999").
+                FIND FIRST urnedest NO-LOCK NO-ERROR.
+                FIND FIRST organigram OF urnedest NO-LOCK NO-ERROR.
+                wz-child-type = organigram.sys-type.
+                FIND FIRST organigram WHERE organigram.sys-type  = wz-child-type
+                                        AND organigram.orginator = bureau-id 
+                                    NO-LOCK NO-ERROR.
+                IF AVAIL organigram
+                THEN FIND FIRST urnedest OF organigram NO-LOCK NO-ERROR.
+                
+                IF NOT AVAIL organigram
+                OR NOT AVAIL urnedest
+                THEN DO:
+                    {call.i &prg="disfram" &param=",'tprtlsti,listnopr',
+                                                    ',' + sel-bureau,'','',TRUE"}
+                END.
+                ELSE IF urnedest.data-read = 0 
+                     OR urnedest.data-read = 4
+                THEN DO:
+                    {call.i &prg="disfram" &param=",'tprtlsti,notread',
+                                                    ',' + sel-bureau,'','',TRUE"}
+                END.
+                ELSE DO:
+                    HIDE FRAME prompt-fram NO-PAUSE.
+                    {call.i &prg="disfram" &param=",'tprtlstm,prlstmsg','','','',FALSE"}
+                    {call_var.i &prg="proglist[INT(ENTRY(menusel,prgs))]"
+                                &param=",RECID(urnedest)"}
+                    LEAVE Ask-Block.
+                END.
+            END.
+        END.
+        ELSE DO:
+            {call_var.i &prg="proglist[INT(ENTRY(menusel,prgs))]"}
+        END.
+        LEAVE MenuSelect.
+    END.
+END.
+
+HIDE FRAME tprtlsts    NO-PAUSE.
+HIDE FRAME prompt-fram NO-PAUSE.
+HIDE FRAME disframe    NO-PAUSE.
+
+{return.i}
+/* eof */

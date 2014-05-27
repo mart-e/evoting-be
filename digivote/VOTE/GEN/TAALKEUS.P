@@ -1,0 +1,135 @@
+/* Filename            : TAALKEUS.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILE'S                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR language      AS C FORMAT "x(12)" EXTENT 2                NO-UNDO.
+
+DEF VAR instrNed      AS C INIT "Kies uw taal"                    NO-UNDO.
+DEF VAR instrFrans    AS C INIT "Choisissez votre langue"         NO-UNDO.
+DEF VAR instrDuits    AS C INIT "Sprache der Bildschirmanzeige"   NO-UNDO.
+DEF VAR instrLanguage AS C INIT "" FORMAT "x(78)"                 NO-UNDO.
+
+DEF VAR helpNed      AS C INIT
+" F1/RETURN=selecteren       F2=HELP     ~030~031=Andere taal"    NO-UNDO.
+DEF VAR helpFrans    AS C INIT
+" F1/RETURN=s‚lectionner     F2=AIDE     ~030~031=Autre langue"   NO-UNDO.
+DEF VAR helpDuits    AS C INIT
+" F1/RETURN=selectionieren   F2=HELP     ~030~031=Sprache Wh„len" NO-UNDO.
+DEF VAR helpLanguage AS C FORMAT "x(70)" EXTENT 2.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+
+FORM
+    instrLanguage
+    WITH FRAME indic-frame NO-LABELS NO-BOX CENTERED OVERLAY ROW 8.
+
+FORM
+    SKIP
+    language[1] AT 2 SPACE(1)
+    language[2] AT 2 SPACE(1)
+    WITH FRAME digvotta NO-LABELS ROW 11 OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+taalkode = 0.
+FIND FIRST setup NO-LOCK.
+
+IF setup.lang-bur[1] AND
+   setup.lang-bur[2] AND
+   setup.lang-bur[3]
+THEN DO:
+    DISPLAY "The DATABASE does not contain enough information."
+        WITH CENTERED.
+    PAUSE NO-MESSAGE.
+    {quit.i &corrupt=FALSE}
+END.
+ELSE DO:
+    FIND FIRST session.
+    IF session.lang2 < 3
+    THEN taalkode = session.lang2 + 1.
+    ELSE DO:
+        IF      session.lang2 = 3
+        THEN ASSIGN
+             helpLanguage[1] = helpNed
+             helpLanguage[2] = helpFrans
+             language[1]     = "Nederlands"
+             language[2]     = "fran‡ais"
+             instrLanguage   = instrNed + " / " + instrFrans.
+        ELSE IF session.lang2 = 4
+        THEN ASSIGN
+             helpLanguage[1] = helpFrans
+             helpLanguage[2] = helpDuits
+             language[1]     = "fran‡ais"
+             language[2]     = "Deutsch"
+             instrLanguage   = instrFrans + " / " + InstrDuits.
+
+        instrLanguage = FILL(" ",39 - INT(LENGTH(instrLanguage) / 2)) + instrLanguage.
+        DISPLAY instrLanguage 
+            WITH FRAME indic-frame.
+
+        KEUZE:
+        REPEAT ON ERROR  UNDO KEUZE, RETRY KEUZE
+               ON ENDKEY UNDO KEUZE, LEAVE KEUZE
+               WITH FRAME digvotta:
+            HIDE MESSAGE.
+            DISPLAY language[1] language[2].
+            CHOOSE FIELD language[1] language[2]
+                 COLOR VALUE(menu_bg)
+                 GO-ON ("F4" "ESC")
+                 AUTO-RETURN.
+
+            IF KEYFUNCTION(LASTKEY) = "END-ERROR" OR
+               KEYLABEL(LASTKEY)    = "ESC"
+            THEN DO:
+                taalkode = -1. /* End situation */
+                LEAVE KEUZE.
+            END.
+            taalkode = IF session.lang2 = 3 
+                       THEN FRAME-INDEX
+                       ELSE FRAME-INDEX + 1.
+            ON F2 BELL.
+            LEAVE KEUZE.
+        END. /* KEUZE */
+
+        HIDE FRAME digvotta NO-PAUSE.
+        HIDE FRAME indic-frame NO-PAUSE.
+    END.  /* taalkode >= 3 */
+END.
+
+IF taalkode = -1 /* F4 or ESC pressed */
+THEN DO:
+    {return.i}
+END.
+
+IF setup.lang-pc <> taalkode
+THEN DO:
+    FIND FIRST setup.
+    ASSIGN
+    setup.lang-pc = taalkode
+    setup.MAC     = "REFRESH".
+    {call.i &prg="Sec_setu"}
+END.
+
+{return.i}
+/* eof */

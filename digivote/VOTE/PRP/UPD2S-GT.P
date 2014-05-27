@@ -1,0 +1,59 @@
+/* Filename : UPD2S-GT.P
+
+   Update number of children for GENERATION and TOTALISATION records 
+   
+ */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER tree FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR i                 AS I                                    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+/* Initialize counters ... */
+FOR EACH organigram WHERE LOOKUP(organigram.sys-type,"G,T") > 0:
+    ASSIGN
+    organigram.children = 0
+    organigram.MAC      = "REFRESH".
+END.
+/* Update counters ... */
+FOR EACH organigram WHERE organigram.sys-type = "U"
+                  NO-LOCK:
+    /* Update number of children for GENERATION-record */
+    FIND FIRST tree WHERE tree.disk-id = organigram.g-disk NO-ERROR.
+    IF AVAILABLE tree
+    THEN DO:
+        ASSIGN 
+        tree.children = tree.children + 1
+        tree.MAC      = "REFRESH".
+    END.
+    /* Update number of children for TOTALISATION-record(s) */
+    REPEAT i = 1 TO NUM-ENTRIES(organigram.t-disks):
+        FIND FIRST tree WHERE tree.disk-id = INT(ENTRY(i,organigram.t-disks)) NO-ERROR.
+        IF AVAILABLE tree
+        THEN DO:
+            ASSIGN 
+            tree.children = tree.children + 1
+            tree.MAC      = "REFRESH".
+        END.
+    END.
+END.
+{call.i &prg="sec_orga"}
+
+{return.i}
+/* eof */

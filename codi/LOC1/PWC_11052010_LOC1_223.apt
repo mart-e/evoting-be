@@ -1,0 +1,2748 @@
+.head 0 +  Application Description: Gupta SQLWindows Standard Application Template
+.data CLASSPROPSSIZE
+0000: 1C01
+.enddata
+.data CLASSPROPS
+0000: 5761746368566172 7300740077735061 746845727253796E 63726F0077735061
+0020: 74684F757453796E 63726F006C734669 6C650074626C4669 6C65732E636F6C46
+0040: 696C65006C734669 6C65466F726D6174 460062436F706965 006C6E50726F7879
+0060: 506F727400707355 726C006C7350726F 787955736572006C 6E52657475726E00
+0080: 00557365476C6F62 616C506174680004 0001000000004170 70506174684C656E
+00A0: 0004002400000000 4170705061746800 2400633A5C705F6C 696233322E34323B
+00C0: 633A5C705F6C6962 33322E34325C5265 736F757263650057 6174636856617273
+00E0: 4C656E0004007400 0000004442475F50 4C41594241434B5F 47554944001000D3
+0100: ABEE201A238D40BE 30ECAE65F4ED5700 0000000000000000 00000000
+.enddata
+.head 1 -  Outline Version - 4.0.35
+.head 1 +  Design-time Settings
+.data VIEWINFO
+0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
+0020: 0000000000AF0000 002C000000020000 0003000000FFFFFF FFFFFFFFFFF8FFFF
+0040: FFE5FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
+0060: 000F4170706C6963 6174696F6E497465 6D00000000
+.enddata
+.data DT_MAKERUNDLG
+0000: 0900001000000000 1F433A5C705F6C69 6233322E34325C52 45534F555243455C
+0020: 4C6F63312E69636F 294C3A5C456C6563 323031305C707763 5C43445F434F4449
+0040: 5F31313035323031 305C4C4F43312E65 78652D4C3A5C456C 6563323031305C70
+0060: 77635C43445F434F 44495F3131303532 3031305C4C4F4331 5F3030322E646C6C
+0080: 2D4C3A5C456C6563 323031305C707763 5C43445F434F4449 5F31313035323031
+00A0: 305C4C4F43315F30 30322E6170630000 0101010064000000 0000000101010101
+00C0: 01202020200C4C4F 43315F3030322E61 70640C4C4F43315F 3030322E646C6C0C
+00E0: 4C4F43315F303032 2E61706300000101 0100640000000C4C 4F43315F3030322E
+0100: 61706C0C4C4F4331 5F3030322E646C6C 0C4C4F43315F3030 322E617063000001
+0120: 010100640000000C 4C4F43315F303032 2E6578650C4C4F43 315F3030322E646C
+0140: 6C0C4C4F43315F30 30322E6170630000 0101010064000000 0C4C4F43315F3030
+0160: 322E646C6C0C4C4F 43315F3030322E64 6C6C0C4C4F43315F 3030322E61706300
+0180: 0001010100640000 000C4C4F43315F30 30322E646C6C0C4C 4F43315F3030322E
+01A0: 646C6C0C4C4F4331 5F3030322E617063 0000010101006400 0000000000000000
+01C0: 0000000000000000 0000000000000000 0000000001000000 0100000001000100
+01E0: 0000000000000001 0000100000000000 00000000000000
+.enddata
+.head 2 -  Outline Window State: Normal
+.head 2 +  Outline Window Location and Size
+.data VIEWINFO
+0000: 6600040003002D00 0000000000000000 0000B71E5D0E0500 1D00FFFF4D61696E
+0020: 0000000000000000 0000000000000000 0000003B00010000 00000000000000E9
+0040: 1E800A00008600FF FF496E7465726E61 6C2046756E637469 6F6E730000000000
+0060: 0000000000000000 0000000000003200 0100000000000000 0000E91E800A0000
+0080: DF00FFFF56617269 61626C6573000000 0000000000000000 0000000000000000
+00A0: 3000010000000000 00000000F51E100D 0000F400FFFF436C 6173736573000000
+00C0: 0000000000000000 0000000000000000
+.enddata
+.data VIEWSIZE
+0000: D000
+.enddata
+.head 3 -  Left: -0.013"
+.head 3 -  Top: 0.0"
+.head 3 -  Width:  8.013"
+.head 3 -  Height: 4.969"
+.head 2 +  Options Box Location
+.data VIEWINFO
+0000: D4180909B80B1A00
+.enddata
+.data VIEWSIZE
+0000: 0800
+.enddata
+.head 3 -  Visible? Yes
+.head 3 -  Left: 4.15"
+.head 3 -  Top: 1.885"
+.head 3 -  Width:  3.8"
+.head 3 -  Height: 2.073"
+.head 2 +  Class Editor Location
+.head 3 -  Visible? No
+.head 3 -  Left: 0.575"
+.head 3 -  Top: 0.094"
+.head 3 -  Width:  5.063"
+.head 3 -  Height: 2.719"
+.head 2 +  Tool Palette Location
+.head 3 -  Visible? No
+.head 3 -  Left: 6.388"
+.head 3 -  Top: 0.729"
+.head 2 -  Fully Qualified External References? Yes
+.head 2 -  Reject Multiple Window Instances? No
+.head 2 -  Enable Runtime Checks Of External References? Yes
+.head 2 -  Use Release 4.0 Scope Rules? No
+.head 2 -  Edit Fields Read Only On Disable? No
+.head 1 +  Libraries
+.head 2 -  File Include: BASECLAS.APL
+.head 2 -  File Include: base64.apl
+.head 2 -  File Include: HTTP_COCKPIT.apl
+.head 1 +  Global Declarations
+.head 2 +  Window Defaults
+.head 3 +  Tool Bar
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Form Window
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Dialog Box
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Top Level Table Window
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Data Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Multiline Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Spin Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Background Text
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Pushbutton
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Radio Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Check Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Option Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Group Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Child Table Window
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  List Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Combo Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Line
+.head 4 -  Line Color: Use Parent
+.head 3 +  Frame
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: 3D Face Color
+.head 3 +  Picture
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 2 +  Formats
+.head 3 -  Number: 0'%'
+.head 3 -  Number: #0
+.head 3 -  Number: ###000
+.head 3 -  Number: ###000;'($'###000')'
+.head 3 -  Date/Time: hh:mm:ss AMPM
+.head 3 -  Date/Time: M/d/yy
+.head 3 -  Date/Time: MM-dd-yy
+.head 3 -  Date/Time: dd-MMM-yyyy
+.head 3 -  Date/Time: MMM d, yyyy
+.head 3 -  Date/Time: MMM d, yyyy hh:mm AMPM
+.head 3 -  Date/Time: MMMM d, yyyy hh:mm AMPM
+.head 3 -  Number: #0
+.head 3 -  Number: #0
+.head 2 +  External Functions
+.head 2 +  Constants
+.data CCDATA
+0000: 3000000000000000 0000000000000000 00000000
+.enddata
+.data CCSIZE
+0000: 1400
+.enddata
+.head 3 +  System
+.head 3 +  User
+.head 4 -  String: VERSION = 'V2.23'
+.head 4 -  String: DATE_VERSION = '11/01/2010'
+.head 3 -  Enumerations
+.head 2 +  Resources
+.head 3 +  Bitmap: resExitWin
+.head 4 -  File Name: Exit_Menu.bmp
+.head 2 +  Variables
+.data RESOURCE 0 0 1 2296102722
+0000: 84010000FE000000 0000000000000000 0200000C00000006 0600001019000000
+0020: 013A05E82C0C0000 0073000000010000 00A31F0600192500 013AE00CBA000073
+0040: D100010000083806 000400000081023A 05E10C006E007300 3601003C065A0019
+0060: 0001823A7B0D0000 001B730001008D00 550600961900013A E022100000004673
+0080: 00010000A36E0600 04210001023A2310 FA00000780010000 00FF687206001900
+00A0: 89013AFD10006E00 7300340100008B06 1A0004000102A3FE 1000007F80F20100
+00C0: 008F8F0600961900 013AE0D511000000 467300010000A3A8 06000431000102D6
+00E0: 11FA000027800100 00FF68AC06000400 0D021E1200006E00 730034010000B006
+0100: 5A00040002A33312 00009B7300010D00
+.enddata
+.head 3 -  String: gsModuleNom
+.head 3 -  String: gsModuleLigne
+.head 3 -  Sql Handle: ghSqlMaj
+.head 3 -  ! !
+.head 2 +  Internal Functions
+.head 3 +  Function: PalMakeAllDir
+.head 4 -  Description: Création de répertoire non existant
+.head 4 -  Returns
+.head 4 +  Parameters
+.head 5 -  String: sPath
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 +  If SalStrRightX( sPath, 1 ) = '\\'
+.head 6 -  Set sPath= SalStrLeftX(sPath, SalStrLength( sPath)-1)
+.head 5 -  Call VisDosMakeAllDir( sPath )
+.head 3 +  Function: PalTestPresenceFile
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  Boolean:
+.head 4 +  Parameters
+.head 5 -  String: lsFileCopie
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  File Handle: lhFile
+.head 5 -  Number: nTest
+.head 5 -  Boolean: bOk
+.head 4 +  Actions
+.head 5 -  Set bOk = TRUE
+.head 5 -  Set nTest = 0
+.head 5 +  While NOT SalFileOpen(lhFile , lsFileCopie, OF_Exist ) and nTest <= 20
+.head 6 -  Call SalPause( 150 )
+.head 6 -  Set nTest = nTest + 1
+.head 5 +  If nTest > 20
+.head 6 -  Set bOk = FALSE
+.head 5 -  Return bOk
+.head 3 -  !
+.head 2 +  Named Menus
+.head 2 +  Class Definitions
+.data RESOURCE 0 0 1 3547004956
+0000: C40B000037070000 0000000000000000 0200001A00FFFF01 00160000436C6173
+0020: 73566172004F7574 6C696E6552006567 496E666F3E003C00 000A63006C734261
+0040: 7365436F006C9A00 00000500001E0004 00000200023A0509 00000600B8017300
+0060: 0060000100000004 B300040086020A00 00003DB800011B00 080000AC00040002
+0080: 610B000000B8CF00 0106000C00000019 08000000013A050C DA0000B8A3000100
+00A0: 00C1250000001912 00013A0D0000F600 B868000100000180 803A0000000100F0
+00C0: 000D636C01446644 61746584B0000000 0400B7190080043A 0507000000211802
+00E0: 73000001DB0019A8 0004000002690800 0018CF000106001D 0000000443000102
+0100: 3A09FB00C9010000 01DE0001C0002100 000019D200013A0A F600186800010000
+0120: 0108802100000200 00F00011636C7F54 00696D6566000000 0378000000194B00
+0140: 043A071B002A0273 A3000100008D1900 0400D200023A08F6 002A6C0001001D33
+0160: 00040001B6020900 9F0100EC0001000D 0100018021330003 000C04636C436163
+0180: 686540506F6F6C66 0000F60300048400 0001073A05000500 0100FC0500001E00
+01A0: 800100FC00009B04 00048500033A0507 0D0008067300D900 0100640800001900
+01C0: 69013A0800730806 0034010000018064 0400000400181263 6C624D75006C7469
+01E0: 4C616E6775006167 6522000000017A00 00046B0002061800 0000560673B30001
+0200: 00310180040005C3 0018636C0068696C 6454626C4DFE757F 00F4010000D60400
+0220: 0236090068066673 0001006301800400 8406000013636CF5 6F4DFF4700010000
+0240: 6F04006D02070063 7A06730036010001 804604000700001E 136D624DFF7F00F4
+0260: 010000D604000237 008C066673000100 6301800400E40800 0012F044664D75FF
+0280: A300010000B70400 BE0200319E067300 011B000180042300 090000130F6C674D
+02A0: 75FF3F00017A0000 046B0002091B00B0 0673B30001003101 8004000A72000013
+02C0: 46F0726D4D75FFA3 00010000B70400B6 020A0031C8067300 011B000180042300
+02E0: 0B000012C74C624D FF1F000100BD0004 B50002078D00E606 73D9000100180180
+0300: 04000C003900134D 64F8694D75FFD100 0100005B040002DB 090098F806730001
+0320: 8D0001800491000D 000012E76C4DFF8F 000100DE0004DA00 0207860016077300
+0340: 6C000100010C8004 000E00001C00124F 624DFF7F00F40100 00D6040002360800
+0360: 2807667300010063 01800400E00F0000 0012F850624DFFA3 00010000B70400B6
+0380: 020700313A077300 011B000180040300 100000001D04636C 51756573741C4368
+03A0: 576E64FC4D75FFE8 00010000AD040002 6D08004CCC077300 01C600018004C000
+03C0: 110000001D3F5461 E0626C65576EFF3F 00017A0000046B00 02091B005E0773B3
+03E0: 0001003101800400 1260000000126352 FC624DFFD1000100 005B040002DB0700
+0400: 987C077300018D00 0180040100130000 001363D354624DFF 1F000100BD0004B5
+0420: 00020A8D008E0773 D900010020018013 010014000000000F 634465736B00746F
+0440: 704C69737442A06F 784E01000BBD0019 A500013A070D00F6 177300D100010000
+0460: 661900190069013A 08007BF600340100 0032005800001900 01DA3A09001EF600
+0480: 01000D004B000000 961900013AB60A00 F647000100008364 00000019A500013A
+04A0: 0BED00F6D1000100 00607D0000001900 69013A0C007BF600 3401000096005800
+04C0: 00190001DA3A0D00 1EF60001000D00AF 000000961900013A B40E0000F6470001
+04E0: 000083C800000019 2500013A0F00ED00 F6D10001000060E1 000000190049013A
+0500: 1000007BF6003401 0000FA0058000019 0001D23A1100001E F60001000D000180
+0520: 6400010015000000 0B63E04469724C69 837C00000004BD00 19A500013A070D00
+0540: 08187300D1000100 0066190019006901 3A08007B0800B401 0000325900190001
+0560: DA3A09001E080001 006D004B00961900 013AB60A00084700 0100004301804B00
+0580: 00E0160000000F81 547265654C690F5E 000000F403000096 1900013A3607001A
+05A0: 184673000100009B 190019A500013A08 ED001AD100010000 663200190069013A
+05C0: 09007B1A00340100 00018004AF000017 000000800C634669 6C654C1FD60000EC
+05E0: 0007002D1900013A 6D06003E8C187300 010036001900194B 00013A07DB003EA3
+0600: 00010000CD320019 D200013A08F6003E 68000100004BB300 1900B4013A09003D
+0620: 3E0001DA0000642C 001900013A6D0A00 3E8F00010036007D 00194B00013A0BDB
+0640: 003EA300010000CD 960019D200013A0C F6003E6800010000 0108807D00001800
+0660: 0000000D63526164 696F7C4C699AB200 000500B71900B401 3A0600210A197300
+0680: 0001DA0000192C00 1900013A6D07000A 8F00010036003200 194B00013A08DB00
+06A0: 0AA300010000CD4B 0019D200013A09F6 000A680001000064 B3001900B4013A0A
+06C0: 003D0A00011A0000 0180813000000019 00080063514F456D 61696C60C0000000
+06E0: 06006F190069013A 0500432A1A730000 B401000019590019 0001DA3A08001E2A
+0700: 0001006D00320096 1900013AB60B002A 47000100009B4B00 19A500013A0EED00
+0720: 2AD1000100006664 00190069013A1100 7B2A00B40100007D 190004000102D314
+0740: 00007F80F2010000 0F
+.enddata
+.head 2 +  Default Classes
+.head 3 -  MDI Window: cBaseMDI
+.head 3 -  Form Window:
+.head 3 -  Dialog Box:
+.head 3 -  Table Window:
+.head 3 -  Quest Window:
+.head 3 -  Data Field:
+.head 3 -  Spin Field:
+.head 3 -  Multiline Field:
+.head 3 -  Pushbutton:
+.head 3 -  Radio Button:
+.head 3 -  Option Button:
+.head 3 -  Check Box:
+.head 3 -  Child Table:
+.head 3 -  Quest Child Window: cQuickDatabase
+.head 3 -  List Box:
+.head 3 -  Combo Box:
+.head 3 -  Picture:
+.head 3 -  Vertical Scroll Bar:
+.head 3 -  Horizontal Scroll Bar:
+.head 3 -  Column:
+.head 3 -  Background Text:
+.head 3 -  Group Box:
+.head 3 -  Line:
+.head 3 -  Frame:
+.head 3 -  Custom Control:
+.head 3 -  ActiveX:
+.head 2 -  Application Actions
+.head 1 +  Form Window: frmLOC1
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: LOC 1
+.head 2 -  Icon File:
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Automatically Created at Runtime? Yes
+.head 3 -  Initial State: Normal
+.head 3 -  Maximizable? No
+.head 3 -  Minimizable? No
+.head 3 -  Allow Child Docking? No
+.head 3 -  Docking Orientation: All
+.head 3 -  System Menu? No
+.head 3 -  Resizable? No
+.head 3 -  Window Location and Size
+.head 4 -  Left: 8.05"
+.head 4 -  Top: 2.25"
+.head 4 -  Width:  9.65"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 5.786"
+.head 4 -  Height Editable? Yes
+.head 3 -  Form Size
+.head 4 -  Width:  Default
+.head 4 -  Height: Default
+.head 4 -  Number of Pages: Dynamic
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 2 -  Description:
+.head 2 -  Named Menus
+.head 2 -  Menu
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Data Field: dfIn
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.833"
+.head 6 -  Top: 0.857"
+.head 6 -  Width:  8.25"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 -  Background Text: IN
+.head 4 -  Resource Id: 43643
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.133"
+.head 5 -  Top: 0.881"
+.head 5 -  Width:  0.4"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfOut
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.883"
+.head 6 -  Top: 1.357"
+.head 6 -  Width:  8.15"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 -  Background Text: Accusé
+.head 4 -  Resource Id: 43644
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.183"
+.head 5 -  Top: 1.381"
+.head 5 -  Width:  0.7"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfLoc2
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 1.483"
+.head 6 -  Top: 1.107"
+.head 6 -  Width:  7.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 -  Background Text: --> Loc2
+.head 4 -  Resource Id: 31667
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.483"
+.head 5 -  Top: 1.131"
+.head 5 -  Width:  1.0"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.167"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 3 +  Data Field: dfFichier
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.183"
+.head 6 -  Top: 4.738"
+.head 6 -  Width:  5.3"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbAction
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: ACTION
+.head 4 -  Window Location and Size
+.head 5 -  Left: 7.533"
+.head 5 -  Top: 0.202"
+.head 5 -  Width:  1.5"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.5"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Salmon
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call PalHttpCockpit( 301, '', '', '', '', gsModuleNom, gsModuleLigne, '' )
+.head 6 -  Call SalDisableWindow( hWndItem)
+.head 6 -  Call SalHideWindow( hWndItem)
+.head 6 -  Call SalShowWindow( pbStop )
+.head 6 -  Call SalEnableWindow( pbStop )
+.head 6 -  Call SalTimerSet( hWndForm, 1, 100 )
+.head 3 +  Pushbutton: pbStop
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: STOP
+.head 4 -  Window Location and Size
+.head 5 -  Left: 7.533"
+.head 5 -  Top: 0.202"
+.head 5 -  Width:  1.5"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.5"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Burgundy
+.head 4 -  Background Color: Light Green
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call PalHttpCockpit( 399, '', '', '', '', gsModuleNom, gsModuleLigne, '' )
+.head 6 -  Call SalDisableWindow( hWndItem)
+.head 6 -  Call SalHideWindow( hWndItem)
+.head 6 -  Call SalShowWindow( pbAction )
+.head 6 -  Call SalEnableWindow( pbAction )
+.head 6 -  Call SalTimerKill( hWndForm, 1 )
+.head 5 +  On SAM_Create
+.head 6 -  Call SalDisableWindow( hWndItem )
+.head 6 -  Call SalHideWindow( hWndItem)
+.head 3 +  Child Table: tblFiles
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.083"
+.head 6 -  Top: 1.631"
+.head 6 -  Width:  9.1"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 2.464"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  View: Table
+.head 5 -  Allow Row Sizing? No
+.head 5 -  Lines Per Row: Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 10000
+.head 5 -  Discardable? No
+.head 4 +  Contents
+.head 5 +  Column: colFile
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Fichier
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  1.983"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colExt
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Ext.
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  0.683"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colSize
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Taille
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Left
+.head 6 -  Width:  0.967"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colDateC
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Date - Heure Création
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Date/Time
+.head 6 -  Justify: Center
+.head 6 -  Width:  2.35"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colDate
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Date - Heure Copie
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Date/Time
+.head 6 -  Justify: Center
+.head 6 -  Width:  2.25"
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: colOrigine
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title: Origine
+.head 6 -  Visible? Yes
+.head 6 -  Editable? No
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: Number
+.head 6 -  Justify: Center
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: #0
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 4 -  Functions
+.head 4 -  Window Variables
+.head 4 -  Message Actions
+.head 3 +  Data Field: dfNbFichier
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: String
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 2.283"
+.head 6 -  Top: 0.988"
+.head 6 -  Width:  4.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: Unformatted
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Data Field: dfNbRestant
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: Default
+.head 5 -  Data Type: Number
+.head 5 -  Editable? No
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 7.533"
+.head 6 -  Top: 4.738"
+.head 6 -  Width:  1.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.25"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? No
+.head 5 -  Border? Yes
+.head 5 -  Justify: Center
+.head 5 -  Format: #0
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbQuit
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Quitter
+.head 4 -  Window Location and Size
+.head 5 -  Left: 7.933"
+.head 5 -  Top: 4.81"
+.head 5 -  Width:  1.217"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.714"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 6 -  Call SalModalDialog(dlgPW, hWndForm, 'MASTER', wbOkQuit)
+.head 6 +  If wbOkQuit
+.head 7 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 6 +  Else
+.head 7 -  Call SalMessageBox('Mot de passe erroné !!','ERREUR', MB_Ok )
+.head 7 -  Call SalSendMsg( pbAction, SAM_Click,0,0)
+.head 5 +  On SAM_Create
+.head 6 -  Call SalPicSet( hWndItem, resExitWin , PIC_FormatBitmap )
+.head 3 -  ! ! Aide cockpit
+.head 3 +  Pushbutton: pbF1
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: F1
+.head 4 -  Window Location and Size
+.head 5 -  Left: 12.283"
+.head 5 -  Top: 7.821"
+.head 5 -  Width:  0.5"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? No
+.head 4 -  Keyboard Accelerator: F1
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( pbStop, SAM_Click , 0,0)
+.head 6 -  Call SalModalDialog( dlgCockpitAide, hWndForm , wsPathHTTP, wsPathTmp , '',  gsModuleNom, gsModuleLigne,
+	wsPathTmp || '\\T_' || gsModuleNom || '_'||gsModuleLigne || '.SRV',  'T_' || gsModuleNom || '_'||gsModuleLigne || '.SRV' )
+.head 6 -  Call SalSendMsg( pbAction, SAM_Click , 0,0)
+.head 3 +  Check Box: cb1KDefinitif
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Considérer les fichiers 1K comme définitifs
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.133"
+.head 5 -  Top: 4.131"
+.head 5 -  Width:  5.15"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Message Actions
+.head 3 -  Group Box: Syncro
+.head 4 -  Resource Id: 12723
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.133"
+.head 5 -  Top: 4.738"
+.head 5 -  Width:  7.75"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.798"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Text Color: Blue
+.head 4 -  Background Color: Default
+.head 3 +  Check Box: cbSyncro1
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.383"
+.head 5 -  Top: 4.988"
+.head 5 -  Width:  7.15"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Message Actions
+.head 3 +  Check Box: cbSyncro2
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.383"
+.head 5 -  Top: 5.238"
+.head 5 -  Width:  7.15"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Message Actions
+.head 3 +  Check Box: cbPhase1
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: PHASE 1 : collecte des candidats et des listes
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.233"
+.head 5 -  Top: 0.238"
+.head 5 -  Width:  4.5"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call PalSavePhase()
+.head 3 +  Check Box: cbPhase2
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: PHASE 2 : collecte des résultats
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.233"
+.head 5 -  Top: 0.488"
+.head 5 -  Width:  4.5"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call PalSavePhase()
+.head 3 -  Group Box: Gestion des phases
+.head 4 -  Resource Id: 57365
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.083"
+.head 5 -  Top: 0.06"
+.head 5 -  Width:  5.1"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.75"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Text Color: Blue
+.head 4 -  Background Color: Default
+.head 3 +  Pushbutton: pbViderHistoDB
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Vider HISTO et DB
+.head 4 -  Window Location and Size
+.head 5 -  Left: 6.933"
+.head 5 -  Top: 4.131"
+.head 5 -  Width:  2.2"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.25"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: (none)
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 6 -  Call SalModalDialog(dlgPW, hWndForm, 'MASTER', wbOkVider)
+.head 6 +  If wbOkVider
+.head 7 -  Call PalResetDBAndHisto()
+.head 6 +  Else
+.head 7 -  Call SalMessageBox('Mot de passe erroné !!','ERREUR', MB_Ok )
+.head 3 -  Background Text: Si dans les fichiers 1K, la 2è zone de la ligne T est = à VA alors ce fichier est considéré comme définitif
+.head 4 -  Resource Id: 58185
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.433"
+.head 5 -  Top: 4.369"
+.head 5 -  Width:  6.3"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.333"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Justify: Left
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Bold
+.head 4 -  Text Color: Dark Green
+.head 4 -  Background Color: Default
+.head 2 +  Functions
+.head 3 +  Function: PalPopulateTbl
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Number: lnFiles
+.head 5 -  Number: lnAttrib[*]
+.head 5 -  String: lsFiles[*]
+.head 5 -  Number: lnSize[*]
+.head 5 -  Date/Time: ldDateF[*]
+.head 5 -  Number: lnFilesSyncro
+.head 5 -  Number: lnAttribSyncro[*]
+.head 5 -  String: lsFilesSyncro[*]
+.head 5 -  Number: lnSizeSyncro[*]
+.head 5 -  Date/Time: ldDateFSyncro[*]
+.head 5 -  Number: lnI
+.head 5 -  Number: lnRow
+.head 5 -  String: lsDebut
+.head 5 -  String: lsFin
+.head 4 +  Actions
+.head 5 -  Set lnFiles = VisDosEnumFileInfo (dfIn||"\\*.*", FA_Standard, lsFiles, lnSize, ldDateF, lnAttrib)
+.head 5 -  Set lnFilesSyncro = VisDosEnumFileInfo (wsPathInSyncro ||"\\*.*", FA_Standard, lsFilesSyncro, lnSizeSyncro, ldDateFSyncro, lnAttribSyncro)
+.head 5 -  Set lnI = 0
+.head 5 +  If lnFiles + lnFilesSyncro > 0
+.head 6 -  ! Call SalDateToStr( SalDateCurrent(  ), lsDebut )
+.head 6 -  Set dfNbFichier = SalNumberToStrX( lnFiles+lnFilesSyncro, 0) ||" Fichier(s) à traiter ..."
+.head 6 -  Set dfNbRestant = lnFiles + lnFilesSyncro
+.head 6 -  ! IN_LOC1
+.head 6 -  Set lnI = 0
+.head 6 -  Call SalTblReset( tblFiles )
+.head 6 +  While lnI < lnFiles
+.head 7 +  If PalTraitementFileParPhase( lsFiles[lnI] )
+.head 8 -  Set lnRow = SalTblInsertRow( tblFiles, TBL_MaxRow )
+.head 8 -  Call SalTblSetContext( tblFiles, lnRow )
+.head 8 -  Set tblFiles.colFile = lsFiles[lnI]
+.head 8 -  Set tblFiles.colExt = PalDtmExtension( lsFiles[lnI])
+.head 8 -  Set tblFiles.colSize = lnSize[lnI]
+.head 8 -  Set tblFiles.colDate = ldDateF[lnI]
+.head 8 -  Set tblFiles.colOrigine = 1
+.head 8 -  Call SalFileGetDateTime( dfIn||"\\"|| lsFiles[lnI] , tblFiles.colDateC )
+.head 7 +  Else
+.head 8 -  ! Archivage du fichier car ne doit pas etre là
+.head 8 +  If VisFileCopy( dfIn || "\\"|| lsFiles[lnI] , wsPathFichierNonTraite ) > 0
+.head 9 -  Call VisFileDelete( dfIn || "\\"|| lsFiles[lnI] )
+.head 7 -  Set lnI = lnI +1
+.head 6 -  ! Syncro
+.head 6 -  Set lnI = 0
+.head 6 +  While lnI < lnFilesSyncro
+.head 7 +  If PalTraitementFileParPhase( lsFilesSyncro[lnI] )
+.head 8 -  Set lnRow = SalTblInsertRow( tblFiles, TBL_MaxRow )
+.head 8 -  Call SalTblSetContext( tblFiles, lnRow )
+.head 8 -  Set tblFiles.colFile = lsFilesSyncro[lnI]
+.head 8 -  Set tblFiles.colExt = PalDtmExtension( lsFilesSyncro[lnI])
+.head 8 -  Set tblFiles.colSize = lnSizeSyncro[lnI]
+.head 8 -  Set tblFiles.colDate = ldDateFSyncro[lnI]
+.head 8 -  Set tblFiles.colOrigine = 2
+.head 8 -  Call SalFileGetDateTime( wsPathInSyncro ||"\\"|| lsFilesSyncro[lnI] , tblFiles.colDateC )
+.head 7 +  Else
+.head 8 -  ! Archivage du fichier car ne doit pas etre là
+.head 8 +  If VisFileCopy( wsPathInSyncro || "\\"|| lsFilesSyncro[lnI] , wsPathFichierNonTraite ) > 0
+.head 9 -  Call VisFileDelete( wsPathInSyncro || "\\"|| lsFilesSyncro[lnI] )
+.head 7 -  Set lnI = lnI +1
+.head 6 -  !
+.head 6 -  Call SalTblSortRows( tblFiles, 4, TBL_SortIncreasing  )
+.head 6 -  Set lnI = -1
+.head 6 +  While SalTblFindNextRow( tblFiles, lnI, 0,0 )
+.head 7 -  Call SalTblSetContext( tblFiles, lnI )
+.head 7 -  Call SalTblSetFocusRow(  tblFiles, lnI )
+.head 7 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_New, FALSE )
+.head 7 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_Selected, TRUE )
+.head 7 -  Call DispatchMessage(  )
+.head 7 +  If PalTraitementFile(  )
+.head 8 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_Edited, TRUE )
+.head 7 -  Call SalTblSetRowFlags( tblFiles, lnI, ROW_Selected, FALSE )
+.head 7 -  Set dfNbRestant = dfNbRestant - 1
+.head 6 -  !
+.head 6 -  Call SalTimerSet( hWndForm, 1, 1000 )
+.head 6 -  ! Call SalDateToStr( SalDateCurrent(  ), lsFin )
+.head 6 -  ! Call SalMessageBox("Traitment terminé !!
+Début de l'opération : "|| lsDebut || "
+Fin de l'opération : "|| lsFin, "MESSAGE", MB_Ok )
+.head 5 +  Else
+.head 6 -  Set dfNbFichier = "Aucun fichier à traiter ..."
+.head 6 -  Call SalTblReset( tblFiles )
+.head 6 -  Call SalTimerSet( hWndForm, 1, 1000 )
+.head 3 +  Function: PalTraitementFile
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  Boolean:
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  File Handle: lhFile
+.head 5 -  File Handle: lhFile2
+.head 5 -  String: lsFile
+.head 5 -  String: lsFileHisto
+.head 5 -  String: lsFileCopie
+.head 5 -  String: lsFileCopieX7S
+.head 5 -  String: lsFileFormatF
+.head 5 -  String: lsFilePDF
+.head 5 -  String: lsDateHeure
+.head 5 -  String: lsSousRepertoireCopie
+.head 5 -  String: lsBatchUnsign
+.head 5 -  Long String: llsTraceAction
+.head 5 -  Boolean: bCopie
+.head 5 -  Boolean: bContinue
+.head 5 -  Number: lnI
+.head 5 -  Number: nReturn
+.head 5 -  Long String: sBuffer
+.head 5 -  Long String: sData
+.head 5 -  Boolean: bXMLPhase[*]
+.head 5 -  Number: nDebut
+.head 5 -  Number: nLong
+.head 5 -  Number: nError
+.head 5 -  Number: nTest
+.head 5 -  Number: nOrigineFile
+.head 5 -  String: sPathIn
+.head 5 -  String: sError
+.head 5 -  Number: nErrCode
+.head 5 -  String: lsExt2Caract
+.head 5 -  Long String: wsReturnErr
+.head 4 +  Actions
+.head 5 -  Set nOrigineFile = tblFiles.colOrigine
+.head 5 +  If nOrigineFile = 1
+.head 6 -  Set lsFile = dfIn || "\\" || tblFiles.colFile
+.head 6 -  Set sPathIn = dfIn
+.head 5 +  Else
+.head 6 -  Set lsFile = wsPathInSyncro || "\\" || tblFiles.colFile
+.head 6 -  Set sPathIn = wsPathInSyncro
+.head 5 -  Set dfFichier = lsFile
+.head 5 -  Set lsFilePDF = ''
+.head 5 -  !
+.head 5 -  Set llsTraceAction = "FICHIER: "|| lsFile
+.head 5 -  Set bContinue = TRUE
+.head 5 -  Call SalDateToStr( SalDateCurrent(  ),  lsDateHeure )
+.head 5 +  If llsTraceAction != ''
+.head 6 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 5 -  Set llsTraceAction = llsTraceAction || "Heure début : "|| lsDateHeure
+.head 5 -  ! Phase 1: Analyse et UNsign (si X7S)
+.head 5 +  If bContinue
+.head 6 -  Set bCopie = TRUE
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 1: Analyse + Unsign"
+.head 6 -  Call SalDateToStr( tblFiles.colDateC, lsFileHisto )
+.head 6 -  Set lsFileHisto = wsPhase[3] || "\\" || tblFiles.colFile || lsFileHisto
+.head 6 -  Set lsExt2Caract= SalStrLeftX( SalStrUpperX( SalStrRightX( tblFiles.colFile, 6) ),2)
+.head 6 +  If tblFiles.colExt != 'X7S' and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = '1K'
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'SIGN'
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else If tblFiles.colExt != 'XML' and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = '0K'
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else If tblFiles.colExt != 'X7S' and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = 'SC'
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else If tblFiles.colExt = 'ZIP' and (lsExt2Caract = 'EU' or lsExt2Caract = 'CK' or lsExt2Caract= 'SE' or lsExt2Caract= 'WL' or lsExt2Caract= 'VL' or lsExt2Caract='BR' or lsExt2Caract = 'DE')
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else If tblFiles.colExt = 'ZIP' and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'DATA'
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else If (SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'P' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'D' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'L')  and tblFiles.colExt != 'X7S'
+.head 7 -  Set bCopie = TRUE
+.head 6 +  Else
+.head 7 +  If SalFileOpen( lhFile, lsFileHisto, OF_Exist )
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - Fichier déjà transféré !!"
+.head 8 -  Set bCopie = FALSE
+.head 8 -  Call PalHttpCockpit( 302, '1', '', '','', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 8 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 1, 0, llsTraceAction )
+.head 6 +  If TRUE
+.head 7 -  ! Copie dans répertoire tempo
+.head 7 -  Set lsFileCopie = SalStrUpperX(wsPathTmp || "\\"|| tblFiles.colFile)
+.head 7 +  If VisFileCopy( lsFile, lsFileCopie ) = 1
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - Fichier Copié dans "|| wsPathTmp
+.head 7 +  Else
+.head 8 -  Call SalPause( 1000 )
+.head 8 +  If VisFileCopy( lsFile, lsFileCopie ) = 1
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - 2essai - Fichier Copié dans "|| wsPathTmp
+.head 8 +  Else
+.head 9 -  Call SalPause( 1000 )
+.head 9 -  Set nErrCode =  VisFileCopy( lsFile, lsFileCopie ) 
+.head 9 +  If SalFileOpen( lhFile, lsFileCopie, OF_Exist )
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - 3essai - Fichier Copié dans "|| wsPathTmp
+.head 9 +  Else
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - ERREUR ( " || SalNumberToStrX( nErrCode,0) ||" dans la copie dans "|| wsPathTmp
+.head 10 -  Call PalHttpCockpit( 305, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 10 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 10 -  Set bContinue = FALSE
+.head 7 -  !
+.head 7 +  If bContinue
+.head 8 -  Set bContinue = PalTestPresenceFile( lsFileCopie )
+.head 7 -  !
+.head 7 -  ! Unsign (Fichiers signés)
+.head 7 +  If tblFiles.colExt = 'X7S'
+.head 8 +  If bContinue
+.head 9 +  If NOT SalFileOpen( lhFile2,  wsExeUNsign, OF_Exist )
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - EXE Unisgn Non trouvé !! (" || wsExeUNsign||")"
+.head 10 -  Set bContinue = FALSE
+.head 10 -  Call PalHttpCockpit( 303, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 10 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 8 +  If bContinue
+.head 9 +  If SalStrMidX( tblFiles.colFile, 7,1 ) = '_'
+.head 10 -  Set lsFileFormatF = SalStrLeftX( tblFiles.colFile, 10) || SalStrMidX(  tblFiles.colFile, 10 , 3)
+.head 10 -  Set lsFilePDF = SalStrLeftX( tblFiles.colFile, 13 ) ||'.PDF'
+.head 9 +  Else
+.head 10 -  Set lsFileFormatF = SalStrLeftX( tblFiles.colFile, 10 )
+.head 10 -  Set lsFilePDF = lsFileFormatF ||'.PDF'
+.head 9 +  If SalFileOpen( lhFile2, wsPathTmp ||"\\UNsign.BAT", OF_Text | OF_Write | OF_Create )
+.head 10 -  Set lsBatchUnsign = wsExeUNsign||' "'|| lsFileCopie||'"'
+.head 10 -  Call SalFilePutStr( lhFile2, lsBatchUnsign )
+.head 10 -  Call SalFileClose( lhFile2 )
+.head 9 -  Call SalLoadAppAndWait( wsPathTmp ||"\\UNsign.BAT", Window_NotVisible, nReturn )
+.head 9 +  If NOT SalFileOpen( lhFile2,  wsPathTmp || "\\"||  lsFileFormatF, OF_Exist )
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - Fichier Format F désigné Non trouvé !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 10 -  Set bContinue = FALSE
+.head 10 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 +  Else
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - Fichier Format F désigné Ok !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 7 -  ! Fichiers SIGN (signature test - PDF) de PGM2/3
+.head 7 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'SIGN'
+.head 8 -  Set bContinue = TRUE
+.head 8 -  Set lsFileFormatF =  tblFiles.colFile
+.head 7 -  ! Fichier XML (résultats intermédiaires)
+.head 7 +  Else If tblFiles.colExt= 'XML'
+.head 8 -  ! avec Exe externe
+.head 8 +  If TRUE
+.head 9 +  ! If bContinue
+.head 10 +  If NOT SalFileOpen( lhFile2,  wsExeOpenXml, OF_Exist )
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - EXE OpenXml Non trouvé !! (" || wsExeOpenXml ||")"
+.head 11 -  Set bContinue = FALSE
+.head 9 +  ! If bContinue
+.head 10 -  Set lsFileFormatF = SalStrUpperX(SalStrLeftX( tblFiles.colFile,SalStrLength( tblFiles.colFile)-4 ))
+.head 10 +  If SalFileOpen( lhFile2, wsPathTmp ||"\\UNxml.BAT", OF_Text | OF_Write | OF_Create )
+.head 11 -  Set lsBatchUnsign = wsExeOpenXml||' "'|| lsFileCopie||'"'
+.head 11 -  Call SalFilePutStr( lhFile2, lsBatchUnsign )
+.head 11 -  Call SalFileClose( lhFile2 )
+.head 10 -  Call SalLoadAppAndWait( wsPathTmp ||"\\UNxml.BAT", Window_NotVisible, nReturn )
+.head 10 +  If NOT SalFileOpen( lhFile2,  wsPathTmp || "\\"||  lsFileFormatF, OF_Exist )
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Fichier Format F désigné Non trouvé !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 11 -  Set bContinue = FALSE
+.head 10 +  Else 
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Fichier Format F désigné Ok !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 8 -  !
+.head 8 -  ! Avec DLL base64 intégrée
+.head 8 +  If NOT SalFileOpen( lhFile2,  lsFileCopie, OF_Read | OF_Text )
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Fichier XML  Non trouvé !! (" || lsFileCopie ||")"
+.head 9 -  Set bContinue = FALSE
+.head 9 -  Call PalHttpCockpit( 306, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 8 +  Else
+.head 9 -  Set lnI = 0
+.head 9 +  While lnI <= 10
+.head 10 -  Set bXMLPhase[ lnI ]= FALSE
+.head 10 -  Set lnI = lnI + 1
+.head 9 +  While SalFileGetStr( lhFile2, sBuffer, 50000) and bContinue
+.head 10 -  ! Phase 0: Recherche Debut PDF Signé
+.head 10 +  If bXMLPhase[0] = FALSE
+.head 11 +  If SalStrScan( sBuffer, "<SignedPV>" ) != -1
+.head 12 -  Set bXMLPhase[0] = TRUE
+.head 12 -  Set sData= ""
+.head 10 +  Else
+.head 11 -  ! Phase1: Recherche Nom Fichier PDF
+.head 11 +  If bXMLPhase[1] = FALSE
+.head 12 +  If SalStrScan( sBuffer, "<OriginialFileName>" ) != -1
+.head 13 -  Set bXMLPhase[1] = TRUE
+.head 13 -  Set nDebut = SalStrScan( sBuffer, "<OriginialFileName>" ) + SalStrLength( "<OriginialFileName>")
+.head 13 -  Set nLong = SalStrScan( sBuffer, "</OriginialFileName>" ) - nDebut
+.head 13 -  Set lsFilePDF = SalStrMidX( sBuffer, nDebut, nLong  )
+.head 11 +  Else
+.head 12 -  ! Phase2: Recherche Type Doc
+.head 12 +  If bXMLPhase[2] = FALSE
+.head 13 +  If SalStrScan( sBuffer, "<DocType>PDF" ) != -1
+.head 14 -  Set bXMLPhase[2] = TRUE
+.head 12 +  Else
+.head 13 -  ! Phase3: Debut DATA du PDF
+.head 13 +  If bXMLPhase[3] = FALSE
+.head 14 +  If SalStrScan( sBuffer, "<Data>" ) != -1
+.head 15 -  Set bXMLPhase[3] = TRUE
+.head 15 -  Set nDebut = SalStrScan( sBuffer, "<DATA>" ) + 6
+.head 15 -  Set sData = SalStrMidX( sBuffer, nDebut, SalStrLength( sBuffer) )
+.head 15 +  If SalStrScan( sBuffer, "</DATA>" ) != -1
+.head 16 -  Set bXMLPhase[4] = TRUE
+.head 16 -  Set sData = SalStrMidX( sData, 0, SalStrLength( sBuffer)-7 )
+.head 13 +  Else
+.head 14 -  ! Phase4: Fin DATA du PDF
+.head 14 +  If bXMLPhase[4] = FALSE
+.head 15 +  If SalStrScan( sBuffer, "</Data>" ) != -1
+.head 16 -  Set bXMLPhase[4] = TRUE
+.head 16 -  Set sData = sData || SalStrMidX( sBuffer, 0, SalStrLength( sBuffer)-7 )
+.head 16 -  !
+.head 16 +  If NOT SalFileOpen( lhFile,  wsPathTmp || "\\"||lsFilePDF ||".B64" , OF_Create | OF_ReadWrite )
+.head 17 +  If llsTraceAction != ''
+.head 18 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 17 -  Set llsTraceAction = llsTraceAction || "   - Impossible de créer le fichier "|| wsPathTmp || "\\"||lsFilePDF ||".B64"
+.head 17 -  Set bContinue = FALSE
+.head 16 +  Else
+.head 17 -  Call SalFilePutStr( lhFile, sData )
+.head 17 -  Call SalFileClose(  lhFile )
+.head 17 -  Set nError =  f_B64Decode( wsPathTmp || "\\"||lsFilePDF ||".B64", wsPathTmp || "\\"|| lsFilePDF ) 
+.head 17 +  If nError != 0
+.head 18 -  Set sError =  f_B64Erreur( nError )
+.head 18 +  If llsTraceAction != ''
+.head 19 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 18 -  Set llsTraceAction = llsTraceAction || "   - Erreur dans le décodage Base64 du fichier "|| wsPathTmp || "\\"||lsFilePDF ||".B64
+	"|| sError
+.head 18 -  Set bContinue = FALSE
+.head 16 -  !
+.head 15 +  Else
+.head 16 -  Set sData = sData || sBuffer
+.head 14 +  Else
+.head 15 -  ! Phase5: Recherche FormatF
+.head 15 +  If bXMLPhase[5] = FALSE
+.head 16 +  If SalStrScan( sBuffer, "<FormatF>" ) != -1
+.head 17 -  Set bXMLPhase[5] = TRUE
+.head 15 +  Else
+.head 16 -  ! Phase6: Recherche Nom Fichier Format F
+.head 16 +  If bXMLPhase[6] = FALSE
+.head 17 +  If SalStrScan( sBuffer, "<OriginialFileName>" ) != -1
+.head 18 -  Set bXMLPhase[6] = TRUE
+.head 18 -  Set nDebut = SalStrScan( sBuffer, "<OriginialFileName>" ) + SalStrLength( "<OriginialFileName>")
+.head 18 -  Set nLong = SalStrScan( sBuffer, "</OriginialFileName>" ) - nDebut
+.head 18 -  Set lsFileFormatF = SalStrMidX( sBuffer, nDebut, nLong  )
+.head 18 -  Set sData = ""
+.head 16 +  Else
+.head 17 -  ! Phase7: Debut DATA du FormatF
+.head 17 +  If bXMLPhase[7] = FALSE
+.head 18 +  If SalStrScan( sBuffer, "<Data>" ) != -1
+.head 19 -  Set bXMLPhase[7] = TRUE
+.head 19 -  Set nDebut = SalStrScan( sBuffer, "<DATA>" ) + 6
+.head 19 -  Set sData = SalStrMidX( sBuffer, nDebut, SalStrLength( sBuffer) )
+.head 19 +  If SalStrScan( sBuffer, "</DATA>" ) != -1
+.head 20 -  Set bXMLPhase[8] = TRUE
+.head 20 -  Set sData = SalStrMidX( sData, 0, SalStrLength( sBuffer)-7 )
+.head 17 +  Else
+.head 18 -  ! Phase8: Fin DATA du FormatF
+.head 18 +  If bXMLPhase[8] = FALSE
+.head 19 +  If SalStrScan( sBuffer, "</Data>" ) != -1
+.head 20 -  Set bXMLPhase[8] = TRUE
+.head 20 -  Set sData = sData || SalStrMidX( sBuffer, 0, SalStrLength( sBuffer)-7 )
+.head 20 -  !
+.head 20 +  If NOT SalFileOpen( lhFile,  wsPathTmp || "\\"||lsFileFormatF ||".B64" , OF_Create | OF_ReadWrite )
+.head 21 +  If llsTraceAction != ''
+.head 22 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 21 -  Set llsTraceAction = llsTraceAction || "   - Impossible de créer le fichier "|| wsPathTmp || "\\"||lsFileFormatF ||".B64"
+.head 21 -  Set bContinue = FALSE
+.head 20 +  Else
+.head 21 -  Call SalFilePutStr( lhFile, sData )
+.head 21 -  Call SalFileClose(  lhFile )
+.head 21 -  Set nError =  f_B64Decode( wsPathTmp || "\\"||lsFileFormatF ||".B64", wsPathTmp || "\\"|| lsFileFormatF ) 
+.head 21 +  If nError != 0
+.head 22 -  Set sError =  f_B64Erreur( nError )
+.head 22 +  If llsTraceAction != ''
+.head 23 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 22 -  Set llsTraceAction = llsTraceAction || "   - Erreur dans le décodage Base64 du fichier "|| wsPathTmp || "\\"||lsFileFormatF ||".B64
+	"|| sError
+.head 22 -  Set bContinue = FALSE
+.head 20 -  !
+.head 19 +  Else
+.head 20 -  Set sData = sData || sBuffer
+.head 9 -  Call SalFileClose( lhFile2 )
+.head 9 +  If bXMLPhase[ 8 ] = FALSE
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - Toutes les phases de décodage du Base64 n'ont pas été réalisée !! (" || lsFileCopie ||")"
+.head 10 -  Set bContinue = FALSE
+.head 10 -  Call PalHttpCockpit( 307, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 7 -  ! Fichier 1K sans enveloppe --> Résultats Intermédiaires avec votes nominatifs
+.head 7 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = '1K' and tblFiles.colExt != 'X7S'
+.head 8 +  If SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "CK" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "SE"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "EU"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "VL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BR"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "WL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "DE" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BV"
+.head 9 -  Set bContinue = TRUE
+.head 9 -  Set lsFileFormatF =  tblFiles.colFile
+.head 9 +  If bContinue
+.head 10 +  If SalFileOpen( lhFile2, wsPathTmp ||"\\C_"|| lsFileFormatF , OF_Text | OF_Write | OF_Create )
+.head 11 +  If SalFileOpen( lhFile, lsFileCopie , OF_Text | OF_Read )
+.head 12 +  While SalFileGetStr( lhFile, sBuffer, 3000 )
+.head 13 +  If SalStrLeftX( sBuffer, 3) = '"T"' and not cb1KDefinitif
+.head 14 +  If SalStrRightX( SalStrLeftX( sBuffer, 6 ), 1 ) = 'VA'
+.head 15 -  Set sBuffer = VisStrSubstitute( sBuffer, '"VA"', '"D"' )
+.head 14 +  Else
+.head 15 -  Set sBuffer = VisStrSubstitute( sBuffer, '"D"', '"C"' )
+.head 13 -  Call SalFilePutStr( lhFile2, sBuffer )
+.head 12 -  Call SalFileClose( lhFile )
+.head 11 +  Else
+.head 12 +  If llsTraceAction != ''
+.head 13 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 12 -  Set llsTraceAction = llsTraceAction || "   - Fichier non trouvé Format F 1K  !! (" || lsFile ||")"
+.head 12 -  Set bContinue = FALSE
+.head 12 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 11 -  Call SalFileClose( lhFile2 )
+.head 11 -  Call VisFileDelete( lsFileCopie )
+.head 11 -  Call VisFileRename( wsPathTmp ||"\\C_"|| lsFileFormatF, wsPathTmp ||"\\"|| lsFileFormatF )
+.head 10 +  Else
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Erreur de création Fichier tempo Format F 1K  !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 11 -  Set bContinue = FALSE
+.head 11 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 8 +  Else
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Extension du Fichier Format F Non reconnue !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 9 -  Set bContinue = FALSE
+.head 9 -  Call PalHttpCockpit( 308, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 7 -  ! Fichiers ZIP des LOGOS
+.head 7 +  Else If tblFiles.colExt = 'ZIP' and (lsExt2Caract = 'EU' or lsExt2Caract = 'CK' or lsExt2Caract= 'SE' or lsExt2Caract= 'WL' or lsExt2Caract= 'VL' or lsExt2Caract='BR' or lsExt2Caract = 'DE')
+.head 8 -  Set bContinue = TRUE
+.head 8 -  Set lsFileFormatF =  tblFiles.colFile
+.head 7 -  ! Fichiers ZIP data PGM2/3
+.head 7 +  Else If SalStrUpperX( SalStrRightX( tblFiles.colFile, 3) ) = 'ZIP' and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'DATA'
+.head 8 -  Set bContinue = TRUE
+.head 8 -  Set lsFileFormatF =  tblFiles.colFile
+.head 7 -  ! Fichiers Transaction RN (.IN)
+.head 7 +  Else If SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = 'IN'
+.head 8 -  Set bContinue = TRUE
+.head 8 -  Set lsFileFormatF =  tblFiles.colFile
+.head 7 -  ! Fichier P ou D sans enveloppe --> Listes de candidats sans enveloppe
+.head 7 +  Else If (SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'P' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'D' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'L') and tblFiles.colExt != 'X7S'
+.head 8 +  If SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "CK" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "SE"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "EU"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "VL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BR"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "WL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "DE" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BV"
+.head 9 -  Set bContinue = TRUE
+.head 9 -  Set lsFileFormatF =  tblFiles.colFile
+.head 9 +  If bContinue
+.head 10 +  If SalFileOpen( lhFile2, wsPathTmp ||"\\LI_"|| lsFileFormatF , OF_Text | OF_Write | OF_Create )
+.head 11 +  If SalFileOpen( lhFile, lsFileCopie , OF_Text | OF_Read )
+.head 12 +  While SalFileGetStr( lhFile, sBuffer, 3000 )
+.head 13 -  Call SalFilePutStr( lhFile2, sBuffer )
+.head 12 -  Call SalFileClose( lhFile )
+.head 11 +  Else
+.head 12 +  If llsTraceAction != ''
+.head 13 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 12 -  Set llsTraceAction = llsTraceAction || "   - Fichier non trouvé Format F 1K  !! (" || lsFile ||")"
+.head 12 -  Set bContinue = FALSE
+.head 12 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 11 -  Call SalFileClose( lhFile2 )
+.head 11 -  Call VisFileDelete( lsFileCopie )
+.head 11 -  Call VisFileRename( wsPathTmp ||"\\LI_"|| lsFileFormatF, wsPathTmp ||"\\"|| lsFileFormatF )
+.head 10 +  Else
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Erreur de création Fichier tempo Format F 1K  !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 11 -  Set bContinue = FALSE
+.head 11 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 8 +  Else
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Extension du Fichier Format F Non reconnue !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 9 -  Set bContinue = FALSE
+.head 9 -  Call PalHttpCockpit( 308, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 7 -  ! Fichier 0K sans signature --> Résultats Intermédiaires
+.head 7 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = '0K' and tblFiles.colExt != 'XML'
+.head 8 +  If SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "CK" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "SE"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "EU"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "VL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BR"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "WL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "DE" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BV"
+.head 9 -  Set bContinue = TRUE
+.head 9 -  Set lsFileFormatF =  tblFiles.colFile
+.head 9 +  If bContinue
+.head 10 +  If SalFileOpen( lhFile2, wsPathTmp ||"\\P_"|| lsFileFormatF , OF_Text | OF_Write | OF_Create )
+.head 11 +  If SalFileOpen( lhFile, lsFileCopie , OF_Text | OF_Read )
+.head 12 +  While SalFileGetStr( lhFile, sBuffer, 3000 )
+.head 13 -  Call SalFilePutStr( lhFile2, sBuffer )
+.head 12 -  Call SalFileClose( lhFile )
+.head 11 +  Else
+.head 12 +  If llsTraceAction != ''
+.head 13 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 12 -  Set llsTraceAction = llsTraceAction || "   - Fichier non trouvé Format F 1K  !! (" || lsFile ||")"
+.head 12 -  Set bContinue = FALSE
+.head 12 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 11 -  Call SalFileClose( lhFile2 )
+.head 11 -  Call VisFileDelete( lsFileCopie )
+.head 11 -  Call VisFileRename( wsPathTmp ||"\\P_"|| lsFileFormatF, wsPathTmp ||"\\"|| lsFileFormatF )
+.head 10 +  Else
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - Erreur de création Fichier tempo Format F 1K  !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 11 -  Set bContinue = FALSE
+.head 11 -  Call PalHttpCockpit( 304, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 8 +  Else
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Extension du Fichier Format F Non reconnue !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 9 -  Set bContinue = FALSE
+.head 9 -  Call PalHttpCockpit( 308, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 7 -  ! Fichiers Pdf AO (Apprentement BXL)
+.head 7 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = 'AO' and tblFiles.colExt = 'PDF'
+.head 8 -  Set bContinue = TRUE
+.head 8 -  Set lsFileFormatF =  tblFiles.colFile
+.head 7 +  Else
+.head 8 +  If SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "CK" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "SE" 
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "EU"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "VL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BR"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "WL"
+   or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "DE" or SalStrUpperX( SalStrRightX( tblFiles.colFile, 2) ) = "BV"
+.head 9 -  Set bContinue = TRUE
+.head 9 -  Set lsFileFormatF =  tblFiles.colFile
+.head 8 +  Else
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Extension du Fichier Format F Non reconnue !! (" || wsPathTmp || "\\"||  lsFileFormatF ||")"
+.head 9 -  Set bContinue = FALSE
+.head 9 -  Call PalHttpCockpit( 308, '', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 -  Call PalMajDBLoc1( 1, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 7 -  ! Analyse du fichier sommaire
+.head 7 +  If bContinue
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - Fichier Ok"
+.head 8 -  !
+.head 7 +  Else
+.head 8 -  Call VisFileCopy( lsFile, lsFileHisto )
+.head 8 -  Call VisFileDelete( lsFile )
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  ! Phase 2: Copie / transfert
+.head 5 +  If bContinue
+.head 6 +  If SalStrUpperX( SalStrRightX( tblFiles.colFile, 3) ) = ".IN" 
+.head 7 -  Set lsSousRepertoireCopie = ''
+.head 7 -  Set lsFileCopie = wsPathX25In ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'SIGN'
+.head 7 -  Set lsSousRepertoireCopie = '\\T'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrRightX( tblFiles.colFile, 4) ) = ".ZIP" and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'DATA'
+.head 7 -  Set lsSousRepertoireCopie = '\\DATA'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If tblFiles.colExt = 'ZIP' and (lsExt2Caract = 'EU' or lsExt2Caract = 'CK' or lsExt2Caract= 'SE' or lsExt2Caract= 'WL' or lsExt2Caract= 'VL' or lsExt2Caract='BR' or lsExt2Caract = 'DE')
+.head 7 -  Set lsSousRepertoireCopie = '\\LOGOS'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "T"
+.head 7 -  Set lsSousRepertoireCopie = '\\T'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "C"
+.head 7 -  Set lsSousRepertoireCopie = '\\I'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "0"
+.head 7 -  Set lsSousRepertoireCopie = '\\0'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "1"
+.head 7 -  Set lsSousRepertoireCopie = '\\1'
+.head 7 +  If SalStrMidX( tblFiles.colFile, 7,1 ) = '_'
+.head 8 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| SalStrLeftX( tblFiles.colFile, 7) || SalStrMidX(  tblFiles.colFile, 10 , 3)
+.head 7 +  Else
+.head 8 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "2" or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "S"
+.head 7 -  Set lsSousRepertoireCopie = '\\Sup'
+.head 7 +  If SalStrMidX( tblFiles.colFile, 7,1 ) = '_'
+.head 8 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| SalStrLeftX( tblFiles.colFile, 7) || SalStrMidX(  tblFiles.colFile, 10 , 3)
+.head 7 +  Else
+.head 8 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 2) ) = "AO" AND SalStrUpperX( SalStrRightX( tblFiles.colFile, 3) ) = "PDF"
+.head 7 -  Set lsSousRepertoireCopie = '\\PDF'
+.head 7 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 +  Else
+.head 7 -  Set lsSousRepertoireCopie = '\\Autres'
+.head 7 +  If SalStrMidX( tblFiles.colFile, 7,1 ) = '_'
+.head 8 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| SalStrLeftX( tblFiles.colFile, 7) || SalStrMidX(  tblFiles.colFile, 10 , 3)
+.head 7 +  Else
+.head 8 -  Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 7 -  ! Set lsFileCopie = wsPhase[2] || lsSousRepertoireCopie ||"\\"|| lsFileFormatF
+.head 6 -  ! Transfert de X7S vers Loc2 - dans le sous-répertoire  DETAIL\X7S\
+.head 6 -  Set lsFileCopieX7S = ''
+.head 6 +  If bCopie and tblFiles.colExt = 'X7S'
+.head 7 -  Set lsFileCopieX7S = wsPhase[2] || "\\X7S" ||"\\"|| tblFiles.colFile
+.head 6 -  !
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 2: Copie / Transfert"
+.head 6 +  If bCopie
+.head 7 -  !
+.head 7 +  If VisFileCopy( wsPathTmp || "\\"||  lsFileFormatF, lsFileCopie ) = 1
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - Fichier Copié dans "|| lsFileCopie
+.head 8 -  Set bContinue = PalTestPresenceFile( lsFileCopie )
+.head 8 +  If lsFilePDF != ''
+.head 9 -  Call VisFileCopy( wsPathTmp || "\\"||  lsFilePDF , wsPhase[2] || "\\PDF\\"|| lsFilePDF ) 
+.head 7 +  Else
+.head 8 -  Call SalPause( 2000 )
+.head 8 +  If VisFileCopy( wsPathTmp || "\\"||  lsFileFormatF, lsFileCopie ) = 1
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - 2d essai: Fichier Copié dans "|| lsFileCopie
+.head 9 +  If lsFilePDF != ''
+.head 10 -  Call VisFileCopy( wsPathTmp || "\\"||  lsFilePDF , wsPhase[2] || "\\PDF\\"|| lsFilePDF ) 
+.head 8 +  Else
+.head 9 -  Call SalPause( 2000 )
+.head 9 -  Set nErrCode = VisFileCopy( wsPathTmp || "\\"||  lsFileFormatF, lsFileCopie ) 
+.head 9 +  If SalFileOpen( lhFile, lsFileCopie, OF_Exist )
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - 3è essai : Fichier Copié dans "|| lsFileCopie
+.head 10 +  If lsFilePDF != ''
+.head 11 -  Call VisFileCopy( wsPathTmp || "\\"||  lsFilePDF , wsPhase[2] || "\\PDF\\"|| lsFilePDF ) 
+.head 9 +  Else
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - ERREUR ( " || SalNumberToStrX( nErrCode,0) ||" dans la copie dans "|| wsPhase[2]
+.head 10 -  Call PalHttpCockpit( 305, '', '1', "ERR  ( " || SalNumberToStrX( nErrCode,0) ||" copie dans "|| wsPhase[2], '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 10 -  Call PalMajDBLoc1( 2, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 10 -  Set bContinue = FALSE
+.head 7 -  !
+.head 7 +  If lsFileCopieX7S != ''
+.head 8 +  If VisFileCopy( lsFile, lsFileCopieX7S ) = 1
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Fichier Copié dans "|| lsFileCopieX7S
+.head 9 -  Set bContinue = PalTestPresenceFile( lsFileCopieX7S )
+.head 8 +  Else
+.head 9 -  Call SalPause( 2000 )
+.head 9 +  If VisFileCopy( lsFile, lsFileCopieX7S ) = 1
+.head 10 +  If llsTraceAction != ''
+.head 11 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 10 -  Set llsTraceAction = llsTraceAction || "   - 2d essai: Fichier Copié dans "|| lsFileCopieX7S
+.head 9 +  Else
+.head 10 -  Call SalPause( 2000 )
+.head 10 +  If VisFileCopy( lsFile, lsFileCopieX7S ) = 1
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - 3è essai : Fichier Copié dans "|| lsFileCopieX7S
+.head 10 +  Else
+.head 11 +  If llsTraceAction != ''
+.head 12 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 11 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la copie dans "|| wsPhase[2]
+.head 11 -  Call PalHttpCockpit( 305, '', '1', "ERR copie dans "|| wsPhase[2], '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 11 -  Call PalMajDBLoc1( 2, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 11 -  Set bContinue = FALSE
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  ! Phase 3: Histo
+.head 5 +  If bContinue
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 3: Mise en Historique"
+.head 6 +  If VisFileCopy( lsFile, lsFileHisto ) = 1
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - Fichier Copié en historique dans "|| wsPhase[3]
+.head 6 +  Else
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la copie en historique dans "|| wsPhase[3]
+.head 7 -  Call PalHttpCockpit( 305, '1', '', "ERR copie dans "|| wsPhase[3], '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 7 -  Call PalMajDBLoc1( 3, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 7 -  Set bContinue = FALSE
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  ! Phase 4: Accusé
+.head 5 -  Call SalDateToStr( SalDateCurrent(  ),  lsDateHeure )
+.head 5 +  If llsTraceAction != ''
+.head 6 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 5 -  Set llsTraceAction = llsTraceAction || "Heure de fin : "|| lsDateHeure
+.head 5 +  If TRUE
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 4: Accusé"
+.head 6 +  If bContinue
+.head 7 +  If SalFileOpen( lhFile, wsPhase[4] ||"\\"|| tblFiles.colFile ||".TXT", OF_Text | OF_ReadWrite | OF_Create )
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - Création de l'accusé"
+.head 8 -  Call SalFilePutStr( lhFile, llsTraceAction )
+.head 8 -  Call SalFileClose( lhFile )
+.head 8 +  If VisFileCopy( wsPhase[4] ||"\\"|| tblFiles.colFile ||".TXT", dfOut ||"\\"|| tblFiles.colFile ||".TXT" )
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Copie de l'accusé dans OUT : "|| dfOut
+.head 8 +  Else
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la copie dans "|| wsPhase[4]
+.head 9 -  ! Set bContinue = FALSE
+.head 7 +  Else
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la création de l'accusé de réception "|| dfOut ||"\\"|| tblFiles.colFile ||".TXT"
+.head 8 -  Set bContinue = FALSE
+.head 8 -  Call PalHttpCockpit( 310, '1', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 8 -  Call PalMajDBLoc1( 4, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 6 +  Else
+.head 7 +  If SalFileOpen( lhFile, wsPhase[4] ||"\\"|| tblFiles.colFile ||".ERR", OF_Text | OF_ReadWrite | OF_Create )
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - Erreur de traitement"
+.head 8 -  Call SalFilePutStr( lhFile, llsTraceAction )
+.head 8 -  Call SalFileClose( lhFile )
+.head 8 +  If VisFileCopy( wsPhase[4] ||"\\"|| tblFiles.colFile ||".ERR", dfOut ||"\\"|| tblFiles.colFile ||".ERR" )
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - Copie de l'accusé dans OUT : "|| dfOut
+.head 8 +  Else
+.head 9 +  If llsTraceAction != ''
+.head 10 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 9 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la copie dans "|| wsPhase[4]
+.head 9 -  ! Set bContinue = FALSE
+.head 7 +  Else
+.head 8 +  If llsTraceAction != ''
+.head 9 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 8 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la création de l'accusé de réception "|| dfOut ||"\\"|| tblFiles.colFile ||".ERR"
+.head 8 -  Set bContinue = FALSE
+.head 8 -  Call PalHttpCockpit( 310, '1', '1', '', '', gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 8 -  Call PalMajDBLoc1( 4, tblFiles.colFile, 0, 1, llsTraceAction )
+.head 5 -  Call SalFileClose( lhFile )
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  ! Phase 5: Cockpit OK
+.head 5 +  If llsTraceAction != ''
+.head 6 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 5 -  Set llsTraceAction = llsTraceAction || "Phase 5: Cockpit + Suppression fichier IN"
+.head 5 +  If bContinue and bCopie and nOrigineFile = 1
+.head 6 +  If tblFiles.colExt = 'X7S'
+.head 7 -  Call PalHttpCockpit( 390, '', '', '', PalDtmExtension(lsFileFormatF) , gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 6 +  Else
+.head 7 -  Call PalHttpCockpit( 390, '', '', '', PalDtmExtension(lsFileFormatF) , gsModuleNom, gsModuleLigne, lsFileFormatF )
+.head 5 -  ! Phase terminale - supression fichier tempo 
+.head 5 +  If bContinue
+.head 6 -  !
+.head 6 -  ! TRANSFERT VERS AUTRES LIGNES
+.head 6 +  If tblFiles.colExt = 'ZIP' and SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'DATA'
+.head 7 -  ! PAS DE TRANSFERT FTP VERES AUTRES LIGNES
+.head 6 +  Else
+.head 7 +  If nOrigineFile = 1
+.head 8 -  Set lnI = 1
+.head 8 +  While lnI <= 2
+.head 9 +  If wsPathOutSyncro[lnI] != '' and ((cbSyncro1= TRUE and  lnI = 1) or (cbSyncro2= TRUE and  lnI = 2) )
+.head 10 -  ! Transfert HTTP
+.head 10 +  If NOT PalUploadFileLoc1(lsFile , tblFiles.colFile,  wsReturnErr,FALSE, wsPathOutSyncro[lnI] )
+.head 11 -  Call VisFileCopy( lsFile , wsPathErrSyncro[lnI] ||'\\'|| tblFiles.colFile )
+.head 11 -  ! Call SalMessageBox( "Err syncro "|| wsPathOutSyncro[lnI] ||"
+"|| wsReturnErr , "ERR", MB_Ok | MB_IconHand )
+.head 11 -  Call PalHttpCockpit( 305, '1', '',  "ERR  SYNCRO "|| wsPathOutSyncro[lnI] ||" - "|| wsReturnErr , PalDtmExtension(lsFileFormatF) , gsModuleNom, gsModuleLigne, tblFiles.colFile )
+.head 9 +  Else If wsPathOutSyncro[lnI] != ''
+.head 10 -  Call VisFileCopy( lsFile , wsPathErrSyncro[lnI] ||'\\'|| tblFiles.colFile )
+.head 9 -  Set lnI = lnI + 1
+.head 6 -  !
+.head 6 -  !
+.head 6 +  If VisFileDelete( lsFile ) = 1
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - Fichier Supprimé dans "|| sPathIn
+.head 6 +  Else
+.head 7 +  If llsTraceAction != ''
+.head 8 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 7 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la suppression du fichier dans "|| sPathIn
+.head 7 -  Call PalMajDBLoc1( 6, tblFiles.colFile, 1, 0, llsTraceAction )
+.head 7 -  Set bContinue = FALSE
+.head 5 +  If VisFileDelete( wsPathTmp||"\\*.*" ) > 0
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "   - Fichier Supprimé dans "|| wsPathTmp 
+.head 5 +  Else
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "   - ERREUR dans la suppression du fichier dans "|| wsPathTmp 
+.head 6 -  Call PalMajDBLoc1( 6, tblFiles.colFile, 1, 0, llsTraceAction )
+.head 6 -  Set bContinue = FALSE
+.head 5 +  If bContinue
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "Phase 6: MàJ DB"
+.head 6 +  If llsTraceAction != ''
+.head 7 -  Set llsTraceAction= llsTraceAction||"
+"
+.head 6 -  Set llsTraceAction = llsTraceAction || "   - Ok "
+.head 6 -  Call PalMajDBLoc1( 6, tblFiles.colFile, 0, 0, llsTraceAction )
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  !
+.head 5 -  Return bContinue
+.head 3 +  ! Function: PalTraitementFileParPhase
+.head 4 -  Description: 
+.head 4 +  Returns 
+.head 5 -  Boolean: 
+.head 4 -  Parameters 
+.head 4 -  Static Variables 
+.head 4 +  Local variables 
+.head 5 -  Boolean: bContinue
+.head 5 -  String: lsExt2Caract
+.head 4 +  Actions 
+.head 5 -  Set bContinue = FALSE
+.head 5 -  Set lsExt2Caract= SalStrLeftX( SalStrUpperX( SalStrRightX( tblFiles.colFile, 6) ),2)
+.head 5 +  If cbPhase1 and cbPhase2
+.head 6 -  Set bContinue = TRUE
+.head 5 +  Else If cbPhase1
+.head 6 +  If (SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'P' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'D' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'L' or SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = 'A')
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If tblFiles.colExt = 'ZIP' and (lsExt2Caract = 'EU' or lsExt2Caract = 'CK' or lsExt2Caract= 'SE' or lsExt2Caract= 'WL' or lsExt2Caract= 'VL' or lsExt2Caract='BR' or lsExt2Caract = 'DE')
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "T"
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) = "C"
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrRightX( tblFiles.colFile, 3) ) = ".IN" 
+.head 7 -  Set bContinue = TRUE
+.head 5 +  Else If cbPhase2
+.head 6 +  If (SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) != 'P' AND SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) != 'D' AND SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) != 'L' AND SalStrUpperX( SalStrLeftX( tblFiles.colFile, 1) ) != 'A' )
+  or ( SalStrUpperX( SalStrLeftX( tblFiles.colFile, 4) ) = 'DATA' AND SalStrUpperX( SalStrRightX( tblFiles.colFile, 4) ) = ".ZIP" )
+.head 7 -  Set bContinue = TRUE
+.head 5 +  Else 
+.head 6 -  Set bContinue = FALSE
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  !
+.head 5 -  Return bContinue
+.head 3 +  Function: PalTraitementFileParPhase
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  Boolean:
+.head 4 +  Parameters
+.head 5 -  String: sFileATraiter
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Boolean: bContinue
+.head 5 -  String: lsExt2Caract
+.head 5 -  String: lsExtension
+.head 4 +  Actions
+.head 5 -  Set bContinue = FALSE
+.head 5 -  Set lsExt2Caract= SalStrLeftX( SalStrUpperX( SalStrRightX(sFileATraiter, 6) ),2)
+.head 5 -  Set lsExtension = PalDtmExtension( sFileATraiter )
+.head 5 +  If cbPhase1 and cbPhase2
+.head 6 -  Set bContinue = TRUE
+.head 5 +  Else If cbPhase1
+.head 6 +  If (SalStrUpperX( SalStrLeftX( sFileATraiter, 1) ) = 'P' or SalStrUpperX( SalStrLeftX( sFileATraiter, 1) ) = 'D' or SalStrUpperX( SalStrLeftX( sFileATraiter, 1) ) = 'L' or SalStrUpperX( SalStrLeftX(sFileATraiter, 1) ) = 'A')
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If lsExtension = 'ZIP' and (lsExt2Caract = 'EU' or lsExt2Caract = 'CK' or lsExt2Caract= 'SE' or lsExt2Caract= 'WL' or lsExt2Caract= 'VL' or lsExt2Caract='BR' or lsExt2Caract = 'DE')
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrLeftX( sFileATraiter, 1) ) = "T"
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrLeftX(sFileATraiter, 1) ) = "C"
+.head 7 -  Set bContinue = TRUE
+.head 6 +  Else If SalStrUpperX( SalStrRightX( sFileATraiter, 3) ) = ".IN" 
+.head 7 -  Set bContinue = TRUE
+.head 5 +  Else If cbPhase2
+.head 6 +  If (SalStrUpperX( SalStrLeftX(sFileATraiter, 1) ) != 'P' AND SalStrUpperX( SalStrLeftX( sFileATraiter, 1) ) != 'D' AND SalStrUpperX( SalStrLeftX(sFileATraiter, 1) ) != 'L' AND SalStrUpperX( SalStrLeftX( sFileATraiter, 1) ) != 'A' )
+  or ( SalStrUpperX( SalStrLeftX(sFileATraiter, 4) ) = 'DATA' AND SalStrUpperX( SalStrRightX(sFileATraiter, 4) ) = ".ZIP" )
+.head 7 -  Set bContinue = TRUE
+.head 5 +  Else
+.head 6 -  Set bContinue = FALSE
+.head 5 -  Call DispatchMessage(  )
+.head 5 -  !
+.head 5 -  Return bContinue
+.head 3 +  Function: PalMajDBLoc1
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 +  Parameters
+.head 5 -  Number: nPhase
+.head 5 -  String: sFile
+.head 5 -  Number: nWarning
+.head 5 -  Number: nError
+.head 5 -  Long String: sInfo
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call SqlPrepareAndExecute( ghSqlMaj, "Insert Into HISTO ( His_Etape_Id , His_Fichier, His_Warning, His_Error, HIS_Info , His_dateHeure)
+	values ( :nPhase, :sFile, :nWarning, :nError, :sInfo , sysdate ) " )
+.head 5 -  Call SqlCommit( ghSqlMaj )
+.head 3 +  Function: PalDtmExtension
+.head 4 -  Description:
+.head 4 +  Returns
+.head 5 -  String:
+.head 4 +  Parameters
+.head 5 -  String: sFile
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Number: nCar
+.head 5 -  String: sExt
+.head 5 -  String: sCaract
+.head 4 +  Actions
+.head 5 -  Set sCaract = ''
+.head 5 -  Set nCar = SalStrLength( sFile )
+.head 5 +  While sCaract != '.' and nCar > 0
+.head 6 -  Set sCaract = SalStrMidX( sFile, nCar-1, 1)
+.head 6 +  If sCaract != '.'
+.head 7 -  Set sExt = sCaract || sExt
+.head 6 -  Set nCar = nCar -1
+.head 5 -  Set sExt = SalStrUpperX( sExt )
+.head 5 -  Return (sExt )
+.head 3 +  Function: PalNoteVersion
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call SalSetWindowText( hWndForm, gsModuleNom ||' - '|| gsModuleLigne || '   -    Version: '|| VERSION || ' '|| DATE_VERSION )
+.head 3 +  Function: PalUploadFileLoc1
+.head 4 -  Description: 
+upload d'un fichier
+
+.head 4 +  Returns
+.head 5 -  Boolean:
+.head 4 +  Parameters
+.head 5 -  String: psPathnameFichierUp
+.head 5 -  String: psFilenameFichierUp
+.head 5 -  Receive String: prsMsgErreur
+.head 5 -  Boolean: bMsgBox
+.head 5 -  String: sUrlIn
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  Number: lnReturn
+.head 5 -  String: lsMsgErreur
+.head 5 -  !
+.head 5 -  String: lsMsgDlgBox
+.head 5 -  !
+.head 5 -  String: lsFilename
+.head 5 -  Number: lnEssai
+.head 5 -  Boolean: bOkTransfert
+.head 5 -  String: lsUrl
+.head 4 +  Actions
+.head 5 -  !
+.head 5 -  Set bOkTransfert = FALSE
+.head 5 -  Set prsMsgErreur = ''
+.head 5 -  !
+.head 5 -  Call VisWaitCursor(TRUE)
+.head 5 -  !
+.head 5 -  Set lsUrl = sUrlIn
+.head 5 -  !
+.head 5 -  Set lnReturn =  SalModalDialog( dlgUpload, hWndForm,
+lsUrl,
+1,
+psPathnameFichierUp,
+'',
+'',
+'',
+0,
+'',
+'',
+lsMsgErreur)
+.head 5 -  !
+.head 5 -  !
+.head 5 +  If lnReturn = 0
+.head 6 -  Set bOkTransfert = TRUE
+.head 6 +  If gnLanguage = Language_NL
+.head 7 -  Set lsMsgDlgBox = 'Bestand overgebracht !'
+.head 6 +  Else
+.head 7 -  Set lsMsgDlgBox = ' Fichier transféré !  '
+.head 6 -  !
+.head 6 -  Set prsMsgErreur = prsMsgErreur || lsMsgDlgBox
+.head 5 +  Else
+.head 6 -  ! Erreurs du Start
+.head 6 -  ! wnErreur =  -1 : opération stoppée
+.head 6 -  ! wnErreur =  -2 : nom du fichier à transférer incorect ( 'open file in Réponse)
+.head 6 -  ! wnErreur =  -9 : autres erreurs du Start
+.head 6 -  !
+.head 6 -  ! Autres erreurs gestion interne à la classe
+.head 6 -  ! wnErreur =  404 : page incorrecte
+.head 6 -  ! wnErreur =  12007 : Hôte inconnu
+.head 6 -  ! Set lsMsgDlgBox = 'Erreur :' || SalNumberToStrX( wnReturn, 0 )  || ' '  || lsMsgErreur
+.head 6 -  ! Set prsMsgErreur = prsMsgErreur || ' Erreur ' || SalNumberToStrX( lnReturn, 0 ) || ' : ' || PalGetIIsErrorX( lnReturn )
+.head 6 -  Set prsMsgErreur = prsMsgErreur || ' Err. ' || SalNumberToStrX( lnReturn, 0 ) || ' : ' || lsMsgErreur
+.head 5 -  Call VisWaitCursor(FALSE)
+.head 5 -  Return bOkTransfert
+.head 3 +  Function: PalSavePhase
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 +  Local variables
+.head 5 -  String: lsPhase
+.head 4 +  Actions
+.head 5 -  Set lsPhase = '|'
+.head 5 +  If cbPhase1
+.head 6 -  Set lsPhase = lsPhase || '1|'
+.head 5 +  If cbPhase2
+.head 6 -  Set lsPhase = lsPhase || '2|'
+.head 5 -  Call SalSetProfileString( 'PHASE', 'GESTION',  lsPhase, wsPathINI )
+.head 5 -  Set wsPhaseGeree = lsPhase
+.head 3 +  Function: PalResetDBAndHisto
+.head 4 -  Description:
+.head 4 -  Returns
+.head 4 -  Parameters
+.head 4 -  Static Variables
+.head 4 -  Local variables
+.head 4 +  Actions
+.head 5 -  Call VisWaitCursor( TRUE )
+.head 5 -  Call SqlPrepareAndExecute( ghSqlMaj, "Delete from HISTO " )
+.head 5 -  Call SqlCommit( ghSqlMaj )
+.head 5 -  Call SqlPrepareAndExecute( ghSqlMaj, "Update Statistics on database" )
+.head 5 -  Call SqlCommit( ghSqlMaj )
+.head 5 -  Call VisFileDelete( wsPhase[3] || "\\*.*" )
+.head 5 -  Call VisFileDelete( wsPhase[4] || "\\*.*" )
+.head 5 -  Call VisFileDelete( wsPathTmp || "\\*.*" )
+.head 5 -  Call VisFileDelete( dfOut || "\\*.*" )
+.head 5 -  Call VisWaitCursor( FALSE )
+.head 5 -  Call SalMessageBox( "Reset Ok", "Msg", MB_Ok )
+.head 2 -  Window Parameters
+.head 2 +  Window Variables
+.head 3 -  Window Handle: whPhase[*]
+.head 3 -  String: wsPhase[*]
+.head 3 -  String: wsPath
+.head 3 -  String: wsPathTmp
+.head 3 -  String: wsPathHTTP
+.head 3 -  String: wsPathX25In
+.head 3 -  File Handle: whFile
+.head 3 -  String: wsPathINI
+.head 3 -  String: wsPathFichierNonTraite
+.head 3 -  String: wsExeUNsign
+.head 3 -  String: wsExeOpenXml
+.head 3 -  Boolean: wbOkQuit
+.head 3 -  String: wsPathInSyncro
+.head 3 -  String: wsPathOutSyncro[5]
+.head 3 -  String: wsPathErrSyncro[5]
+.head 3 -  String: wsPhaseGeree
+.head 3 -  String: wsPathNonTraite
+.head 3 -  Boolean: wbOkVider
+.head 2 +  Message Actions
+.head 3 +  On SAM_CreateComplete
+.head 4 -  Set wsPath = PalGetPrgmDirectory()
+.head 4 +  If NOT SalFileOpen( whFile, wsPath ||"\\LOC1.INI", OF_Exist )
+.head 5 -  Call SalMessageBox( "Aucun LOC1.INI trouvé !!", "ERREUR", MB_Ok )
+.head 5 -  Call SalSendMsg( hWndForm, SAM_Close , 0,0 )
+.head 4 -  Set wsPathINI = wsPath ||'\\LOC1.ini'
+.head 4 -  Call SalGetProfileString( 'APPLIC', 'MODULE',  "LOC1", gsModuleNom, wsPathINI )
+.head 4 -  Call SalGetProfileString( 'APPLIC', 'LIGNE',  "", gsModuleLigne, wsPathINI )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'DATABASE', 'DB',  'LOC1', SqlDatabase, wsPathINI )
+.head 4 -  Call SalGetProfileString( 'DATABASE', 'USER',  'SYSADM', SqlUser, wsPathINI )
+.head 4 -  Set SqlPassword = SqlUser
+.head 4 +  If SqlConnect( ghSqlMaj )
+.head 5 -  Call SqlSetParameter( ghSqlMaj, DBP_FETCHTHROUGH, TRUE, '' )
+.head 5 -  Call SqlSetParameter( ghSqlMaj, DBP_PRESERVE, TRUE, '' )
+.head 5 -  Call SqlSetIsolationLevel( ghSqlMaj, 'RL' )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_HTTP', wsPath||"\\HTTP.INI" , wsPathHTTP, wsPathINI )
+.head 4 -  Call PalHttpIniRead( wsPathHTTP,wsPathINI )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_IN',  wsPath||'\\IN', dfIn, wsPathINI )
+.head 4 -  Call PalMakeAllDir( dfIn )
+.head 4 -  Set wsPathFichierNonTraite = dfIn || "\\NON_TRAITE"
+.head 4 -  Call PalMakeAllDir( wsPathFichierNonTraite )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_OUT',  wsPath||'\\OUT', dfOut, wsPathINI )
+.head 4 -  Call PalMakeAllDir( dfOut )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_IN_SYNC',  '', wsPathInSyncro, wsPathINI )
+.head 4 -  Call PalMakeAllDir( wsPathInSyncro )
+.head 4 +  If SalStrRightX( wsPathInSyncro, 1 ) = '\\'
+.head 5 -  Set wsPathInSyncro = SalStrLeftX( wsPathInSyncro , SalStrLength( wsPathInSyncro )-1 )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_SYNC_1',  '', wsPathOutSyncro[1], wsPathINI )
+.head 4 +  If wsPathOutSyncro[1] != ''
+.head 5 -  Call SalSetWindowText( cbSyncro1, wsPathOutSyncro[1] )
+.head 5 -  Set cbSyncro1 = TRUE
+.head 5 -  Call SalGetProfileString( 'PATH', 'PATH_SYNC_ERR_1',  '', wsPathErrSyncro[1], wsPathINI )
+.head 5 +  If wsPathErrSyncro[1] = ''
+.head 6 -  Set wsPathErrSyncro[1] = "ERR\\1"
+.head 5 -  Set wsPathErrSyncro[1] = wsPathInSyncro || wsPathErrSyncro[1] 
+.head 5 +  If SalStrRightX( wsPathErrSyncro[1], 1 ) = '\\'
+.head 6 -  Set wsPathErrSyncro[1] = SalStrLeftX( wsPathErrSyncro[1] , SalStrLength( wsPathErrSyncro[1] )-1 )
+.head 5 -  Call PalMakeAllDir( wsPathErrSyncro[1] )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_SYNC_2',  '', wsPathOutSyncro[2], wsPathINI )
+.head 4 +  If wsPathOutSyncro[2] != ''
+.head 5 -  Call SalSetWindowText( cbSyncro2, wsPathOutSyncro[2] )
+.head 5 -  Set cbSyncro2 = TRUE
+.head 5 -  Call SalGetProfileString( 'PATH', 'PATH_SYNC_ERR_2',  '', wsPathErrSyncro[2], wsPathINI )
+.head 5 +  If wsPathErrSyncro[2] = ''
+.head 6 -  Set wsPathErrSyncro[2] = "ERR\\2"
+.head 5 -  Set wsPathErrSyncro[2] = wsPathInSyncro || wsPathErrSyncro[2] 
+.head 5 +  If SalStrRightX( wsPathErrSyncro[2], 1 ) = '\\'
+.head 6 -  Set wsPathErrSyncro[2] = SalStrLeftX( wsPathErrSyncro[2] , SalStrLength( wsPathErrSyncro[2] )-1 )
+.head 5 -  Call PalMakeAllDir( wsPathErrSyncro[2] )
+.head 4 -  Call SalGetProfileString( 'PHASE', 'GESTION',  '', wsPhaseGeree, wsPathINI )
+.head 4 +  If wsPhaseGeree = ''
+.head 5 -  Call SalSetProfileString( 'PHASE', 'GESTION',  '|1|', wsPathINI )
+.head 5 -  Set wsPhaseGeree = '|1|'
+.head 4 +  If wsPhaseGeree != ''
+.head 5 +  If SalStrScan( wsPhaseGeree, '1') >= 0
+.head 6 -  Set cbPhase1 = TRUE
+.head 5 +  If SalStrScan( wsPhaseGeree, '2') >= 0
+.head 6 -  Set cbPhase2 = TRUE
+.head 4 -  !
+.head 4 -  ! Set wsPhase[1] = wsPath ||"\\Analyse" 
+.head 4 -  ! Call PalMakeAllDir( wsPhase[1] )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_LOC2',  wsPath||'\\DETAIL', wsPhase[2], wsPathINI )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] )
+.head 4 -  Set dfLoc2 = wsPhase[2]
+.head 4 -  !
+.head 4 -  ! Sous répertoires de copie
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\T" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\I" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\0" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\1" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\Autres" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\PDF" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\DATA" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\X7S" )
+.head 4 -  Call PalMakeAllDir( wsPhase[2] ||"\\LOGOS" )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_HISTO',  wsPath||'\\HISTO', wsPhase[3], wsPathINI )
+.head 4 -  Call PalMakeAllDir( wsPhase[3] )
+.head 4 -  ! Set wsPhase[4] = wsPath||"\\DB" 
+.head 4 -  ! Call PalMakeAllDir( wsPhase[4] )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_ACCUSE',  wsPath||'\\ACCUSE', wsPhase[4], wsPathINI )
+.head 4 -  Call PalMakeAllDir( wsPhase[4] )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_WARNING',  '' , wsPathNonTraite, wsPathINI )
+.head 4 +  If wsPathNonTraite = ''
+.head 5 -  Call SalSetProfileString( 'PATH', 'PATH_WARNING', wsPath||'\\WARNING' , wsPathINI )
+.head 5 -  Set wsPathNonTraite = wsPath||'\\WARNING' 
+.head 4 +  If SalStrRightX( wsPathNonTraite, 1 ) = '\\'
+.head 5 -  Set wsPathNonTraite = SalStrLeftX( wsPathNonTraite , SalStrLength( wsPathNonTraite )-1 )
+.head 4 -  Call PalMakeAllDir( wsPathNonTraite )
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_TMP',  wsPath||'\\TMP', wsPathTmp, wsPathINI )
+.head 4 -  Call PalMakeAllDir(  wsPathTmp )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'PATH_X25_IN',  '', wsPathX25In, wsPathINI )
+.head 4 +  If wsPathX25In = ''
+.head 5 -  Call SalSetProfileString( 'PATH', 'PATH_X25_IN',  wsPath || '\\X25_IN' , wsPathINI )
+.head 5 -  Call SalGetProfileString( 'PATH', 'PATH_X25_IN',  wsPath || '\\X25_IN' , wsPathX25In, wsPathINI )
+.head 4 -  Call PalMakeAllDir( wsPathX25In )
+.head 4 -  !
+.head 4 -  Call SalGetProfileString( 'PATH', 'EXE_UNSIGN',  '', wsExeUNsign, wsPathINI )
+.head 4 -  Call SalGetProfileString( 'PATH', 'EXE_OPENXML',  '', wsExeOpenXml, wsPathINI )
+.head 4 -  !
+.head 4 -  Call PalNoteVersion(  )
+.head 4 -  !
+.head 3 +  On SAM_Timer
+.head 4 -  Call SalTimerKill( hWndForm, 1 )
+.head 4 -  Call PalPopulateTbl()
+.head 3 +  On SAM_Close
+.head 4 -  Call SqlDisconnect( ghSqlMaj )
+.head 3 +  On 17
+.head 4 -  Call SalSendMsg( pbStop, SAM_Click,0,0)
+.head 4 -  Call PalHttpCockpit( 398, '', '', '', '',  gsModuleNom, gsModuleLigne, '' )
+.head 4 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 1 +  ! Dialog Box: dlgPW
+.winattr
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Mot de passe
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Type of Dialog: Modal
+.head 3 -  Allow Dock to Parent? No
+.head 3 -  Docking Orientation: All
+.head 3 -  Window Location and Size
+.head 4 -  Left: 5.863"
+.head 4 -  Top: 2.719"
+.head 4 -  Width:  2.95"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 0.964"
+.head 4 -  Height Editable? Yes
+.head 3 -  Absolute Screen Location? Yes
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 3 -  Resizable? No
+.head 3 -  Vertical Scroll? Yes
+.head 3 -  Horizontal Scroll? Yes
+.end
+.head 2 -  Description: 
+.head 2 +  Tool Bar 
+.winattr
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.end
+.head 3 -  Contents 
+.head 2 +  Contents 
+.head 3 +  Data Field: dfPW
+.winattr
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 20
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.183"
+.head 6 -  Top: 0.071"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.31"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Invisible
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: 12
+.head 5 -  Font Enhancement: Bold
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.end
+.head 4 -  Message Actions 
+.head 3 +  Pushbutton: pbOk
+.winattr
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Ok
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.783"
+.head 5 -  Top: 0.512"
+.head 5 -  Width:  1.3"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: Enter
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.end
+.head 4 +  Message Actions 
+.head 5 +  On SAM_Click
+.head 6 -  Set wbOk = TRUE
+.head 6 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 3 +  Pushbutton: pbF10
+.winattr
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title:
+.head 4 -  Window Location and Size
+.head 5 -  Left: Default
+.head 5 -  Top: Default
+.head 5 -  Width:  Default
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: Default
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? No
+.head 4 -  Keyboard Accelerator: F10
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.end
+.head 4 +  Message Actions 
+.head 5 +  On SAM_Click
+.head 6 +  If psType = 'MASTER'
+.head 7 -  Set dfPW = 'CODI_MASTER'
+.head 6 +  If psType = 'VIDER'
+.head 7 -  Set dfPW = 'CODI_RESET'
+.head 6 +  If psType = 'VALID'
+.head 7 -  Set dfPW = 'CODI_VALID'
+.head 2 -  Functions 
+.head 2 +  Window Parameters 
+.head 3 -  String: psType
+.head 3 -  Receive Boolean: wbOk
+.head 2 +  Window Variables 
+.head 3 -  Number: wnPassage
+.head 2 +  Message Actions 
+.head 3 +  On SAM_Create
+.head 4 -  Call SalCenterWindow( hWndForm )
+.head 4 -  Set wbOk = FALSE
+.head 4 -  Call SalSetWindowText( hWndItem, "Mot de passe")
+.head 3 +  On SAM_Close
+.head 4 +  If wbOk
+.head 5 -  Set wbOk = FALSE
+.head 5 +  If psType = 'MASTER' and SalStrUpperX(dfPW) = 'CODI_MASTER'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VIDER' and SalStrUpperX(dfPW) = 'CODI_RESET'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VALID' and SalStrUpperX(dfPW) = 'CODI_VALID'
+.head 6 -  Set wbOk = TRUE
+.head 1 +  Dialog Box: dlgPW
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title: Mot de passe
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Type of Dialog: Modal
+.head 3 -  Allow Dock to Parent? No
+.head 3 -  Docking Orientation: All
+.head 3 -  Window Location and Size
+.head 4 -  Left: 5.863"
+.head 4 -  Top: 2.719"
+.head 4 -  Width:  2.95"
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: 0.964"
+.head 4 -  Height Editable? Yes
+.head 3 -  Absolute Screen Location? Yes
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 3 -  Resizable? No
+.head 3 -  Vertical Scroll? Yes
+.head 3 -  Horizontal Scroll? Yes
+.head 2 -  Description:
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Data Field: dfPW
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Data
+.head 5 -  Maximum Data Length: 20
+.head 5 -  Data Type: String
+.head 5 -  Editable? Yes
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.183"
+.head 6 -  Top: 0.071"
+.head 6 -  Width:  2.4"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 0.31"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Border? Yes
+.head 5 -  Justify: Left
+.head 5 -  Format: Invisible
+.head 5 -  Country: Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: 12
+.head 5 -  Font Enhancement: Bold
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  Input Mask: Unformatted
+.head 4 -  Message Actions
+.head 3 +  Pushbutton: pbOk
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title: Ok
+.head 4 -  Window Location and Size
+.head 5 -  Left: 0.783"
+.head 5 -  Top: 0.512"
+.head 5 -  Width:  1.3"
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: 0.298"
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? Yes
+.head 4 -  Keyboard Accelerator: Enter
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Set wbOk = TRUE
+.head 6 -  Call SalSendMsg( hWndForm, SAM_Close, 0,0)
+.head 5 +  On WM_RBUTTONDOWN
+.head 6 -  Call SalSendMsg( pbF10, SAM_Click, 0,0 )
+.head 3 +  Pushbutton: pbF10
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class:
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Title:
+.head 4 -  Window Location and Size
+.head 5 -  Left: Default
+.head 5 -  Top: Default
+.head 5 -  Width:  Default
+.head 5 -  Width Editable? Yes
+.head 5 -  Height: Default
+.head 5 -  Height Editable? Yes
+.head 4 -  Visible? No
+.head 4 -  Keyboard Accelerator: F10
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Picture File Name:
+.head 4 -  Picture Transparent Color: None
+.head 4 -  Image Style: Single
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Button Appearance: Standard
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 +  If psType = 'MASTER'
+.head 7 -  Set dfPW = 'CODI_MASTER'
+.head 6 +  If psType = 'VIDER'
+.head 7 -  Set dfPW = 'CODI_RESET'
+.head 6 +  If psType = 'VALID'
+.head 7 -  Set dfPW = 'CODI_VALID'
+.head 2 -  Functions
+.head 2 +  Window Parameters
+.head 3 -  String: psType
+.head 3 -  Receive Boolean: wbOk
+.head 2 +  Window Variables
+.head 3 -  Number: wnPassage
+.head 2 +  Message Actions
+.head 3 +  On SAM_Create
+.head 4 -  Call SalCenterWindow( hWndForm )
+.head 4 -  Set wbOk = FALSE
+.head 4 -  Call SalSetWindowText( hWndItem, "Mot de passe")
+.head 3 +  On SAM_Close
+.head 4 +  If wbOk
+.head 5 -  Set wbOk = FALSE
+.head 5 +  If psType = 'MASTER' and SalStrUpperX(dfPW) = 'CODI_MASTER'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VIDER' and SalStrUpperX(dfPW) = 'CODI_RESET'
+.head 6 -  Set wbOk = TRUE
+.head 5 +  If psType = 'VALID' and SalStrUpperX(dfPW) = 'CODI_VALID'
+.head 6 -  Set wbOk = TRUE

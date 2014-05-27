@@ -1,0 +1,40 @@
+/* Filename            : SELECRD.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+DO TRANSACTION :
+    FIND selection WHERE selection.s-id = verkdat NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE selection
+    THEN ASSIGN
+         taalkode = 1
+         verknum  = 0
+         verkben  = ""
+         partnum  = 0
+         partnam  = ""
+         candtyp  = 0
+         candnum  = 0.
+    ELSE ASSIGN
+         taalkode = selection.lang-pc
+         verknum  = selection.e-id
+         verkben  = selection.verk_name
+         partnum  = selection.p-id
+         partnam  = selection.party_name
+         candtyp  = selection.c-type
+         candnum  = selection.c-id.
+END.
+
+{return.i}
+/* eof */

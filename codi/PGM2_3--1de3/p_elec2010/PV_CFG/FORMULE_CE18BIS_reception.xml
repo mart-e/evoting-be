@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >II.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Réception des disquettes de vote et totalisation des voix</String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Toutes les disquettes ont été reçues entre #HEURE_DEBUT_RECEPTION# et #HEURE_FIN_RECEPTION# .</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >OBSERVATIONS :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#OBSERVATIONS_RECEPTION#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le bureau procède ensuite à la totalisation des votes pour la Chambre et le Sénat.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Lorsque les résultats de tous les bureaux de vote ont été enregistrés, le président du bureau principal procède à l'impression du procès-verbal ainsi que des tableaux de recensement des votes et de l’état récapitulatif (cf. annexes 1 et 2). Le chiffre électoral de chaque liste est également ajouté (1), ainsi que, pour chaque candidat (titulaires et suppléants) de chaque liste, le total des votes nominatifs obtenus.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le résultat du dépouillement s'établit comme il est indiqué aux tableaux ci-annexés.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >16</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le président du bureau principal de canton ou la personne qu'il désigne à cette fin communique au Ministre de l'Intérieur sans délai par la voie digitale , en utilisant la signature électronique émise au moyen de sa carte d'identité, le total des bulletins déposés, le total des bulletins valables, le total des bulletins blancs nuls ainsi que le chiffre électoral de chaque liste, tel qu'il est déterminé à l'article 166 du Code électoral, et le total des suffrages nominatifs qui sont obtenus par chaque candidat titulaire ou suppléant (Article 161, alinéa dix du Code électoral)(2).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >16</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le président du bureau principal de canton assure l'envoi sans délai par la voie digitale, en utilisant la signature électronique émise au moyen de sa carte d'identité, du procès-verbal complet de son bureau reprenant le tableau récapitulatif au président du bureau principal de circonscription électorale pour ce qui concerne l'élection de la Chambre des Représentants et au président du bureau principal de province pour l'élection du Sénat qui en donnent récépissé et au Ministre de l'Intérieur (Article 161, alinéa onze du Code électoral).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Ce procès-verbal, sous format papier et dressé en deux exemplaires, est placé avec les tableaux de recensement signés par le président du bureau principal de canton, les membres du bureau et les témoins, sous enveloppes scellées dont la suscription indique le contenu.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le président du bureau principal de canton transmet ces documents papier dans lesdites enveloppes scellées de couleur blanche et rose respectivement par la voie la plus rapide au président du bureau principal de la circonscription électorale en ce qui concerne l'élection de la Chambre des Représentants et au président du bureau principal de la province en ce qui concerne l'élection du Sénat, qui en donnent chacun récépissé.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Fait à #LIEU#, le #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Le Secrétaire,                Les assesseurs,                Les témoins,                Le Président,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >P.S.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >LE PRESIDENT DU BUREAU PRINCIPAL DE CANTON NE DOIT PAS OUBLIER, LE LUNDI SUIVANT L'ELECTION, DE REMETTRE AU RECEVEUR DES POSTES DU CHEF-LIEU DE CANTON LES LISTES POUR LE PAIEMENT DES JETONS DE PRESENCE DE TOUS LES BUREAUX ELECTORAUX DE SON CANTON. POUR EVITER TOUT RETARD DANS LE PAIEMENT DES JETONS DE PRESENCE, PRENEZ LES ACCORDS NECESSAIRES AVEC LE RECEVEUR DES POSTES AVANT LES ELECTIONS.</String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Le chiffre électoral de chaque liste est constitué par l'addition des cartes magnétiques contenant un vote valable en tête de liste ou en faveur d'un ou plusieurs candidats (titulaires et/ou suppléants) de cette liste.</String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(2)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Les présidents de canton et le SPF Intérieur passent les accords nécessaires en vue de la transmission digitale des résultats électoraux. A cet effet, une note distincte sera envoyée par le département.</String2>
+	</row>
+</TD_XML_Table>

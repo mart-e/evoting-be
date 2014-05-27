@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >FORMULIER D/28 </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#KIESCOLLEGE#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Kieskring : #CIRCONSCRIPTION#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Kieskanton : #CANTON#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Kantonhoofdbureau B</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >       ________           </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >3</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >VERKIEZING VAN HET VLAAMS PARLEMENT VAN 7 JUNI 2009</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Proces-verbaal van ontvangst van de dubbels van de stemopnemingstabellen van het kieskanton.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >_______</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >I.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Vorming en samenstelling van het bureau.-</String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Het Kantonhoofdbureau B komt bijeen op #DATE# om #HEURE# uur in het lokaal gelegen te #LIEU#, om de uitslagen van de stemopneming op het niveau van het kanton te bepalen.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Het kantonhoofdbureau is samengesteld als volgt: (1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Voorzitter</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >#PRESIDENT#</String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Bijzitter</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >#ASSESSEUR#</String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >15</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Secretaris</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >#SECRETAIRE#</String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Hebben als getuigen zitting gehad :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >7</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Voor de lijst </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >#TEMOIN#</String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Het bureau heeft zich gevormd en de leden hebben dadelijk de eed afgelegd voorzien in artikel 104 van het Kieswetboek (er wordt daarvan melding gemaakt in het procesverbaal) (2).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter, de bijzitters, de secretaris en de getuigen leggen de eed af die voorgeschreven is in artikel 104 van het Kieswetboek(2).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >OPMERKINGEN :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#OBSERVATIONS#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+		<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________________________________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(1)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >De naam en voornaam worden voorafgegaan door de vermelding : Mevrouw (Mw.) of Mijnheer (M). </String2>
+	</row>
+	<row rowNumber="38" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(2)</String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >De eedformule voor de leden van het bureau is de volgende :"Ik zweer dat ik de stemmen getrouw zal opnemen en het geheim van de stemming zal bewaren", ofwel "Je    jure de recenser fidèlement les suffrages et de garder le secret des votes", ofwel : "Ich schwöre die Stimmen gewissenhaft zu zählen und das Stimmgeheimnis zu bewahren".</String2>
+	</row>
+	<row rowNumber="39" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >Voor de getuigen luidt het : "Ik zweer dat ik het geheim van de stemming zal bewaren", ofwel "je jure de garder le secret des votes", ofwel "Ich schwöre das Stimmgeheimnis zu bewahren".</String2>
+	</row>
+	<row rowNumber="40" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >De eed wordt door de bijzitter, de secretaris en door de getuigen afgelegd in handen van de voorzitter, en door deze tegenover het samengesteld bureau.</String2>
+	</row>
+		<row rowNumber="41" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >De voorzitter, de bijzitter of de secretaris, in de loop der verrichtingen benoemd, in vervanging van een verhinderd lid, legt de eed af, alvorens zijn ambt waar te nemen.  Er wordt daarvan melding gemaakt in het proces-verbaal.</String2>
+	</row>
+</TD_XML_Table>

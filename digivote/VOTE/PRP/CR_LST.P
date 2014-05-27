@@ -1,0 +1,131 @@
+/* Filename            : CR_LST.P                                       */
+/*                                                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-file AS C NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-stat-logo        AS I                                  NO-UNDO.
+DEF VAR wz-nbr-of-logo      AS I                                  NO-UNDO.
+DEF VAR wz-sign-pos         AS I                                  NO-UNDO.
+DEF VAR wz-sign             AS I INIT 32                          NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{makelogo.i "NEW"}
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{PROGBUSY.I}
+FIND FIRST setup NO-LOCK NO-ERROR.
+{PROGBUSY.I}
+FIND FIRST session  WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+{PROGBUSY.I}
+FIND FIRST election WHERE election.s-id = verkdat
+                      AND election.e-id = verknum
+                          NO-LOCK NO-ERROR.
+
+OUTPUT TO VALUE(wz-file).
+
+{PROGBUSY.I}
+PUT UNFORMATTED ENTRY(setup.lang-pc,"2,1,4") SKIP
+                "B~t" election.et-id 
+                 "~t" e-type 
+                 "~t" election.long-name[setup.lang-pc] 
+                 "~t" election.short-name[setup.lang-pc] SKIP.
+{PROGBUSY.I}
+IF      setup.lang-pc = 1
+THEN DO:
+    PUT UNFORMATTED "C~t" election.et-id
+                     "~t" election.coll-id 
+                     "~t" election.coll_name[lang-pc] " kiescollege" SKIP.
+END.
+ELSE IF setup.lang-pc = 2
+THEN DO:
+    PUT UNFORMATTED "C~t" election.et-id
+                     "~t" election.coll-id 
+                     "~t" "Colläge Çlectoral " election.coll_name[lang-pc] SKIP.
+END.
+ELSE IF setup.lang-pc = 3
+THEN DO:
+    PUT UNFORMATTED "C~t" election.et-id
+                     "~t" election.coll-id 
+                     "~t" election.coll_name[lang-pc] "es Wahlkolleguim" SKIP.
+END.
+
+{PROGBUSY.I}
+FIND FIRST party WHERE party.s-id = election.s-id
+                   AND party.e-id = election.e-id
+                   AND party.p-id = partnum
+                   NO-LOCK NO-ERROR.
+
+{PROGBUSY.I}
+IF party.taalgroep[taalkode] = ""
+THEN PUT UNFORMATTED "D~t" election.et-id
+                      "~t" election.coll-id
+                      "~t" party.p-id
+                      "~t" party.party_name 
+                      "~t" (IF party.logo_width  = -1
+                            THEN 0
+                            ELSE party.logo_width)
+                      "~t" (IF party.logo_height = -1
+                            THEN 0
+                            ELSE party.logo_height) SKIP.
+ELSE PUT UNFORMATTED "D~t" election.et-id
+                      "~t" election.coll-id
+                      "~t" party.p-id
+                      "~t" party.party_name
+                      "~t" (IF party.logo_width  = -1
+                            THEN 0
+                            ELSE party.logo_width)
+                      "~t" (IF party.logo_height = -1
+                            THEN 0
+                            ELSE party.logo_height)
+                      "~t" (IF      SUBSTR(party.taalgroep[1],1,1) = "N" THEN 2
+                            ELSE IF SUBSTR(party.taalgroep[1],1,1) = "F" THEN 1
+                            ELSE                                              4) SKIP.
+
+FOR EACH candidate NO-LOCK WHERE candidate.s-id = session.s-id
+                             AND candidate.e-id = election.e-id
+                             AND candidate.p-id = party.p-id:
+    {PROGBUSY.I}
+    PUT UNFORMATTED "E~t" election.et-id
+                     "~t" election.coll-id
+                     "~t" party.p-id
+                     "~t" candidate.c-type
+                     "~t" candidate.c-id
+                     "~t" candidate.c_name1
+                     "~t" candidate.c_name2 SKIP.
+END.
+OUTPUT CLOSE.
+
+ASSIGN
+sessionrecid  = RECID(session)
+electionrecid = RECID(election)
+partyrecid    = RECID(party).
+{call.i &prg="makelogo" &param=", INPUT-OUTPUT wz-sign-pos,
+                                  INPUT-OUTPUT wz-sign,
+                                        OUTPUT wz-stat-logo,
+                                        OUTPUT wz-nbr-of-logo"}
+
+{BUSYENDS.I}
+
+{return.i}
+/* eof */

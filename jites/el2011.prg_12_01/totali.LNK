@@ -1,0 +1,15 @@
+  FILE
+  \el2011.prg\obj\jites       ,
+  \el2011.prg\obj\jt_netwk    ,
+  \el2011.prg\obj\jt_gmsg     ,
+  \el2011.prg\obj\jt_open     ,
+  \el2011.prg\obj\jt_quit     ,
+  \el2011.prg\obj\jt_brows    ,
+  \el2011.prg\obj\jt_recup    ,                 
+  \el2011.prg\obj\jt_total    ,
+  \el2011.prg\obj\jt_resul    ,
+  \el2011.prg\obj\jt_elect    ,
+  \el2011.prg\obj\jt_acces    ,
+  \el2011.prg\obj\jt_rdisk    
+OUTPUT totali.exe
+LIB    \CLIPPER5\TOOLS\LIB\nt250,\clipper5\lib\clipper

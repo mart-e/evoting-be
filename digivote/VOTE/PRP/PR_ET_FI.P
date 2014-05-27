@@ -1,0 +1,99 @@
+/* Filename            : PR_ET_FI.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR menusel   AS I FORMAT "9"       INITIAL 1 NO-UNDO.
+DEF VAR menuexe   AS I FORMAT "9"       INITIAL 0 NO-UNDO.
+DEF VAR men_set   AS C FORMAT "X(20)"   EXTENT 2  NO-UNDO.
+DEF VAR men_tit   AS C FORMAT "X(40)"             NO-UNDO.
+DEF VAR men_param AS I                            NO-UNDO.
+
+DEFINE VARIABLE proglist AS CHARACTER EXTENT 2    NO-UNDO
+  INITIAL ["pretiket.r","prfiche.r"].
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " "        AT 11 SPACE(11) SKIP
+    men_set[1] AT 11 SPACE(11) SKIP
+    men_set[2] AT 11 SPACE(11) SKIP
+    WITH COLOR DISPLAY VALUE(menu_fg)
+         TITLE men_tit
+         FRAME pmslstpr
+         NO-LABELS
+         ATTR-SPACE
+         ROW 5
+         COLUMN 2
+         OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmslstpr,mes01',20,OUTPUT men_set[1]"}
+{call.i &prg="mesfil" &param=",'pmslstpr,mes02',20,OUTPUT men_set[2]"}
+{call.i &prg="mesfil" &param=",'pmslstpr,tit01',40,OUTPUT men_tit"}
+
+REPEAT WITH FRAME pmslstpr :
+    STATUS INPUT OFF.
+    DISPLAY men_set[1] men_set[2].
+    COLOR DISPLAY VALUE(menu_fg) men_set[1 FOR 2].
+    COLOR DISPLAY VALUE(menu_bg) men_set[menusel].
+    NEXT-PROMPT men_set[menusel].
+    {call.i &prg="discolme" &param=",'pmslstpr,hulp' + STRING(menusel),0"}
+
+    CHOOSE FIELD men_set[1 FOR 2] COLOR VALUE(menu_bg) AUTO-RETURN
+        GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB").
+    menuexe = 0.
+    menusel = FRAME-INDEX.
+    IF LASTKEY = KEYCODE("TAB") OR
+       LASTKEY = KEYCODE("CURSOR-DOWN")
+    THEN IF menusel = 2
+         THEN menusel = 1.
+         ELSE menusel = menusel + 1.
+    ELSE IF LASTKEY = KEYCODE("BACK-TAB")
+         OR LASTKEY = KEYCODE("CURSOR-UP")
+         THEN IF menusel = 1
+              THEN menusel = 2.
+              ELSE menusel = menusel - 1.
+         ELSE menuexe = 1.
+
+    IF menuexe = 1
+    THEN IF SEARCH( proglist[menusel]) <> ? OR
+            LIBRARY(proglist[menusel]) <> ?
+         THEN DO :
+             HIDE MESSAGE NO-PAUSE.
+             HIDE FRAME pmslstpr NO-PAUSE.
+             men_param = 6 + (IF menusel = 1
+                              THEN 9 /* PrEtiket */
+                              ELSE 0 /* PrFiche  */).
+             /*@call=pretiket.p,prfiche.p*/
+             {call_var.i &prg="proglist[menusel]"}
+         END.
+         ELSE DO :
+             {call.i &prg="dispmes" &param=",'general,notavail', 0"}
+             HIDE MESSAGE NO-PAUSE.
+         END.
+END.
+
+HIDE FRAME pmslstpr NO-PAUSE.
+
+{return.i}
+/* eof */

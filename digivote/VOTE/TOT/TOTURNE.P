@@ -1,0 +1,541 @@
+/* Filename            : TOTURNE.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   TOTURNE.P  $</workFile>
+<revision>$Revision: 1.24 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 30 2004 11:32:28  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/TOTURNE.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2009/01/13 14:00:13 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETER                                              */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM wz-prgstat  AS L INIT FALSE                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES from FILE                                    */
+/*                                                                      */
+/************************************************************************/
+{vcontent.i "NEW"}
+{vargener.i}
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR sel-bureau           AS C FORMAT "x(65)"                  NO-UNDO.
+DEF VAR askpasw              AS C FORMAT "x(65)"                  NO-UNDO.
+DEF VAR rdmastit             AS C FORMAT "x(65)"                  NO-UNDO.
+
+/*@source sec=1*/
+DEF VAR masterkey            LIKE meta.aesKey                     NO-UNDO.
+DEF VAR sessionkey           LIKE meta.aesKey                     NO-UNDO.
+/*@source sec=0*/
+
+DEF VAR disklabel            AS C FORMAT "x(11)"                  NO-UNDO.
+
+DEF VAR masterd              AS I FORMAT "9"                      NO-UNDO.
+DEF VAR backupd              AS I FORMAT "9"                      NO-UNDO.
+DEF VAR wz-nbr-elec          AS I                                 NO-UNDO.
+DEF VAR wz-backup            AS I                                 NO-UNDO.
+DEF VAR wz-dsklbl            AS C FORMAT "x(4)"                   NO-UNDO.
+
+DEF VAR wz-words             AS C FORMAT "x(40)" EXTENT 4         NO-UNDO.
+DEF VAR wz-destinator        AS C FORMAT "x(40)"                  NO-UNDO.
+
+DEF VAR wz-results-file      AS C FORMAT "x(45)"                  NO-UNDO.
+DEF VAR wz-result-path       AS C FORMAT "x(45)"                  NO-UNDO.
+
+DEF VAR recid_urnedest       AS RECID                             NO-UNDO.
+
+DEF VAR wz-fra_var           AS C FORMAT "x(20)" EXTENT 4         NO-UNDO.
+DEF VAR wz-status            AS L                                 NO-UNDO.
+
+DEF VAR wz-votecount         AS C FORMAT "x(65)"                  NO-UNDO.
+DEF VAR wz-cardcount         AS I                                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+                        SKIP(1)
+    askpasw       AT 2  SKIP(1)
+    sel-bureau    AT 2  SKIP(1)
+    masterkey     AT 24 SKIP(1)
+    WITH FRAME trdurnpw 
+        TITLE rdmastit 
+        ROW 8 
+        CENTERED 
+        NO-LABEL 
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+STATUS INPUT OFF.
+
+{call.i &prg="mesfil" &param=",'trdurnpw,rdmastit',65,OUTPUT rdmastit"}
+{call.i &prg="mesfil" &param=",'trdurnpw,askpasw1',65,OUTPUT askpasw"}
+
+ASSIGN
+wz-prgstat      = FALSE
+wz-fra_var      = ""
+disklabel       = ?
+wz-result-path  = ?
+wz-results-file = ramdrive + "TOTAL.DEC".
+
+Seq-Block:
+REPEAT:
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    FIND FIRST session WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE session
+    THEN DO:
+        wz-fra_var[1] = "digivote,errmes04".
+        LEAVE Seq-Block.
+    END.
+
+    IF session.disk_read = session.disk_made
+    THEN DO :
+        /**************************************************/
+        /* Display "Al de disketten zijn reeds ingelezen" */
+        /**************************************************/
+        STATUS DEFAULT.
+        HIDE MESSAGE NO-PAUSE.
+        call ADDTOLOG PROGRAM-NAME(1) "All the disks have been read !" 2.
+        wz-fra_var[1] = "trdurnma,maxread1".
+        LEAVE Seq-Block.
+    END.
+
+    wz-nbr-elec = 0.
+    FOR EACH election NO-LOCK:
+        wz-nbr-elec = wz-nbr-elec + 1.
+    END.
+
+    FIND FIRST urnedest               NO-LOCK NO-ERROR.
+    FIND FIRST organigram OF urnedest NO-LOCK NO-ERROR.
+
+    IF NOT AVAIL urnedest
+    OR NOT AVAIL organigram
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "No 'urnedest' records present !" 2.
+        /* De DATABASE bevat onvoldoende gegevens */
+        wz-fra_var[1] = "initelec,badmama".
+        LEAVE Seq-Block.
+    END.
+
+    Disk-Block:
+    REPEAT :
+        STATUS DEFAULT.
+        HIDE MESSAGE NO-PAUSE.
+        /*******************************************************************/
+        /* Display "Steek de diskette MASTER/BACKUP? in de diskette lezer" */
+        /*******************************************************************/
+        ASSIGN
+        wz-dsklbl = "mstr"
+        wz-backup = 1.
+        IF wz-nbr-elec         >  1  AND
+           session.nbr_flop    >  2  AND
+           organigram.sys-type = "U"
+        THEN IF      setup.org-type = "G" /* Gemeente */
+             THEN wz-backup = 2.
+             ELSE IF setup.org-type = "I" /* District */
+             THEN wz-backup = 3.
+        IF wz-backup > 1 THEN wz-dsklbl = "bck" + STRING(wz-backup).
+        {call.i &prg="disfram" &param=",'trdurnma,use_' + wz-dsklbl,'','','',TRUE"}
+        IF key-cancel
+        THEN LEAVE Seq-Block.
+
+        CALL C_TSTFN "A:\NUL".
+        IF fileok = 0
+        THEN DO :
+            /************************************/
+            /* Display "Geen diskette aanwezig" */
+            /************************************/
+            {call.i &prg="disfram" &param=",'errormsg,nodisk','','','',TRUE"}
+            IF key-cancel
+            THEN LEAVE Seq-Block.
+            ELSE NEXT Disk-Block.
+        END.
+        ELSE LEAVE Disk-Block.
+    END.
+
+    /**************************************/
+    /* Display "Kontrole van de gegevens" */
+    /**************************************/
+    {call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+    wz-destinator = setup.sys-type +
+                    setup.org-type +
+                    setup.areaname +
+                    STRING(setup.orginator,"999").
+
+    /* Check CONTENTS file on diskette */
+    {call.i &prg="vcontent" &param=",INPUT 'A:\CONTENTS', 
+                                     INPUT wz-destinator,
+                                     INPUT ENTRY(1,setup.startup[1]),
+                                     OUTPUT disklabel,
+                                     OUTPUT wz-status"}
+    IF NOT wz-status 
+    THEN LEAVE Seq-Block.
+
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Trying to import URNE for " + vc-originator) 0.
+
+    /***********************/
+    /* Test diskette label */
+    /***********************/
+    ASSIGN
+    masterd = (IF disklabel =      "MASTER" THEN 1 ELSE 0)
+    backupd = (IF disklabel BEGINS "BACKUP" THEN 1 ELSE 0).
+
+    IF backupd = masterd
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "MASTER and/or BACKUP are missing !" 1.
+        wz-fra_var[1] = "trdurnma,absentmb".
+        LEAVE Seq-Block.
+    END.
+
+    /* Controleer of er een BACKUP-diskette verwacht word ... */
+    wz-fra_var[1] = "".
+    IF wz-backup > 1
+    THEN DO:
+        IF masterd = 1
+        THEN /* OPGELET : MASTER gebruikt ipv verwachte BACKUP-diskette ! */
+             wz-fra_var[1] = "trdurnma,usedmstr". 
+        ELSE IF INT(SUBSTR(disklabel,LENGTH(disklabel),1)) <> wz-backup
+        THEN /* OPGELET : een andere BACKUP-diskette dan verwacht ! */
+             wz-fra_var[1] = "trdurnma,usedbck" + SUBSTR(disklabel,LENGTH(disklabel),1).
+    END.
+    ELSE IF wz-backup = backupd
+    THEN /* OPGELET : BACKUP-diskette wordt gebruikt ! MASTER verwacht ! */
+         wz-fra_var[1] = "trdurnma,usedbck" + SUBSTR(disklabel,LENGTH(disklabel),1).
+         
+    IF wz-fra_var[1] <> ""
+    THEN DO:
+        {call.i &prg="disfram" &param=",wz-fra_var[1],'','','',TRUE"}
+        wz-fra_var[1] = "".
+    END.
+
+    /*@source sec=1*/
+    /* check if results are present on diskette */
+    CALL C_TSTFN "A:\B001".
+    IF fileok = 0
+    THEN DO :
+        /**************************************************/
+        /* Display "Geen resultaten op diskette van URNE" */
+        /**************************************************/
+        call ADDTOLOG PROGRAM-NAME(1) "No results found on diskette ! (B001 missing)" 1.
+        wz-fra_var[1] = "trdurnma,disurne1".
+        LEAVE Seq-Block.
+    END.
+
+    FIND FIRST organigram WHERE organigram.sys-type +
+                                organigram.org-type +
+                                organigram.area[1]  +
+                                STRING(organigram.orginator,"999") = vc-originator
+                             OR organigram.sys-type +
+                                organigram.org-type +
+                                organigram.area[2]  +
+                                STRING(organigram.orginator,"999") = vc-originator
+                             OR organigram.sys-type +
+                                organigram.org-type +
+                                organigram.area[3]  +
+                                STRING(organigram.orginator,"999") = vc-originator
+                        NO-LOCK NO-ERROR.
+    IF NOT AVAIL organigram
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Destination unknown ! (1," + vc-originator + ")") 2.
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,err_dat1"
+        wz-fra_var[3] = ",(1)".
+        LEAVE Seq-Block.
+    END.
+    
+    FIND FIRST urnedest OF organigram NO-LOCK NO-ERROR.
+    IF NOT AVAIL urnedest
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Destination unknown ! (2," + vc-originator + ")") 2.
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,err_dat1"
+        wz-fra_var[3] = ",(2)".
+        LEAVE Seq-Block.
+    END.
+
+    IF urnedest.data-read <> 0
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Destination already read ! (" + vc-originator + ")") 2.
+        wz-fra_var[1] = "trdurnma,err_dub1".
+        LEAVE Seq-Block.
+    END.
+
+    recid_urnedest = RECID(urnedest).
+    call CRYPDEC PRPTOT organigram.master-key.
+    IF crypStat <> 0
+    THEN DO:
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,wrongky1"
+        wz-fra_var[2] = "trdurnma,wrongky2".
+        LEAVE Seq-Block.
+    END.
+    
+    /***************************/
+    /* DISPLAY AND ASK PASWORD */
+    /***************************/
+
+    HIDE FRAME disframe NO-PAUSE.
+    
+    {call.i &prg="mesfil" &param=",'pmdlxpdi,mes02',50,OUTPUT sel-bureau"}
+    sel-bureau = TRIM(sel-bureau) + " " + vc-originator.
+    PWD-Block:
+    REPEAT WITH FRAME trdurnpw :
+        DISPLAY askpasw sel-bureau.
+        PAUSE 0 NO-MESSAGE.
+        {call.i &prg="discolme" &param=",'general,fkey01',0"}
+
+        /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+        /************************************************/
+        /*
+        PUT SCREEN COLOR GRAY/BLACK ROW 17 COLUMN 31 STRING(result4,"x(4) x(4) x(4) x(4)").
+        */
+        /*************************************************/
+        /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+
+        {GetPasw.i "set" "masterkey" "trdurnpw"}. /* includes custom password editing */
+
+        /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+        /************************************************/
+        /*
+        PUT SCREEN ROW 17 COLUMN 25 FILL(" ",35).
+        */
+        /*************************************************/
+        /* TESTING ONLY - REMOVE FOR PRODUCTION VERSION */
+
+        IF KEYFUNCTION(LASTKEY) = "END-ERROR" 
+        OR KEYLABEL(LASTKEY)    = "ESC"
+        OR masterkey            = "ABORTED"
+        THEN LEAVE Seq-Block.
+        ELSE LEAVE PWD-Block.
+    END.
+    HIDE FRAME trdurnpw NO-PAUSE.
+    /*@source sec=0*/
+
+		IF masterkey = "ABORTED"
+		THEN LEAVE.
+		
+    /**************************************/
+    /* Display "Kontrole van de gegevens" */
+    /**************************************/
+    {call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+    call CRYPDEC PRPTOT organigram.master-key.
+    IF crypStat  <> 0
+    OR (    masterkey <> result4
+        AND organigram.sys-type = "U")
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Wrong password entered on import URNE ! (dB.MasterKey)" 2.
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,wrongme1"
+        wz-fra_var[2] = "trdurnma,wrongme2".
+        LEAVE Seq-Block.
+    END.
+    masterk = (IF organigram.sys-type = "U"
+               THEN masterkey
+               ELSE result4).
+    
+    call CRYPDEC PRPTOT organigram.session-key.
+    IF crypStat <> 0
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Wrong password entered on import URNE ! (dB.SessionKey)" 2.
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,wrongme1"
+        wz-fra_var[2] = "trdurnma,wrongme2".
+        LEAVE Seq-Block.
+    END.
+    sessionkey = result4.
+
+    /*@source sec=1*/
+    /* pass master key to AesLib, sessionkey is yet unknown */
+    sessionk = FILL("?", AESKEYLEN).
+    call CRYPKEYS masterk sessionk.
+    IF crypStat = 0
+    THEN call CRYPSK "D" "A:\B006".
+    IF crypStat   <> 0
+    OR sessionkey <> rndKey
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Wrong password entered on import URNE ! (File.SessionKey)" 2.
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,wrongme1"
+        wz-fra_var[2] = "trdurnma,wrongme2".
+        LEAVE Seq-Block.
+    END.
+    sessionk = sessionkey.
+    /*@source sec=0 */
+    
+    {call.i &prg="init_pwd"}
+
+    /*******************************/
+    /* DISPLAY / ASK / VERIFY HASH */
+    /*******************************/
+
+    HIDE FRAME disframe NO-PAUSE.
+    
+    wz-status = FALSE.
+    {call.i &prg="tothash" &param=",disklabel,OUTPUT wz-status"}
+    IF NOT wz-status THEN LEAVE Seq-Block.
+    
+    /*********************/
+    /* COPY VOTING FILES */
+    /*********************/
+
+    {call.i &prg="copyresf" &param=",INPUT  vc-originator,
+                                     INPUT  wz-destinator, 
+                                     OUTPUT wz-result-path,
+                                     OUTPUT wz-status"}
+    IF NOT wz-status 
+    THEN LEAVE Seq-Block.
+    
+    /**************************************/
+    /* Display "Kontrole van de gegevens" */
+    /**************************************/
+    {call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+    /*@source sec=1*/
+    wz-status = FALSE.
+    call CRYPKEYS masterk sessionk.
+    IF crypStat = 0
+    THEN DO:
+        call CRYPFILE "D" URNTOT VALUE(wz-result-path + "B001")
+                                 VALUE(wz-results-file).
+        wz-status = (crypStat = 0).
+    END.
+    
+    {call.i &prg="init_pwd"}
+
+    /*@source sec=0*/
+    IF NOT wz-status
+    OR crypStat <> 0
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Wrong password entered on import URNE ! (1,decryptFile)" 2.
+        ASSIGN
+        wz-fra_var[1] = "trdurnma,wrongme1"
+        wz-fra_var[2] = "trdurnma,wrongme2"
+        wz-fra_var[4] = ",(1)".
+        LEAVE Seq-Block.
+    END.
+    
+    IF organigram.sys-type = "T"
+    THEN DO:
+        INPUT FROM VALUE(wz-results-file) NO-ECHO.
+        SET wz-words.
+        INPUT CLOSE.
+        IF wz-words[2] <> masterkey
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "Wrong password entered on import URNE ! (2,decryptFile)" 2.
+            ASSIGN
+            wz-fra_var[1] = "trdurnma,wrongme1"
+            wz-fra_var[2] = "trdurnma,wrongme2"
+            wz-fra_var[4] = ",(2)".
+            LEAVE Seq-Block.
+        END.
+    END.
+    
+    {call.i &prg="vresults" &param=",INPUT  wz-results-file,
+                                     OUTPUT wz-cardcount,
+                                     OUTPUT wz-status"}
+    IF NOT wz-status
+    THEN LEAVE Seq-Block.
+    
+    {call.i &prg="compvote" &param=",OUTPUT wz-status"}
+    IF NOT wz-status
+    THEN LEAVE Seq-Block.
+    
+    HIDE FRAME disframe NO-PAUSE.
+    
+    /***************************************/
+    /* Bevestiging van het aantal kiezers. */
+    /***************************************/
+    {call.i &prg="mesfil" &param=",'trdurnma,mes01',45,OUTPUT wz-votecount"}
+    wz-votecount = TRIM(wz-votecount) + " " + STRING(wz-cardcount).
+    {call.i &prg="confirm" &param=",'trdurnpw,rdmastit',wz-votecount,'trdurnma,mes02',
+                                    'general,yes','general,no'"}
+    IF menleav = 0
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Import URNE not accepted ! (" + vc-originator + ")") 1.
+        LEAVE Seq-Block.
+    END.
+
+    /**********************************************/
+    /* Display "De telling van de lijst is bezig" */
+    /**********************************************/
+    {call.i &prg="disfram" &param=",'trdurnma,calcul1','','','',FALSE"}
+
+    /***************************/
+    /* Invullen van resultaten */
+    /***************************/
+    wz-status = FALSE.
+    {call.i &prg="impresul" &param=",INPUT recid_urnedest,
+                                     OUTPUT wz-status"}
+    IF wz-status
+    THEN DO :
+        FIND FIRST urnedest WHERE RECID(urnedest) = recid_urnedest NO-ERROR.
+        IF masterd = 1 THEN urnedest.data-read = 1.
+        IF backupd = 1 THEN urnedest.data-read = 2.
+        ASSIGN
+        urnedest.time-rcv = STRING(TIME,"HH:MM")
+        urnedest.MAC      = "REFRESH".
+        {call.i &prg="sec_urne"}
+
+        FIND FIRST session WHERE session.s-id = verkdat NO-ERROR.
+        ASSIGN
+        session.disk_read = session.disk_read + 1
+        session.MAC       = "REFRESH".
+        {call.i &prg="sec_sess"}
+        
+        {call.i &prg="totdisk"}
+        {call.i &prg="totontv" &param=",recid_urnedest"}
+        {call.i &prg="disfram" &param=",'digivote,verdis01','',',' + disklabel,'',TRUE"}
+    END.
+    wz-prgstat = TRUE.
+    LEAVE Seq-Block.
+END.
+
+IF wz-fra_var[1] <> "" 
+OR wz-fra_var[2] <> "" 
+OR wz-fra_var[3] <> "" 
+OR wz-fra_var[4] <> "" 
+THEN DO:
+    {call.i &prg="disfram" &param=",wz-fra_var[1],wz-fra_var[2],
+                                    wz-fra_var[3],wz-fra_var[4],TRUE"}
+END.
+
+IF NOT wz-prgstat
+THEN DO:
+    {call.i &prg="delresf" &param=",wz-results-file,wz-result-path"}
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,663 @@
+/* Filename            : IMPRESUL.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   IMPRESUL.P  $</workFile>
+<revision>$Revision: 1.10 $</revision>
+<workFileTimeStamp>$Modtime:   May 09 2004 08:08:42  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/IMPRESUL.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/07/29 07:23:07 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM recid_urnedest   AS RECID                        NO-UNDO.
+DEF OUTPUT PARAM wz-status        AS L INIT FALSE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-var           AS C FORMAT "x(78)" EXTENT 17            NO-UNDO.
+DEF VAR wz-counter       AS I                EXTENT 17            NO-UNDO.
+DEF VAR intype           AS C FORMAT "x(3)"                       NO-UNDO.
+DEF VAR linenr           AS C FORMAT "x(40)"                      NO-UNDO.
+DEF VAR i                AS I                                     NO-UNDO.
+DEF VAR wz-loop          AS I                                     NO-UNDO.
+DEF VAR wz-comp-status   AS L                                     NO-UNDO.
+DEF VAR wz-elects-index  AS I                                     NO-UNDO.
+
+DEF VAR wz-file-open     AS L INIT FALSE                          NO-UNDO.
+
+DEF VAR wz-not-mandatory AS C FORMAT "x(25)"                      NO-UNDO.
+
+/* Following variables should contain NO-UNDO because of the error exception */
+DEF VAR errMessage       AS C FORMAT "x(78)"                      NO-UNDO.
+DEF VAR errCode          AS I                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+errCode    = -1 /* Unknown error */
+errMessage = "".
+
+STATUS INPUT OFF.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+wz-not-mandatory = "".
+FOR EACH types NO-LOCK WHERE types.mandatory = FALSE:
+    wz-not-mandatory = wz-not-mandatory
+                     + (IF LENGTH(wz-not-mandatory) > 0 THEN "," ELSE "")
+                     + STRING(types.et-id) + "/" + STRING(types.coll-id).
+END.
+
+FIND FIRST urnedest WHERE RECID(urnedest) = recid_urnedest NO-ERROR.
+
+electlst:
+DO TRANSACTION :
+    DO wz-loop = 1 TO 2:
+        INPUT FROM VALUE(ramdrive + "TOTAL.DEC") NO-ECHO.
+        wz-file-open = TRUE.
+        REPEAT WITH FRAME X ON ERROR UNDO electlst, LEAVE :
+            ASSIGN
+            intype = ""
+            linenr = ""
+            wz-var = "".
+            PAUSE 0 NO-MESSAGE.
+            SET intype linenr wz-var.  /* 17 elementen in extent binnenlezen */
+
+            /*********************************************************************/
+            IF      intype BEGINS "//"
+            THEN NEXT.
+            /*********************************************************************/
+            ELSE IF intype = "A"
+            THEN DO:
+                IF wz-loop = 2
+                THEN DO:
+                    wz-counter = 0.
+                    DO i = 1 TO 11:
+                        call CRYPDEC PRPTOT urnedest.elects[i] 1.
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 103
+                            /* errMessage = "DEC(elects[" + STRING(i) + "])" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        wz-counter[i] = INT(result4).
+                    END.
+                    NEXT.
+                END.
+                IF linenr = "0"        /* Number of cards in bac */
+                THEN DO:
+                    DO i = 1 TO 17 : /* Fill counter variabel*/
+                        wz-counter[i] = INT(wz-var[i]).
+                        IF   wz-counter[i] = -1 
+                        THEN wz-counter[i] =  0.
+                    END.
+                    call CRYPENC PRPTOT STRING(wz-counter[1],
+                                               FILL("9",AESKEYLEN)).
+                    IF crypStat <> 0
+                    THEN DO:
+                        ASSIGN
+                        errCode    = 101
+                        /* errMessage = "ENC(wz-counter[1])" */.
+                        UNDO electlst, LEAVE.
+                    END.
+                    ASSIGN
+                    urnedest.total-cards = result3
+                    urnedest.MAC         = "REFRESH".
+                    DO i = 1 TO 16 : /* Fill counter variabel */
+                        call CRYPENC PRPTOT STRING(wz-counter[i + 1],
+                                                   FILL("9",AESKEYLEN)).
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 102
+                            /* errMessage = "ENC(wz-counter[" + STRING(i + 1) + "])" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        urnedest.count-card[i] = result3.
+                    END.
+                END. /* linenr = "0" */
+                NEXT.
+            END. /* intype = "A" */
+            /*********************************************************************/
+            ELSE IF intype = "B"
+            THEN DO:
+                IF INT(wz-var[2]) = 0
+                THEN NEXT.
+                
+                FIND FIRST election WHERE election.et-id = INTEGER(linenr) NO-ERROR.
+                IF AVAILABLE election
+                THEN DO:
+                    call CRYPDEC PRPTOT election.vote 1.
+                    IF crypStat <> 0
+                    THEN DO:
+                        ASSIGN
+                        errCode    = 201
+                        /* errMessage = "DEC(e.vote)" */.
+                        UNDO electlst, LEAVE.
+                    END.
+                    IF wz-loop = 1
+                    THEN call CRYPENC PRPTOT STRING(INT(result4) + INT(wz-var[2]),
+                                                    FILL("9",AESKEYLEN)).
+                    ELSE call CRYPENC PRPTOT STRING(INT(result4) - INT(wz-var[2]),
+                                                    FILL("9",AESKEYLEN)).
+                    IF crypStat <> 0
+                    THEN DO:
+                        ASSIGN
+                        errCode    = 202
+                        /* errMessage = "ENC(e.vote)" */.
+                        UNDO electlst, LEAVE.
+                    END.
+                    IF wz-loop = 1
+                    THEN ASSIGN
+                         election.vote = result3
+                         election.MAC  = "REFRESH".
+                    ELSE IF election.tmp_vote <> result3
+                         THEN DO:
+                             ASSIGN
+                             errCode    = 203
+                             /* errMessage = "VERIFY(e.tmp_vote)" */.
+                             UNDO electlst, LEAVE.
+                         END.
+                END.
+                NEXT.
+            END. /* intype = "B" */
+            /*********************************************************************/
+            ELSE IF intype = "C"
+            THEN NEXT.
+            /*********************************************************************/
+            ELSE IF intype = "D"
+            THEN DO:
+                IF  INT(wz-var[3]) = 0
+                AND INT(wz-var[4]) = 0
+                AND INT(wz-var[5]) = 0
+                AND INT(wz-var[6]) = 0
+                THEN NEXT.
+                
+                FIND FIRST election
+                     WHERE      election.et-id      = INTEGER(linenr)
+                       AND (    election.coll-id    = INTEGER(wz-var[1])
+                            OR  INTEGER( wz-var[2]) = 0)
+                  NO-LOCK NO-ERROR.
+                IF NOT AVAIL election
+                THEN DO:
+                    /***********************************************************/
+                    /* find out if it concerns a non mandatory election        */
+                    /* that has been deleted at TOT creation level -> INITELEC */
+                    /***********************************************************/
+                    IF LOOKUP(linenr + "/" + wz-var[1],wz-not-mandatory) > 0
+                    THEN NEXT.
+
+                    /* Election not known / initially selected ! */
+                    /* ABORT IMPORT !!!                          */
+                    ASSIGN
+                    errCode    = 401
+                    /* errMessage = "unknown election (1) (" + wz-var[1] + ")" */.
+                    UNDO electlst, LEAVE.
+                END.
+                /***************************************************/
+                /* This election is not selected for totalisation. */
+                /***************************************************/
+                IF NOT election.e-pr
+                THEN NEXT.
+
+                FIND FIRST party
+                     WHERE party.s-id = verkdat
+                       AND party.e-id = election.e-id
+                       AND party.p-id = INTEGER (wz-var[2])
+                  NO-ERROR.
+                IF NOT AVAILABLE party
+                THEN DO:
+                    ASSIGN
+                    errCode    = 402
+                    /* errMessage = "unknown party (" + wz-var[2] + ")" */.
+                    UNDO electlst, LEAVE.
+                END.
+                ELSE DO:
+                    /****************************************************/
+                    /* Blanco's are counted as a vote for each college. */
+                    /****************************************************/
+                    FOR EACH election
+                        WHERE     election.et-id      = INTEGER(linenr)
+                          AND (   election.coll-id    = INTEGER(wz-var[1])
+                               OR INTEGER( wz-var[2]) = 0              ):
+                        /* Split votes for BHR according to party.taalgroep using */
+                        /* index 11(NL), 10(FR) or 9(DU->N/A)                     */
+
+                        /* If BHR and p-id = 0 then process totals differently !  */
+                        IF  election.et-id = 1
+                        AND INT(wz-var[2]) = 0
+                        THEN DO:
+                            /* wz-var[3] = total blancs for FR and NL */
+                            /* wz-var[4] = blancs for FR              */
+                            /* wz-var[5] = blancs for NL              */
+                            /* wz-var[6] = NOT APPLICABLE (DU)        */
+                            IF INT(wz-var[5]) > 0
+                            THEN DO:
+                                call CRYPDEC PRPTOT urnedest.elects[11] 1.
+                                IF crypStat <> 0
+                                THEN DO:
+                                    ASSIGN
+                                    errCode    = 403
+                                    /* errMessage = "DEC(elects[11])" */.
+                                    UNDO electlst, LEAVE.
+                                END.
+                                IF wz-loop = 1
+                                THEN DO:
+                                    call CRYPENC PRPTOT STRING(INT(result4) + INT(wz-var[5]),
+                                                               FILL("9", AESKEYLEN)).
+                                    IF crypStat <> 0
+                                    THEN DO:
+                                        ASSIGN
+                                        errCode    = 404
+                                        /* errMessage = "ENC(elects[11])" */.
+                                        UNDO electlst, LEAVE.
+                                    END.
+                                    urnedest.elects[11] = result3.
+                                END.
+                                ELSE wz-counter[11] = wz-counter[11] - INT(wz-var[5]).
+                            END.
+                            IF INT(wz-var[4]) > 0
+                            THEN DO:
+                                call CRYPDEC PRPTOT urnedest.elects[10] 1.
+                                IF crypStat <> 0
+                                THEN DO:
+                                    ASSIGN
+                                    errCode    = 405
+                                    /* errMessage = "DEC(elects[10])" */.
+                                    UNDO electlst, LEAVE.
+                                END.
+                                IF wz-loop = 1
+                                THEN DO:
+                                    call CRYPENC PRPTOT STRING(INT(result4) + INT(wz-var[4]),
+                                                               FILL("9", AESKEYLEN)).
+                                    IF crypStat <> 0
+                                    THEN DO:
+                                        ASSIGN 
+                                        errCode    = 406
+                                        /* errMessage = "ENC(elects[10])" */.
+                                        UNDO electlst, LEAVE.
+                                    END.
+                                    urnedest.elects[10] = result3.
+                                END.
+                                ELSE wz-counter[10] = wz-counter[10] - INT(wz-var[4]).
+                            END.
+                        END.
+                        ELSE DO:
+                            wz-elects-index =
+                                (IF election.et-id = 1
+                                 THEN (IF      SUBSTR(party.taalgroep[1],1,1) = "N" THEN 11
+                                       ELSE IF SUBSTR(party.taalgroep[1],1,1) = "F" THEN 10
+                                       ELSE IF SUBSTR(party.taalgroep[1],1,1) = "D" THEN  9
+                                       ELSE election.e-id
+                                      )
+                                 ELSE       election.e-id
+                                ).
+                            call CRYPDEC PRPTOT urnedest.elects[wz-elects-index] 1.
+                            IF crypStat <> 0
+                            THEN DO:
+                                ASSIGN
+                                errCode    = 407
+                                /* errMessage = "DEC(elects[" + STRING(wz-elects-index) + "])" */.
+                                UNDO electlst, LEAVE.
+                            END.
+                            IF wz-loop = 1
+                            THEN DO:
+                                call CRYPENC PRPTOT STRING(INT(result4) + INT(wz-var[3])
+                                                                        + INT(wz-var[4])
+                                                                        + INT(wz-var[5])
+                                                                        + INT(wz-var[6]),
+                                                           FILL("9", AESKEYLEN)).
+                                IF crypStat <> 0
+                                THEN DO:
+                                    ASSIGN
+                                    errCode    = 408
+                                    /* errMessage = "ENC(elects[" + STRING(wz-elects-index) + "])" */.
+                                    UNDO electlst, LEAVE.
+                                END.
+                                urnedest.elects[wz-elects-index] = result3.
+                            END.
+                            ELSE wz-counter[wz-elects-index] = wz-counter[wz-elects-index]
+                                                             - INT(wz-var[3])
+																														 - INT(wz-var[4])
+																														 - INT(wz-var[5])
+                                                             - INT(wz-var[6]).
+                        END.
+                    END.
+                    party.MAC = "REFRESH".
+                    IF INT(wz-var[3]) > 0
+                    THEN DO:
+                        call CRYPDEC PRPTOT party.vote_top 1.
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 409
+                            /* errMessage = "DEC([vote_top])" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN call CRYPENC PRPTOT STRING(INTEGER (result4) + INTEGER(wz-var[3]),
+                                                        FILL("9", AESKEYLEN)).
+                        ELSE call CRYPENC PRPTOT STRING(INTEGER (result4) - INTEGER(wz-var[3]),
+                                                        FILL("9", AESKEYLEN)).
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 410
+                            /* errMessage = "ENC(vote_top)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN party.vote_top = result3.
+                        ELSE IF party.tmp_vote_top <> result3
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 411
+                            /* errMessage = "VERIFY(tmp_vote_top) !" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                    END.
+                    
+                    IF INT(wz-var[4]) > 0
+                    THEN DO:
+                        call CRYPDEC PRPTOT party.vote_can 1.
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 412
+                            /* errMessage = "DEC(vote_can)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN call CRYPENC PRPTOT STRING(INTEGER (result4) + INTEGER(wz-var[4]),
+                                                        FILL("9", AESKEYLEN)).
+                        ELSE call CRYPENC PRPTOT STRING(INTEGER (result4) - INTEGER(wz-var[4]),
+                                                        FILL("9", AESKEYLEN)).
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 413
+                            /* errMessage = "ENC(vote_can)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN party.vote_can = result3.
+                        ELSE IF party.tmp_vote_can <> result3
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 414
+                            /* errMessage = "VERIFY(tmp_vote_can)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                    END.
+                    
+                    IF INT(wz-var[5]) > 0
+                    THEN DO:
+                         call CRYPDEC PRPTOT party.vote_sup 1.
+                         IF crypStat <> 0
+                         THEN DO:
+                             ASSIGN
+                             errCode    = 415
+                             /* errMessage = "DEC(vote_sup)" */.
+                             UNDO electlst, LEAVE.
+                         END.
+                         IF wz-loop = 1
+                         THEN call CRYPENC PRPTOT STRING(INTEGER (result4) + INTEGER(wz-var[5]),
+                                                         FILL("9", AESKEYLEN)).
+                         ELSE call CRYPENC PRPTOT STRING(INTEGER (result4) - INTEGER(wz-var[5]),
+                                                         FILL("9", AESKEYLEN)).
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 416
+                            /* errMessage = "ENC(vote_sup)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN party.vote_sup = result3.
+                        ELSE IF party.tmp_vote_sup <> result3
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 417
+                            /* errMessage = "VERIFY(tmp_vote_sup)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                    END.
+                    
+                    IF INT(wz-var[6]) > 0
+                    THEN DO:
+                        call CRYPDEC PRPTOT party.vote_cs 1.
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 418
+                            /* errMessage = "DEC(vote_cs)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN call CRYPENC PRPTOT STRING(INTEGER (result4) + INTEGER(wz-var[6]),
+                                                        FILL("9", AESKEYLEN)).
+                        ELSE call CRYPENC PRPTOT STRING(INTEGER (result4) - INTEGER(wz-var[6]),
+                                                        FILL("9", AESKEYLEN)).
+                        IF crypStat <> 0
+                        THEN DO:
+                            ASSIGN 
+                            errCode    = 419
+                            /* errMessage = "ENC(vote_cs)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                        IF wz-loop = 1
+                        THEN party.vote_cs = result3.
+                        ELSE IF party.tmp_vote_cs <> result3
+                        THEN DO:
+                            ASSIGN
+                            errCode    = 420
+                            /* errMessage = "VERIFY(tmp_vote_cs)" */.
+                            UNDO electlst, LEAVE.
+                        END.
+                    END.
+                END. /* AVAIL party */
+                NEXT.
+            END. /* intype = "D" */
+            /*********************************************************************/
+            ELSE IF intype = "E"
+            THEN DO:
+                IF INT(wz-var[5]) = 0
+                THEN NEXT.
+                
+                FIND FIRST election
+                     WHERE      election.et-id      = INTEGER(linenr)
+                       AND (    election.coll-id    = INTEGER(wz-var[1])
+                            OR  INTEGER( wz-var[2]) = 0)
+                   NO-LOCK NO-ERROR.
+                IF NOT AVAILABLE election
+                THEN DO:
+                    /***********************************************************/
+                    /* find out if it concerns a non mandatory election        */
+                    /* that has been deleted at TOT creation level -> INITELEC */
+                    /***********************************************************/
+                    IF LOOKUP(linenr + "/" + wz-var[1],wz-not-mandatory) > 0
+                    THEN NEXT.
+
+                    ASSIGN
+                    errCode    = 501
+                    /* errMessage = "unknown election (2) (" + wz-var[1] + ")" */.
+                    UNDO electlst, LEAVE.
+                END.
+                /***************************************************/
+                /* This election is not selected for totalisation. */
+                /***************************************************/
+                IF NOT election.e-pr
+                THEN NEXT.
+
+                FIND FIRST candidate
+                     WHERE candidate.s-id   = verkdat
+                       AND candidate.e-id   = election.e-id
+                       AND candidate.p-id   = INTEGER(wz-var[2])
+                       AND candidate.c-type = INTEGER(wz-var[3])
+                       AND candidate.c-id   = INTEGER(wz-var[4])
+                  NO-ERROR.
+                IF NOT AVAILABLE candidate
+                THEN DO:
+                    ASSIGN
+                    errCode    = 502
+                    /* errMessage = "unkown candidate (" + wz-var[3] + "/" + wz-var[4] + ")" */.
+                    UNDO electlst, LEAVE.
+                END.
+                call CRYPDEC PRPTOT candidate.vote 1.
+                IF crypStat <> 0
+                THEN DO:
+                    ASSIGN
+                    errCode    = 503
+                    /* errMessage = "DEC(can.vote)" */.
+                    UNDO electlst, LEAVE.
+                END.
+                IF wz-loop = 1
+                THEN call CRYPENC PRPTOT STRING(INTEGER (result4) + INTEGER(wz-var[5]),
+                                                FILL("9", AESKEYLEN)).
+                ELSE call CRYPENC PRPTOT STRING(INTEGER (result4) - INTEGER(wz-var[5]),
+                                                FILL("9", AESKEYLEN)).
+                IF crypStat <> 0
+                THEN DO:
+                    ASSIGN 
+                    errCode    = 504
+                    /* errMessage = "ENC(can.vote)" */.
+                    UNDO electlst, LEAVE.
+                END.
+                IF wz-loop = 1
+                THEN ASSIGN
+                     candidate.vote = result3
+                     candidate.MAC  = "REFRESH".
+                ELSE IF candidate.tmp_vote <> result3
+                THEN DO:
+                    ASSIGN 
+                    errCode    = 505
+                    /* errMessage = "VERIFY(can.tmp_vote)" */.
+                    UNDO electlst, LEAVE.
+                END.
+                NEXT.
+            END. /* intype = "E" */
+            /*********************************************************************/
+
+            ASSIGN
+            errCode    = 999
+            /* errMessage = "unkown type (" + intype + ") "*/ .
+            UNDO electlst, LEAVE.
+        END.  /* REPEAT with frame X */
+        INPUT CLOSE.
+        wz-file-open = FALSE.
+        
+        IF wz-loop = 2
+        THEN DO i = 1 TO 11:
+                 call CRYPDEC PRPTOT urnedest.tmp_elects[i] 1.
+                 IF crypStat <> 0
+                 THEN DO:
+                     ASSIGN 
+                     errCode    = 601
+                     /* errMessage = "DEC(tmp_elects[" + STRING(i) + "])" */.
+                     UNDO electlst, LEAVE.
+                 END.
+                 IF INT(result4) <> wz-counter[i]
+                 THEN DO:
+                     ASSIGN 
+                     errCode    = 602
+                     /* errMessage = "VERIFY(tmp_elects[" + STRING(i) + "])" */.
+                     UNDO electlst, LEAVE.
+                 END.
+             END.
+    END. /* DO wz-loop */
+    
+    /* Synchronise vote-fields */
+    FOR EACH urnedest:
+        DO i = 1 TO 11:
+            urnedest.tmp_elects[i] = urnedest.elects[i].
+        END.
+        urnedest.MAC = "REFRESH".
+    END.
+    FOR EACH election:
+        ASSIGN
+        election.tmp_vote  = election.vote
+        election.MAC       = "REFRESH".
+    END.
+    FOR EACH party:
+        ASSIGN
+        party.tmp_vote_top = party.vote_top
+        party.tmp_vote_can = party.vote_can
+        party.tmp_vote_sup = party.vote_sup
+        party.tmp_vote_cs  = party.vote_cs
+        party.MAC          = "REFRESH".
+    END.
+    FOR EACH candidate:
+        ASSIGN
+        candidate.tmp_vote = candidate.vote
+        candidate.MAC      = "REFRESH".
+    END.
+    
+    /* Verify integrity of vote-fields */
+    {call.i &prg="compvote" &param=",OUTPUT wz-comp-status"}
+    IF NOT wz-comp-status
+    THEN UNDO electlst, LEAVE.
+    
+    /*************/
+    /* data read */
+    /*************/
+    FIND FIRST urnedest WHERE RECID(urnedest) = recid_urnedest NO-ERROR.
+    ASSIGN urnedest.data-read = 4
+           urnedest.MAC       = "REFRESH"
+           wz-status          = TRUE
+           errCode            = 0. /* Everything went OK */
+END.
+
+IF wz-file-open
+THEN INPUT CLOSE.
+
+{call.i &prg="sec_cand"}
+{call.i &prg="sec_part"}
+{call.i &prg="sec_elec"}
+{call.i &prg="sec_urne"}
+
+IF errCode <> 0
+THEN DO:
+    IF errCode = -1
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Unknown errCode ! Import URNE not accepted !") 1.
+        {call.i &prg="interror" &param=",'trdresul,mes01','internal,errmsg',STRING(errCode)"}
+    END.
+    ELSE DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("(" + STRING(errCode,"999") + ") " + errMessage) 1.
+        IF errCode >= 100 AND errCode < 200
+        THEN DO:
+            {call.i &prg="interror" &param=",'trdresul,mes01','internal,errmsg',STRING(errCode)"}
+        END.
+        ELSE DO:
+           {call.i &prg="disfram" &param=",'trdurnma,err_dat1','trdurnma,err_dat2','',
+                                           ',ERR_' + STRING(errCode),TRUE"}
+        END.
+    END.
+END.
+
+{return.i}
+/* eof */

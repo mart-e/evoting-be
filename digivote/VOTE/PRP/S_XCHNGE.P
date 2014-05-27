@@ -1,0 +1,65 @@
+/* Filename            : S_XCHNGE.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-seldisk        AS C FORMAT "x(45)"                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session NO-LOCK NO-ERROR.
+FIND FIRST organigram WHERE organigram.sys-type = "I"
+                        AND organigram.l-disk   = -1
+                        AND organigram.verwerkt = TRUE
+                    NO-LOCK NO-ERROR.
+                    
+IF (    session.hands_off[1] = FALSE
+    AND session.hands_off[2] = FALSE
+    AND session.hands_off[3] = FALSE)
+OR NOT AVAILABLE organigram
+THEN DO:
+    {call.i &prg="dispmes" &param=",'general,notavail',0"}
+    HIDE MESSAGE NO-PAUSE.
+    {return.i}
+END.
+
+REPEAT:
+    menleav = 0.
+    {call.i &prg="seldisk" &param=",INPUT  'I',
+                                    INPUT  PROGRAM-NAME(1),
+                                    OUTPUT wz-seldisk"}
+    IF menleav = 0 THEN LEAVE.
+    
+    FIND FIRST organigram WHERE organigram.sys-type
+                              + organigram.org-type
+                              + organigram.area[taalkode]
+                              + STRING(organigram.orginator,"999") = wz-seldisk
+                        NO-LOCK NO-ERROR.
+    IF AVAILABLE organigram
+    THEN DO:
+        {call.i &prg="export_i" &param=",organigram.disk-id"}
+        NEXT.
+    END.
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+
+verkben = "".
+{return.i}
+/* eof */

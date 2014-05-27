@@ -1,0 +1,144 @@
+/* Filename            : COMPVOTE.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM wz-status        AS L INIT FALSE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-module                 AS C FORMAT "x(20)"             NO-UNDO.
+DEF VAR i                         AS I                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+FIND FIRST urnedest  WHERE urnedest.elects[ 1] <> urnedest.tmp_elects[ 1]
+                        OR urnedest.elects[ 2] <> urnedest.tmp_elects[ 2]
+                        OR urnedest.elects[ 3] <> urnedest.tmp_elects[ 3]
+                        OR urnedest.elects[ 4] <> urnedest.tmp_elects[ 4]
+                        OR urnedest.elects[ 5] <> urnedest.tmp_elects[ 5]
+                        OR urnedest.elects[ 6] <> urnedest.tmp_elects[ 6]
+                        OR urnedest.elects[ 7] <> urnedest.tmp_elects[ 7]
+                        OR urnedest.elects[ 8] <> urnedest.tmp_elects[ 8]
+                        OR urnedest.elects[ 9] <> urnedest.tmp_elects[ 9]
+                        OR urnedest.elects[10] <> urnedest.tmp_elects[10]
+                        OR urnedest.elects[11] <> urnedest.tmp_elects[11]
+                   NO-LOCK NO-ERROR.
+
+FIND FIRST election  WHERE election.vote <> election.tmp_vote 
+                       AND election.e-pr = TRUE
+                   NO-LOCK NO-ERROR.
+
+FIND FIRST party     WHERE party.vote_top <> party.tmp_vote_top 
+                        OR party.vote_can <> party.tmp_vote_can 
+                        OR party.vote_sup <> party.tmp_vote_sup 
+                        OR party.vote_cs  <> party.tmp_vote_cs 
+                   NO-LOCK NO-ERROR.
+
+FIND FIRST candidate WHERE candidate.vote <> candidate.tmp_vote 
+                  NO-LOCK NO-ERROR.
+
+IF AVAIL urnedest
+OR AVAIL election
+OR AVAIL party
+OR AVAIL candidate
+THEN DO:
+    wz-status = FALSE.
+    IF AVAIL urnedest 
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("urnedest-votes not synced !" 
+                                      +  " (" + STRING(urnedest.disk-id) + ")") 1.
+        DO i = 1 TO 11:
+            IF urnedest.elects[i] <> urnedest.tmp_elects[i]
+            THEN DO:
+                call CRYPDEC PRPTOT urnedest.elects[i] 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE(result4) 1.
+                call CRYPDEC PRPTOT urnedest.tmp_elects[i] 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE(result4) 1.
+            END.
+        END.
+    END.
+    IF AVAIL election 
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("election-votes not synced !" 
+                                      +  " (" + STRING(election.e-id)    + "/"
+                                              + STRING(election.et-id)   + "/"
+                                              + STRING(election.coll-id) + ")") 1.
+        call CRYPDEC PRPTOT election.vote 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(result4) 1.
+        call CRYPDEC PRPTOT election.tmp_vote 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(result4) 1.
+    END.
+    IF AVAIL party 
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("party-votes not synced !"
+                                              + STRING(party.e-id)    + "/"
+                                              + STRING(party.coll-id) + "/"
+                                              + STRING(party.p-id)    + ")") 1.
+        IF party.vote_top <> party.tmp_vote_top
+        THEN DO:
+            call CRYPDEC PRPTOT party.vote_top 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("T:" + result4) 1.
+            call CRYPDEC PRPTOT party.tmp_vote_top 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("T:" + result4) 1.
+        END.
+        IF party.vote_can <> party.tmp_vote_can
+        THEN DO:
+            call CRYPDEC PRPTOT party.vote_can 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("C:" + result4) 1.
+            call CRYPDEC PRPTOT party.tmp_vote_can 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("C:" + result4) 1.
+        END.
+        IF party.vote_sup <> party.tmp_vote_sup
+        THEN DO:
+            call CRYPDEC PRPTOT party.vote_sup 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("S:" + result4) 1.
+            call CRYPDEC PRPTOT party.tmp_vote_sup 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("S:" + result4) 1.
+        END.
+        IF party.vote_cs <> party.tmp_vote_cs
+        THEN DO:
+            call CRYPDEC PRPTOT party.vote_cs 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("M:" + result4) 1.
+            call CRYPDEC PRPTOT party.tmp_vote_cs 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("M:" + result4) 1.
+        END.
+    END.
+    IF AVAIL candidate 
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("candidate-votes not synced !"
+                                              + STRING(candidate.e-id)    + "/"
+                                              + STRING(candidate.coll-id) + "/"
+                                              + STRING(candidate.p-id)    + "/"
+                                              + STRING(candidate.c-type)  + "/"
+                                              + STRING(candidate.c-id)    + ")") 1.
+        call CRYPDEC PRPTOT candidate.vote 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(result4) 1.
+        call CRYPDEC PRPTOT candidate.tmp_vote 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(result4) 1.
+    END.
+    
+    IF NOT PROGRAM-NAME(2) BEGINS "vexport"
+    THEN DO:
+        IF PROGRAM-NAME(2) BEGINS "impresult"
+        THEN wz-module = "trdresul,mes01".
+        ELSE wz-module = "".
+        {call.i &prg="interror" &param=",wz-module,'internal,errmsg','(VERIFY)'"}
+        {quit.i &corrupt=TRUE}
+    END.
+END.
+ELSE wz-status = TRUE.
+
+{return.i}
+/* eof */

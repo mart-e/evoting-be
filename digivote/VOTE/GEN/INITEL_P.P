@@ -1,0 +1,143 @@
+/* Filename            : INITEL_P.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM diskid  LIKE elect.organigram.disk-id            NO-UNDO.
+DEF INPUT  PARAM newname AS C FORMAT "x(40)"                      NO-UNDO.
+DEF INPUT  PARAM use-pwd AS L                                     NO-UNDO.
+DEF OUTPUT PARAM the_pwd LIKE elect.setup.password                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{printer.i "NEW SHARED"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+/*@source sec=1*/
+DEF VAR syspwd    LIKE elect.meta.aesKey                          NO-UNDO.
+/*@source sec=0*/
+DEF VAR i         AS I                                            NO-UNDO.
+
+DEF VAR prlsmmes  AS C FORMAT "x(50)"                             NO-UNDO.
+DEF VAR prlsmtit  AS C FORMAT "x(30)"                             NO-UNDO.
+
+DEF VAR pwdtitle  AS C FORMAT "x(30)"                             NO-UNDO.
+
+DEF VAR datetime  AS C FORMAT "x(16)"                             NO-UNDO.
+DEF VAR dag       AS DATE INITIAL TODAY FORMAT "99/99/9999"       NO-UNDO.
+DEF VAR tijd      AS C FORMAT "x(8)"                              NO-UNDO.
+DEF VAR mesname   AS C FORMAT "x(6)"                              NO-UNDO.
+DEF VAR labelpwd  AS C FORMAT "x(15)"                             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS                                                   */
+/*                                                                      */
+/************************************************************************/
+FORM
+    prlsmmes 
+    WITH FRAME tprtlstm 
+               OVERLAY 
+               CENTERED
+               NO-LABELS 
+               ROW 10 
+               TITLE prlsmtit.
+
+FORM
+    SKIP(2)
+    pwdtitle SKIP(10)
+    WITH FRAME pwdtit 
+               NO-LABELS 
+               CENTERED.
+
+FORM
+    SKIP(5)
+    datetime AT 3 ":" AT 20 dag "-" tijd SKIP
+    mesname  AT 3 ":" AT 20 newname SKIP(1)
+/*@source sec=1*/
+    labelpwd AT 3 ":" AT 20 syspwd
+/*@source sec=0*/
+    WITH FRAME frmPassword 
+               NO-LABELS 
+               CENTERED.
+
+/************************************************************************/
+/*              START PROCEDURE                                         */
+/************************************************************************/
+
+/*@source sec=1*/
+/***********************************/
+/* GENERATE NEW or RE-USE PASSWORD */
+/***********************************/
+    ASSIGN
+    syspwd  = ?
+    the_pwd = ?.
+    IF use-pwd
+    THEN DO:
+        IF CONNECTED("from_elect")
+        THEN DO:
+            FIND FIRST from_elect.organigram 
+                 WHERE from_elect.organigram.disk-id = diskid NO-LOCK NO-ERROR.
+            IF AVAILABLE from_elect.organigram
+            THEN DO:
+                the_pwd = from_elect.organigram.master-key.
+                call CRYPDEC PRPTOT the_pwd.
+                IF crypStat = 0 THEN syspwd = result4.
+            END.
+        END.
+    END.
+    ELSE DO:
+        {call.i &prg="rnd" &param=", 'Master', OUTPUT syspwd"}
+        call CRYPENC PRPTOT syspwd.
+        IF crypStat = 0 THEN the_pwd = result3.
+    END.
+    IF syspwd  = ? 
+    OR the_pwd = ?
+    THEN DO:
+        {call.i &prg="disfram" &param=",',','','','',TRUE"}
+        {return.i}
+    END.
+    
+    {call.i &prg="disfram" &param=",'tprtlstm,prlstmsg','','','',FALSE"}
+
+    FIND FIRST elect.session NO-LOCK.
+    /* Afdruk paswoord blad */
+    REPEAT i = 1 TO 2:
+        {BEGPRT.I "Y" 0 1}
+        
+        IF      elect.session.lang2 < 3 THEN i = 2.
+        ELSE IF elect.session.lang2 = 3 THEN taalkode = INT(ENTRY(i,"1,2")).
+        ELSE IF elect.session.lang2 = 4 THEN taalkode = INT(ENTRY(i,"2,3")).
+
+        ASSIGN
+        dag  = TODAY
+        tijd = STRING(TIME,"HH:MM:SS").
+        {call.i &prg="mesfil" &param=",'prtpaswg,title01',70, OUTPUT pwdtitle"}
+        DISPLAY pwdtitle WITH FRAME pwdtit.
+        {call.i &prg="mesfil" &param=",'initelec,label' 
+                                     + (IF SUBSTR(newname,1,1)='T' 
+                                        THEN 't' 
+                                        ELSE 'p'),         15,OUTPUT labelpwd"}
+        {call.i &prg="mesfil" &param=",'digivote,datetime',16,OUTPUT datetime"}
+        {call.i &prg="mesfil" &param=",'initelec,mesname',  6,OUTPUT mesname"}
+        DISPLAY mesname newname
+                labelpwd syspwd tijd dag datetime
+            WITH FRAME frmPassword.
+        {ENDPRT.I}
+    END. /* REPEAT i = 1 to 2 */
+/*@source sec=0*/
+
+{return.i}
+/* eof */

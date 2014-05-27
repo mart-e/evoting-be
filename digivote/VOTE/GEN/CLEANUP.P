@@ -1,0 +1,49 @@
+/* Filename            : CLEANUP.P                                     */
+
+/***********************************************************************/
+/* Don't use {chklevel.i} because of the special usage of this module  */
+/*            {return.i}                                               */
+/* Cleanup all remaining LEVEL-files before a forced QUIT              */
+/* Should only be called from {QUIT.I}                                 */
+/***********************************************************************/
+IF PROGRAM-NAME(2) = ?
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Permission denied : " + PROGRAM-NAME(1)) 1.
+    MESSAGE "No such file or directory (-1)".
+    STATUS DEFAULT "Procedure complete. Press space bar to continue.".
+    PAUSE NO-MESSAGE.
+    QUIT. /* Don't use {QUIT.I} */
+END.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{hlcvars.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-list AS C                                              NO-UNDO.
+DEF VAR wz-file AS C FORMAT "x(12)"                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-list = ramdrive + "DIRLEVEL.LST".
+call C_DIR VALUE(ramdrive + "VOTE\TRACE.LOG\LEVEL???.LOG") VALUE(wz-list).
+INPUT FROM VALUE(wz-list) NO-ECHO.
+REPEAT:
+    SET wz-file.
+    call C_DEL VALUE(ramdrive + "VOTE\TRACE.LOG\" + wz-file).
+END.
+INPUT CLOSE.
+call C_DEL VALUE(wz-list).
+
+RETURN. /* Don't use {return.i} */
+/* eof */

@@ -1,0 +1,96 @@
+/* Filename            : VOTES.P                                     */
+
+{chklevel.i 1}
+
+
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-election-recid AS RECID                 NO-UNDO.
+DEF INPUT PARAM TaalGroep         AS I                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM wz-tot_vote    AS I                       NO-UNDO.
+DEF OUTPUT PARAM wz-total-cards AS I                       NO-UNDO.
+DEF OUTPUT PARAM tab-count-card AS C FORMAT "x(254)"       NO-UNDO.
+DEF OUTPUT PARAM Ok-status      AS L                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-count-card           AS I EXTENT 16             NO-UNDO.
+DEF VAR wz-index                AS I                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+
+FIND FIRST election WHERE RECID(election) = wz-election-recid
+    NO-LOCK NO-ERROR.
+
+ASSIGN
+Ok-status      = TRUE
+wz-tot_vote    = 0
+wz-count-card  = 0
+tab-count-card = "".
+
+TotalenLoop:
+FOR EACH urnedest NO-LOCK :
+/*@source sec=1*/
+    wz-index = (IF election.et-id = 1
+                THEN (IF      TaalGroep = 1 THEN 11
+                      ELSE IF TaalGroep = 2 THEN 10
+                      ELSE IF TaalGroep = 3 THEN 9
+                      ELSE election.e-id
+                     )
+                ELSE       election.e-id
+               ).
+    call CRYPDEC PRPTOT urnedest.elects[wz-index] 1.
+    IF crypStat <> 0
+    THEN DO:
+        OK-status = FALSE.
+        LEAVE TotalenLoop.
+    END.
+    wz-tot_vote = wz-tot_vote + INT(result4).
+    call CRYPDEC PRPTOT urnedest.total-cards 1.
+    IF crypStat <> 0
+    THEN DO:
+        OK-status = FALSE.
+        LEAVE TotalenLoop.
+    END.
+    wz-total-cards = wz-total-cards + INT(result4).
+    DO wz-index = 1 TO 16:
+        call CRYPDEC PRPTOT urnedest.count-card[wz-index] 1.
+        IF crypStat <> 0
+        THEN DO:
+            OK-status = FALSE.
+            LEAVE TotalenLoop.
+        END.
+        wz-count-card[wz-index] = wz-count-card[wz-index] + 
+                                  INT(result4).
+    END.
+/*@source sec=0*/
+    /* Be aware of the fact that, if Voeren is active as in 13/06/1999, */
+    /* you have to add multiple counters to get some specific results.  */
+END. /* urnedest info */
+
+/* Convert table to ENTRY-element */
+DO wz-index = 1 TO 16:
+    tab-count-card = tab-count-card
+                   + STRING(wz-count-card[wz-index])
+                   + (IF wz-index < 16 THEN "," ELSE "").
+END.
+
+{return.i}
+/* eof */

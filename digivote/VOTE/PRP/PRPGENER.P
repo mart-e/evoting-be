@@ -1,0 +1,109 @@
+/* Filename            : PRPGENER.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmgenein.i "NEW"}      /* Shared frame voor PRP-systeem inikatie menu  */
+{pmgeneka.i}            /* Shared frame voor PRP-systeem kader menu     */
+{pmgeneme.i "NEW"}      /* Shared frame voor PRP-systeem general menu   */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR proglist  AS C EXTENT 4 INIT [?,?,?,?]                    NO-UNDO.
+DEF VAR optlist   AS C                                            NO-UNDO.
+
+DEF VAR on_resume  AS L INIT FALSE                                NO-UNDO.
+DEF VAR prglvl     AS I                                           NO-UNDO.
+DEF VAR resume-prg AS C                                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*                                                                      */
+/*        verkies.r     Invullen van de kieslijsten                     */
+/*        preview.r     Overzicht geven van de kieslijsten              */
+/*        blocage.r     Goedkeuren van de kieslijsten                   */
+/*        urnprog.r     Het behandelen van diskettes                    */
+/*        prog_end.r    Programma einde                                 */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+IF      setup.sys-type = "M"
+THEN ASSIGN
+     optlist     = "1"
+     proglist[1] = "verkies.r".
+ELSE IF setup.sys-type = "I"
+THEN ASSIGN
+     optlist     = "1,2,3"
+     proglist[1] = "verkies.r"
+     proglist[2] = "preview.r"
+     proglist[3] = "blocage.r".
+ELSE IF setup.sys-type = "G"
+THEN DO:
+     ASSIGN
+     optlist     = "4"
+     proglist[1] = "disketpr.r".
+		 FIND FIRST organigram WHERE organigram.g-disk   = setup.disk-id
+		                         AND organigram.sys-type = "U" 
+		                     NO-LOCK NO-ERROR.
+		 IF AVAILABLE organigram
+		 THEN ASSIGN
+		      optlist = optlist + ",2"
+		      proglist[NUM-ENTRIES(optlist)] = "preview.r".
+END.
+ELSE DO:
+    {call.i &prg="dispmes" &param=",'general,notavail', 0"}
+    HIDE MESSAGE NO-PAUSE.
+    {return.i}
+END.
+ASSIGN
+optlist = optlist + ",5"
+proglist[NUM-ENTRIES(optlist)] = "prog_end.r".
+
+{resume.i}
+
+{menu_top.g 
+ &fra_kader  = "pmgeneka"
+ &fra_menu   = "pmgeneme"
+ &lang_fixed = "pmgeneme,opt"
+ &menu_start = 1
+ &menu_items = 4
+ &menu_pos   = "menupos"
+ &menu_top   = "men_top"
+ &menu_exec  = "execopt"
+ &exec_list  = "proglist"
+ &action_pre  = "
+  IF on_resume
+  THEN DO:
+      on_resume = FALSE.
+      {call_var.i &prg="resume-prg"}
+  END.
+ "
+}
+            
+HIDE FRAME pmgenein NO-PAUSE.
+
+{return.i}
+/* eof */

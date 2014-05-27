@@ -1,0 +1,161 @@
+/* Filename            : VCONTENTS.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-contents-file AS C FORMAT "x(45)"             NO-UNDO.
+DEF INPUT  PARAM wz-destinator    AS C FORMAT "x(40)"             NO-UNDO.
+DEF INPUT  PARAM wz-e-day         AS C FORMAT "x(10)"             NO-UNDO.
+
+DEF OUTPUT PARAM wz-disklabel     AS C FORMAT "x(11)"             NO-UNDO.
+DEF OUTPUT PARAM wz-status        AS L INIT FALSE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES from FILE                                    */
+/*                                                                      */
+/************************************************************************/
+{vcontents.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-line          AS I                                     NO-UNDO.
+
+DEF VAR wz-words         AS C FORMAT "x(40)" EXTENT 4             NO-UNDO.
+
+DEF VAR i                AS I                                     NO-UNDO.
+DEF VAR dest-disk-id     AS C                                     NO-UNDO.
+DEF VAR dest-disk-ids    AS C                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+call C_TSTFN VALUE(wz-contents-file).
+IF fileok = 0
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("File not found : " + wz-contents-file) 2.
+    {call.i &prg="disfram" &param=",'trdurnma,disurne0','','','',TRUE"}
+END.
+ELSE DO:
+    INPUT FROM VALUE(wz-contents-file) NO-ECHO.
+    ASSIGN
+    wz-line        = 0
+    vc-disklabel   = ""
+    vc-originator  = ""
+    vc-destinators = ""
+    vc-e-date      = "".
+    REPEAT:
+        wz-words = "".
+        SET wz-words.
+        wz-line = wz-line + 1.
+        IF wz-line = 1
+        THEN vc-disklabel   = wz-words[1].
+        ELSE IF wz-words[1] BEGINS "Creator"
+        THEN vc-creator     = wz-words[3].
+        ELSE IF wz-words[1] BEGINS "Originator"
+        THEN vc-originator  = wz-words[3].
+        ELSE IF wz-words[1] BEGINS "Destinator"
+        THEN vc-destinators = vc-destinators
+                            + (IF LENGTH(vc-destinators) > 0 THEN "," ELSE "")
+                            + wz-words[3].
+        ELSE IF wz-words[1] BEGINS "Election"
+        AND     wz-words[2] BEGINS "Date"
+        THEN vc-e-date      = wz-words[4].
+    END.
+    INPUT CLOSE.
+
+    IF vc-disklabel   = ""
+    OR vc-creator     = ""
+    OR vc-originator  = ""
+    OR vc-destinators = ""
+    OR vc-e-date      = ""
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "CONTENTS file not complete ! Data missing !" 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-disklabel     : " + vc-disklabel) 0.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-creator       : " + vc-creator) 0.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-originator    : " + vc-originator) 0.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-destinator(s) : " + vc-destinators) 0.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("wz-e-date        : " + vc-e-date) 0.
+        {call.i &prg="disfram" &param=",'trdurnma,err_dat1','','','',TRUE"}
+    END.
+    ELSE DO:
+        ASSIGN
+        dest-disk-id  = ""
+        dest-disk-ids = "".
+        FIND FIRST organigram 
+             WHERE organigram.sys-type 
+                 + organigram.org-type
+                 + organigram.area[1]
+                 + STRING(organigram.orginator,"999") = wz-destinator
+                OR organigram.sys-type 
+                 + organigram.org-type
+                 + organigram.area[2]
+                 + STRING(organigram.orginator,"999") = wz-destinator
+                OR organigram.sys-type 
+                 + organigram.org-type
+                 + organigram.area[3]
+                 + STRING(organigram.orginator,"999") = wz-destinator
+           NO-LOCK NO-ERROR.
+        IF AVAIL organigram
+        THEN dest-disk-id = STRING(organigram.disk-id).
+        
+        DO i = 1 TO NUM-ENTRIES(vc-destinators):
+            FIND FIRST organigram 
+                 WHERE organigram.sys-type 
+                     + organigram.org-type
+                     + organigram.area[1]
+                     + STRING(organigram.orginator,"999") = ENTRY(i,vc-destinators)
+                    OR organigram.sys-type 
+                     + organigram.org-type
+                     + organigram.area[2]
+                     + STRING(organigram.orginator,"999") = ENTRY(i,vc-destinators)
+                    OR organigram.sys-type 
+                     + organigram.org-type
+                     + organigram.area[3]
+                     + STRING(organigram.orginator,"999") = ENTRY(i,vc-destinators)
+               NO-LOCK NO-ERROR.
+            IF AVAIL organigram
+            THEN dest-disk-ids = dest-disk-ids
+                               + (IF i > 1 THEN "," ELSE "")
+                               + STRING(organigram.disk-id).
+        END.
+        
+        IF  LOOKUP(wz-destinator,vc-destinators) = 0
+        AND LOOKUP(dest-disk-id, dest-disk-ids ) = 0
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "Diskette not for/from this disk !" 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Disk to find    : " + wz-destinator ) 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("List to look in : " + vc-destinators) 1.
+            {call.i &prg="disfram" &param=",'urneload,errmes03','','','',TRUE"}
+        END.
+        ELSE IF wz-e-day <> vc-e-date
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "Diskette not for/from this election !" 1.
+            {call.i &prg="disfram" &param=",'trdurnma,disurne0','','','',TRUE"}
+        END.
+        ELSE DO:
+            CALL C_LABEL.
+            wz-disklabel = dsklbl.
+            IF vc-disklabel <> wz-disklabel
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) "CONTENTS not for this diskette !" 1.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("Label CONTENTS : " + vc-disklabel) 0.
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("Label DISKETTE : " + wz-disklabel) 0.
+                {call.i &prg="disfram" &param=",'trdurnma,disurne0','','','',TRUE"}
+            END.
+            ELSE wz-status = TRUE.
+        END.
+    END.
+END.
+
+{return.i}
+/* eof */

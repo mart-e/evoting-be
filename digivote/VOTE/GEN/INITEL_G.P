@@ -1,0 +1,206 @@
+/* Filename            : INITEL_G.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM diskid    LIKE setup.disk-id                     NO-UNDO.
+DEF INPUT  PARAM systype   LIKE setup.sys-type                    NO-UNDO.
+DEF INPUT  PARAM orgtype   LIKE setup.org-type                    NO-UNDO.
+DEF INPUT  PARAM area      LIKE setup.areaname                    NO-UNDO.
+DEF INPUT  PARAM area-id   LIKE setup.orginator                   NO-UNDO.
+
+DEF OUTPUT PARAM wz-status AS L INIT FALSE                        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+DEF BUFFER tot-organigram FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES AND WORKFILES                                 */
+/*                                                                      */
+/************************************************************************/
+DEF VAR needed-disk-ids    AS C                                   NO-UNDO.
+DEF VAR related-disks      AS I                                   NO-UNDO.
+DEF VAR processed-disks    AS I                                   NO-UNDO.
+DEF VAR i                  AS I                                   NO-UNDO.
+
+DEF VAR wz-org-types       AS C                                   NO-UNDO.
+
+DEF VAR wz-tot-levels      AS I                                   NO-UNDO.
+DEF VAR wz-prev-totlevel   AS I                                   NO-UNDO.
+
+DEF VAR wz-introductions   AS C                                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*              START PROCEDURE                                         */
+/*                                                                      */
+/************************************************************************/
+
+IF area-id = 0
+THEN DO:
+    /**********************************************************/
+    /* DELETE OBSOLETE ELECTIONS                              */
+    /* Specifications :                                       */
+    /*       ==> election.mandatory = false                   */
+    /*       ==> no organisation records present for new area */
+    /**********************************************************/
+    FOR EACH election WHERE election.mandatory = FALSE:
+        FIND FIRST organisation
+             WHERE     organisation.org-type    = election.org-type
+               AND (   organisation.heading3[1] = area
+                    OR organisation.heading3[2] = area
+                    OR organisation.heading3[3] = area)
+           NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE organisation
+        THEN DELETE election.
+    END.
+
+    ASSIGN
+    wz-org-types     = ""
+    wz-tot-levels    = 0
+    wz-prev-totlevel = -1.
+    FOR EACH election NO-LOCK BREAK BY election.totlevel:
+        IF LOOKUP(election.org-type,wz-org-types) = 0
+        THEN wz-org-types = wz-org-types
+                          + (IF LENGTH(wz-org-types) = 0 THEN "" ELSE ",")
+                          + election.org-type.
+        IF FIRST-OF(election.totlevel)
+        THEN IF election.totlevel <> wz-prev-totlevel
+             THEN ASSIGN
+                  wz-prev-totlevel = election.totlevel
+                  wz-tot-levels    = wz-tot-levels + 1.
+    END.
+
+    wz-introductions = "".
+    FIND FIRST organigram WHERE organigram.disk-id = diskid NO-LOCK NO-ERROR.
+    FOR EACH organisation NO-LOCK 
+                            WHERE LOOKUP(organisation.org-type,wz-org-types) > 0
+                              AND (   (    wz-tot-levels            = 1
+                                       AND organisation.heading3[1] = organigram.area[1])
+                                   OR (    wz-tot-levels            > 1
+                                       AND organisation.area[1]     = organigram.area[1]))
+                            BREAK BY organisation.org-type:
+        IF FIRST-OF(organisation.org-type)
+        THEN DO:
+            FIND FIRST sub-organigram WHERE sub-organigram.sys-type = "I"
+                                        AND sub-organigram.org-type = organisation.org-type
+                                        AND sub-organigram.area[1]  = organisation.ingave[1]
+                                    NO-LOCK NO-ERROR.
+            IF AVAILABLE sub-organigram
+            THEN wz-introductions = wz-introductions 
+                                  + (IF LENGTH(wz-introductions) = 0 THEN "" ELSE ",")
+                                  + STRING(sub-organigram.disk-id).
+        END.
+    END.
+
+    /*********************************************************/
+    /* Delete all irrelevant party and candidate information */
+    /*********************************************************/
+    DELETE FROM party      WHERE LOOKUP(STRING(    party.disk-id),wz-introductions) = 0.
+    DELETE FROM candidate  WHERE LOOKUP(STRING(candidate.disk-id),wz-introductions) = 0.
+    /*********************************************************/
+END.
+
+needed-disk-ids = STRING(diskid).
+FOR EACH organigram WHERE organigram.g-disk = diskid NO-LOCK:
+    IF LOOKUP(STRING(organigram.disk-id),needed-disk-ids) = 0 
+    THEN needed-disk-ids = needed-disk-ids
+                         + (IF needed-disk-ids = "" THEN "" ELSE ",")
+                         + STRING(organigram.disk-id).
+    /* Keep creator ... */
+    /* ... and destinator(s) for polling stations only */
+    FOR EACH sub-organigram WHERE sub-organigram.g-disk = organigram.disk-id 
+                               OR LOOKUP(STRING(sub-organigram.disk-id),
+                                         organigram.t-disks) > 0
+                          NO-LOCK:
+        IF LOOKUP(STRING(sub-organigram.disk-id),needed-disk-ids) = 0 
+        THEN needed-disk-ids = needed-disk-ids
+                             + (IF needed-disk-ids = "" THEN "" ELSE ",")
+                             + STRING(sub-organigram.disk-id).
+        /* ... and destinator(s) for polling stations only */
+        IF sub-organigram.sys-type = "U"
+        THEN FOR EACH tot-organigram WHERE LOOKUP(STRING(tot-organigram.disk-id),
+                                                  sub-organigram.t-disks) > 0
+                                   NO-LOCK:
+                 IF LOOKUP(STRING(tot-organigram.disk-id),needed-disk-ids) = 0 
+                 THEN needed-disk-ids = needed-disk-ids
+                                      + (IF needed-disk-ids = "" THEN "" ELSE ",")
+                                      + STRING(tot-organigram.disk-id).
+             END.                 
+    END.
+END.
+
+/**********************************************************************/
+/* We do NOT need organigram-records that are not meant for this disk */
+/* nor for its children !                                             */
+/**********************************************************************/
+DELETE FROM organigram WHERE LOOKUP(STRING(organigram.disk-id),needed-disk-ids) = 0.
+
+/************************************************************/
+/* Populate urnedest-table according to organigram contents */
+/************************************************************/
+
+/* encrypt an initialised totals counter */
+call CRYPENC PRPTOT FILL("0", AESKEYLEN).
+IF crypStat <> 0
+THEN DO:
+    {call.i &prg="interror"
+            &param=",'digivote,indwait1','internal,errmsg',''"}
+    {return.i}
+END.
+
+ASSIGN
+related-disks   = 0
+processed-disks = 0.
+FOR EACH organigram WHERE organigram.g-disk = diskid NO-LOCK:
+    IF organigram.verwerkt
+    THEN processed-disks = processed-disks + 1.
+    
+    CREATE urnedest.
+    ASSIGN
+    related-disks                   = related-disks + 1
+    urnedest.disk-id                = organigram.disk-id
+    urnedest.data-read              = 0
+    urnedest.total-cards            = result3
+    urnedest.MAC                    = "REFRESH".
+    REPEAT i = 1 TO 16:
+        IF i < 12
+        THEN ASSIGN
+             urnedest.elects[i]     = result3
+             urnedest.tmp_elects[i] = result3.
+        urnedest.count-card[i]      = result3.
+    END.
+END.
+{call.i &prg="sec_urne"}
+
+FIND FIRST session NO-ERROR.
+IF AVAILABLE session
+THEN DO:
+    ASSIGN
+    session.disk_read = processed-disks
+    session.disk_made = related-disks
+    session.MAC       = "REFRESH".
+    {call.i &prg="sec_sess"}
+END.
+
+wz-status = TRUE.
+
+{return.i}
+/* eof */

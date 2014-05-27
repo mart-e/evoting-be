@@ -1,0 +1,121 @@
+/* Filename            : STRUCT.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmgenein.i "NEW"}      /* Shared frame voor PRP-systeem indikatie menu */
+{pmgeneka.i}            /* Shared frame voor PRP-systeem kader menu     */
+{pmgeneme.i "NEW"}      /* Shared frame voor PRP-systeem general menu   */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR proglist   AS C EXTENT 5 INIT 
+  ["s_accept.r"
+  ,"s_xchnge.r"
+  ,"s_check.r"
+  ,"s_block.r"
+  ,"prog_end.r"]                                                  NO-UNDO.
+DEF VAR optlist    AS C INIT "1,2,3,4,5"                          NO-UNDO.
+
+DEF VAR wz-fase    AS C                                           NO-UNDO.
+DEF VAR on_resume  AS L INIT FALSE                                NO-UNDO.
+DEF VAR prglvl     AS I                                           NO-UNDO.
+DEF VAR resume-prg AS C                                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*                                                                      */
+/*        s_input.r     Invullen van de verkiezingsstructuur            */
+/*        s_accept.r    Aanvaarden van verwerkte schijven               */
+/*        s_export.r    Exporteren van ingave schijven                  */
+/*        s_check.r     Afdrukken van een controlelijst                 */
+/*        blocage.r     Blokkeren van de verschillende fases            */
+/*        prog_end.r    Programma einde                                 */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'struct,fase',0,OUTPUT wz-fase"}
+
+FIND FIRST session NO-LOCK NO-ERROR.
+IF       session.hands_off[1] = FALSE
+     AND session.hands_off[2] = FALSE
+     AND session.hands_off[3] = FALSE
+THEN proglist[1] = "s_input.r".
+ELSE IF  session.hands_off[1] = TRUE 
+     AND session.hands_off[2] = TRUE
+     AND session.hands_off[3] = TRUE
+THEN proglist[1] = ?.
+
+{resume.i}
+
+{menu_top.g 
+ &fra_kader   = "pmgeneka"
+ &fra_menu    = "pmgeneme"
+ &lang_fixed  = "smgeneme,opt"
+ &menu_start  = 1
+ &menu_items  = 5
+ &menu_pos    = "menupos"
+ &menu_top    = "men_top"
+ &menu_exec   = "execopt"
+ &exec_list   = "proglist"
+ &action_pre  = "
+  IF on_resume
+  THEN DO:
+      on_resume = FALSE.
+      {call_var.i &prg="resume-prg"}
+  END.
+ "
+ &action_post = "
+  proglist[1] = 's_accept.r'.
+  FIND FIRST session NO-LOCK NO-ERROR.
+  IF      session.hands_off[1] = FALSE
+  THEN proglist[1] = 's_input.r'.
+  ELSE IF session.hands_off[3] = TRUE
+  THEN proglist[1] = ?.
+ "
+ &show_info   = "
+  partnam = TRIM(wz-fase) + ' ' 
+          + (IF       session.hands_off[1] = TRUE
+                  AND session.hands_off[2] = FALSE
+                  AND session.hands_off[3] = FALSE
+             THEN '2'
+             ELSE IF  session.hands_off[1] = TRUE
+                  AND session.hands_off[2] = TRUE
+                  AND session.hands_off[3] = FALSE
+             THEN '3'
+             ELSE IF  session.hands_off[1] = TRUE
+                  AND session.hands_off[2] = TRUE
+                  AND session.hands_off[3] = TRUE
+             THEN '4'
+             ELSE '1').
+  DISPLAY verkben partnam WITH FRAME pmgenein.
+ "
+}
+
+HIDE FRAME pmgenein NO-PAUSE.
+
+{return.i}
+/* eof */

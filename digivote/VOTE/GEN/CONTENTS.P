@@ -1,0 +1,92 @@
+/************************************************************************/
+/*                                                                      */
+/* Filename            : CONTENTS.P                                     */
+/*                                                                      */
+/* Create CONTENTS file to do some initial tests concerning tracking    */
+/*                                                                      */
+/************************************************************************/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-file       AS C    NO-UNDO.    /* Output to ... */
+DEF INPUT PARAM wz-label      AS C    NO-UNDO.    /* Disklabel     */
+DEF INPUT PARAM wz-creator    AS C    NO-UNDO.    /* Creator       */
+DEF INPUT PARAM wz-originator AS C    NO-UNDO.    /* Originator    */
+DEF INPUT PARAM wz-destinator AS C    NO-UNDO.    /* Destinator    */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-talen              AS C    NO-UNDO.
+DEF VAR wz-taal               AS I    NO-UNDO.
+DEF VAR i                     AS I    NO-UNDO.
+
+DEF VAR wz-destinators        AS C    NO-UNDO.    /* Destinator(s) */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session NO-LOCK NO-ERROR.
+
+IF wz-creator    <> "" THEN wz-creator    = "Creator    : """ + wz-creator    + """".
+IF wz-originator <> "" THEN wz-originator = "Originator : """ + wz-originator + """".
+IF wz-destinator <> "" 
+THEN REPEAT i = 1 TO NUM-ENTRIES(wz-destinator):
+          wz-destinators = wz-destinators 
+                         + (IF i> 1 THEN "~n" ELSE "")
+                         + "Destinator : """ + ENTRY(i,wz-destinator) + """".
+     END.
+ELSE wz-destinators = wz-destinator.
+
+OUTPUT TO VALUE(wz-file).
+
+                            PUT UNFORMATTED wz-label       SKIP.
+IF wz-creator    <> "" THEN PUT UNFORMATTED wz-creator     SKIP.
+IF wz-originator <> "" THEN PUT UNFORMATTED wz-originator  SKIP.
+IF wz-destinator <> "" THEN PUT UNFORMATTED wz-destinators SKIP.
+
+wz-talen = (IF      session.lang2 < 3
+            THEN STRING(session.lang2) /* NL, FR, DU */
+            ELSE IF session.lang2 = 3
+            THEN "1,0"                 /* FR/NL      */
+            ELSE IF session.lang2 = 4
+            THEN "1,2"                 /* FR/DU      */
+            ELSE ""
+           ).
+          
+FOR EACH election NO-LOCK WHERE election.s-id = session.s-id
+                             BY election.et-id:
+    DO i = 1 TO NUM-ENTRIES(wz-talen):
+        wz-taal = INTEGER(ENTRY(i,wz-talen)).
+        PUT UNFORMATTED          (IF i = 1 THEN "* " ELSE "  ")
+                                 election.long-name[wz-taal + 1].
+        IF election.colls
+        THEN DO:
+            PUT UNFORMATTED      " ".
+            IF wz-taal = 1 
+						THEN PUT UNFORMATTED election.head0    [wz-taal + 1] " "
+													       election.coll_name[wz-taal + 1].
+					  ELSE PUT UNFORMATTED election.coll_name[wz-taal + 1] " "
+									               election.head0    [wz-taal + 1].
+	      END.
+        PUT UNFORMATTED          SKIP.
+    END.
+END.
+
+PUT UNFORMATTED
+    "Election Date        : " session.s-id FORMAT "99/99/9999" SKIP
+    "Creation Date - Time : " STRING(TODAY,"99/99/9999") 
+                        " - " STRING(TIME,"HH:MM:SS")          SKIP.
+OUTPUT CLOSE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van elk stemopnemingsbureau A heeft het dubbel van de door zijn bureau opgemaakte tabel overhandigd aan de voorzitter van het kantonhoofdbureau A.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Na onderzoek en eventuele verbetering van elke tabel wordt hij door laatstgenoemde voorzitter geparafeerd.  Deze heeft voor ontvangst van bedoelde tabel ondertekend in het proces-verbaal van het opnemingsbureau, door de voorzitter van dit bureau meegebracht.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >III.	</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Opstellen van een samenvattende tabel.</String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Het kantonhoofdbureau A schrijft per stemopnemingsbureau A op een verzamelstaat het volgende over  (zie bijlage 2 ):</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >het aantal neergelegde stembiljetten, het aantal blanco of ongeldige stembiljetten en het aantal geldige stembiljet-ten;</String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >voor elke van de lijsten die gerangschikt werden naar hun volgnummer, het aantal stembiljetten van elk van de subcategorieën zoals bedoeld in artikel 156, § 1, 2e lid, van het Algemeen Kieswetboek;</String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >voor elke kandidaat-titularis of –opvolger van elke lijst, het aantal naamstemmen dat hij behaalde.</String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Het bureau totaliseert voor geheel het kanton al die rubrieken en voegt er het stemcijfer van elke lijst aan toe.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >IV.	</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Elektronische mededeling van de resultaten</String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kantonhoofdbureau A of de persoon die door hem wordt aangewezen deelt via digitale weg, door ge-bruik te maken van de elektronische handtekening die aangebracht wordt door middel van zijn identiteitskaart, aan de Minister van Binnenlandse Zaken onverwijld het volgende mee:</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >-</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >het totaal aantal neergelegde stembiljetten, het aantal blanco of ongeldige biljetten en het aantal geldige stemmen;</String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >-</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >het stemcijfer van elke lijst;</String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >-</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >het aantal naamstemmen behaald door elke kandidaat-titularis of -opvolger.</String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >V.	</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Het doorsturen van het proces-verbaal en de samenvattende tabel.</String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kantonhoofdbureau A verstuurt onverwijld via digitale weg, door gebruik te maken van de elektroni-sche handtekening die aangebracht wordt door middel van zijn identiteitskaart, het proces-verbaal van zijn bureau, dat een samenvattende tabel bevat: </String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >a.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >naar de voorzitter van het provinciehoofdbureau, die hiervoor ontvangst bevestigt;</String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >b.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >naar de Minister van Binnenlandse Zaken;</String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >De voorzitter van het kantonhoofdbureau A steekt eveneens dat proces-verbaal, alsmede de dubbels van de stem-opnemingstabellen en de samenvattende tabel in een omslag, verzegelt en stempelt deze en laat ze op de snelst mogelijke wijze afgeven aan de voorzitter van het provinciehoofdbureau, die hiervoor ontvangst bevestigt.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >Te #LIEU#, #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >9</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >De secretaris</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >De voorzitter,</String2>
+	</row>
+	<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >De bijzitters,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="38" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="39" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="40" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="41" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >P.S.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >DE VOORZITTER VAN HET KANTONHOOFDBUREAU A MAG NIET VERGETEN DE OVERGE-MAAKT LIJSTEN VOOR DE BETALING VAN HET PRESENTIEGELD VAN ALLE KIESBUREAUS IN ZIJN KIESKANTON DE MAANDAG NA DE STEMMING TE OVERHANDIGEN AAN DE POSTONT-VANGER VAN DE KANTONHOOFDPLAATS.   MAAK VOOR DE STEMMING DE NODIGE AF-SPRAKEN MET DE POSTONTVANGER OM ELKE VERTRAGING IN DE UITBETALING VAN DE PRESENTIEGELDEN TE VERMIJDEN.</String2>
+	</row>
+	<row rowNumber="42" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________________________________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="43" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="44" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(2)</String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >In de kieskantons van de kieskring Brussel-Halle-Vilvoorde moet het bureau de verzamelstaat in dubbel opmaken : een exem-plaar waarop de uitslag bestemd voor het Nederlands kiescollege wordt vermeld en een twede exemplaar waarop de uitslag be-stemd voor het Frans kiescollege wordt vermeld (Art. 156, § 2 en Art. 161, negende lid KWB).</String2>
+	</row>
+	<row rowNumber="45" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >In de kieskantons van het administratief arrondissement Brussel-Hoofdstad van deze kieskring wordt één verzamelstaat (Frans kiescollege) in het Frans opgesteld en één verzamelstaat (Nederlands kiescollege) in het Nederlands opgesteld. In de kieskantons van het administratief arrondissement Halle-Vilvoorde van deze kieskring wordt de verzamelstaat, in dubbel, uitsluitend in het Nederlands opgesteld.</String2>
+	</row>
+	<row rowNumber="46" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" >-</Separateur>
+		<String2 colID="6" >Daar het echter niet mogelijk is in de kantons van de kieskring Brussel-Halle-Vilvoorde te bepalen tot welk kiescollege de blanco en ongeldig stembiljetten behoren, moeten deze op het niveau van het gehele kanton worden geglobaliseerd en dient hun aantal op een afzonderlijk blad te worden vermeld (zie bijlage 2 bij dit formulier).</String2>
+	</row>
+	<row rowNumber="47" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+</TD_XML_Table>

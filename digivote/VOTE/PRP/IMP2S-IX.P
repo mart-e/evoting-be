@@ -1,0 +1,188 @@
+/* Filename            : IMP2S-IX.P
+   -------- 
+   
+   Purpose : Import election structure for I disks
+   -------
+             Additional tests for the IMPORT feature. 
+             DON'T MESS WITH IT, because this is a crutial entity !!
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT        PARAM wz-all-file     AS C FORMAT "x(50)"        NO-UNDO.
+
+DEF       OUTPUT PARAM wz-recid        AS RECID                   NO-UNDO.
+
+DEF       OUTPUT PARAM wz-errno        AS I                       NO-UNDO.
+DEF       OUTPUT PARAM wz-errmsg-1     AS C FORMAT "x(78)"        NO-UNDO.
+DEF       OUTPUT PARAM wz-errmsg-2     AS C FORMAT "x(78)"        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-field         AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER pri-organisation FOR organisation.
+DEF BUFFER sub-organisation FOR organisation.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-setup-id        LIKE organigram.disk-id                NO-UNDO.
+DEF VAR wz-intro-field     AS C FORMAT "x(50)" EXTENT 3           NO-UNDO.
+
+DEF VAR found              AS L INIT FALSE                        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK.
+
+/*********************************************************/
+/* Point 2 : import possibility for INTRODUCTION         */
+/*********************************************************/
+wz-errno = -1.
+
+IF  NOT(    wz-field[5] = "S"
+				AND wz-field[6] = " ")
+THEN ASSIGN
+		 wz-errno    = 212
+		 wz-errmsg-1 = "Not of type S".
+ELSE DO:
+		/* Find setup-id of provided STRUCTURE */
+		IF setup.areaname = wz-field[7]
+		THEN wz-setup-id = setup.setup-id.
+		ELSE DO:
+				/* If not current STRUCTURE, find all others in 'organigram'
+					 disk-id should be negative !
+				*/
+				FIND FIRST organigram WHERE organigram.disk-id < 0
+																AND organigram.area[1] = wz-field[7]
+														NO-LOCK NO-ERROR .
+				IF NOT AVAILABLE organigram
+				THEN ASSIGN
+						 wz-errno    = 213
+						 wz-errmsg-1 = "Provide STRUCT-name NOT available!".
+				ELSE wz-setup-id = organigram.disk-id * -1.
+		END.
+END.
+IF wz-errno = -1
+THEN DO:
+		call C_CHECKINT VALUE(wz-field[8]).
+		IF stat <> 0
+		THEN ASSIGN
+				 wz-errno    = 100
+				 wz-errmsg-1 = "8th field is not numeric ! (orginator)".
+		ELSE IF  NOT(    wz-field[1] = wz-field[ 9]
+						     AND wz-field[2] = wz-field[10])
+		THEN ASSIGN
+				 wz-errno    = 214
+				 wz-errmsg-1 = "Source and desination not of the same sys/orgtype".
+END.
+IF wz-errno = -1
+THEN DO:
+		call C_CHECKINT VALUE(wz-field[12]).
+		IF stat <> 0
+		THEN ASSIGN
+				 wz-errno    = 100
+				 wz-errmsg-1 = "12th field is not numeric ! (orginator)".
+		ELSE IF INT( wz-field[12]) <> 0
+		THEN ASSIGN
+				 wz-errno    = 215
+				 wz-errmsg-1 = "12th field should be 000 (INTRO)".
+END.
+IF wz-errno = -1
+THEN DO:
+		/* Find a relation in the organisation-table */
+		FIND FIRST sub-organisation
+				 WHERE     sub-organisation.org-type  = wz-field[10]
+					 AND (   sub-organisation.ingave[1] = wz-field[11]
+								OR sub-organisation.ingave[2] = wz-field[11]
+								OR sub-organisation.ingave[3] = wz-field[11]) 
+					 AND     sub-organisation.setup-id  = wz-setup-id
+			 NO-LOCK NO-ERROR.
+		IF NOT AVAILABLE sub-organisation
+		THEN ASSIGN
+				 wz-errno    = 216
+				 wz-errmsg-1 = "Unknown INTRODUCTION for provided STRUCTURE-name !".
+		ELSE IF NOT(   wz-field[3] = sub-organisation.ingave[1]
+					      OR wz-field[3] = sub-organisation.ingave[2]
+					      OR wz-field[3] = sub-organisation.ingave[3])
+		THEN DO:
+				IF NOT(   INDEX( wz-field[3], sub-organisation.ingave[1]) > 0
+							 OR INDEX( wz-field[3], sub-organisation.ingave[2]) > 0
+							 OR INDEX( wz-field[3], sub-organisation.ingave[3]) > 0)
+				THEN ASSIGN
+						 wz-errno    = 217
+						 wz-errmsg-1 = "Source not equal, nor part of destination (INTRO) !".
+				ELSE IF INDEX( wz-field[3], "+") = 0
+				THEN ASSIGN
+						 wz-errno    = 218
+						 wz-errmsg-1 = "Source should be equal to destination (INTRO) !".
+				ELSE DO:
+						/* Write names to disk for further consultation */
+						FIND FIRST pri-organisation
+								 WHERE     pri-organisation.org-type  = wz-field[2]
+									 AND (   pri-organisation.ingave[1] = wz-field[3]
+												OR pri-organisation.ingave[2] = wz-field[3]
+												OR pri-organisation.ingave[3] = wz-field[3]) 
+									 AND     pri-organisation.setup-id  = setup.setup-id
+							 NO-LOCK NO-ERROR.
+
+						/* Check for duplicates ... */
+						found = FALSE.
+						INPUT FROM VALUE(wz-all-file) NO-ECHO.
+						REPEAT:
+								wz-intro-field = "".
+								SET wz-intro-field.
+								IF  wz-intro-field[1] = pri-organisation.org-type
+								AND wz-intro-field[2] = pri-organisation.ingave[1]
+								AND wz-intro-field[3] = sub-organisation.ingave[1]
+								THEN DO:
+										found = TRUE.
+										LEAVE.
+								END.
+						END.
+						INPUT CLOSE.
+						IF found
+						THEN ASSIGN
+							   wz-errno    = 219
+							   wz-errmsg-1 = "Duplicate import defined for " + pri-organisation.ingave[1] + " (INTRO) !".
+						ELSE DO:
+								/* Keep current import definition for verification ... */
+								OUTPUT TO VALUE(wz-all-file) APPEND.
+								PUT UNFORMATTED pri-organisation.org-type
+								           "~t" pri-organisation.ingave[1] 
+								           "~t" sub-organisation.ingave[1] SKIP.
+								OUTPUT CLOSE.
+						END.
+				END.
+		END.
+		IF wz-errno = -1
+		THEN wz-recid = RECID( sub-organisation).
+END.
+
+{return.i}
+/* eof */

@@ -1,0 +1,98 @@
+/* Filename            : SELLIST.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES  VIA INCLUDE FILES                               */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEFINE VARIABLE menusel  AS INTEGER   FORMAT "9" INITIAL 1        NO-UNDO.
+DEFINE VARIABLE menuexe  AS INTEGER   FORMAT "9" INITIAL 0        NO-UNDO.
+DEFINE VARIABLE men_set  AS CHARACTER FORMAT "x(20)" EXTENT 3     NO-UNDO.
+DEFINE VARIABLE men_tit  AS CHARACTER FORMAT "x(15)"              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLE                                                   */
+/*                                                                      */
+/************************************************************************/
+DEFINE SHARED VARIABLE selindic AS CHARACTER FORMAT "x(10)".
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL FORM DESCRIPTIONS                                           */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " "        AT 2          SKIP
+    men_set[1] AT 2 SPACE(2) SKIP
+    men_set[2] AT 2 SPACE(2)
+    men_set[3] AT 2 SPACE(2) SKIP(1)
+    WITH COLOR DISPLAY VALUE(menu_fg) TITLE men_tit
+    FRAME pmviewli NO-LABELS ATTR-SPACE ROW 9 COLUMN 53 OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmviewli,mes01',20,OUTPUT men_set[1]"}
+{call.i &prg="mesfil" &param=",'pmviewli,mes02',20,OUTPUT men_set[2]"}
+{call.i &prg="mesfil" &param=",'pmviewli,mes03',20,OUTPUT men_set[3]"}
+{call.i &prg="mesfil" &param=",'pmviewli,tit01',15,OUTPUT men_tit"}
+
+REPEAT WITH FRAME pmviewli :
+    STATUS INPUT OFF.
+    DISPLAY men_set[1] men_set[2] men_set[3].
+    COLOR DISPLAY VALUE(menu_fg) men_set[1 FOR 3].
+    COLOR DISPLAY VALUE(menu_bg) men_set[menusel].
+    NEXT-PROMPT men_set[menusel].
+    {call.i &prg="discolme" &param=",'pmviewli,hulp' + STRING(menusel),0"}
+
+    selindic = "".
+
+    CHOOSE FIELD men_set[1 FOR 3] COLOR VALUE(menu_bg) AUTO-RETURN
+        GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    menuexe = 0.
+    menusel = FRAME-INDEX.
+    IF LASTKEY = KEYCODE("TAB") OR
+       LASTKEY = KEYCODE("CURSOR-DOWN")
+    THEN IF menusel = 3
+         THEN menusel = 1.
+         ELSE menusel = menusel + 1.
+    ELSE IF LASTKEY = KEYCODE("BACK-TAB") OR
+            LASTKEY = KEYCODE("CURSOR-UP")
+         THEN IF menusel = 1
+              THEN menusel = 3.
+              ELSE menusel = menusel - 1.
+         ELSE menuexe = 1.
+
+    IF menuexe = 1
+    THEN DO :
+        IF      menusel = 1
+        THEN selindic = "kandidaat".
+        ELSE IF menusel = 2
+        THEN selindic = "partij".
+        ELSE selindic = "volledig".
+
+        LEAVE.
+    END.
+END.
+HIDE FRAME pmviewli NO-PAUSE.
+
+IF selindic = ""
+THEN verknum = 0.
+
+{return.i}
+/* eof */

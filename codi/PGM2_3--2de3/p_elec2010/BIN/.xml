@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Bureau_ColFlags=" COL_Editable COL_Invisible" Bureau2_ColFlags=" COL_Editable COL_Invisible" INS_ColFlags=" COL_Editable COL_Invisible" Date_ColFlags=" COL_Editable COL_Invisible" Observations_ColFlags=" COL_Editable COL_Invisible" BV_1_ColFlags=" COL_Editable COL_Invisible" BV_2_ColFlags=" COL_Editable COL_Invisible" BV_3_ColFlags=" COL_Editable COL_Invisible" BV_4_ColFlags=" COL_Editable COL_Invisible" BV_5_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Bureau colID="1" ></Bureau>
+		<Bureau2 colID="2" ></Bureau2>
+		<INS colID="3" ></INS>
+		<Date colID="4" ></Date>
+		<Observations colID="5" ></Observations>
+		<BV_1 colID="6" ></BV_1>
+		<BV_2 colID="7" ></BV_2>
+		<BV_3 colID="8" ></BV_3>
+		<BV_4 colID="9" ></BV_4>
+		<BV_5 colID="10" ></BV_5>
+	</row>
+</TD_XML_Table>

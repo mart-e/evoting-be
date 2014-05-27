@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Break_ColFlags=" COL_Editable COL_Invisible" Type_ColFlags=" COL_Editable COL_Invisible" Var_ColFlags=" COL_Editable COL_Invisible" String1_ColFlags=" COL_Editable COL_Invisible" Separateur_ColFlags=" COL_Editable COL_Invisible" String2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorstand hat vor Entgegennahme und Einspeicherung festgestellt, dass die Disketten aus den Wahlbüros wie auch die Umschläge, die die Disketten begleiten, ordnungsgemäß versiegelt waren, jedoch unter Vorbehalt der folgenden Bemerkungen:</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" > </String2>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >0</Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="5" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >BEMERKUNGEN :</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="6" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="7" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >6</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#OBSERVATIONS_RECEPTION#</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="8" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="9" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Anschließend nimmt der Vorstand die Totalisierung der Stimmen für das Europäische Parlament, das Wallonische Parlament und das Parlament der Deutschsprachigen Gemeinschaft vor (4). Nachdem die Ergebnisse aller Wahlbüros eingespeichert worden sind, druckt der Vorsitzende des Hauptwahlvorstandes das Protokoll und die Tabellen mit den Ergebnissen der Stimmenauszählung (vgl. Anlagen 1 bis 3) aus. Die Wahlziffer jeder Liste und für jeden Kandidaten jeder einzelnen Liste die Gesamtanzahl der von ihm erzielten Vorzugsstimmen werden ebenfalls hinzugefügt (5).</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="10" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="11" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Das Ergebnis der Stimmenauszählung ist das Ergebnis, das in den beigefügten Tabellen vermerkt ist.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="12" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >1</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="13" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Mitteilung der Wahlergebnisse auf digitalem Weg</String2>
+	</row>
+	<row rowNumber="14" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="15" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorsitzende des Hauptwahlvorstandes des Kantons oder die Person, die er zu diesem Zweck bestimmt, übermittelt unverzüglich auf digitalem Weg   durch Gebrauch der elektronischen Signatur, die anhand des Personalausweises angebracht wird   dem Vorsitzenden des Hauptwahlvorstandes des Kollegiums in Eupen und dem Minister des Innern für die Wahl des Europäischen Parlaments, dem Vorsitzenden des Hauptwahlvorstandes des Wahlkreises Verviers für die Wahl des Wallonischen Parlaments bzw. dem Vorsitzenden des Hauptwahlvorstandes des Wahlkreises Eupen für die Wahl des Parlaments der Deutschsprachigen Gemeinschaft:</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="16" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >a)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >die Gesamtanzahl vorgenommener Stimmabgaben, die Gesamtanzahl weißer oder ungültiger Stimmabgaben und die Gesamtanzahl gültiger Stimmabgaben,</String2>
+	</row>
+	<row rowNumber="17" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >b)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >die Wahlziffer jeder der Listen,</String2>
+	</row>
+	<row rowNumber="18" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >c)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >die von jedem ordentlichen Kandidaten und Ersatzkandidaten erzielten Vorzugsstimmen.</String2>
+	</row>
+	<row rowNumber="19" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="20" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >5</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Übermittlung des Protokolls und der zusammenfassende Tabelle.</String2>
+	</row>
+	<row rowNumber="21" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="22" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorsitzende des Hauptwahlvorstandes des Kantons lässt</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="23" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="24" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >d)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >dem Vorsitzenden des Hauptwahlvorstandes des Kollegiums in Eupen und dem Minister des Innern für die Wahl des Europäischen Parlaments,</String2>
+	</row>
+	<row rowNumber="25" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="26" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >e)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >dem Vorsitzenden des Hauptwahlvorstandes des Wahlkreises Verviers und dem Minister-Präsidenten der Wallonischen Regierung für die Wahl des Wallonischen Parlaments,</String2>
+	</row>
+	<row rowNumber="27" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="28" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >12</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >f)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >dem Vorsitzenden des Hauptwahlvorstandes des Wahlkreises Eupen und dem Minister-Präsidenten der Deutschsprachigen Gemeinschaft für die Wahl des Parlaments der Deutschsprachigen Gemeinschaft</String2>
+	</row>
+	<row rowNumber="29" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="30" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >unverzüglich auf digitalem Weg - durch Gebrauch der elektronischen Signatur, die anhand des Personalausweises angebracht wird - das Protokoll seines Wahlvorstandes mit der zusammenfassenden Tabelle zukommen.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="31" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >2</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="32" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Dieses Protokoll (auf Papier) in vierfacher Ausfertigung und die Tabellen mit den Ergebnissen der Stimmenauszählung, die vom Vorsitzenden des Hauptwahlvorstandes des Kantons, von den Vorstandsmitgliedern und von den Zeugen unterzeichnet werden, kommen in zu versiegelnde Umschläge, deren Aufschrift den Inhalt angibt.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="33" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="34" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Vorsitzende des Hauptwahlvorstandes des Kantons übermittelt diese Papierunterlagen in den betreffenden versiegelten blauen, beigen und grünen Umschläge auf dem schnellsten Weg und jeweils gegen Empfangsbescheinigung dem Vorsitzenden des Hauptwahlvorstandes des Kollegiums in Eupen für die Wahl des Europäischen Parlaments, dem Vorsitzenden des Hauptwahlvorstandes des Wahlkreises Verviers für die Wahl des Wallonischen Parlaments bzw. dem Vorsitzenden des Hauptwahlvorstandes des Wahlkreises Eupen für die Wahl des Parlaments der Deutschsprachigen Gemeinschaft</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="35" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Die Öffentlichkeit erhält Zugang zum Tagungsraum des Vorstandes und der Vorsitzende verkündet die ermittelten Ergebnisse.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="36" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="37" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="38" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >4</Type>
+		<Var colID="3" >1</Var>
+		<String1 colID="4" >#LIEU#, den #DATE#.</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="39" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="40" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="41" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >Der Sekretär,                Die Beisitzer,                Die Zeugen,                Der Vorsitzende,</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="42" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="43" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="44" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="45" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="46" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >10</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >N.B.</String1>
+		<Separateur colID="5" >:</Separateur>
+		<String2 colID="6" >Der Vorsitzende des Hauptwahlvorstandes des Kantons darf nicht vergessen, dem Vorsteher des Postamtes des Hauptortes des Kantons die Listen im Hinblick auf die Zahlung der Anwesenheitsgelder aller Wahlvorstände seines Wahlkantons am Montag nach der Wahl zu übergeben. Um jegliche Verzögerung bei der Zahlung der Anwesenheitsgelder zu vermeiden, trifft der Vorsitzende des Hauptwahlvorstandes des Kantons bereits vor der Wahl mit dem Postvorsteher die notwendigen Vereinbarungen.</String2>
+	</row>
+	<row rowNumber="47" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="48" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >______________</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="49" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="50" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(4)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Der Vorsitzende des Hauptwahlvorstandes des Kantons kann die von den Listen erzielten Teilergebnisse nach Einspeicherung von mindestens zehn Wahlbüros und anschließend von jeweils zehn weiteren Wahlbüros verkünden, bis alle Wahlbüros eingespeichert worden sind.</String2>
+	</row>
+	<row rowNumber="51" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >8</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" ></String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" ></String2>
+	</row>
+	<row rowNumber="52" rowFlags="">
+		<Break colID="1" >0</Break>
+		<Type colID="2" >17</Type>
+		<Var colID="3" ></Var>
+		<String1 colID="4" >(5)</String1>
+		<Separateur colID="5" ></Separateur>
+		<String2 colID="6" >Die Wahlziffer jeder Liste besteht aus der Addition der Magnetkarten mit gültiger Stimmabgabe im Kopffeld oder mit gültiger Stimmabgabe für einen oder mehrere Kandidaten dieser Liste.</String2>
+	</row>
+</TD_XML_Table>

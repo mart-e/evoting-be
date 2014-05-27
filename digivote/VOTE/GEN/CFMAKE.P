@@ -1,0 +1,71 @@
+/* Filename            : CFMAKE.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-drive                AS C                               NO-UNDO.
+DEF VAR wz-filename             AS C FORMAT "x(50)"               NO-UNDO.
+DEF VAR db-last-change          AS I FORMAT ">>>>>>>>>>>>>>9"     NO-UNDO.
+
+DEF VAR quot                    AS C INIT """"                    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+IF PDBNAME(1) BEGINS "D:\"
+THEN wz-drive = "D:\".
+ELSE wz-drive = "C:\".
+
+db-last-change = 0.
+FOR EACH _file NO-LOCK:
+    db-last-change = MAX(db-last-change,_last-change).
+END.
+FIND FIRST setup   NO-LOCK NO-ERROR.
+FIND FIRST session NO-LOCK NO-ERROR.
+
+OUTPUT TO VALUE(ramdrive + "$_TMP_$.CF").
+PUT UNFORMATTED
+    db-last-change                                 SKIP
+    setup.version[1] " " 
+    setup.version[2] " " 
+    setup.version[3]                               SKIP
+    setup.disk-id  " "
+    quot setup.sys-type quot " "
+    quot setup.org-type quot " "
+    quot setup.areaname quot " "
+    setup.orginator                                SKIP
+    session.corrupt   " " session.hands_off[1] " " 
+                          session.hands_off[2] " " 
+                          session.hands_off[3]     SKIP
+    session.disk_read " " session.disk_made        SKIP
+    setup.password                                 SKIP.
+FOR EACH types WHERE types.used = 1 NO-LOCK:
+    EXPORT types.
+END.
+OUTPUT CLOSE.
+
+wz-filename = wz-drive + "VOTE\ELECT".
+
+call C_ATTRIB VALUE(wz-filename + ".CF") 0. /* Normal    */
+call CRYPFILE "E" RECEXE VALUE(ramdrive + "$_TMP_$.CF")
+                         VALUE(wz-filename + ".CF") 0.
+call C_DEL VALUE(ramdrive + "$_TMP_$.CF").
+
+call C_ATTRIB VALUE(wz-filename + ".CF") 1. /* Read-Only */
+
+/* Calculate DIGEST for the configuration file */
+call DIGEST VALUE(wz-filename + ".CF").
+call C_ATTRIB VALUE(wz-filename + ".SG") 0. /* Normal    */
+OUTPUT TO VALUE(wz-filename + ".SG").
+PUT UNFORMATTED hex-digest.
+OUTPUT CLOSE.
+call C_ATTRIB VALUE(wz-filename + ".SG") 1. /* Read-Only */
+
+{return.i}
+/* eof */

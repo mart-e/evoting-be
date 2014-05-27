@@ -1,0 +1,375 @@
+/* Filename            : BIJLAGE.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   BIJLAGE.P  $</workFile>
+<revision>$Revision: 1.9 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 01 2004 11:43:48  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/BIJLAGE.P-arc
+$</archive>
+<archiveTimeStamp>$Date: 2008/11/20 12:45:34 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR tot_vote                    AS I                              NO-UNDO.
+DEF VAR MeerdereColleges            AS L                              NO-UNDO.
+DEF VAR TaalGr                      AS C FORMAT "x(45)" EXTENT 3      NO-UNDO.
+DEF VAR TaalGroep                   AS I                              NO-UNDO.
+DEF VAR TaalGroepen                 AS I                              NO-UNDO.
+DEF VAR wz-afdrloop                 AS C                              NO-UNDO.
+DEF VAR wz-afdrvlg                  AS I                              NO-UNDO.
+DEF VAR wz-vorige-afdrvlg           LIKE wz-afdrvlg                   NO-UNDO.
+DEF VAR wz-total-cards              AS I FORMAT "Z,ZZZ,ZZ9"           NO-UNDO.
+DEF VAR wz-count-card               AS I FORMAT "Z,ZZZ,ZZ9" EXTENT 16 NO-UNDO.
+DEF VAR tab-count-card              AS C FORMAT "x(254)"              NO-UNDO.
+DEF VAR wz-index                    AS I                              NO-UNDO.
+DEF VAR wz-forced-et-ids            AS C FORMAT "x(20)"               NO-UNDO.
+DEF VAR tmp-taalkode                AS I                              NO-UNDO.
+DEF VAR blanco                      AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR wz-categorie     AS I FORMAT "Z,ZZZ,ZZ9" EXTENT  4 NO-UNDO.
+DEF NEW SHARED VAR wz-categorie-tot AS I FORMAT "Z,ZZZ,ZZ9"           NO-UNDO.
+DEF NEW SHARED VAR wz-start-line    AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{typvar.i}
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+STATUS INPUT OFF.
+PAUSE 0 NO-MESSAGE.
+
+{call.i &prg="bijlage1" &param=",OUTPUT wz-forced-et-ids"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST session WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+
+/* Afdrukloop bepalen aan de hand van session.lang2 */
+ASSIGN
+wz-vorige-afdrvlg = -1
+wz-afdrloop       =
+    IF      session.lang2 = 0   THEN "1"   /* Nederlands  */
+    ELSE IF session.lang2 = 1   THEN "2"   /* Frans       */
+    ELSE IF session.lang2 = 2   THEN "3"   /* Duits       */
+    ELSE IF session.lang2 = 3   THEN "1,2" /* Ned. & Fr.  */
+    ELSE IF session.lang2 = 4   THEN "2,3" /* Fr. & Duits */
+    ELSE "1". /* Om toch een taal te hebben, maar kan normaal niet */
+
+AfdrukLoop:
+DO wz-afdrvlg = 1 TO NUM-ENTRIES(wz-afdrloop) : /* Aantal exemplaren */
+    /* Taalkode voor afdruk van dit exemplaar bepalen */
+    ASSIGN
+    wz-doc-lang      = INT( ENTRY( wz-afdrvlg, wz-afdrloop)).
+
+    FOR EACH election NO-LOCK WHERE election.s-id  = verkdat
+                                AND election.et-id = et-ind
+                                AND election.e-pr  = TRUE
+                           BREAK BY election.et-id:
+        TaalGroepen = (IF election.et-id = 1
+                       THEN 2
+                       ELSE 1
+                      ).
+
+        /* **************************************************** */ 
+        /* Brusselse Leden Vlaamse Raad identiek behandelen als */
+        /* Brusselse Hoofdstedelijke Raad, maar dan enkel met   */
+        /* Nederlandse taalgroep !                              */
+        /* **************************************************** */ 
+        IF election.et-id =  1 OR
+           election.et-id = 12
+        THEN DO:
+            /* Retrieve language group description in language of document */
+            ASSIGN
+            tmp-taalkode = taalkode
+            taalkode     = wz-doc-lang.
+            {call.i &prg="mesfil" &param=", 'taalgr,dutch',  0,OUTPUT TaalGr[1]"}
+            {call.i &prg="mesfil" &param=", 'taalgr,french', 0,OUTPUT TaalGr[2]"}
+            {call.i &prg="mesfil" &param=", 'taalgr,german', 0,OUTPUT TaalGr[3]"}
+            taalkode     = tmp-taalkode.
+        END.
+
+        DO taalgroep = 1 TO TaalGroepen :
+
+            IF election.mandatory =  TRUE AND
+               wz-forced-et-ids   <> ""
+            THEN DO:
+                ASSIGN
+                wz-et-combi = TRUE
+                wz-et-ids   = STRING( election.et-id) + "," + wz-forced-et-ids.
+
+                {call.i &prg="getusage"}
+                IF wz-doc-id = -1
+                THEN DO:
+                    ASSIGN
+                    wz-et-combi = FALSE
+                    wz-et-ids   = STRING( election.et-id).
+
+                    {call.i &prg="getusage"}
+                    IF wz-doc-id = -1
+                    THEN LEAVE AfdrukLoop.
+                END.
+            END.
+            ELSE DO:
+                ASSIGN
+                wz-et-combi = FALSE
+                wz-et-ids   = STRING( election.et-id).
+
+                {call.i &prg="getusage"}
+                IF wz-doc-id = -1
+                THEN LEAVE AfdrukLoop.
+            END.
+            FIND FIRST layout WHERE layout.doc-id   = wz-doc-id
+                                AND layout.sect-nbr = 0
+                                AND layout.page-nbr = 0
+                                AND layout.line-nbr = 0
+                              NO-LOCK NO-ERROR.
+            IF AVAILABLE layout
+            THEN PagHeader = SUBSTRING(AllSpaces, 1, 75 - LENGTH(layout.contents)) +
+                             layout.contents.
+            ELSE PagHeader = "".
+
+            IF wz-afdrvlg <> wz-vorige-afdrvlg
+            THEN DO:
+                IF wz-vorige-afdrvlg <> -1
+                THEN DO:
+                    {ENDPRT.I}
+                END.
+                wz-vorige-afdrvlg = wz-afdrvlg.
+                {BEGPRT.I "Y" 85 11}
+            END.
+
+            IF FIRST-OF( election.et-id) = LAST-OF( election.et-id)
+            THEN MeerdereColleges = FALSE.
+            ELSE DO:
+                MeerdereColleges = TRUE.
+                IF NOT FIRST-OF(election.et-id)
+                THEN PAGE.
+            END.
+
+            ASSIGN wz-page-nbr = PAGE-NUMBER
+                   wz-line-nbr = 0.
+            /* SECTIE 1 : Hoofding van bijlage */
+            FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                              AND layout.sect-nbr = 1
+                            NO-LOCK:
+                wz-lijn = layout.contents.
+                {LBLCONV.I 11}
+                LBLCONV12:
+                REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+                    ASSIGN
+                    wz-convto   = ""
+                    wz-startpos = INDEX(wz-lijn,"@F")
+                    wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+                    wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+                    ASSIGN
+                    wz-convto =
+                        IF      wz-label = "50" /* College informatie */
+                        THEN STRING(IF election.colls
+                                    THEN ( IF      wz-doc-lang = 2
+                                           THEN election.head0[wz-doc-lang] + " " +
+                                                election.coll_name[wz-doc-lang]
+                                           ELSE IF wz-doc-lang = 3
+                                           THEN election.coll_name[wz-doc-lang] + "s " +
+                                                election.head0[wz-doc-lang]
+                                           ELSE election.coll_name[wz-doc-lang] + " " +
+                                                election.head0[wz-doc-lang]
+                                         )
+                                    ELSE ( IF election.et-id =  1 OR
+                                              election.et-id = 12
+                                           THEN TaalGr[TaalGroep]
+                                           ELSE ""
+                                         ),
+                                    "x(45)"
+                                   )
+                        ELSE IF wz-label = "52" /* Heading2 informatie */
+                        THEN STRING(( IF election.heading2[wz-doc-lang] = ""
+                                      THEN ""
+                                      ELSE election.head2[wz-doc-lang] + " : ") +
+                                    election.heading2[wz-doc-lang],"x(45)")
+                        ELSE IF wz-label = "53" /* Heading3 informatie */
+                        THEN STRING(election.head3[wz-doc-lang] + " : " +
+                                    election.heading3[wz-doc-lang],"x(45)")
+                        ELSE "N/A".
+
+                    {REPLLBL.I}
+                END. /* REPEAT while index - LBLCONV12 */
+                {LINEPRT.I 1}
+            END. /* FOR EACH layout */
+
+            /* May I have your vote please ...*/
+            /*@source sec=1*/
+            {call.i &prg="votes" 
+                    &param=", INPUT  RECID(election), 
+                              INPUT  TaalGroep,
+                              OUTPUT tot_vote, 
+                              OUTPUT wz-total-cards,
+                              OUTPUT tab-count-card, 
+                              OUTPUT Ok2Print"}
+            /*@source sec=0*/
+            IF NOT Ok2Print THEN LEAVE AfdrukLoop.
+            
+            /* Fill table from ENTRY-element */
+						DO wz-index = 1 TO 16:
+						    wz-count-card[wz-index] = INT(ENTRY(wz-index,tab-count-card)).
+            END.
+            /*@source sec=1*/
+            {call.i &prg="blanco"
+                    &param=", INPUT election.et-id, INPUT TaalGroep, OUTPUT blanco"}
+            /*@source sec=0*/
+            {call.i &prg="BijlPart" &param=",INPUT RECID(election),
+                                             INPUT TaalGroepen,
+                                             INPUT TaalGroep,
+                                             INPUT TaalGr[TaalGroep]"}
+            IF NOT Ok2Print
+            THEN LEAVE AfdrukLoop.
+            
+            /* SECTIE 6 : Verzamelstaat (KOP) */
+            FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                              AND layout.sect-nbr = 6
+                            NO-LOCK:
+                wz-lijn = layout.contents.
+                LBLCONV6:
+                REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+                    ASSIGN
+                    wz-convto   = ""
+                    wz-startpos = INDEX(wz-lijn,"@F")
+                    wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+                    wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+                    ASSIGN
+                    wz-convto =
+                        IF      wz-label = "50" /* College informatie */
+                        THEN STRING(IF election.colls
+                                    THEN ( IF wz-doc-lang = 2
+                                           THEN election.head0[wz-doc-lang] + " " +
+                                                election.coll_name[wz-doc-lang]
+                                           ELSE election.coll_name[wz-doc-lang] + "e " +
+                                                election.head0[wz-doc-lang]
+                                         )
+                                    ELSE ( IF election.et-id =  1 OR
+                                              election.et-id = 12
+                                           THEN TaalGr[TaalGroep]
+                                           ELSE ""
+                                         ),
+                                    "x(45)"
+                                   )
+                        ELSE IF wz-label = "60" /* Geldige stemmen */
+                        THEN STRING(tot_vote - blanco,"Z,ZZZ,ZZ9")
+                        ELSE IF wz-label = "79" /* Blanco stemmen */
+                        THEN STRING(blanco,"Z,ZZZ,ZZ9")
+                        ELSE IF wz-label = "80" /* Geregistreerde kaarten */
+                        THEN STRING(tot_vote,"Z,ZZZ,ZZ9")
+                        ELSE IF LOOKUP(wz-label,
+                             "81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96") > 0
+                        THEN STRING(wz-count-card[INT(wz-label) - 80],"Z,ZZZ,ZZ9")
+                        ELSE "N/A".
+                    {REPLLBL.I}
+                END. /* REPEAT while index - LBLCONV6 */
+                {LINEPRT.I 1}
+            END. /* FOR EACH layout */
+
+            wz-start-line = -1.
+            FOR EACH party NO-LOCK WHERE party.s-id = election.s-id
+                                     AND party.e-id = election.e-id
+                                     AND party.p-id <> 0
+                                BREAK BY party.p-id:
+                /**************************************************************/
+                /* Brusselse Hoofdstedelijke Raad -> TAALGROEPEN              */
+                /* If NOT current TaalGroep THEN skip party !                 */
+                /**************************************************************/
+                IF TaalGroepen > 1
+                THEN DO:
+                    IF (SUBSTR(party.taalgr[1],1,1) = "N" AND TaalGroep <> 1)
+                    OR (SUBSTR(party.taalgr[1],1,1) = "F" AND TaalGroep <> 2)
+                    OR (SUBSTR(party.taalgr[1],1,1) = "D" AND TaalGroep <> 3)
+                    THEN NEXT.
+                END.
+                /**************************************************************/
+
+                IF wz-start-line <> -1
+                THEN wz-line-nbr = wz-start-line.
+
+                {call.i &prg="BijlCatP" 
+                        &param=", RECID(election), RECID(party), 7, TaalGr[TaalGroep]"}
+            END. /* FOR EACH party - Voor verzamelstaat */
+
+            /* SECTIE 8 : Verzamelstaat (EINDE) */
+            FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                              AND layout.sect-nbr = 8
+                            NO-LOCK:
+                wz-lijn = layout.contents.
+                LBLCONV8:
+                REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+                    ASSIGN
+                    wz-convto   = ""
+                    wz-startpos = INDEX(wz-lijn,"@F")
+                    wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+                    wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+                    ASSIGN
+                    wz-convto =
+                        IF      wz-label = "60" /* Geldige stemmen */
+                        THEN STRING(tot_vote - blanco,"Z,ZZZ,ZZ9")
+                        ELSE IF wz-label = "79" /* Blanco stemmen */
+                        THEN STRING(blanco,"Z,ZZZ,ZZ9")
+                        ELSE IF wz-label = "80" /* Geregistreerde kaarten */
+                        THEN STRING(tot_vote,"Z,ZZZ,ZZ9")
+                        ELSE "N/A".
+                    {REPLLBL.I}
+                END. /* REPEAT while index - LBLCONV8 */
+                {LINEPRT.I 1}
+            END. /* FOR EACH layout */
+
+            /* GEZAMEKELIJKE VERZAMELSTAAT BLAD BIJ 2 COLLEGES                        */
+            /* op MAMA Brussel, Halle-Vilvoorde, Faciliteiten                         */
+            /* Uitzondering 1 : OOK voor TAALGROEPEN (Brusselse Hoofdstedelijke Raad) */
+            /* Uitzondering 2 : OOK voor Brusselse Leden Vlaamse Raad                 */
+            IF MeerdereColleges = TRUE
+            OR TaalGroepen      > 1
+            OR election.et-id   = 12
+            THEN DO:
+                {PAGPRT.I}
+                {call.i &prg="BijlMCol"
+                        &param=", RECID( election), TaalGroep, TaalGr[TaalGroep]"}
+            END.
+
+            {PAGPRT.I}
+
+        END. /* DO TaalGroep = 1 TO TaalGroepen */
+
+    END. /* FOR EACH election */
+
+END.  /* DO wz-afdrvlg = 1 TO NUM-ENTRIES(wz-afdrloop) */
+
+{ENDPRT.I}
+
+IF Ok2Print
+THEN DO:
+    {call.i &prg="BijlPrtd"} /* Mark 'Bijlage' as Printed for selected election */
+END.
+
+{return.i}
+/* eof */

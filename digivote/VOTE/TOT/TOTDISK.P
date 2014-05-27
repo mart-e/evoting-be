@@ -1,0 +1,66 @@
+/* Filename            : TOTDISK.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   TOTDISK.P  $</workFile>
+<revision>$Revision: 1.6 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:26:16  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/TOTDISK.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/06/28 14:52:40 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{tmgenein.i}            /* Shared frame voor TOT-systeem inikatie menu  */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST urnedest NO-LOCK NO-ERROR.
+FIND FIRST organigram OF urnedest NO-LOCK NO-ERROR.
+FIND FIRST session WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+IF  organigram.sys-type = "T"
+AND session.disk_made   <> 0
+THEN DO:
+    /* TOTALISATIE */
+    {call.i &prg="mesfil" &param=",'tmgeneka,titmes',0,OUTPUT diskstatus"}
+    {call.i &prg="mesfil" &param=",'tmgenein,allowprt',25,OUTPUT allowprt"}
+END.
+ELSE DO:
+    /* STEMBUREAU's */
+    {call.i &prg="mesfil" &param=",'s_check,polling',0,OUTPUT diskstatus"}
+    IF (   (session.disk_read MODULO 10 = 0 AND
+            session.disk_made - session.disk_read > 2)
+        OR  session.disk_read = session.disk_made
+        AND session.disk_read > 0                   )
+    THEN DO:
+        {call.i &prg="mesfil" &param=",'tmgenein,allowprt',25,OUTPUT allowprt"}
+    END.
+    ELSE DO:
+        {call.i &prg="mesfil" &param=",'tmgenein,nownoprt',25,OUTPUT allowprt"}
+    END.
+END.
+diskstatus = TRIM(diskstatus) + " " + STRING(session.disk_read) 
+                            + " / " + STRING(session.disk_made).
+
+DISPLAY diskstatus allowprt
+    WITH FRAME tmgenein.
+
+{return.i}
+/* eof */

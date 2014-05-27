@@ -1,0 +1,13 @@
+/* Filename            : CHKSEC01.P                                    */
+
+{chklevel.i 1}
+
+DEF INPUT PARAM stop_it AS C NO-UNDO.
+
+{SEC_CHK1.I session}
+{SEC_CHK.I  setup}
+{SEC_CHK.I  types}
+{SEC_CHK.I  urnechku}
+
+{return.i}
+/* eof */

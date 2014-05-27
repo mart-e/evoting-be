@@ -1,0 +1,1 @@
+extern CFGSCRUT  cfgS[NMX_SCRUTIN_T+1];

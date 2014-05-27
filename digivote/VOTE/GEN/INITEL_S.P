@@ -1,0 +1,121 @@
+/* Filename            : INITEL_S.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM diskid    LIKE setup.disk-id                     NO-UNDO.
+DEF INPUT  PARAM systype   LIKE setup.sys-type                    NO-UNDO.
+DEF INPUT  PARAM orgtype   LIKE setup.org-type                    NO-UNDO.
+DEF INPUT  PARAM area      LIKE setup.areaname                    NO-UNDO.
+DEF INPUT  PARAM area-id   LIKE setup.orginator                   NO-UNDO.
+
+DEF OUTPUT PARAM wz-status AS L INIT FALSE                        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-disk-id         LIKE organigram.disk-id                NO-UNDO.
+DEF VAR wz-sys-types       AS C INIT "I,G,T,U"                    NO-UNDO.
+DEF VAR i                  AS I                                   NO-UNDO.
+DEF VAR wz-count           AS I                                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*              START PROCEDURE                                         */
+/*                                                                      */
+/************************************************************************/
+IF  systype = "S"
+AND area-id >  0
+THEN DO:
+		FIND FIRST setup.
+		
+    IF area-id > 0
+    THEN DO:
+        /* Find last used disk-id before deleting all not related info.
+           FIND LAST instruction cannot be used AFTER a DELETE-command ! */
+        FIND LAST organigram NO-LOCK NO-ERROR.
+        wz-disk-id = organigram.disk-id.
+    END.
+    
+		/* Delete all information for the other sub-STRUCTURE disks,
+		   but keep those whom are not related to a specific sub-STRUCTURE disk */
+		DELETE FROM organigram WHERE organigram.s-disk <> area-id
+		                         AND organigram.s-disk  > 0.
+
+    /* To avoid unneccessary creation of - duplicate - INTRODUCTION disks,
+       we have te create 'new' linked information to allow importation */
+    IF area-id > 0
+    THEN DO:
+        FOR EACH sub-organigram NO-LOCK WHERE sub-organigram.s-disk = -1
+                                          AND sub-organigram.l-disk = -1:
+            /* Change information to accept import of another INTRODUCTION disk */
+            FIND FIRST organigram WHERE organigram.disk-id = sub-organigram.disk-id.
+            ASSIGN
+            organigram.s-disk = -9
+            organigram.l-disk = -9
+            organigram.MAC    = "REFRESH".
+            
+            /* Create linked record to original STRUCTURE disk (S 000) */
+            wz-disk-id = wz-disk-id + 1.
+            CREATE organigram.
+            ASSIGN
+            organigram.disk-id   = wz-disk-id
+            organigram.s-disk    = 1
+            organigram.l-disk    = sub-organigram.disk-id
+            organigram.g-disk    = -1
+            organigram.sys-type  = systype
+            organigram.org-type  = orgtype
+            organigram.area[1]   = area
+            organigram.area[2]   = area
+            organigram.area[3]   = area
+            organigram.orginator = 0
+            organigram.MAC       = "REFRESH". 
+
+            /* Create linked record to current INTRODUCTION disk */
+            wz-disk-id = wz-disk-id + 1.
+            CREATE organigram.
+            ASSIGN
+            organigram.disk-id   = wz-disk-id
+            organigram.s-disk    = 1
+            organigram.l-disk    = sub-organigram.disk-id
+            organigram.g-disk    = -1
+            organigram.sys-type  = sub-organigram.sys-type
+            organigram.org-type  = sub-organigram.org-type
+            organigram.area[1]   = sub-organigram.area[1]
+            organigram.area[2]   = sub-organigram.area[2]
+            organigram.area[3]   = sub-organigram.area[3]
+            organigram.orginator = sub-organigram.orginator
+            organigram.MAC       = "REFRESH". 
+        END.
+        {call.i &prg="sec_orga"}
+    END.
+    
+		REPEAT i = 1 TO NUM-ENTRIES(wz-sys-types):
+				wz-count = 0.
+				FOR EACH organigram NO-LOCK WHERE organigram.sys-type = ENTRY(i,wz-sys-types):
+						wz-count = wz-count + 1.
+				END.
+				ASSIGN
+				setup.organigram[i] = wz-count
+				setup.MAC           = "REFRESH".
+		END.
+		{call.i &prg="sec_setu"}
+END.
+
+wz-status = TRUE.
+
+{return.i}
+/* eof */

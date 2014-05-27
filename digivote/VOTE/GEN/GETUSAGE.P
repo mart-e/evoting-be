@@ -1,0 +1,71 @@
+/* Filename            : GETUSAGE.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*   SHARED VARIABLES VIA INCLUDE FILES                                 */
+/*                                                                      */
+/************************************************************************/
+
+{printer.i "SHARED"}
+
+/************************************************************************/
+/*                                                                      */
+/*   LOCAL VARIABLES                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF     VAR usagemsg       AS C FORMAT "x(65)"         NO-UNDO.
+DEF     VAR waitkey        AS C FORMAT "x(65)"         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   LOCAL FORMS                                                        */
+/*                                                                      */
+/************************************************************************/
+FORM
+                                       SKIP(1)
+    usagemsg AT 2 SPACE                SKIP(1)
+    SPACE(10) "doc-type =" wz-doc-type SKIP
+    SPACE(10) "setup-id =" wz-setup-id SKIP
+    SPACE(10) "et-combi =" wz-et-combi SKIP
+    SPACE(10) "et-ids   =" wz-et-ids   SKIP
+    SPACE(10) "doc-lang =" wz-doc-lang SKIP
+                                       SKIP(1)
+    waitkey  AT 2 SPACE                SKIP(1)
+    WITH FRAME unkusage CENTERED ROW 5
+                        OVERLAY NO-LABELS
+                        TITLE " Usage/Layout ".
+
+/************************************************************************/
+/*                                                                      */
+/*   START PROCEDURE                                                    */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST usage WHERE usage.doc-type = wz-doc-type
+                   AND usage.setup-id = wz-setup-id
+                   AND usage.et-combi = wz-et-combi
+                   AND usage.et-ids   = wz-et-ids
+                   AND usage.doc-lang = wz-doc-lang
+                 NO-LOCK NO-ERROR.
+IF AVAILABLE usage
+THEN wz-doc-id = usage.doc-id.
+ELSE DO:
+    wz-doc-id = -1.
+    {call.i &prg="mesfil" &param=",'usage,unkusage',  0,OUTPUT usagemsg"}
+    {call.i &prg="mesfil" &param=",'general,keypress',0,OUTPUT waitkey "}
+    PAUSE 0 NO-MESSAGE.
+    DISPLAY usagemsg
+            STRING( wz-doc-type)               @ wz-doc-type
+            STRING( wz-setup-id)               @ wz-setup-id
+            STRING( wz-et-combi, "True/False") @ wz-et-combi
+            STRING( wz-et-ids)                 @ wz-et-ids
+            STRING( wz-doc-lang)               @ wz-doc-lang
+            waitkey
+            WITH FRAME unkusage.
+    PAUSE NO-MESSAGE.
+    HIDE FRAME unkusage NO-PAUSE.
+END.
+
+{return.i}
+/* eof */

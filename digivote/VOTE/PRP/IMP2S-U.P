@@ -1,0 +1,576 @@
+/* Filename            : IMP2S-U.P
+   -------- 
+   
+   Purpose : Import election structure for U disks
+   -------
+             All checks will be moved from INITELEC to IMPORT2S !
+             INITELEC will rely on organigram-table for correctness.
+             IMPORT2S will manage the correctness of the election
+             structure and store it in the organigram-table.
+             organigram-table now contains internal constraints !!
+             DON'T MESS WITH IT, because this is a crutial entity !!
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-exportfile        AS C FORMAT "x(50)"         NO-UNDO.
+DEF INPUT  PARAM wz-filename          AS C FORMAT "x(50)"         NO-UNDO.
+DEF INPUT  PARAM the-sys-type         LIKE organigram.sys-type    NO-UNDO.
+DEF INPUT  PARAM wz-disk-id           LIKE organigram.disk-id     NO-UNDO.
+DEF INPUT  PARAM wz-lines             AS I                        NO-UNDO.
+DEF INPUT  PARAM wz-gen-level         AS C FORMAT "x(20)"         NO-UNDO.
+DEF INPUT  PARAM wz-highest-tot-level AS C FORMAT "x(20)"         NO-UNDO.
+DEF INPUT  PARAM wz-errorfile         AS C FORMAT "x(50)"         NO-UNDO.
+
+DEF OUTPUT PARAM wz-line              AS I                        NO-UNDO.
+DEF OUTPUT PARAM wz-errno             AS I                        NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-1          AS C FORMAT "x(78)"         NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-2          AS C FORMAT "x(78)"         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-field         AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER crosscheck FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL STREAMS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF STREAM kantonFile.
+DEF STREAM checkFile.
+DEF STREAM exportFile.
+DEF STREAM macFile.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-last-area         LIKE organisation.area EXTENT 0      NO-UNDO.
+DEF VAR wz-prev-area         LIKE organisation.area               NO-UNDO.
+DEF VAR wz-totalisation      AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-prev-totalisation AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-orginator         AS I                                 NO-UNDO.
+DEF VAR wz-rel-orginator     AS I                                 NO-UNDO.
+DEF VAR wz-prev-orginator    AS I INIT 0                          NO-UNDO.
+DEF VAR wz-fields            AS C FORMAT "x(128)"                 NO-UNDO.
+DEF VAR wz-lengths           AS C FORMAT "x(128)"                 NO-UNDO.
+ 
+DEF VAR wz-s-disk            LIKE organigram.s-disk               NO-UNDO.
+DEF VAR wz-g-disk            LIKE organigram.g-disk               NO-UNDO.
+DEF VAR wz-t-disks           LIKE organigram.t-disks              NO-UNDO.
+
+DEF VAR wz-org-type          AS C FORMAT "x(20)"                  NO-UNDO.
+DEF VAR wz-tot-levels        AS C FORMAT "x(20)"                  NO-UNDO.
+DEF VAR wz-no-tots           AS I                                 NO-UNDO.
+
+DEF VAR field-seperator      AS C INIT " "                        NO-UNDO.
+DEF VAR quot                 AS C INIT """"                       NO-UNDO.
+DEF VAR empty-field          AS C INIT """"""                     NO-UNDO.
+
+DEF VAR i                    AS I                                 NO-UNDO.
+DEF VAR j                    AS I                                 NO-UNDO.
+
+DEF VAR wz-kantonfile        AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-checkfile         AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-export-field      LIKE organisation.area EXTENT 0      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-errno    = -1
+wz-errmsg-1 = ""
+wz-errmsg-2 = ""
+wz-line     = 0
+wz-fields   = "name,adres,postcode,lokal,tel-nr"
+wz-lengths  = "".
+
+IF {PRGNAME.I PROGRAM-NAME(2)} <> {PRGNAME.I "'import2s'"}
+THEN DO:
+    ASSIGN 
+    wz-errno    = 500
+    /*
+    wz-errmsg-1 = "Program can only be called from 'import2s'"
+    */.
+END.    
+ELSE DO:
+    FIND FIRST _file WHERE _file-name = "organigram" NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE _file
+    THEN DO:
+        ASSIGN
+        wz-errno    = 501
+        /*
+        wz-errmsg-1 = "Table organigram could not be found !"
+        */.
+    END.
+    ELSE DO:
+        call ADDTOLOG PROGRAM-NAME(1) 
+                      VALUE("Import started for " + the-sys-type + "-records") 0.
+    END.
+END.
+
+FIND FIRST setup NO-LOCK.
+IF wz-errno = -1
+THEN DO:
+    ASSIGN
+    wz-last-area         = ""
+    wz-prev-area         = ""
+    wz-prev-totalisation = ""
+    wz-prev-orginator    = 0
+    wz-org-type          = "".
+
+    FOR EACH election NO-LOCK:
+        wz-org-type = wz-org-type
+                    + (IF LENGTH(wz-org-type) = 0 THEN "" ELSE ",")
+                    + election.org-type.
+    END.            
+
+    wz-checkfile = ramdrive + {PRGNAME.I PROGRAM-NAME(1)} + ".CHK".
+    OUTPUT TO VALUE(wz-checkfile).
+    OUTPUT CLOSE.
+
+    wz-kantonfile = ramdrive + {PRGNAME.I PROGRAM-NAME(1)} + ".KTN".
+    OUTPUT TO VALUE(wz-kantonfile).
+    OUTPUT CLOSE.
+
+    INPUT FROM VALUE(wz-filename) NO-ECHO.
+    OUTPUT TO VALUE(wz-errorfile).
+    RecordLoop:
+    REPEAT:
+        ASSIGN
+        wz-g-disk  = -1
+        wz-t-disks = ""
+        wz-field   = "".
+        
+        SET wz-field.
+        
+        wz-line = wz-line + 1.
+        
+        PUT SCREEN COLOR GRAY/BLACK ROW 23 COLUMN 69 
+                   STRING(wz-line, ">,>>9") + "/" + STRING(wz-lines,">,>>9").
+        
+        /* Skip first line : already checked by IMPORT2S */
+        IF wz-line = 1
+        THEN NEXT RecordLoop.
+        
+        call C_CHECKINT VALUE(wz-field[4]).
+        IF stat <> 0
+        THEN DO:
+            ASSIGN
+            wz-errno    = 100
+            wz-errmsg-1 = "4th field is not numeric !".
+            LEAVE.
+        END.
+        wz-orginator = INT(wz-field[4]).
+        IF      wz-orginator < 0
+        THEN DO:
+            ASSIGN
+            wz-errno    = 1
+            wz-errmsg-1 = wz-field[4] + " must be > 0 !".
+            LEAVE.
+        END.
+        ELSE IF wz-orginator > 999
+        THEN DO:
+            ASSIGN
+            wz-errno    = 99
+            wz-errmsg-1 = wz-field[4] + " > max value of 999 !".
+            LEAVE.
+        END.
+
+        /* all the information after line 1 contains the data to be */
+        /* imported into the organigram-table                       */
+        /* -------------------------------------------------------- */
+
+        /******************/
+        /* GENERAL CHECKS */
+        /******************/
+        IF wz-field[26] <> ""
+        THEN DO:
+            ASSIGN
+            wz-errno    = 103
+            wz-errmsg-1 = "Contains too much information !".
+            LEAVE.
+        END.
+        /* Check type of expected input records from file */
+        IF wz-field[1] <> the-sys-type
+        THEN DO:
+            ASSIGN 
+            wz-errno    = 104
+            wz-errmsg-1 = "Sys-type wrong ! [" + wz-field[1] 
+                        + " instead of " + the-sys-type + ")".
+            LEAVE.
+        END.
+        IF wz-field[2] = "" 
+        THEN wz-field[2] = " ".
+
+        IF wz-field[2] <> " "
+        THEN DO:
+            ASSIGN
+            wz-errno    = 109
+            wz-errmsg-1 = "Org-type wrong ! [" + wz-field[2] + "] "
+                        + "instead of [(blanco)] !".
+            LEAVE.
+        END.
+
+        /****************/
+        /*   BUREAU'S   */
+        /****************/
+        /* Check if name, adres, postcode, lokal, tel-nr are provided */
+        wz-errmsg-2 = "=> ".
+        REPEAT i = 1 TO NUM-ENTRIES(wz-fields):
+            IF  LENGTH(TRIM(wz-field[4 + i])) =  0
+            AND ENTRY(i,wz-fields)            <> "tel-nr"
+            THEN DO:
+                ASSIGN
+                wz-errno    = 401
+                wz-errmsg-1 = "Field is empty ! => " + ENTRY(i,wz-fields).
+                LEAVE RecordLoop.
+            END.
+            IF NUM-ENTRIES(wz-lengths) < NUM-ENTRIES(wz-fields)
+            THEN DO:
+                FIND FIRST _field OF _file 
+                     WHERE _field-name = ENTRY(i,wz-fields) NO-LOCK NO-ERROR.
+                IF NOT AVAILABLE _field
+                THEN DO:
+                    ASSIGN
+                    wz-errno    = 402
+                    wz-errmsg-1 = "Field " + ENTRY(i,wz-fields) 
+                                + " not found in table " + _file-name + " !"
+                    wz-errmsg-2 = "".
+                    LEAVE RecordLoop.
+                END.
+                wz-lengths = wz-lengths 
+                           + (IF LENGTH(wz-lengths) = 0 THEN "" ELSE ",")
+                           + SUBSTR(_format,3,LENGTH(_format) - 3). 
+            END.
+            IF LENGTH(wz-field[4 + i]) > INT(ENTRY(i,wz-lengths))
+            THEN DO:
+                ASSIGN
+                wz-errno    = 404
+                wz-errmsg-1 = "Field " + ENTRY(i,wz-fields) + " is too long !"
+                wz-errmsg-2 = wz-errmsg-2 
+                            + ENTRY(i,wz-fields) 
+                            + "|" + STRING(4 + i) 
+                            + "|" + SUBSTR(_format,3,LENGTH(_format) - 3)
+                            + "|" + STRING(LENGTH(wz-field[4 + i])).
+                LEAVE RecordLoop.
+            END.
+            REPEAT j = 1 TO LENGTH(wz-field[4 + i]):
+                IF SUBSTR(wz-field[4 + i],j,1) = """"
+                THEN DO:
+                    ASSIGN
+                    wz-errno    = 403
+                    wz-errmsg-1 = "Field " + ENTRY(i,wz-fields) + " contains invalid characters !"
+                    wz-errmsg-2 = "".
+                    LEAVE RecordLoop.
+                END.
+            END.
+        END.
+        wz-errmsg-2 = "".
+        
+        /* Where will it be generated from ...  */
+        IF  wz-field[10] = ""
+        AND wz-field[11] = ""
+        AND wz-field[12] = ""
+        AND wz-field[13] = ""
+        THEN DO:
+            ASSIGN   
+            wz-errno    = 405
+            wz-errmsg-1 = "Contains too less information ! (No GEN given)".
+            LEAVE RecordLoop.
+        END.
+        
+        IF wz-field[10] <> "G"
+        THEN DO:
+            ASSIGN   
+            wz-errno    = 406
+            wz-errmsg-1 = "Contains too less information ! (Not a GEN)".
+            LEAVE RecordLoop.
+        END.
+        
+        /* Check existance of GENERATION-record (organigram) */
+        call C_CHECKINT VALUE(wz-field[13]).
+        IF stat <> 0
+        THEN DO:
+            ASSIGN
+            wz-errno    = 407
+            wz-errmsg-1 = "4th field of GEN is not numeric ! (orginator)".
+            LEAVE RecordLoop.
+        END.
+        wz-rel-orginator = INT(wz-field[13]).
+
+        FIND FIRST organigram WHERE     organigram.sys-type  = wz-field[10]
+                                AND     organigram.org-type  = wz-field[11]
+                                AND (   organigram.area[1]   = wz-field[12]
+                                     OR organigram.area[2]   = wz-field[12]
+                                     OR organigram.area[3]   = wz-field[12])
+                                AND     organigram.orginator = wz-rel-orginator
+                          NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE organigram
+        THEN DO:
+            ASSIGN   
+            wz-errno    = 408
+            wz-errmsg-1 = "No related GEN-record found ! "
+                        + wz-field[10] + wz-field[11] + wz-field[12] 
+                        + STRING(wz-rel-orginator,"999").
+            LEAVE RecordLoop.
+        END.
+        /* Check if GENERATION doesn't contain any sublevels ... */
+        IF wz-rel-orginator = 0
+        THEN DO:
+            FIND FIRST crosscheck WHERE crosscheck.sys-type  = organigram.sys-type
+                                    AND crosscheck.org-type  = organigram.org-type
+                                    AND crosscheck.area[1]   = organigram.area[1]
+                                    AND crosscheck.orginator > 0
+                                NO-LOCK NO-ERROR.
+            IF AVAILABLE crosscheck
+            THEN DO:
+                ASSIGN   
+                wz-errno    = 409
+                wz-errmsg-1 = "Selected GEN contains sublevels !".
+                LEAVE RecordLoop.
+            END.
+        END.
+        ASSIGN
+        wz-s-disk = organigram.s-disk
+        wz-g-disk = organigram.disk-id.
+
+        IF (    wz-prev-area[1]      <> wz-field[3]
+            AND wz-prev-area[2]      <> wz-field[3]
+            AND wz-prev-area[3]      <> wz-field[3])
+        OR      wz-prev-totalisation <> wz-totalisation
+        THEN DO:
+            /* Check if area-name is acceptable for given GENERATION */
+            FIND FIRST organisation
+                 WHERE organisation.org-type     = organigram.org-type
+                   AND organisation.heading3[1]  = organigram.area[1]
+                   AND (   organisation.area[1]  = wz-field[3]
+                        OR organisation.area[2]  = wz-field[3]
+                        OR organisation.area[3]  = wz-field[3])
+                   AND     organisation.setup-id = setup.setup-id
+               NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE organisation
+            THEN DO:
+                ASSIGN   
+                wz-errno    = 410
+                wz-errmsg-1 = "No related ORGANISATION-record found !".
+                LEAVE RecordLoop.
+            END.
+            ASSIGN
+            wz-prev-area[1] = organisation.area[1]
+            wz-prev-area[2] = organisation.area[2]
+            wz-prev-area[3] = organisation.area[3].
+
+            /* Check for duplicate area-block(s) */
+            INPUT STREAM checkFile FROM VALUE(wz-checkfile) NO-ECHO.
+            REPEAT:
+                wz-export-field = "".
+                SET STREAM checkFile wz-export-field.
+                IF  wz-export-field = wz-prev-area[1]
+                THEN DO:
+                    ASSIGN
+                    wz-errno    = 421
+                    wz-errmsg-1 = "PS not is same 'block' !"
+                    wz-errmsg-2 = wz-field[1]
+                                + wz-field[2]
+                                + wz-field[3].
+                    LEAVE.
+                END.
+            END.
+            INPUT STREAM checkFile CLOSE.
+            IF wz-errno <> -1 THEN LEAVE.
+        END.
+
+        /* Retrieve number of tot-levels for polling station */
+        ASSIGN
+        wz-no-tots    = 0
+        wz-tot-levels = "".
+        FOR EACH organisation NO-LOCK
+                                WHERE LOOKUP(organisation.org-type,wz-org-type) > 0
+                                  AND (   organisation.area[1]  = wz-field[3]
+                                       OR organisation.area[2]  = wz-field[3]
+                                       OR organisation.area[3]  = wz-field[3])
+                                  AND     organisation.setup-id = setup.setup-id
+                                BREAK BY organisation.org-type:
+            IF FIRST-OF(organisation.org-type)
+            THEN DO:
+                FIND FIRST election WHERE election.org-type = organisation.org-type
+                                  NO-LOCK NO-ERROR.
+                IF LENGTH(wz-tot-levels) = 0
+                THEN ASSIGN
+                     wz-tot-levels = STRING(election.totlevel)
+                     wz-no-tots    = wz-no-tots + 1.
+                ELSE IF LOOKUP(STRING(election.totlevel),wz-tot-levels) = 0
+                     THEN ASSIGN
+                          wz-tot-levels = wz-tot-levels
+                                        + (IF LENGTH(wz-tot-levels) = 0 THEN "" ELSE ",")
+                                        + STRING(election.totlevel)
+                          wz-no-tots    = wz-no-tots + 1.
+            END.
+        END.
+        
+        {call.i &prg="imp2s-ut"
+                &param=",INPUT  wz-highest-tot-level,
+                         INPUT  wz-no-tots,
+                         INPUT  wz-s-disk,
+                         OUTPUT wz-totalisation,
+                         OUTPUT wz-t-disks,
+                         OUTPUT wz-errno, 
+                         OUTPUT wz-errmsg-1, 
+                         OUTPUT wz-errmsg-2"}
+        IF wz-errno <> -1 THEN LEAVE.
+
+        IF wz-totalisation <> wz-prev-totalisation
+        THEN DO:
+            /* Check for duplicate GEN/TOT */
+            INPUT STREAM kantonFile FROM VALUE(wz-kantonfile) NO-ECHO.
+            REPEAT:
+                wz-export-field = "".
+                SET STREAM kantonFile wz-export-field.
+                IF  wz-export-field = wz-totalisation
+                THEN DO:
+                    ASSIGN
+                    wz-errno    = 423
+                    wz-errmsg-1 = "Incorrect sequence for GEN/TOT !"
+                    wz-errmsg-2 = wz-totalisation.
+                    LEAVE.
+                END.
+            END.
+            INPUT STREAM kantonFile CLOSE.
+            IF wz-errno <> -1 THEN LEAVE.
+
+            ASSIGN
+            wz-prev-orginator    = 0
+            wz-prev-totalisation = wz-totalisation.
+
+            /* Create the kanton-record */
+            OUTPUT STREAM kantonFile TO VALUE(wz-kantonfile) APPEND.
+            PUT STREAM kantonFile UNFORMATTED
+                wz-totalisation SKIP.
+            OUTPUT STREAM kantonFile CLOSE.
+        END.
+        
+        /* Check if orginator is 1 greater than previous one */
+        wz-prev-orginator = wz-prev-orginator + 1.
+        IF wz-orginator <> wz-prev-orginator
+        THEN DO:
+            ASSIGN
+            wz-errno    = 411
+            wz-errmsg-1 = "Number PS not correct ! ("
+                        + STRING(wz-orginator,"999") + " <= "
+                        + STRING(wz-prev-orginator,"999") + ")".
+            LEAVE.
+        END.
+
+        wz-disk-id = wz-disk-id + 1.
+
+        /* Calculate MAC for IMPORT record */
+        OUTPUT STREAM macFile TO  VALUE(ramdrive + "SECURE.CHK").
+        PUT STREAM macFile UNFORMATTED
+            wz-disk-id                      field-seperator
+            wz-s-disk                       field-seperator
+            -1                              field-seperator
+            wz-g-disk                       field-seperator
+            quot wz-t-disks            quot field-seperator
+            quot CAPS(wz-field[1])     quot field-seperator
+            quot CAPS(wz-field[2])     quot field-seperator
+            quot CAPS(wz-prev-area[1]) quot field-seperator
+            quot CAPS(wz-prev-area[2]) quot field-seperator
+            quot CAPS(wz-prev-area[3]) quot field-seperator
+            wz-orginator                    field-seperator
+            quot wz-field[5]           quot field-seperator
+            quot wz-field[6]           quot field-seperator
+            quot wz-field[7]           quot field-seperator
+            quot wz-field[8]           quot field-seperator
+            quot wz-field[9]           quot field-seperator
+            quot "-1"                  quot field-seperator
+            quot "-1"                  quot field-seperator
+            "0"                             field-seperator
+            "no"                            field-seperator
+            empty-field                     field-seperator SKIP.
+        OUTPUT STREAM macFile CLOSE.
+        CALL CRYPMAC PRPTOT
+             VALUE(ramdrive + "SECURE.CHK")
+             "NULL".
+        CALL C_DEL VALUE(ramdrive + "SECURE.CHK").
+        IF crypStat <> 0
+        THEN DO:
+            ASSIGN
+            wz-errno    = 420
+            wz-errmsg-1 = "Error creating MAC for PS record !".
+            LEAVE.
+        END.
+
+        /* Create the temporary IMPORT record */
+        OUTPUT STREAM exportFile TO VALUE(wz-exportfile) APPEND.
+        PUT STREAM exportFile UNFORMATTED
+            wz-disk-id                      field-seperator
+            wz-s-disk                       field-seperator
+            -1                              field-seperator
+            wz-g-disk                       field-seperator
+            quot wz-t-disks            quot field-seperator
+            quot CAPS(wz-field[1])     quot field-seperator
+            quot CAPS(wz-field[2])     quot field-seperator
+            quot CAPS(wz-prev-area[1]) quot field-seperator
+            quot CAPS(wz-prev-area[2]) quot field-seperator
+            quot CAPS(wz-prev-area[3]) quot field-seperator
+            wz-orginator                    field-seperator
+            quot wz-field[5]           quot field-seperator
+            quot wz-field[6]           quot field-seperator
+            quot wz-field[7]           quot field-seperator
+            quot wz-field[8]           quot field-seperator
+            quot wz-field[9]           quot field-seperator
+            quot "-1"                  quot field-seperator
+            quot "-1"                  quot field-seperator
+            "0"                             field-seperator
+            "no"                            field-seperator
+            empty-field                     field-seperator
+            quot formatMAC             quot                 SKIP.
+        OUTPUT STREAM exportFile CLOSE.
+        
+        IF wz-prev-area[1] <> wz-last-area
+        THEN DO:
+            IF wz-last-area <> ""
+            THEN DO:
+                /* Create the check-record */
+                OUTPUT STREAM checkFile TO VALUE(wz-checkfile) APPEND.
+                PUT STREAM checkFile UNFORMATTED
+                    wz-last-area SKIP.
+                OUTPUT STREAM checkFile CLOSE.
+            END.
+            wz-last-area = wz-prev-area[1].
+        END.
+    END.
+    OUTPUT CLOSE.
+    INPUT CLOSE.
+END.
+
+call C_DEL VALUE(wz-kantonfile).
+call C_DEL VALUE(wz-checkfile).
+
+{return.i}
+/* eof */

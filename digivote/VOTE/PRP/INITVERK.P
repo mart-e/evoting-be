@@ -1,0 +1,53 @@
+/* Filename            : INITVERK.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmgenein.i}            /* Frame beschrijving PMGENEIN                  */
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*        selecrd               Inlezen van selectie record             */
+/*        selecwr               Wegschrijven van selectie record        */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="selecrd"}          /* Inlezen van de selectie record 'selection'   */
+
+ASSIGN
+verknum  = 0
+verkcol  = 0
+verkben  = ""
+partnum  = 0
+partnam  = ""
+candtyp  = 0
+candnum  = 0.
+
+{call.i &prg="selecwr"}          /* Wegschrijven selectie record 'selection'     */
+
+DISPLAY verkben partnum partnam WITH FRAME pmgenein.
+PAUSE 0 NO-MESSAGE.
+
+{return.i}
+/* eof */

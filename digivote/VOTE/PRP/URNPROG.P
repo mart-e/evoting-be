@@ -1,0 +1,153 @@
+/* Filename            : URNPROG.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selvar.i}            /* De variabelen voor de selection record         */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR tit01           AS C FORMAT "X(25)"                       NO-UNDO.
+DEF VAR men_set         AS C FORMAT "X(25)" EXTENT 2              NO-UNDO.
+DEF VAR menusel         AS I FORMAT "9" INIT 1                    NO-UNDO.
+DEF VAR menuexe         AS I FORMAT "9" INIT 0                    NO-UNDO.
+
+DEF VAR perform_check   AS L                                      NO-UNDO.
+
+DEF VAR on_resume  AS L INIT FALSE                                NO-UNDO.
+DEF VAR prglvl     AS I                                           NO-UNDO.
+DEF VAR resume-prg AS C                                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+                             SKIP
+    men_set[1] AT 2 SPACE(1) SKIP
+    men_set[2] AT 2 SPACE(1) SKIP
+    WITH FRAME pmdexpsu 
+        COLOR DISPLAY VALUE(menu_fg)
+        NO-LABELS 
+        ATTR-SPACE 
+        ROW 6 
+        CENTERED 
+        OVERLAY
+        TITLE tit01.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmdexpsu,mes01',25,OUTPUT men_set[1]"}
+{call.i &prg="mesfil" &param=",'pmdexpsu,mes02',25,OUTPUT men_set[2]"}
+{call.i &prg="mesfil" &param=",'pmdexpsu,tit01',25,OUTPUT tit01"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+FOR EACH election:
+    /* 
+       Don't check for disk-id !!! 
+       Party and Candidate information belongs to INTRODUCTION DISKS !!!
+    */
+    FIND FIRST party WHERE party.p-id   <> 0
+                       AND party.e-id    = election.e-id
+                  NO-ERROR.
+    IF NOT AVAILABLE party
+    THEN DO:
+        {call.i &prg="indmess" &param=",'pmdexpur,noparty'"}
+        {return.i}
+    END.
+END.
+
+FIND FIRST session NO-LOCK NO-ERROR.
+IF AVAIL session
+THEN DO:
+    {call.i &prg="mesfil" &param=",'s_check,polling',0,OUTPUT verkben"}
+    verkben = TRIM(verkben) + " " + STRING(session.disk_read) 
+                          + " / " + STRING(session.disk_made).
+    DISPLAY verkben WITH FRAME pmgenein.
+END.
+
+{resume.i}
+
+REPEAT WITH FRAME pmdexpsu :
+    STATUS INPUT OFF.
+    DISPLAY men_set[1] men_set[2].
+    COLOR DISPLAY VALUE(menu_fg) men_set[1 FOR 2].
+    COLOR DISPLAY VALUE(menu_bg) men_set[menusel].
+    NEXT-PROMPT men_set[menusel].
+    {call.i &prg="discolme" &param=",'general,fkey01',0"}
+
+    IF on_resume AND resume-prg = "creaturn"
+    THEN ASSIGN
+         menuexe = 1
+    	 menusel = 1.
+    ELSE DO:
+        CHOOSE FIELD men_set[1 FOR 2] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB").
+        menuexe = 0.
+        menusel = FRAME-INDEX.
+        IF LASTKEY = KEYCODE("TAB") OR LASTKEY = KEYCODE("CURSOR-DOWN")
+        THEN IF menusel = 2
+             THEN menusel = 1.
+             ELSE menusel = menusel + 1.
+        ELSE IF LASTKEY = KEYCODE("BACK-TAB")
+             OR LASTKEY = KEYCODE("CURSOR-UP")
+             THEN IF menusel = 1
+                  THEN menusel = 2.
+                  ELSE menusel = menusel - 1.
+             ELSE menuexe = 1.
+    END.
+    	
+    IF on_resume THEN on_resume = FALSE.
+    
+    IF menuexe = 1
+    THEN DO :
+        HIDE MESSAGE NO-PAUSE.
+        HIDE FRAME pmdexpsu NO-PAUSE.
+        IF menusel = 1
+        THEN DO :
+            perform_check = TRUE.
+            FOR EACH organigram WHERE organigram.g-disk   = setup.disk-id
+                                  AND organigram.sys-type = "U"
+                                  AND organigram.verwerkt = FALSE 
+                              NO-LOCK:
+                {call.i &prg="creaturn" &param=",RECID(organigram),perform_check"}
+                IF key-cancel THEN LEAVE.
+                
+                /* Only check database consistency the first time ! */
+                perform_check = FALSE.
+                
+                FIND FIRST session NO-LOCK NO-ERROR.
+                IF AVAIL session
+                THEN DO:
+                    {call.i &prg="mesfil" &param=",'s_check,polling',0,OUTPUT verkben"}
+                    verkben = TRIM(verkben) + " " + STRING(session.disk_read)
+                                          + " / " + STRING(session.disk_made).
+                    DISPLAY verkben WITH FRAME pmgenein.
+                END.
+            END.
+        END.
+        ELSE DO:
+            {call.i &prg="selburur"}
+        END.
+        LEAVE.
+    END.
+END.
+
+HIDE FRAM pmgenein  NO-PAUSE.
+HIDE FRAME pmdexpsu NO-PAUSE.
+
+{return.i}
+/* eof */

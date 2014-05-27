@@ -1,0 +1,49 @@
+/* Filename            : GIVENAME.P                                     */
+
+/* Don't use {chklevel.i} => this is also a startup procedure !! */
+
+/************************************************************************/
+/*                                                                      */
+/*   SHARED VARIABLES VIA INCLUDE FILES                                 */
+/*                                                                      */
+/************************************************************************/
+{cryprslt.i "NEW"}
+{hlcvars.i  "NEW"}
+{logging.i  "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR prgSTAT AS I INIT ?.
+
+/************************************************************************/
+/*                                                                      */
+/*   START PROCEDURE                                                    */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*   OPHALEN RAMDRIVE LETTER (SLECHTS EENMALIG !!)                      */
+/************************************************************************/
+call C_GETENV "RAM" "ramdrive".
+IF ramdrive = "?" THEN ramdrive = "C".
+ramdrive = ramdrive + ":\".
+
+/************************************************************************/
+/*   OPHALEN TEMP (SLECHTS EENMALIG !!)                                 */
+/************************************************************************/
+call C_GETENV "TEMP" "temp".
+IF temp = "?" THEN temp = "\VOTE\TEMP".
+
+RUN traceprg(prgSTAT, ">>>").
+{call.i &prg="init_pwd"}
+
+/* Start application with a security check */
+{startdig.i}
+
+{call.i &prg="mkconten"}
+
+{quit.i &corrupt=FALSE}
+/* eof */

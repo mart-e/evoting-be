@@ -1,0 +1,179 @@
+/* Filename            : BIJLPART.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM recid_election AS RECID                           NO-UNDO.
+DEF INPUT PARAM TaalGroepen    AS I                               NO-UNDO.
+DEF INPUT PARAM TaalGroep      AS I                               NO-UNDO.
+DEF INPUT PARAM TaalGr         AS C FORMAT "x(45)"                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+ 
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-categorie     AS I FORMAT "Z,ZZZ,ZZ9" EXTENT  4 NO-UNDO.
+DEF SHARED VAR wz-categorie-tot AS I FORMAT "Z,ZZZ,ZZ9"           NO-UNDO.
+DEF SHARED VAR wz-start-line    AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-page-sect5         AS I                                NO-UNDO.
+DEF VAR wz-c-type             AS I                                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST election WHERE RECID(election) = recid_election NO-LOCK NO-ERROR.
+
+ASSIGN
+wz-start-line = -1
+wz-page-sect5 = -1.
+
+Party-Block:
+FOR EACH party NO-LOCK WHERE party.s-id = election.s-id
+                         AND party.e-id = election.e-id
+                         AND party.p-id <> 0
+                    BREAK BY party.p-id:
+    /**************************************************************/
+    /* Brusselse Hoofdstedelijke Raad -> TAALGROEPEN              */
+    /* If NOT current TaalGroep THEN skip party !                 */
+    /**************************************************************/
+    IF TaalGroepen > 1
+    THEN DO:
+        IF (SUBSTR(party.taalgr[1],1,1) = "N" AND TaalGroep <> 1)
+        OR (SUBSTR(party.taalgr[1],1,1) = "F" AND TaalGroep <> 2)
+        OR (SUBSTR(party.taalgr[1],1,1) = "D" AND TaalGroep <> 3)
+        THEN NEXT.
+    END.
+    /**************************************************************/
+
+    IF wz-start-line <> -1
+    THEN wz-line-nbr = wz-start-line.
+
+    {call.i &prg="BijlCatP" &param=",INPUT recid_election,
+                                     INPUT RECID(party),
+                                     INPUT 2,
+                                     INPUT TaalGr"}
+    
+    /* Stemmen voor de kandidaten en/of opvolgers */
+    DO wz-c-type = 0 TO 1:
+        IF wz-c-type = 1 /* Opvolgers  */
+        THEN DO:
+            /***********************************/
+            /* Enkel wanneer opvolgers bestaan */
+            /***********************************/
+            IF election.supps = TRUE
+            THEN DO:
+                /* SECTIE 4 : Titel voor opvolgers */
+                FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                                  AND layout.sect-nbr = 4
+                                NO-LOCK:
+                    wz-lijn = layout.contents.
+                    {LINEPRT.I 1}
+                END. /* FOR EACH layout */
+            END.
+            ELSE NEXT.
+        END.
+        FOR EACH candidate OF party
+            WHERE candidate.c-type = wz-c-type
+            NO-LOCK:
+
+            /*@source sec=1*/
+            call CRYPDEC PRPTOT candidate.vote 1.
+            IF crypStat <> 0
+            THEN DO:
+                OK2Print = FALSE.
+                LEAVE Party-Block.
+            END.
+            /*@source sec=0*/
+            
+            /* SECTIE 3 : Stemopneming voor kandidaat en/of opvolgers */
+            FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                              AND layout.sect-nbr = 3
+                            NO-LOCK:
+                wz-lijn = layout.contents.
+                LBLCONV3:
+                REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+                    ASSIGN
+                    wz-convto   = ""
+                    wz-startpos = INDEX(wz-lijn,"@F")
+                    wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+                    wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+                    ASSIGN
+                    wz-convto =
+                        IF      wz-label = "01" /* Kandidaat nr+naam */
+                        THEN STRING(STRING(candidate.c-id,">9") +
+                                    ". "                        +
+                                    candidate.c_name1           +
+                                    " "                         +
+                                    candidate.c_name2,"x(50)")
+                        ELSE IF wz-label = "02" /* Kandidaat stemmen */
+                        THEN STRING(INT(result4),"Z,ZZZ,ZZ9")
+                        ELSE "N/A".
+                    {REPLLBL.I}
+                END. /* REPEAT while index - LBLCONV2 */
+                {LINEPRT.I 0}
+            END. /* FOR EACH layout */
+        END.
+    END.
+
+    /* SECTIE 5 : Totaal per lijst */
+    FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                      AND layout.sect-nbr = 5
+                    NO-LOCK:
+        IF wz-page-sect5 = -1
+        THEN wz-page-sect5 = layout.page-nbr.
+        wz-page-nbr   = wz-page-sect5.
+
+        wz-lijn = layout.contents.
+        {PAGEBRK.I}
+        LBLCONV5:
+        REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+            ASSIGN
+            wz-convto   = ""
+            wz-startpos = INDEX(wz-lijn,"@F")
+            wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+            wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+            ASSIGN
+            wz-convto =
+                IF wz-label = "70" /* Totaal categorieen */
+                THEN STRING(wz-categorie-tot,"Z,ZZZ,ZZ9")
+                ELSE IF LOOKUP( wz-label, "71,72,73,74") > 0
+                                   /* een categorie      */
+                THEN STRING(wz-categorie[INT(wz-label) - 70],
+                            "Z,ZZZ,ZZ9")
+                ELSE IF wz-label = "75" /* Kandidaat + Opvolgers + Kand/Opv */
+                THEN STRING(wz-categorie[2] +
+                            wz-categorie[3] +
+                            wz-categorie[4],
+                            "Z,ZZZ,ZZ9")
+                ELSE "N/A".
+
+            {REPLLBL.I}
+        END. /* REPEAT while index - LBLCONV5 */
+        {LINEPRT.I 1}
+    END. /* FOR EACH layout */
+END. /* EACH party */
+
+{return.i}
+/* eof */

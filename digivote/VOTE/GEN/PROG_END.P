@@ -1,0 +1,26 @@
+/* Filename            : PROG_END.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES  VIA INCLUDE FILES                               */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het TOT hoofdmenu TOGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="confirm" &param=",'general,endmsg','','','general,end','general,cancel'"}
+IF menleav = 1
+THEN DO:
+    {quit.i &corrupt=FALSE}
+END.
+
+{return.i}
+/* eof */

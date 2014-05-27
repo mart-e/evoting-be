@@ -1,0 +1,156 @@
+/* Filename            : S_EXPORT.P                                     */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR systeem   AS C     FORMAT "x(3)" INITIAL "NON" NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{cryprslt.i "NEW"}
+{hlcvars.i  "NEW"}
+{logging.i  "NEW"}
+{selvar.i   "NEW"}
+{mencolor.i "NEW"}
+{disfram.i  "NEW"}
+{vargener.i "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " E-VOTING " AT 1
+    WITH FRAME main-frame ROW 4 CENTERED NO-LABEL NO-BOX
+    COLOR DISPLAY VALUE(menu_bg).
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR disklabel         AS C FORMAT "x(11)" INIT "URN_INFO"     NO-UNDO.
+DEF VAR wz-exportfile     AS C INIT "A:\URN_INFO.CSV"             NO-UNDO.
+DEF VAR wz-separator      AS C INIT ","                           NO-UNDO.
+DEF VAR wz-status         AS L                                    NO-UNDO.
+DEF VAR prgSTAT           AS I INIT ?.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*   OPHALEN RAMDRIVE LETTER (SLECHTS EENMALIG !!)                      */
+/************************************************************************/
+call C_GETENV "RAM" "ramdrive".
+IF ramdrive = "?" THEN ramdrive = "C".
+ramdrive = ramdrive + ":\".
+
+/************************************************************************/
+/*   OPHALEN TEMP (SLECHTS EENMALIG !!)                                 */
+/************************************************************************/
+call C_GETENV "TEMP" "temp".
+IF temp = "?" THEN temp = "\VOTE\TEMP".
+
+RUN traceprg(prgSTAT, ">>>").
+{call.i &prg="init_pwd"}
+
+/* Start application with a security check */
+{startdig.i}
+
+taalkode = 1.
+
+FIND FIRST session NO-LOCK NO-ERROR.
+IF NOT AVAILABLE session
+THEN DO:
+    {call.i &prg="disfram" &param=",',Not enough information !','',',(session)','',TRUE"}
+    {quit.i &corrupt=FALSE}
+END.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+IF NOT AVAILABLE setup
+THEN DO:
+    {call.i &prg="disfram" &param=",',Not enough information !','',',(setup)','',TRUE"}
+    {quit.i &corrupt=FALSE}
+END.
+
+IF NOT(    setup.sys-type       = "S"
+       AND session.hands_off[1] = TRUE
+       AND session.hands_off[2] = TRUE  
+       AND session.hands_off[3] = TRUE)
+THEN DO:
+    {call.i &prg="disfram" &param=",',Incorrect Function Call !','','','',TRUE"}
+    {quit.i &corrupt=FALSE}
+END.
+
+/*************************************************/
+/* DISPLAY TITLE AND CHOOSE LANGUAGE AND PRINTER */
+/*************************************************/
+PAUSE 0 NO-MESSAGE.
+VIEW FRAME main-frame.
+{call.i &prg="taalkeus"}
+
+CREATE ALIAS from_elect FOR DATABASE elect NO-ERROR.
+{call.i &prg="startdig"}
+DELETE ALIAS from_elect.
+
+IF systeem = "NON" 
+THEN DO:
+    {quit.i &corrupt=FALSE}
+END.
+
+REPEAT:
+    {call.i &prg="disfram" &param=",'expzet,waitdisk','','','',TRUE"}
+    IF key-cancel THEN LEAVE.
+    /* Check if diskette is OK to use */
+    {call.i &prg="chkdisk" &param=",'A:','',OUTPUT wz-status"}
+    IF wz-status THEN LEAVE.
+END.
+IF LASTKEY = KEYCODE("END-ERROR")
+OR key-cancel
+THEN DO:
+    {quit.i &corrupt=FALSE}
+END.
+
+/* Formatteren EXPORT diskette */
+{call.i &prg="disfram" &param=",'format,export','','',',' + disklabel,FALSE"}
+
+{call.i &prg="formdisk" &param=",'A:', disklabel, FALSE, OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    HIDE FRAME disframe NO-PAUSE.
+    {quit.i &corrupt=FALSE}
+END.
+
+{call.i &prg="disfram" &param=",'digivote,copbes10','','',',' + disklabel,FALSE"}
+OUTPUT TO VALUE(wz-exportfile).
+FOR EACH organigram NO-LOCK WHERE organigram.sys-type = "U"
+                              AND organigram.org-type = " "
+                               BY organigram.disk-id:
+    call CRYPDEC PRPTOT organigram.master-key.
+    IF crypStat <> 0 THEN result4 = FILL("?",AESKEYLEN).
+
+    PUT UNFORMATTED organigram.orginator               wz-separator
+                    organigram.sys-type
+                    organigram.org-type
+                    organigram.area[taalkode]
+                    STRING(organigram.orginator,"999") wz-separator
+                    organigram.name                    wz-separator
+                    organigram.adres                   wz-separator
+                    organigram.postcode                wz-separator
+                    organigram.lokal                   wz-separator
+                    organigram.tel-nr                  wz-separator
+                    result4                                         SKIP.
+END.
+OUTPUT CLOSE.
+
+{quit.i &corrupt=FALSE}
+/* eof */

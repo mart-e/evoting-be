@@ -1,0 +1,99 @@
+/* Filename            : DUMPARTY.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-export2file AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT  PARAM wz-disk-id     AS I                              NO-UNDO.
+
+DEF OUTPUT PARAM wz-records     AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR field-seperator         AS C INIT " "                     NO-UNDO.
+DEF VAR quot                    AS C INIT """"                    NO-UNDO.
+
+DEF VAR i                       AS i                              NO-UNDO.
+DEF VAR wz-fields               AS C                              NO-UNDO.
+DEF VAR wz-types                AS C                              NO-UNDO.
+DEF VAR wz-extent               AS C                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-fields  = "disk-id,s-id,e-id,coll-id,p-id,"
+           + "party_name,taalgroep,num_can,num_sup,"
+           + "vote_top,tmp_vote_top,vote_can,tmp_vote_can,"
+           + "vote_sup,tmp_vote_sup,vote_cs,tmp_vote_cs,"
+           + "logo_width,logo_height,logo_bytes,logo,MAC"
+wz-types   = "integer,date,integer,integer,integer,"
+           + "character,character,integer,integer,"
+           + "character,character,character,character,"
+           + "character,character,character,character,"
+           + "integer,integer,integer,integer,character"
+wz-extent  = "0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,0,0,0,0,254,0"
+i          = 0
+wz-records = 0.
+FIND FIRST _file WHERE _file-name = "party" NO-LOCK.
+FOR EACH _field OF _file NO-LOCK BY _order:
+    i = i + 1.
+    IF _field-name <>     ENTRY(i,wz-fields)
+    OR _data-type  <>     ENTRY(i,wz-types)
+    OR _extent     <> INT(ENTRY(i,wz-extent))
+    THEN DO:
+        {call.i &prg="interror" &param=",PROGRAM-NAME(1),'internal,errmsg','(party)'"}
+        {quit.i &corrupt=FALSE}
+    END.
+END.
+
+OUTPUT TO VALUE(wz-export2file).
+FOR EACH d_elect.party NO-LOCK WHERE d_elect.party.disk-id = wz-disk-id:
+    PUT UNFORMATTED
+             d_elect.party.disk-id                      field-seperator
+             STRING(MONTH(d_elect.party.s-id),"99") "/" 
+             STRING(DAY(d_elect.party.s-id),  "99") "/" 
+             STRING(YEAR(d_elect.party.s-id), "9999")   field-seperator
+             d_elect.party.e-id                         field-seperator
+             d_elect.party.coll-id                      field-seperator
+             d_elect.party.p-id                         field-seperator
+        quot d_elect.party.party_name   quot            field-seperator.
+    DO i = 1 TO INT(ENTRY(7,wz-extent)):
+        PUT UNFORMATTED
+        quot d_elect.party.taalgroep[i] quot            field-seperator.
+    END.
+    PUT UNFORMATTED
+             d_elect.party.num_can                      field-seperator
+             d_elect.party.num_sup                      field-seperator
+        quot d_elect.party.vote_top     quot            field-seperator
+        quot d_elect.party.tmp_vote_top quot            field-seperator
+        quot d_elect.party.vote_can     quot            field-seperator
+        quot d_elect.party.tmp_vote_can quot            field-seperator
+        quot d_elect.party.vote_sup     quot            field-seperator
+        quot d_elect.party.tmp_vote_sup quot            field-seperator
+        quot d_elect.party.vote_cs      quot            field-seperator
+        quot d_elect.party.tmp_vote_cs  quot            field-seperator
+             d_elect.party.logo_width                   field-seperator
+             d_elect.party.logo_height                  field-seperator
+             d_elect.party.logo_bytes                   field-seperator.
+    DO i = 1 TO INT(ENTRY(NUM-ENTRIES(wz-extent) - 1,wz-extent)):
+        PUT UNFORMATTED
+             d_elect.party.logo[i]                      field-seperator.
+    END.
+    PUT UNFORMATTED
+        quot d_elect.party.MAC quot                                     SKIP.
+    wz-records = wz-records + 1.
+END.
+OUTPUT CLOSE.
+
+{return.i}
+/* eof */

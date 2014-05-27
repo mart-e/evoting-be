@@ -1,0 +1,132 @@
+/* Filename            : DISKETPR.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR menusel  AS I FORMAT "9" INIT 1                           NO-UNDO.
+DEF VAR menuexe  AS I FORMAT "9" INIT 0                           NO-UNDO.
+DEF VAR men_set  AS C FORMAT "X(15)" EXTENT 3                     NO-UNDO.
+DEF VAR proglist AS C FORMAT "x(10)" EXTENT 3 INIT 
+       ["pr_et_fi.r","urnegeg.r","urnprog.r"]                     NO-UNDO.
+DEF VAR i        AS I                                             NO-UNDO.
+
+DEF VAR on_resume  AS L INIT FALSE                                NO-UNDO.
+DEF VAR prglvl     AS I                                           NO-UNDO.
+DEF VAR resume-prg AS C                                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    men_set AT 2 SPACE(1) SKIP
+    WITH FRAME pmdiskge 
+        COLOR DISPLAY VALUE(menu_fg)
+        NO-LABELS 
+        ATTR-SPACE 
+        ROW 4 
+        COLUMN 2 
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session NO-LOCK NO-ERROR.
+IF NOT (    session.hands_off[1] = TRUE
+        AND session.hands_off[2] = TRUE
+        AND session.hands_off[3] = FALSE)
+THEN DO:
+    {call.i &prg="indmess" &param=",'pmdexpur,noblock'"}
+    {return.i}
+END.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+/************************************************************************
+   Check type of children
+   -> type = G : Accept children
+   -> type = U : Generate Polling Station(s)
+************************************************************************/
+FIND FIRST organigram WHERE organigram.g-disk   = setup.disk-id
+                        AND organigram.sys-type = "U" 
+                    NO-LOCK NO-ERROR.
+IF NOT AVAILABLE organigram
+THEN DO :
+    {call.i &prg="s_accept"}
+    DISPLAY verkben WITH FRAME pmgenein.
+    {return.i}
+END.
+
+DO i = 1 TO 3:
+    {call.i &prg="mesfil" &param=",'disketpr,menu' + STRING(i,'99'),0,OUTPUT men_set[i]"}
+END.
+
+{resume.i}
+IF on_resume
+THEN DO:
+    on_resume = FALSE.
+    {call_var.i &prg="resume-prg"}
+END.
+
+REPEAT WITH FRAME pmdiskge :
+    STATUS INPUT OFF.
+    DISPLAY men_set.
+    COLOR DISPLAY VALUE(menu_fg) men_set[1 FOR 3].
+    COLOR DISPLAY VALUE(menu_bg) men_set[menusel].
+    NEXT-PROMPT men_set[menusel].
+    CHOOSE FIELD men_set[1 FOR 3] COLOR VALUE(menu_bg) AUTO-RETURN
+      GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB").
+    ASSIGN
+    menuexe = 0
+    menusel = FRAME-INDEX.
+
+    IF      LASTKEY = KEYCODE("TAB") 
+         OR LASTKEY = KEYCODE("CURSOR-DOWN")
+    THEN IF menusel = 3
+         THEN menusel = 1.
+         ELSE menusel = menusel + 1.
+         
+    ELSE IF LASTKEY = KEYCODE("BACK-TAB") 
+         OR LASTKEY = KEYCODE("CURSOR-UP")
+         THEN IF menusel = 1
+              THEN menusel = 3.
+              ELSE menusel = menusel - 1.
+         ELSE menuexe = 1.
+
+    IF menuexe = 1
+    THEN DO :
+        IF SEARCH( proglist[menusel]) <> ? OR
+           LIBRARY(proglist[menusel]) <> ?
+        THEN DO :
+            HIDE MESSAGE NO-PAUSE.
+            HIDE FRAME pmdiskge NO-PAUSE.
+            /*@call=pr_et_fi.p,urnegeg.p,urnprog.p*/
+            {call_var.i &prg="proglist[menusel]"}
+        END.
+        ELSE DO :
+            {call.i &prg="dispmes" &param=",'general,notavail', 0"}
+            HIDE MESSAGE NO-PAUSE.
+        END.
+    END.
+END.
+
+HIDE FRAME pmdiskge NO-PAUSE.
+
+{return.i}
+/* eof */

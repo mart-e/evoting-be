@@ -1,0 +1,52 @@
+/* Filename : CRCAND.P */
+
+{candidate.g
+ &extra_frame     = " 
+  RETAIN 3
+  13 DOWN
+ "
+ &extra_init      = "
+  ASSIGN
+  candnum = 0
+  candnr  = 0.
+ "
+ &fill_list       = "
+  FOR EACH candidate WHERE candidate.disk-id = setup.disk-id
+                       AND candidate.s-id    = verkdat
+                       AND candidate.e-id    = verknum
+                       AND candidate.p-id    = partnum
+                       AND candidate.c-type  = candtyp
+                   NO-LOCK:
+      ASSIGN
+      candnr   = candidate.c-id
+      candnam1 = candidate.c_name1
+      candnam2 = candidate.c_name2.
+      DISPLAY candnr candnam1 candnam2 WITH FRAME pmlcanin.
+      DOWN                             WITH FRAME pmlcanin.
+      PAUSE 0 NO-MESSAGE.
+  END.
+ "
+ &before_repeat   = "
+  IF candnr < 99
+  THEN DO :
+      candnr = candnr + 1.
+ "
+ &fkey_nbr        = "02"
+ &leave_repeat    = "
+  IF candnr >= 99
+  THEN LEAVE.
+  ELSE DO :
+      IF candnam1 <> ''
+      THEN DO:
+          candnr = candnr + 1.
+          DOWN WITH FRAME pmlcanin.
+          PAUSE 0 NO-MESSAGE.
+      END.
+  END.
+ "
+ &after_repeat    = "
+  END. /* IF candnr < 99 */
+ "
+}
+
+/* eof */

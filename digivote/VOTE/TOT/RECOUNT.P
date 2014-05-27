@@ -1,0 +1,62 @@
+/* Filename            : RECOUNT.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   RECOUNT.P  $</workFile>
+<revision>$Revision: 1.6 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:25:46  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/RECOUNT.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/06/28 14:52:40 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-tmp-shell           AS C FORMAT "x(50)"                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-tmp-shell = ramdrive + "VOTE\$_TMPSH_.BAT".
+
+REPEAT :
+    VIEW FRAME totherin.
+    PAUSE 0 NO-MESSAGE.
+    
+    {call.i &prg="confirm" &param=",'totherin,mes02','','','general,yes','general,no'"}
+    IF menleav = 0
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "New diskettes needed to recount !" 0.
+        {call.i &prg="disfram" &param=",'herstart,mes09','herstart,mes10',
+                                        'herstart,mes11','herstart,mes12',TRUE"}
+    END.
+    ELSE DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Recount initiated !" 0.
+        {call.i &prg="disfram" &param=",'herstart,mes01','','herstart,mes03','',TRUE"}
+        OUTPUT TO VALUE(wz-tmp-shell).
+        PUT UNFORMATTED
+            "@Echo OFF" SKIP
+            "REBOOT".
+        OUTPUT CLOSE.
+        {quit.i &corrupt=FALSE}
+    END.
+    LEAVE.
+END.
+
+{return.i}
+/* eof */

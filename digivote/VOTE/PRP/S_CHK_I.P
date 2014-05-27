@@ -1,0 +1,186 @@
+/* Filename            : S_CHK_I.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}              /* Variabelen voor het TOT hoofdmenu TOGENEME */
+{selvar.i}                    /* De variabelen voor de selection record */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-title          AS C FORMAT "x(50)"                     NO-UNDO.
+DEF VAR wz-levels         AS C FORMAT "x(10)"                     NO-UNDO.
+DEF VAR wz-level          AS I EXTENT 3                           NO-UNDO.
+
+DEF VAR wz-sub-struct     LIKE organigram.s-disk                  NO-UNDO.
+DEF VAR wz-imports        LIKE organigram.s-disk                  NO-UNDO.
+DEF VAR wz-glue           AS C                                    NO-UNDO.
+DEF VAR i                 AS I                                    NO-UNDO.
+
+DEF VAR wz-empty-leading  AS C INIT "     "                       NO-UNDO.
+DEF VAR wz-error-leading  AS C INIT "¯¯¯¯¯"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK.
+
+{call.i &prg="mesfil" &param=",'pmgeneka,titmesi',0,OUTPUT wz-title"}
+PUT UNFORMATTED (IF setup.organigram[1] = 0
+                 THEN wz-error-leading
+                 ELSE wz-empty-leading)
+    "1. " TRIM(wz-title) " (" STRING(setup.organigram[1]) ")" SKIP.
+wz-level = 0.
+/* ATTENTION : 'l-disk' should be negative to avoid duplicates or mis-interpretations */
+FOR EACH organigram NO-LOCK WHERE organigram.sys-type = "I"
+                              AND organigram.l-disk   < 0 
+                               BY organigram.disk-id:
+    ASSIGN
+    wz-level[1] = wz-level[1] + 1
+    wz-levels   = STRING("  1." + STRING(wz-level[1]),"x(12)").
+    PUT UNFORMATTED wz-empty-leading 
+        wz-levels
+        STRING(  organigram.sys-type
+               + organigram.org-type
+               + organigram.area[taalkode]
+               + STRING(organigram.orginator,"999"),"x(60)")
+        (IF organigram.verwerkt
+         THEN "OK"
+         ELSE "--")
+        " (" STRING(organigram.disk-id, ">>>9") ")"
+        SKIP.
+    {s_check.i}
+
+    /* Display virtual STRUCTURE if sub-STRUCTURE is present for another election type */
+    IF  organigram.s-disk = -1 
+    AND organigram.l-disk = -1
+    THEN DO:
+        wz-sub-struct = 0.
+        FOR EACH sub-organigram NO-LOCK WHERE sub-organigram.sys-type =  organigram.sys-type
+                                          AND sub-organigram.org-type <> organigram.org-type
+                                          AND sub-organigram.s-disk   <> -1
+                                          AND sub-organigram.l-disk   =  -1
+                                           BY sub-organigram.s-disk:
+            IF sub-organigram.s-disk > wz-sub-struct
+            THEN wz-sub-struct = sub-organigram.s-disk.
+        END.
+        IF wz-sub-struct > 0
+        THEN DO:
+    				PUT UNFORMATTED wz-empty-leading 
+    						STRING( " ","x(12)")
+    						"ÀÄ"
+    						STRING(  setup.sys-type
+     									 + setup.org-type
+    									 + setup.areaname
+    									 + "000","x(60)")
+    						SKIP.
+    				{s_check.i}
+            REPEAT i = 1 TO wz-sub-struct:
+                wz-glue = (IF i < wz-sub-struct
+                           THEN "³"
+                           ELSE " ").
+        				PUT UNFORMATTED wz-empty-leading 
+        						STRING( " ","x(12)")
+        						"ÀÄ"
+        						STRING(  setup.sys-type
+        									 + setup.org-type
+        									 + setup.areaname
+        									 + STRING(i,"999"),"x(60)")
+        						SKIP.
+        				{s_check.i}
+    						PUT UNFORMATTED wz-empty-leading 
+    								STRING( " ","x(12)")
+    								wz-glue " ÀÄÄÂÄ"
+    								STRING(  setup.sys-type + setup.org-type + setup.areaname + "000","x(60)")
+    								SKIP.
+    						{s_check.i}
+    						PUT UNFORMATTED wz-empty-leading 
+    								STRING( " ","x(12)")
+    								wz-glue "    ÀÄ"
+    								STRING(  organigram.sys-type
+    											 + organigram.org-type
+    											 + organigram.area[taalkode]
+    											 + STRING(organigram.orginator,"999"),"x(60)")
+    								SKIP.
+    						{s_check.i}
+            END.
+        END.
+    END.
+    
+    /* Display sub-STRUCTURE source if present */
+    IF  organigram.s-disk <> -1 
+    AND organigram.l-disk =  -1
+    THEN DO:
+				PUT UNFORMATTED wz-empty-leading 
+						STRING( " ","x(12)")
+						"ÀÄ"
+						STRING(  setup.sys-type
+									 + setup.org-type
+									 + setup.areaname
+									 + STRING(organigram.s-disk,"999"),"x(60)")
+						SKIP.
+				{s_check.i}
+    END.
+    
+    /* Display source of PARTIES and CANDIDATES */
+    IF  organigram.s-disk = -9
+    AND organigram.l-disk = -9
+    THEN DO:
+    		/* -------------------------------------------------------------
+    		   Show 'linked' information 
+    		   ** grouped by symbolic link information (s-disk)
+    		   ** ordered so that STRUCTURE comes before INTRODUCTION (DESC)
+    		   ------------------------------------------------------------- */
+    		wz-imports = 0.
+        FOR EACH sub-organigram NO-LOCK WHERE sub-organigram.s-disk > 0
+                                          AND sub-organigram.l-disk = organigram.disk-id
+                                     BREAK BY sub-organigram.s-disk
+                                           BY sub-organigram.sys-type DESC:
+            IF sub-organigram.s-disk > wz-imports
+            THEN wz-imports = sub-organigram.s-disk.
+        END.
+        FOR EACH sub-organigram NO-LOCK WHERE sub-organigram.s-disk > 0
+                                          AND sub-organigram.l-disk = organigram.disk-id
+                                     BREAK BY sub-organigram.s-disk
+                                           BY sub-organigram.sys-type DESC:
+            wz-glue = (IF sub-organigram.s-disk < wz-imports
+                       THEN "Ã,³"
+                       ELSE "À, ").
+            IF sub-organigram.sys-type = "S"
+            THEN wz-levels = ENTRY(1,wz-glue) + "ÄÄÂÄ".
+            ELSE wz-levels = ENTRY(2,wz-glue) + "  ÀÄ".
+						PUT UNFORMATTED wz-empty-leading 
+								STRING( " ","x(12)")
+								wz-levels
+								STRING(  sub-organigram.sys-type
+											 + sub-organigram.org-type
+											 + sub-organigram.area[taalkode]
+											 + STRING(sub-organigram.orginator,"999"),"x(60)")
+								SKIP.
+						{s_check.i}
+				END.
+    END.
+END.
+PUT UNFORMATTED SKIP(2).
+{s_check.i}
+
+{return.i}
+/* eof */

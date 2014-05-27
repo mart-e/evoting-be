@@ -1,0 +1,12 @@
+/* Filename            : CHKSEC03.P                                    */
+
+{chklevel.i 1}
+
+DEF INPUT PARAM stop_it AS C NO-UNDO.
+
+{SEC_CHK.I election}
+{SEC_CHK.I party}
+{SEC_CHK.I candidate}
+
+{return.i}
+/* eof */

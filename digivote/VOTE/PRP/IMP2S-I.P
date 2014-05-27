@@ -1,0 +1,618 @@
+/* Filename            : IMP2S-I.P
+   -------- 
+   
+   Purpose : Import election structure for I disks
+   -------
+             All checks will be moved from INITELEC to IMPORT2S !
+             INITELEC will rely on organigram-table for correctness.
+             IMPORT2S will manage the correctness of the election
+             structure and store it in the organigram-table.
+             organigram-table now contains internal constraints !!
+             DON'T MESS WITH IT, because this is a crutial entity !!
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-exportfile   AS C FORMAT "x(50)"              NO-UNDO.
+DEF INPUT  PARAM wz-filename     AS C FORMAT "x(50)"              NO-UNDO.
+DEF INPUT  PARAM the-sys-type    LIKE organigram.sys-type         NO-UNDO.
+DEF INPUT  PARAM wz-disk-id      LIKE organigram.disk-id          NO-UNDO.
+DEF INPUT  PARAM wz-lines        AS I                             NO-UNDO.
+DEF INPUT  PARAM wz-gen-level    AS C FORMAT "x(20)"              NO-UNDO.
+DEF INPUT  PARAM wz-errorfile    AS C FORMAT "x(50)"              NO-UNDO.
+
+DEF OUTPUT PARAM wz-line         AS I                             NO-UNDO.
+DEF OUTPUT PARAM wz-errno        AS I                             NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-1     AS C FORMAT "x(78)"              NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-2     AS C FORMAT "x(78)"              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-field         AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL STREAMS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF STREAM checkFile.
+DEF STREAM exportFile.
+DEF STREAM macFile.
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organisation FOR organisation.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-orginator       LIKE organigram.orginator              NO-UNDO.
+DEF VAR wz-export-field    AS C FORMAT "x(50)" EXTENT 5           NO-UNDO.
+DEF VAR wz-org-intros      LIKE organigram.org-type               NO-UNDO.
+DEF VAR wz-intros          LIKE organigram.area                   NO-UNDO.
+DEF VAR wz-structuur       LIKE organigram.area EXTENT 0          NO-UNDO.
+DEF VAR wz-sub-struct      AS I INIT 0                            NO-UNDO.
+DEF VAR wz-sub-struct-type LIKE organigram.org-type               NO-UNDO.
+DEF VAR wz-import-types    AS C                                   NO-UNDO.
+DEF VAR wz-last-orgtype    LIKE organigram.org-type               NO-UNDO.
+DEF VAR wz-s-disk          LIKE organigram.s-disk                 NO-UNDO.
+DEF VAR wz-seq-disk        LIKE organigram.s-disk                 NO-UNDO.
+DEF VAR wz-l-disk          LIKE organigram.l-disk                 NO-UNDO.
+DEF VAR wz-i-record        AS I                                   NO-UNDO.
+DEF VAR wz-sys-type        LIKE organigram.sys-type               NO-UNDO.
+DEF VAR wz-org-type        LIKE organigram.org-type               NO-UNDO.
+DEF VAR wz-areaname        LIKE organisation.ingave               NO-UNDO.
+DEF VAR wz-setup-id        LIKE organigram.disk-id                NO-UNDO.
+DEF VAR wz-multiple        AS L INIT FALSE                        NO-UNDO.
+DEF VAR wz-def-i           AS L INIT FALSE                        NO-UNDO.
+DEF VAR wz-recid           AS RECID                               NO-UNDO.
+
+DEF VAR field-seperator    AS C INIT " "                          NO-UNDO.
+DEF VAR quot               AS C INIT """"                         NO-UNDO.
+DEF VAR empty-field        AS C INIT """"""                       NO-UNDO.
+
+DEF VAR wz-checkfile       AS C FORMAT "x(50)"                    NO-UNDO.
+DEF VAR wz-seq-file        AS C FORMAT "x(50)"                    NO-UNDO.
+DEF VAR wz-all-file        AS C FORMAT "x(50)"                    NO-UNDO.
+
+DEF VAR wz-append          AS L                                   NO-UNDO.
+DEF VAR found              AS L                                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-line     = 0
+wz-errno    = -1
+wz-errmsg-1 = ""
+wz-errmsg-2 = "".
+
+IF {PRGNAME.I PROGRAM-NAME(2)} <> {PRGNAME.I "'import2s'"}
+THEN DO:
+    ASSIGN 
+    wz-errno    = 500
+    wz-errmsg-1 = "Program can only be called from 'import2s'".
+END.    
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) 
+                  VALUE("Import started for " + the-sys-type + "-records") 0.
+END.
+
+FIND FIRST setup NO-LOCK.
+IF wz-errno = -1
+THEN DO:
+    wz-checkfile = ramdrive + {PRGNAME.I PROGRAM-NAME(1)} + ".CHK".
+    OUTPUT TO VALUE(wz-checkfile).
+    OUTPUT CLOSE.
+    
+    wz-all-file  = ramdrive + {PRGNAME.I PROGRAM-NAME(1)} + ".ALL".
+    OUTPUT TO VALUE(wz-all-file).
+    OUTPUT CLOSE.
+    
+    INPUT FROM VALUE(wz-filename) NO-ECHO.
+    OUTPUT TO VALUE(wz-errorfile).
+    RecordLoop:
+    REPEAT:
+        ASSIGN
+        wz-field  = ""
+        wz-s-disk = -1
+        wz-l-disk = -1.
+        
+        SET wz-field AUTO-RETURN.
+        
+        wz-line = wz-line + 1.
+        
+        PUT SCREEN COLOR GRAY/BLACK ROW 23 COLUMN 69 
+                   STRING(wz-line, ">,>>9") + "/" + STRING(wz-lines,">,>>9").
+        
+        /* Skip first line : already checked by IMPORT2S */
+        IF wz-line = 1
+        THEN DO:
+            wz-structuur = wz-field[3].
+            NEXT RecordLoop.
+        END.
+        
+        call C_CHECKINT VALUE(wz-field[4]).
+        IF stat <> 0
+        THEN DO:
+            ASSIGN
+            wz-errno    = 100
+            wz-errmsg-1 = "4th field is not numeric ! (orginator)".
+            LEAVE.
+        END.
+        wz-orginator = INT(wz-field[4]).
+        IF      wz-orginator < 0
+        THEN DO:
+            ASSIGN
+            wz-errno    = 1
+            wz-errmsg-1 = wz-field[4] + " must have a positive value ! (orginator)".
+            LEAVE.
+        END.
+        ELSE IF wz-orginator > 999
+        THEN DO:
+            ASSIGN
+            wz-errno    = 99
+            wz-errmsg-1 = wz-field[4] + " > max value of 999 ! (orginator)".
+            LEAVE.
+        END.
+
+        /* all the information after line 1 contains the data to be */
+        /* imported into the organigram-table                       */
+        /* -------------------------------------------------------- */
+
+        /******************/
+        /* GENERAL CHECKS */
+        /******************/
+        IF wz-field[26] <> ""
+        THEN DO:
+            ASSIGN
+            wz-errno    = 103
+            wz-errmsg-1 = "Too much information !".
+            LEAVE.
+        END.
+        /* Check type of expected input records from file */
+        IF wz-field[1] <> the-sys-type
+        THEN DO:
+            ASSIGN 
+            wz-errno    = 104
+            wz-errmsg-1 = "Wrong type of record detected (sys-type = " 
+                         + wz-field[1] + " instead of " + the-sys-type + ")".
+            LEAVE.
+        END.
+        /* Check if there is an election for this org-type */
+        FIND FIRST election 
+             WHERE election.org-type = wz-field[2]
+               AND election.s-id     = verkdat
+           NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE election
+        THEN DO:
+            ASSIGN
+            wz-errno    = 107
+            wz-errmsg-1 = "No ELECTION for org-type = '" + wz-field[2] + "' !".
+            LEAVE.
+        END.
+
+        /****************/
+        /* INTRODUCTION */
+        /****************/
+        IF wz-field[13] <> ""
+        THEN DO:
+            ASSIGN
+            wz-errno    = 103
+            wz-errmsg-1 = "Too much information !".
+            LEAVE.
+        END.
+        /* Orginator should be 000 */
+        IF wz-orginator <> 0
+        THEN DO:
+            ASSIGN 
+            wz-errno    = 201
+            wz-errmsg-1 = "Orginator should be 0 (zero) !".
+            LEAVE.
+        END.
+        /* Find a relation in the organisation-table */
+        FIND FIRST organisation
+             WHERE     organisation.org-type  = wz-field[2]
+               AND (   organisation.ingave[1] = wz-field[3]
+                    OR organisation.ingave[2] = wz-field[3]
+                    OR organisation.ingave[3] = wz-field[3]) 
+               AND     organisation.setup-id  = setup.setup-id
+           NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE organisation
+        THEN DO:
+            ASSIGN
+            wz-errno    = 202
+            wz-errmsg-1 = "Unknown INTRO !".
+            LEAVE.
+        END.
+        /*************************************************************/
+        /* Check if more info than just INTRODUCTION info is present */
+        /*     Point 1 : multiple STRUCTURE for one type of election */
+        /*     Point 2 : import possibility for INTRODUCTION         */
+        /*************************************************************/
+        IF   LENGTH(wz-field[6]) = 0
+        THEN wz-field[6] = " ".
+
+				wz-multiple = FALSE.
+				
+        IF     wz-field[ 5] <> "" /* S               */
+        OR     wz-field[ 7] <> "" /* [wz-structuur]  */
+        OR     wz-field[ 8] <> "" /* > 000           */
+        THEN DO:
+						/*********************************************************/
+						/* Point 2 : import possibility for INTRODUCTION         */
+						/*********************************************************/
+						IF wz-field[ 9] <> "" /* I               */
+						OR wz-field[10] <> "" /* [orgtype]       */
+						OR wz-field[11] <> "" /* [ingave]        */
+						OR wz-field[12] <> "" /* 000             */
+						THEN DO:
+								wz-def-i = true.
+								IF wz-sub-struct-type = wz-field[2]
+								THEN DO:
+										ASSIGN
+										wz-errno    = 210
+										wz-errmsg-1 = "Sub-STRUCT active for " + wz-field[2] + ", but not provided here! (1|S+X)".
+										LEAVE.
+								END.
+								IF LOOKUP( wz-field[2], wz-import-types) = 0
+								THEN wz-import-types = (IF LENGTH( wz-import-types) = 0
+								                        THEN ""
+								                        ELSE ",")
+								                     + wz-field[2].
+								{call.i &prg="imp2s-ix" &param=",INPUT        wz-all-file
+								                                ,OUTPUT       wz-recid
+								                                ,OUTPUT       wz-errno
+								                                ,OUTPUT       wz-errmsg-1
+								                                ,OUTPUT       wz-errmsg-2"}
+								IF wz-errno = -1
+								THEN DO:
+								    FIND FIRST sub-organisation WHERE RECID( sub-organisation) = wz-recid
+								                              NO-LOCK NO-ERROR.
+								    IF NOT AVAILABLE sub-organisation
+								    THEN DO:
+												ASSIGN
+												wz-errno    = 216
+												wz-errmsg-1 = "Unknown INTRODUCTION for provided STRUCTURE-name ! (2)".
+												LEAVE.
+								    END.
+								END.
+								wz-multiple = TRUE.
+						END.
+
+						/*********************************************************/
+						/* Point 1 : multiple STRUCTURE for one type of election */
+						/*********************************************************/
+						ELSE DO:
+								IF LOOKUP( wz-field[2], wz-import-types) > 0
+								THEN DO:
+										ASSIGN
+										wz-errno    = 210
+										wz-errmsg-1 = "Sub-STRUCT active for " + wz-field[2] + ", but not provided here! (2|S+X)".
+										LEAVE.
+								END.
+								{call.i &prg="imp2s-is" &param=",INPUT        wz-structuur
+								                                ,INPUT-OUTPUT wz-sub-struct
+								                                ,INPUT-OUTPUT wz-sub-struct-type
+								                                ,INPUT-OUTPUT wz-last-orgtype
+								                                ,INPUT-OUTPUT wz-s-disk
+								                                ,OUTPUT       wz-errno
+								                                ,OUTPUT       wz-errmsg-1
+								                                ,OUTPUT       wz-errmsg-2"}
+						END.
+						
+						/* If any error has occured, stop processing file ... */
+						IF wz-errno <> -1
+						THEN LEAVE.
+        END.
+        ELSE DO:
+        		IF  wz-sub-struct-type <> ""
+        		AND wz-sub-struct-type = wz-field[2] 
+        		THEN DO:
+								ASSIGN
+								wz-errno    = 210
+								wz-errmsg-1 = "Sub-STRUCT active for " + wz-field[2] + ", but not provided here!".
+								LEAVE.
+						END.
+        END.
+
+        wz-append = FALSE.
+
+        /* Check existance in workfile destination         */
+        /* Check complete name !! No duplicates allowed !! */
+        call C_TSTFN VALUE(wz-checkfile).
+        IF fileok = 1
+        THEN DO:
+            INPUT STREAM checkFile FROM VALUE(wz-checkfile) NO-ECHO.
+            REPEAT:
+                wz-export-field = "".
+                SET STREAM checkFile wz-export-field.
+                IF  wz-export-field[2] = wz-field[1]
+                AND wz-export-field[3] = wz-field[2]
+                AND wz-export-field[4] = organisation.ingave[1]
+                AND wz-export-field[5] = STRING(wz-orginator)
+                THEN DO:
+                		/* Only give error when 9th field is empty (no import defined) */
+                		IF wz-field[9] = ""
+                		THEN ASSIGN
+												 wz-errno    = 203
+												 wz-errmsg-1 = "Duplicate INTRO !".
+										ELSE ASSIGN
+										     wz-l-disk   = INT( wz-export-field[1])
+										     wz-append   = TRUE.
+										LEAVE.
+                END.
+            END.
+            INPUT STREAM checkFile CLOSE.
+            IF wz-errno <> -1 THEN LEAVE.
+        END.
+        
+        wz-disk-id = wz-disk-id + 1.
+
+				REPEAT wz-i-record = 1 TO 3:
+				    /* Don't create the INTRODUCTION record, just append exchange information */
+				    IF  wz-i-record = 1
+				    AND wz-append   = TRUE
+				    THEN DO:
+								wz-seq-file = ramdrive + "ID" + STRING( wz-l-disk, "999999") + ".DSK".
+								INPUT STREAM checkFile FROM VALUE(wz-seq-file) NO-ECHO.
+								SET STREAM checkFile wz-export-field.
+								INPUT STREAM checkFile CLOSE.
+				        wz-seq-disk = INT( wz-export-field[1]) + 1.
+
+								/* Write wz-seq-disk to disk for further consultation */
+								OUTPUT STREAM checkFile TO VALUE(wz-seq-file).
+								PUT STREAM checkFile UNFORMATTED STRING( wz-seq-disk).
+								OUTPUT STREAM checkFile CLOSE.
+
+				        NEXT.
+				    END.
+				    
+						IF      wz-i-record = 1
+						THEN ASSIGN
+						     wz-s-disk      = (IF wz-multiple THEN -9 ELSE wz-s-disk)
+					 	     wz-l-disk      = (IF wz-multiple THEN -9 ELSE wz-l-disk)
+					 	     wz-sys-type    = wz-field[1]
+					 	     wz-org-type    = wz-field[2]
+					 	     wz-areaname[1] = organisation.ingave[1]
+					 	     wz-areaname[2] = organisation.ingave[2]
+					 	     wz-areaname[3] = organisation.ingave[3].
+					 	ELSE IF wz-i-record = 2
+					 	THEN ASSIGN
+						     wz-s-disk      = wz-seq-disk
+					 	     wz-l-disk      = (IF wz-append THEN wz-l-disk  ELSE wz-disk-id    )
+					 			 wz-disk-id     = (IF wz-append THEN wz-disk-id ELSE wz-disk-id + 1)
+					 	     wz-sys-type    = wz-field[5]
+					 	     wz-org-type    = wz-field[6]
+					 	     wz-areaname[1] = wz-field[7]
+					 	     wz-areaname[2] = wz-field[7]
+					 	     wz-areaname[3] = wz-field[7]
+					 	     wz-orginator   = INT(wz-field[8]).
+					 	ELSE ASSIGN
+					 			 wz-disk-id     = wz-disk-id + 1
+					 	     wz-sys-type    = wz-field[ 9]
+					 	     wz-org-type    = wz-field[10]
+					 	     wz-areaname[1] = sub-organisation.ingave[1]
+					 	     wz-areaname[2] = sub-organisation.ingave[2]
+					 	     wz-areaname[3] = sub-organisation.ingave[3]
+					 	     wz-orginator   = INT(wz-field[12]).
+
+						/* Calculate MAC for IMPORT record */
+						OUTPUT STREAM macFile TO  VALUE(ramdrive + "SECURE.CHK").
+						PUT STREAM macFile UNFORMATTED
+								wz-disk-id                     field-seperator
+								wz-s-disk                      field-seperator
+								wz-l-disk                      field-seperator
+								"-1"                           field-seperator
+								empty-field                    field-seperator
+								quot CAPS(wz-sys-type)    quot field-seperator
+								quot CAPS(wz-org-type)    quot field-seperator
+								quot CAPS(wz-areaname[1]) quot field-seperator
+								quot CAPS(wz-areaname[2]) quot field-seperator
+								quot CAPS(wz-areaname[3]) quot field-seperator
+								wz-orginator                   field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								quot "-1"                 quot field-seperator
+								quot "-1"                 quot field-seperator
+								"0"                            field-seperator
+								"no"                           field-seperator
+								empty-field                    field-seperator SKIP.
+						OUTPUT STREAM macFile CLOSE.
+						CALL CRYPMAC PRPTOT
+								 VALUE(ramdrive + "SECURE.CHK")
+								 "NULL".
+						CALL C_DEL VALUE(ramdrive + "SECURE.CHK").
+						IF crypStat <> 0
+						THEN DO:
+								ASSIGN
+								wz-errno    = 204
+								wz-errmsg-1 = "Error creating MAC for INTRODUCTION record !".
+								LEAVE.
+						END.
+
+						/* Create the temporary IMPORT record */
+						OUTPUT STREAM exportFile TO VALUE(wz-exportfile) APPEND.
+						PUT STREAM exportFile UNFORMATTED
+								wz-disk-id                     field-seperator
+								wz-s-disk                      field-seperator
+								wz-l-disk                      field-seperator
+								"-1"                           field-seperator
+								empty-field                    field-seperator
+								quot CAPS(wz-sys-type)    quot field-seperator
+								quot CAPS(wz-org-type)    quot field-seperator
+								quot CAPS(wz-areaname[1]) quot field-seperator
+								quot CAPS(wz-areaname[2]) quot field-seperator
+								quot CAPS(wz-areaname[3]) quot field-seperator
+								wz-orginator                   field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								empty-field                    field-seperator
+								quot "-1"                 quot field-seperator
+								quot "-1"                 quot field-seperator
+								"0"                            field-seperator
+								"no"                           field-seperator
+								empty-field                    field-seperator
+								quot formatMAC            quot                 SKIP.
+						OUTPUT STREAM exportFile CLOSE.
+
+						IF wz-i-record = 1
+						THEN DO:
+								/* Create the check-record */
+								OUTPUT STREAM checkFile TO VALUE(wz-checkfile) APPEND.
+								PUT STREAM checkFile UNFORMATTED
+										STRING( wz-disk-id)    field-seperator
+										wz-field[1]            field-seperator
+										wz-field[2]            field-seperator
+										organisation.ingave[1] field-seperator
+										wz-orginator                           SKIP.
+								OUTPUT STREAM checkFile CLOSE.
+								
+								/* Only add additional lines to organigram if import is required for INTRODUCTION */
+								IF NOT wz-multiple THEN LEAVE.
+								
+								wz-seq-disk = 1.
+								
+								/* Write wz-seq-disk to disk for further consultation */
+								wz-seq-file = ramdrive + "id" + STRING( wz-disk-id, "999999") + ".DSK".
+								OUTPUT STREAM checkFile TO VALUE(wz-seq-file).
+								PUT STREAM checkFile UNFORMATTED STRING( wz-seq-disk).
+								OUTPUT STREAM checkFile CLOSE.
+						END.
+        END. /* REPEAT wz-i-record */
+        
+        wz-last-orgtype = wz-field[2].
+    END.
+    OUTPUT CLOSE.
+    INPUT CLOSE.
+
+    IF wz-errno = -1
+    THEN DO:
+        /* Post checking ...                                    */
+        /* Check if more than 1 sub-STRUCTURE is present        */
+        IF  wz-sub-struct-type <> ""
+        AND wz-sub-struct      <  2
+        THEN ASSIGN
+						 wz-errno    = 505
+						 wz-errmsg-1 = "Sub-STRUCTURE only allowed if more than 1 present!".
+        ELSE DO:
+						/* Check if all selected elections have an INTRODUCTION */ 
+						/* ---------------------------------------------------- */
+						found = FALSE.
+						FOR EACH election WHERE election.mandatory = TRUE NO-LOCK:
+								found = FALSE.
+								INPUT FROM VALUE(wz-checkfile) NO-ECHO.
+								REPEAT:
+										wz-export-field = "".
+										SET wz-export-field.
+										IF wz-export-field[3] = election.org-type
+										THEN DO:
+												found = TRUE.
+												LEAVE.
+										END.
+								END.
+								INPUT CLOSE.
+								IF NOT found THEN LEAVE.
+						END.
+						IF NOT found
+						THEN ASSIGN
+								 wz-errno    = 298
+								 wz-errmsg-1 = "No INTRODUCTION for " + STRING(election.et-id) + "/" 
+																											+ STRING(election.coll-id).
+				END.
+    END.
+
+    /* ====================================================== */
+    /* Check if all import definitions covers everything ...  */
+    /* Limitation : Only 1 combined INTRODUCTION is supported */
+    /*              => MECHELEN+NAMEN                         */
+    /* ====================================================== */
+		IF wz-errno = -1
+		THEN DO:
+		    ASSIGN
+		    wz-i-record = 0
+		    wz-intros   = "".
+				INPUT FROM VALUE(wz-all-file) NO-ECHO.
+				REPEAT:
+						wz-export-field = "".
+						SET wz-export-field.
+						wz-i-record = wz-i-record + 1.
+						
+						IF  wz-intros[1] = ""
+						AND wz-intros[2] = ""
+						AND wz-intros[3] = ""
+						THEN ASSIGN
+						     wz-org-intros = wz-export-field[1]
+								 wz-intros[1]  = wz-export-field[2]
+								 wz-intros[2]  = wz-export-field[3].
+						ELSE IF  wz-org-intros = wz-export-field[1]
+						     AND wz-intros[1]  = wz-export-field[2]
+							 	 THEN DO:
+								     wz-intros[3] = wz-export-field[3].
+								     IF NOT(   wz-intros[1] = wz-intros[2] + "+" + wz-intros[3] 
+								            OR wz-intros[1] = wz-intros[3] + "+" + wz-intros[2])
+								     THEN DO:
+												 ASSIGN
+												 wz-errno    = 506
+												 wz-errmsg-1 = wz-intros[1] + " (" + wz-org-intros + ") not completely covered through import !".
+												 LEAVE.
+								     END.
+								     ELSE wz-intros = "".
+								   
+								 END.
+								 ELSE DO:
+										 ASSIGN
+										 wz-errno    = 506
+										 wz-errmsg-1 = "Mixed import for I (L:" + STRING(wz-i-record) + ")".
+										 LEAVE.
+								 END.
+				END.
+				INPUT CLOSE.
+				IF wz-i-record = 1
+				THEN ASSIGN
+						 wz-errno    = 507
+						 wz-errmsg-1 = "INTRODUCTION not completely covered through import !".
+		END.
+
+		IF wz-errno = -1
+		THEN DO:
+        IF wz-sub-struct-type <> "" AND wz-def-i
+				THEN ASSIGN
+						 wz-errno    = 508
+						 wz-errmsg-1 = "IMPORT and sub-STRUCTURE not allowed !".
+		END.
+END.
+
+{call.i &prg="delrdisk"}.
+
+call C_DEL VALUE(wz-checkfile).
+call C_DEL VALUE(wz-all-file).
+
+{return.i}
+/* eof */

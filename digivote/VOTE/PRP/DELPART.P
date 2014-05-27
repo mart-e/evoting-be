@@ -1,0 +1,158 @@
+/* Filename            : DELPART.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEFINE VARIABLE backname AS CHARACTER FORMAT "x(8)".
+
+DEFINE VARIABLE men_sel  AS CHARACTER FORMAT "x(4)" EXTENT 2.
+DEFINE VARIABLE mes1     AS CHARACTER FORMAT "x(25)".
+DEFINE VARIABLE mes2     AS CHARACTER FORMAT "x(25)".
+DEFINE VARIABLE men_tit  AS CHARACTER FORMAT "x(25)".
+
+DEFINE VARIABLE openfil  AS LOGICAL FORMAT "Yes/No" INITIAL False.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " " AT 2 SKIP
+    mes2 AT 3 men_sel[1]  men_sel[2] SKIP(1)
+    mes1 AT 3  backname AT 29 SPACE(2)
+    WITH COLOR DISPLAY VALUE(menu_fg)
+    TITLE men_tit
+    FRAME pmlprtba ROW 12 NO-LABELS CENTERED OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        STREAM DESCRIPTIONS                                           */
+/*                                                                      */
+/************************************************************************/
+DEFINE STREAM saveinfo.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND party WHERE party.disk-id = setup.disk-id
+             AND party.s-id    = verkdat
+             AND party.e-id    = verknum
+             AND party.p-id    = partnum NO-ERROR.
+IF AVAILABLE party
+THEN DO:
+    IF party.num_can + party.num_sup > 0
+    THEN DO:
+        {call.i &prg="mesfil" &param=",'general,yes',    4,OUTPUT men_sel[1]"}
+        {call.i &prg="mesfil" &param=",'general,no',     4,OUTPUT men_sel[2]"}
+        {call.i &prg="mesfil" &param=",'pmlprtba,mes04',25,OUTPUT mes2"}
+        {call.i &prg="mesfil" &param=",'pmlprtba,tit01',25,OUTPUT men_tit"}
+
+        menleav = 0.
+        trans_block :
+        REPEAT ON ENDKEY UNDO trans_block, LEAVE WITH FRAME pmlprtba :
+            {call.i &prg="discolme" &param=",'general,fkey01',0"}
+            DISPLAY men_sel[1] men_sel[2] mes2.
+            CHOOSE FIELD men_sel[1 FOR 2] COLOR VALUE(menu_bg)
+                AUTO-RETURN GO-ON("CURSOR-DOWN" "RETURN").
+            IF FRAME-INDEX = 1
+            THEN DO :
+            {call.i &prg="mesfil" &param=",'pmlprtba,mes03',25,OUTPUT mes1"}
+            backname = SUBSTRING(STRING(verkdat),1,2) +
+                       SUBSTRING(STRING(verkdat),4,2) +
+                       SUBSTRING(STRING(verkdat),8,1) +
+                       STRING(verknum) + STRING(partnum,"99").
+            DISPLAY mes1.
+            REPEAT ON ENDKEY UNDO trans_block, LEAVE WITH FRAME pmlprtba :
+                {call.i &prg="discolme" &param=",'general,fkey01',0"}
+                UPDATE backname.
+                backname = "C:/VOTE/FILES/" + backname + ".PRT".
+                openfil = false.
+                FOR EACH candidate WHERE candidate.disk-id = setup.disk-id
+                                     AND candidate.s-id    = verkdat
+                                     AND candidate.e-id    = verknum
+                                     AND candidate.p-id    = partnum :
+                    IF openfil = false
+                    THEN DO :
+                        OUTPUT STREAM saveinfo TO VALUE(backname).
+                        openfil = true.
+                    END.
+                    EXPORT STREAM saveinfo candidate.c-type
+                                           candidate.c-id
+                                           candidate.c_name1
+                                           candidate.c_name2.
+                    END.
+                    IF openfil = true
+                    THEN DO :
+                        OUTPUT STREAM saveinfo CLOSE.
+                        openfil = false.
+                    END.
+                    LEAVE.
+                END.
+            END.
+            menleav = 1.
+            LEAVE.
+        END.
+    END.
+    ELSE menleav = 1.
+END.
+
+HIDE FRAME pmlprtba NO-PAUSE.
+
+IF menleav = 1
+THEN DO :
+    FOR EACH candidate WHERE candidate.s-id = verkdat
+                         AND candidate.e-id = verknum
+                         AND candidate.p-id = partnum:
+        FIND FIRST party WHERE party.e-id = candidate.e-id
+                           AND party.p-id = candidate.p-id
+                   NO-ERROR.
+        IF AVAILABLE party AND 
+           party.p-id <> 0
+        THEN IF candidate.c-type = 0
+             THEN party.num_can = party.num_can - 1.
+             ELSE party.num_sup = party.num_sup - 1.
+        DELETE candidate.
+    END.
+    FIND party WHERE party.disk-id = setup.disk-id
+                 AND party.s-id = verkdat
+                 AND party.e-id = verknum
+                 AND party.p-id = partnum NO-ERROR.
+    IF AVAILABLE party
+    THEN DO :
+        FIND FIRST election WHERE election.e-id = party.e-id
+        NO-ERROR.
+        IF AVAILABLE election AND 
+           party.p-id <> 0
+        THEN ASSIGN
+             election.num_parts = election.num_parts - 1
+             election.MAC       = "REFRESH".
+        DELETE party.
+    END.
+    ASSIGN
+    partnum = 0
+    partnam = ""
+    partlan = "".
+END.
+
+{call.i &prg="sec_elec"}
+
+{return.i}
+/* eof */

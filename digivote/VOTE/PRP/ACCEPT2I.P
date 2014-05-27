@@ -1,0 +1,150 @@
+/* Filename            : ACCEPT2I.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-tmp-shell    AS C FORMAT "x(50)"              NO-UNDO.
+DEF INPUT  PARAM wz-resume       AS C FORMAT "x(50)"              NO-UNDO.
+DEF INPUT  PARAM wz-bulkload-log AS C FORMAT "x(50)"              NO-UNDO.
+
+DEF OUTPUT PARAM wz-bl-ready     AS L                             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{selvar.i}
+{cfvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-bulkload-fd          AS C FORMAT "x(50)"               NO-UNDO.
+DEF VAR wz-importfile           AS C FORMAT "x(50)"               NO-UNDO.
+DEF VAR wz-errorfile            AS C FORMAT "x(50)"               NO-UNDO.
+
+DEF VAR wz-table                AS C                              NO-UNDO.
+
+DEF VAR wz-resume-info          AS C FORMAT "x(78)" EXTENT 2      NO-UNDO.
+DEF VAR i                       AS I                              NO-UNDO.
+
+DEF VAR quot                    AS C INIT """"                    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-bl-ready = FALSE.
+
+IF CONNECTED("d_elect")
+THEN DO:
+    /* Check credibility of Config file on D: */
+    FIND FIRST d_elect.setup   NO-LOCK NO-ERROR.
+    FIND FIRST d_elect.session NO-LOCK NO-ERROR.
+    
+    IF NOT(    d_elect.setup.version[1]     = cf-version[1]
+           AND d_elect.setup.version[2]     = cf-version[2]
+           AND d_elect.setup.version[3]     = cf-version[3]
+           AND d_elect.setup.disk-id        = cf-disk-id     
+           AND d_elect.setup.sys-type       = cf-sys-type    
+           AND d_elect.setup.org-type       = cf-org-type    
+           AND d_elect.setup.areaname       = cf-areaname    
+           AND d_elect.setup.orginator      = cf-orginator   
+           AND d_elect.session.corrupt      = cf-corrupt     
+           AND d_elect.session.hands_off[1] = cf-hands_off[1]
+           AND d_elect.session.hands_off[2] = cf-hands_off[2]
+           AND d_elect.session.hands_off[3] = cf-hands_off[3]
+           AND d_elect.session.disk_read    = cf-disk_read   
+           AND d_elect.session.disk_made    = cf-disk_made   
+           AND d_elect.setup.password       = cf-password    )
+    THEN DO:
+        {call.i &prg="disfram" 
+                &param=",'s_accept,error3','','',
+                         ',(E:3bis)',
+                         TRUE"}
+        {return.i}
+    END.
+    
+    {call.i &prg="disfram" &param=",'digivote,indwait1','','','',FALSE"}
+    
+    /* Create Bulk Loader Description File for PARTY */
+    ASSIGN
+    wz-table       = "party"
+    wz-bulkload-fd = ramdrive + "PARTY.FD"
+    wz-importfile  = ramdrive + "PARTY.D"
+    wz-errorfile   = ramdrive + "PARTY.E".
+    {call.i &prg="bulk-fd" &param=",wz-tmp-shell,
+                                    wz-bulkload-fd,wz-table,
+                                    wz-importfile,
+                                    wz-bulkload-log,wz-errorfile,
+                                    TRUE,FALSE"}
+    
+    /* Create Data Import File */
+    {call.i &prg="dumparty" &param=",wz-importfile,
+                                     cf-disk-id,
+                                     OUTPUT i"}
+
+    wz-resume-info[1] = wz-bulkload-fd + ","
+                      + wz-importfile  + "," 
+                      + wz-errorfile   + ","
+                      + STRING(i).
+    
+    /* Create Bulk Loader Description File for CANDIDATE */
+    ASSIGN
+    wz-table       = "candidate"
+    wz-bulkload-fd = ramdrive + "CANDIDAT.FD"
+    wz-importfile  = ramdrive + "CANDIDAT.D"
+    wz-errorfile   = ramdrive + "CANDIDAT.E".
+    {call.i &prg="bulk-fd" &param=",wz-tmp-shell,
+                                    wz-bulkload-fd,wz-table,
+                                    wz-importfile,
+                                    wz-bulkload-log,wz-errorfile,
+                                    FALSE,TRUE"}
+
+    /* Create Data Import File */
+    {call.i &prg="dumpcand" &param=",wz-importfile,
+                                     cf-disk-id,
+                                     OUTPUT i"}
+
+    wz-resume-info[2] = wz-bulkload-fd + ","
+                      + wz-importfile  + "," 
+                      + wz-errorfile   + ","
+                      + STRING(i).
+
+    /* Create AutoRun */
+    {call.i &prg="resume" &param=",wz-resume"}
+    OUTPUT TO VALUE(wz-resume) APPEND.
+    PUT UNFORMATTED 
+        quot cf-sys-type 
+             cf-org-type 
+             cf-areaname 
+             STRING(cf-orginator,"999") quot SKIP
+        wz-resume-info[1]                    SKIP
+        wz-resume-info[2].
+    OUTPUT CLOSE.
+    
+    call DIGEST VALUE(wz-resume).
+    FIND FIRST elect.session.
+    ASSIGN
+    elect.session.digest = hex-digest
+    elect.session.MAC    = "REFRESH".
+    
+    /* Disconnected remote database */
+    DO WHILE CONNECTED("d_elect"):
+        DISCONNECT d_elect.
+    END.
+    
+    wz-bl-ready = TRUE.
+END.
+
+{return.i}
+/* eof */

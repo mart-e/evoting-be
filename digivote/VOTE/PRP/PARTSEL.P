@@ -1,0 +1,110 @@
+/* Filename            : PARTSEL.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR menusel         AS I FORMAT "9" INIT 1                    NO-UNDO.
+DEF VAR menuexe         AS I FORMAT "9" INIT 0                    NO-UNDO.
+DEF VAR men_set         AS C FORMAT "x(21)" EXTENT 2              NO-UNDO.
+DEF VAR men_tit         AS C FORMAT "x(15)"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmgenein.i}            /* Frame beschrijving PMGENEIN                  */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " " AT 2 SKIP
+    men_set[1] AT 2 SPACE(2) SKIP
+    men_set[2] AT 2 SPACE(2)
+    WITH COLOR DISPLAY VALUE(menu_fg) TITLE men_tit
+    FRAME pmlprtka NO-LABELS ATTR-SPACE ROW 9 COLUMN 52 OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="mesfil" &param=",'pmlprtka,mes01',21,OUTPUT men_set[1]"}
+{call.i &prg="mesfil" &param=",'pmlprtka,mes02',21,OUTPUT men_set[2]"}
+{call.i &prg="mesfil" &param=",'pmlprtka,tit01',15,OUTPUT men_tit"}
+
+FIND FIRST selection.
+FIND FIRST election WHERE election.e-id = selection.e-id.
+IF election.supps = TRUE
+THEN DO:
+    REPEAT WITH FRAME pmlprtka :
+        STATUS INPUT OFF.
+        DISPLAY men_set[1] men_set[2].
+        COLOR DISPLAY VALUE(menu_fg) men_set[1 FOR 2].
+        COLOR DISPLAY VALUE(menu_bg) men_set[menusel].
+        NEXT-PROMPT men_set[menusel].
+        {call.i &prg="discolme" &param=",'pmlprtka,hulp' + STRING(menusel),0"}
+        menleav = 0.
+
+        CHOOSE FIELD men_set[1 FOR 2] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+        menuexe = 0.
+        menusel = FRAME-INDEX.
+        IF LASTKEY = KEYCODE("TAB")
+        OR LASTKEY = KEYCODE("CURSOR-DOWN")
+        THEN IF menusel = 2
+             THEN menusel = 1.
+             ELSE menusel = menusel + 1.
+        ELSE IF LASTKEY = KEYCODE("BACK-TAB") OR LASTKEY = KEYCODE("CURSOR-UP")
+             THEN IF menusel = 1
+                  THEN menusel = 2.
+                  ELSE menusel = menusel - 1.
+             ELSE menuexe = 1.
+        IF menuexe = 1
+        THEN DO :
+            IF menusel = 1
+            THEN candtyp = 0.
+            ELSE candtyp = 1.
+            menleav = 1.
+            LEAVE.
+        END.
+    END.
+    HIDE FRAME pmlprtka NO-PAUSE.
+END.
+ELSE DO:
+    candtyp = 0.
+    menuexe = 1.
+    menleav = 1.
+END.
+
+IF menleav <> 0
+THEN DO :
+    candnum = 0.
+
+    {call.i &prg="selecwr"}      /* Wegschrijven selectie record 'selection'     */
+
+    DISPLAY verkben partnum partnam WITH FRAME pmgenein.
+    PAUSE 0 NO-MESSAGE.
+    menleav = 1.
+END.
+
+{return.i}
+/* eof */

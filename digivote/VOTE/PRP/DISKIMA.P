@@ -1,0 +1,111 @@
+/*@function sec=1*/
+/* Filename            : DISKIMA.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-image-file       AS C FORMAT "x(45)"          NO-UNDO.
+DEF INPUT  PARAM wz-floppy           AS C FORMAT "x(1)"           NO-UNDO.
+DEF INPUT  PARAM disklabel           AS C FORMAT "x(11)"          NO-UNDO.
+DEF INPUT  PARAM wz-disk-id          LIKE organigram.disk-id      NO-UNDO.
+DEF INPUT  PARAM wz-bureau           AS C FORMAT "x(65)"          NO-UNDO.
+
+DEF OUTPUT PARAM wz-status           AS I                         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-new-image-file   AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR wz-result-file      AS C FORMAT "x(45)"                   NO-UNDO.
+DEF VAR wz-message          AS C FORMAT "x(65)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/* Message  'Kopi‰ren van de bestanden , even geduld' */
+{call.i &prg="disfram" &param=",'digivote,copbes10','',
+                                ',' + wz-bureau,
+                                ',' + wz-floppy + ':' + disklabel,FALSE"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+ASSIGN
+wz-status         = -1
+wz-new-image-file = "\VOTE\TEMP\ETALON.IMA"
+wz-result-file    = ramdrive + "RAWRITE.RES".
+
+call MK_IMAGE VALUE(wz-image-file)
+              VALUE(wz-new-image-file)
+              VALUE(disklabel)
+              VALUE(setup.version[1])
+              VALUE(setup.version[2])
+              VALUE(setup.version[3])
+              VALUE(  DAY(setup.v-date))
+              VALUE(MONTH(setup.v-date))
+              VALUE( YEAR(setup.v-date))
+              VALUE(wz-disk-id).
+IF fileok <> 0
+THEN DO:
+    {call.i &prg="interror" 
+            &param=",'digivote,copbes10','internal,errmsg',
+                     wz-floppy + ': (MK_IMA' + STRING(fileok) + ')'"}
+END.
+ELSE DO:
+    call C_DEL VALUE(wz-result-file).
+    DOS SILENT "\DOS\RAWRITE.EXE" VALUE(wz-new-image-file + " " 
+                                      + wz-floppy         + " "
+                                      + wz-result-file         ).
+    call C_TSTFN VALUE(wz-result-file).
+    IF fileok = 0
+    THEN DO:
+        fileok = -1.
+        call ADDTOLOG PROGRAM-NAME(1) "RAWRITE did not execute !" 0.
+        {call.i &prg="interror" 
+                &param=",'digivote,copbes10','internal,errmsg',
+                         wz-floppy + ': (WR_IMA)'"}
+    END.
+    ELSE DO:
+        INPUT FROM VALUE(wz-result-file) NO-ECHO.
+        SET wz-status wz-message.
+        INPUT CLOSE.
+        call C_DEL VALUE(wz-result-file).
+    
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message) 
+                                      VALUE(IF wz-status = 0 THEN 0 ELSE 2).
+        IF          wz-status <> 0
+        THEN DO:
+            IF      wz-status = 3
+            THEN DO: /* Diskette schrijf beveiligd */
+                {call.i &prg="mesfil" &param=",'pmdexpdi,ermes03', 65,OUTPUT wz-message"}
+                wz-message = wz-message + " : " + wz-floppy + ":".
+                {call.i &prg="disfram" &param=",'errormsg,writprot',
+                                                ',' + wz-message,
+                                                'pmdexpdi,ermes04','',TRUE"}
+            END.
+            ELSE IF wz-status = 3841
+            THEN DO: /* Geen diskette in drive */
+                {call.i &prg="mesfil" &param=",'errormsg,nodisk', 65,OUTPUT wz-message"}
+                wz-message = wz-message + " : " + wz-floppy + ":".
+                {call.i &prg="disfram" &param=",',' + wz-message,'','','',TRUE"}
+            END.
+            ELSE DO:
+                {call.i &prg="interror" 
+                        &param=",'digivote,copbes10','internal,errmsg',
+                                 wz-floppy + ': (WR_IMA' + STRING(wz-status) + ')'"}
+            END.
+        END.
+    END.
+END.
+call C_DEL VALUE(wz-new-image-file).
+
+{return.i}
+/* eof */

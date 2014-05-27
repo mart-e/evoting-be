@@ -1,0 +1,52 @@
+/* Filename            : INITEL_V.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-disk-id LIKE elect.organigram.disk-id          NO-UNDO.
+DEF INPUT PARAM wz-pwd     LIKE elect.organigram.master-key       NO-UNDO.
+DEF INPUT PARAM wz-digest  LIKE elect.organigram.digest           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR stop_it             AS C INIT "quit"                      NO-UNDO.
+DEF VAR wz-verwerkt         LIKE elect.organigram.verwerkt        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*              START PROCEDURE                                         */
+/*                                                                      */
+/************************************************************************/
+IF CONNECTED("from_elect")
+THEN DO:
+    FIND FIRST from_elect.organigram 
+         WHERE from_elect.organigram.disk-id = wz-disk-id 
+      NO-ERROR.
+    IF AVAILABLE from_elect.organigram 
+    THEN DO:
+        wz-verwerkt = ( IF   from_elect.organigram.sys-type = "G"
+                        THEN from_elect.organigram.verwerkt
+                        ELSE FALSE ).
+        ASSIGN
+        from_elect.organigram.master-key  = wz-pwd
+        from_elect.organigram.digest      = wz-digest
+        from_elect.organigram.verwerkt    = wz-verwerkt.
+        {_MK_MAC.I from_elect.organigram}
+    END.
+    ELSE DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Organigram not found ! Unable to update 'master-key and 'digest' !" 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("master-key = " + wz-pwd) 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("digest     = " + wz-digest) 1.
+        {call.i &prg="interror" &param=",'DIGNAME','internal,errmsg',''"}
+    END.
+END.
+
+{return.i}
+/* eof */

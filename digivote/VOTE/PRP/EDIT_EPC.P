@@ -1,0 +1,202 @@
+/* Filename            : EDIT_EPC.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAMETER wz-type     AS C                NO-UNDO.
+DEF INPUT PARAMETER wz-tot-item AS I                NO-UNDO.
+DEF INPUT PARAMETER wz-proglist AS C FORMAT "x(80)" NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR menusel      AS I FORMAT "9"     INITIAL 1       NO-UNDO.
+DEF VAR menuexe      AS I FORMAT "9"     INITIAL 0       NO-UNDO.
+DEF VAR men_set      AS C FORMAT "X(15)" EXTENT 6        NO-UNDO.
+DEF VAR men_tit      AS C FORMAT "X(15)"                 NO-UNDO.
+DEF VAR menu_items   AS C FORMAT "x(8)"  INIT "FFFFFFFF" NO-UNDO.
+DEF VAR i            AS I                                NO-UNDO.
+DEF VAR wz-index     AS I                                NO-UNDO.
+DEF VAR wz-remainder AS I                                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+                             SKIP(1)
+    men_set[1] AT 2 SPACE(1) SKIP
+    men_set[2] AT 2 SPACE(1) SKIP
+    men_set[3] AT 2 SPACE(1) SKIP
+    men_set[4] AT 2 SPACE(1) SKIP
+    men_set[5] AT 2 SPACE(1) SKIP
+    men_set[6] AT 2 SPACE(1) SKIP(1)
+    WITH FRAME edit_epc
+        COLOR DISPLAY VALUE(menu_fg)
+        NO-LABELS
+        ATTR-SPACE
+        ROW 9
+        COLUMN 61
+        OVERLAY
+        TITLE men_tit.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+IF setup.sys-type = "M"
+THEN DO:
+    menleav = 0.
+    {return.i}
+END.
+
+wz-index = 1.
+REPEAT WHILE wz-tot-item > 0:
+    ASSIGN
+    wz-remainder = wz-tot-item MODULO 2.
+    IF wz-remainder = 1
+    THEN SUBSTRING( menu_items, wz-index, 1) = "T".
+    ASSIGN
+    wz-index    = wz-index + 1
+    wz-tot-item = ( wz-tot-item - wz-remainder ) / 2.
+END.
+
+ASSIGN
+i           = 1
+men_set     = "".
+DO wz-index = 1 TO 8:
+    IF SUBSTR(menu_items, wz-index, 1) = "T"
+    THEN DO:
+        {call.i &prg="mesfil" &param=",'edit_epc,menu_' + STRING(EXP( 2, wz-index - 1),'999'),15,
+                   OUTPUT men_set[i]"}
+        i = i + 1.
+    END.
+END.
+wz-tot-item = i - 1.
+IF      wz-type = "E"  /* Election  */
+THEN DO:
+    IF setup.sys-type <> "M"
+    THEN DO:
+        FIND FIRST election WHERE election.e-id     = verknum
+                              AND election.org-type = setup.org-type
+                         NO-ERROR.
+        IF NOT AVAILABLE election
+        THEN DO:
+            {call.i &prg="dispmes" &param=",'digivote,ermes04',0"}
+            HIDE MESSAGE NO-PAUSE.
+        END.
+        ELSE DO:
+            {call.i &prg="verksel"}
+        END.
+        {return.i}
+    END.
+END.
+
+IF wz-type = "C"  /* Candidate */
+THEN DO:
+    {call.i &prg="mesfil" &param=",'edit_epc,title_' + wz-type + STRING(candtyp),15,
+                OUTPUT men_tit"}
+END.
+ELSE DO:
+    {call.i &prg="mesfil" &param=",'edit_epc,title_' + wz-type,15,
+                OUTPUT men_tit"}
+END.
+
+VIEW FRAME edit_epc.
+{call.i &prg="putvinfo"}
+
+REPEAT WITH FRAME edit_epc :
+    STATUS INPUT OFF.
+    DISPLAY men_set.
+    COLOR DISPLAY VALUE(menu_fg) men_set[1 FOR 6].
+    COLOR DISPLAY VALUE(menu_bg) men_set[menusel].
+    NEXT-PROMPT men_set[menusel].
+    {call.i &prg="discolme" &param=",'edit_epc,help_' + wz-type
+                                  + ( IF wz-type = 'C'
+                                      THEN STRING(candtyp)
+                                      ELSE ''             )
+                                  + STRING(menusel),        0"}
+    menleav = 0.
+    IF      i = 1
+    THEN DO:
+        CHOOSE FIELD men_set[1 FOR 1] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    END.
+    ELSE IF i = 2
+    THEN DO:
+        CHOOSE FIELD men_set[1 FOR 2] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    END.
+    ELSE IF i = 3
+    THEN DO:
+        CHOOSE FIELD men_set[1 FOR 3] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    END.
+    ELSE IF i = 4
+    THEN DO:
+        CHOOSE FIELD men_set[1 FOR 4] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    END.
+    ELSE IF i = 5
+    THEN DO:
+        CHOOSE FIELD men_set[1 FOR 5] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    END.
+    ELSE DO:
+        CHOOSE FIELD men_set[1 FOR 6] COLOR VALUE(menu_bg) AUTO-RETURN
+            GO-ON ("CURSOR-UP" "CURSOR-DOWN" "TAB" "BACK-TAB" "F5").
+    END.
+    ASSIGN
+    menuexe = 0
+    menusel = FRAME-INDEX.
+    IF LASTKEY = KEYCODE("TAB")        OR
+       LASTKEY = KEYCODE("CURSOR-DOWN")
+    THEN IF menusel = wz-tot-item
+         THEN menusel = 1.
+         ELSE menusel = menusel + 1.
+    ELSE IF LASTKEY = KEYCODE("BACK-TAB")  OR
+            LASTKEY = KEYCODE("CURSOR-UP")
+         THEN IF menusel = 1
+              THEN menusel = wz-tot-item.
+              ELSE menusel = menusel - 1.
+         ELSE menuexe = 1.
+
+    IF menuexe = 1
+    THEN IF SEARCH( ENTRY(menusel,wz-proglist)) <> ? OR
+            LIBRARY(ENTRY(menusel,wz-proglist)) <> ?
+         THEN DO :
+             HIDE MESSAGE NO-PAUSE.
+             HIDE FRAME edit_epc NO-PAUSE.
+/*@call=proglist_.p*/
+             {call_var.i &prg="ENTRY(menusel,wz-proglist)"}
+             LEAVE.
+         END.
+         ELSE DO :
+             {call.i &prg="dispmes" &param=",'general,notavail', 0"}
+             HIDE MESSAGE NO-PAUSE.
+         END.
+END.
+
+HIDE FRAME edit_epc NO-PAUSE.
+
+{return.i}
+/* eof */

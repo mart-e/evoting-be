@@ -1,0 +1,91 @@
+/* Filename            : VERKIES.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{pmlprtin.i "NEW"}    /* De shared variabelen voor het scherm PMLPRTIN  */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND session WHERE session.s-id = verkdat NO-LOCK NO-ERROR.
+IF AVAILABLE session
+THEN DO :
+    IF session.hands_off[1] = TRUE
+    THEN DO :
+        {call.i &prg="dispmes" &param=",'digivote,ermes03',0"}
+        HIDE MESSAGE NO-PAUSE.
+    END.
+    ELSE DO :
+        REPEAT :
+            menleav = 0.
+            {call.i &prg="selverk"} /* Selecteer een verkiezing */
+            IF menleav = 0 THEN LEAVE.
+
+            menleav = 0.
+            IF verknum <> 0
+            THEN DO :
+                FIND FIRST election WHERE election.s-id = verkdat
+                                      AND election.e-id = verknum NO-ERROR.
+                IF AVAILABLE election
+                THEN DO:
+                    FIND FIRST party WHERE party.s-id = verkdat
+                                       AND party.e-id = verknum
+                                       AND party.p-id <> 0 NO-ERROR.
+                    IF NOT AVAILABLE party
+                    THEN DO:
+                        {call.i &prg="crpart"} /* De party tabel is niet ingevuld */
+                    END.
+                    REPEAT :
+                        menleav = 0.
+                        {call.i &prg="selpart"} /* Selecteer een party */
+                        IF menleav = 0 OR menupos <> 1
+                        THEN LEAVE.
+
+                        menleav = 0.
+                        IF partnum <> 0
+                        THEN DO :
+                            FIND FIRST candidate WHERE candidate.s-id   = verkdat
+                                                   AND candidate.e-id   = verknum
+                                                   AND candidate.p-id   = partnum
+                                                   AND candidate.c-type = candtyp
+                                              NO-ERROR.
+                            IF NOT AVAILABLE candidate
+                            THEN DO:
+                                {call.i &prg="crcand"} /* De candidate tabel is niet ingevuld */
+                            END.
+                            REPEAT :
+                                menleav = 0.
+                                {call.i &prg="selcand"}      /* Selecteer een kandidaat */
+                                IF menleav = 0 OR menupos <> 1
+                                THEN LEAVE.
+                            END.
+                        END.
+                        IF menupos <> 1
+                        THEN LEAVE.
+                    END.
+                END.
+            END.
+            IF menupos <> 1
+            THEN DO :
+                {call.i &prg="initverk"}    /* Initialisatie van een verkiezing  */
+                LEAVE.
+            END.
+        END.
+    END.
+END.
+ELSE DO:
+    {call.i &prg="indmess" &param=",'digivote,errmes04'"}
+END.
+
+{return.i}
+/* eof */

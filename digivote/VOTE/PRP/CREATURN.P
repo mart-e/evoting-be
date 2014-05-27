@@ -1,0 +1,474 @@
+/* Filename            : CREATURN.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM the_recid     AS RECID                            NO-UNDO.
+DEF INPUT PARAM perform_check AS L                                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selvar.i}                    /* De variabelen voor de selection record */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER tot-disks FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-bureau             AS C FORMAT "x(65)"                 NO-UNDO.
+DEF VAR wz-message            AS C FORMAT "x(65)"                 NO-UNDO.
+DEF VAR wz-interror           AS C FORMAT "x(65)"                 NO-UNDO.
+
+DEF VAR i                     AS I                                NO-UNDO.
+DEF VAR disklabel             AS C FORMAT "x(25)"                 NO-UNDO.
+DEF VAR urn_creator           AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR urn_originator        AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR urn_destinator        AS C                                NO-UNDO.
+DEF VAR wz-checkref           AS L                                NO-UNDO. /* Check reference dir.    */
+DEF VAR wz-disks              AS I                                NO-UNDO. /* Nbr of disks to be made */
+DEF VAR wz-flop               AS C                                NO-UNDO. /* Floppydrive a:\ of b:\  */
+DEF VAR wz-nbr_elect          AS I                                NO-UNDO.
+DEF VAR wz-nbr_flop           LIKE session.nbr_flop               NO-UNDO.
+DEF VAR wz-disk-id            LIKE organigram.disk-id             NO-UNDO.
+
+DEF VAR wz-word               AS C FORMAT "x(20)" EXTENT 6        NO-UNDO.
+
+DEF VAR wz-needed-diskspace   AS I                                NO-UNDO.
+DEF VAR wz-extra-free         AS I                                NO-UNDO.
+
+DEF VAR wz-diskima-status     AS I                                NO-UNDO.
+DEF VAR wz-image-file         AS C FORMAT "x(45)"                 NO-UNDO.
+DEF VAR wz-status             AS L                                NO-UNDO.
+DEF VAR wz-copystat           AS L                                NO-UNDO.
+DEF VAR wz-data-files         AS C INIT 
+       "B006,B002,B012,B022,B021,B121,SETTINGS.BAT"               NO-UNDO.
+       
+DEF VAR wz-tmp-shell         AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-resume            AS C FORMAT "x(50)"                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session NO-LOCK NO-ERROR.
+
+IF perform_check
+THEN DO:
+    /* Controle of er lijsten bestaan voor deze verkiezing. */
+    {call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+    CONTROLE:
+    FOR EACH election NO-LOCK WHERE election.s-id = session.s-id :
+        FIND FIRST party OF election WHERE party.p-id > 0 NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE party
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "Elections found without parties !" 2.
+            {call.i &prg="disfram" &param=",'blocage,noparty','','','',TRUE"}
+            {return.i}
+        END.
+    END.
+
+    /* Controle of alle lijsten kandidaten hebben */
+    FOR EACH election NO-LOCK WHERE election.s-id = session.s-id,
+        EACH party OF election NO-LOCK WHERE party.p-id > 0:
+        FIND FIRST candidate OF party NO-LOCK NO-ERROR.
+        IF NOT AVAILABLE candidate
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "Party found without candidates !" 2.
+            {call.i &prg="disfram" &param=",'blocage,nocand','','','',TRUE"}
+            {return.i}
+        END.
+    END.
+END.
+
+FIND FIRST setup                                          NO-LOCK NO-ERROR.
+FIND FIRST organigram WHERE RECID(organigram) = the_recid NO-LOCK NO-ERROR.
+
+{call.i &prg="mesfil" &param=",'general,bureau',65,OUTPUT wz-bureau"}
+
+ASSIGN
+urn_creator    = setup.sys-type +
+                 setup.org-type +
+                 setup.areaname +
+                 STRING(setup.orginator,"999")
+urn_originator = organigram.sys-type       +
+                 organigram.org-type       +
+                 organigram.area[taalkode] +
+                 STRING(organigram.orginator,"999")
+wz-nbr_elect   = 0
+wz-nbr_flop    = session.nbr_flop
+wz-bureau      = TRIM(wz-bureau) + " : " + urn_originator.
+
+FOR EACH election NO-LOCK WHERE election.s-id = session.s-id:
+    wz-nbr_elect = wz-nbr_elect + 1.
+END.
+
+IF wz-nbr_elect < NUM-ENTRIES(setup.startup[2])
+THEN DO wz-nbr_elect = 1 TO NUM-ENTRIES(setup.startup[2]):
+         FIND FIRST election
+             WHERE election.s-id = session.s-id
+               AND STRING(election.et-id) + "/" + STRING(election.coll-id)
+                   = ENTRY(wz-nbr_elect,startup[2])
+           NO-LOCK NO-ERROR.
+         IF NOT AVAILABLE election
+         THEN DO:
+             FIND FIRST types
+                 WHERE STRING(types.et-id) + "/" + STRING(types.coll-id)
+                       = ENTRY(wz-nbr_elect,startup[2])
+               NO-LOCK NO-ERROR.
+             IF AVAILABLE types
+             THEN IF types.mandatory    = FALSE AND
+                     types.separate_TOT = TRUE
+                  THEN wz-nbr_flop = wz-nbr_flop - 1.
+         END.
+     END.
+
+/* Vragen naar de MASTER en BACKUP1 diskette (en eventueel backup2...)*/
+Trans-block:
+REPEAT wz-disks = 1 TO wz-nbr_flop
+    ON ERROR  UNDO Trans-block, RETRY Trans-block
+    ON ENDKEY UNDO Trans-block, LEAVE Trans-block:
+
+    STATUS DEFAULT.
+    HIDE MESSAGE NO-PAUSE.
+
+    ASSIGN
+    wz-flop   = IF   wz-disks    = 1      OR
+                   ( wz-disks    = 3 AND
+                     wz-nbr_flop > 3    )
+                THEN "A:\"
+                ELSE "B:\"
+    disklabel = IF wz-disks = 1
+                THEN "MASTER"
+                ELSE "BACKUP" + STRING(wz-disks - 1).
+
+    /* Vraag naar de juiste schijf/schijven ... */
+    IF   wz-disks  = 1     OR /* De MASTER en BACKUP1 diskette in A: en B: */         
+       ( wz-disks  > 2 AND    /* Extra backup disketten                    */
+         wz-disks <> 4    )   /* Ingeval van 4, wordt A: en B: gebruikt    */
+    THEN DO:
+        HIDE FRAME disframe NO-PAUSE.
+        IF KEYFUNCTION(lastkey) = "END-ERROR" OR
+           KEYLABEL(lastkey)    = "ESC"
+        THEN UNDO Trans-block, LEAVE Trans-block.
+
+        IF wz-disks = 1
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'pmdexpdi,msg_M_B1',65,OUTPUT wz-message"}
+        END.
+        ELSE IF wz-disks    = 3 AND
+               wz-nbr_flop = 4
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'pmdexpdi,msg_B2B3',65,OUTPUT wz-message"}
+        END.
+        ELSE DO:
+            {call.i &prg="mesfil" &param=",'pmdexpdi,msg___B?',65,OUTPUT wz-message"}
+            wz-message = wz-message + " BACKUP" + STRING(wz-disks - 1).
+        END.
+
+        Check-Block:
+        REPEAT:
+            {call.i &prg="disfram" &param=",',' + wz-message,'',
+                                            ',' + wz-bureau,'', TRUE"}
+            IF KEYFUNCTION(lastkey) = "END-ERROR" OR
+               KEYLABEL(lastkey)    = "ESC"       OR
+               key-cancel
+            THEN UNDO Trans-block, LEAVE Trans-block.
+           
+            /* Message 'Controle van de diskettes, Even geduld...' */
+            {call.i &prg="disfram" &param=",'digivote,indmchk1','','','',FALSE"}
+            PAUSE 0 NO-MESSAGE.
+
+            /* Pre-test om te zien of er wel schijven in de drives zitten */
+            IF  wz-disks    = 1     OR 
+               (wz-disks    = 3 AND
+                wz-nbr_flop = 4    )
+            THEN DO:
+                {call.i &prg="chkdisk" &param=",'A:','',OUTPUT wz-status"}
+                IF NOT wz-status THEN UNDO Check-Block, RETRY Check-Block.
+                call C_TSTFN "A:\NUL".
+            END.
+            ELSE fileok = 1.                   /* Force disk present in A: */
+
+            IF fileok = 0
+            THEN DO:
+                {call.i &prg="mesfil" &param=",'errormsg,nodisk',65,OUTPUT wz-message"}
+                wz-message = wz-message + " (A:)".
+            END.
+            ELSE DO:
+                {call.i &prg="chkdisk" &param=",'B:','',OUTPUT wz-status"}
+                IF NOT wz-status THEN UNDO Check-Block, RETRY Check-Block.
+                CALL C_TSTFN "B:\NUL" .
+                IF fileok = 0
+                THEN DO:
+                    {call.i &prg="mesfil" &param=",'errormsg,nodisk',65,OUTPUT wz-message"}
+                    wz-message = wz-message + " (B:)".
+                END.
+            END.
+            IF fileok = 0
+            THEN DO:
+                {call.i &prg="disfram" &param=",',' + wz-message,'','','',TRUE"}
+                HIDE MESSAGE NO-PAUSE.
+                NEXT Check-block.
+            END. /* Er ontbreekt ‚‚n van de twee schijven - herbegin */
+            LEAVE Check-Block.
+        END.
+    END.
+
+    /* Voorbereiding gegevens ENKEL in EERSTE loop */
+    IF wz-disks = 1
+    THEN DO:   
+        Prep-block:
+        REPEAT ON ENDKEY UNDO Trans-block, LEAVE Trans-block
+               ON ERROR  UNDO Prep-block,  RETRY Prep-block:
+            /* Message 'Voorbereiden van gegevens, Even geduld...' */
+            {call.i &prg="disfram" &param=",'digivote,indwait1','',
+                                            ',' + wz-bureau,'',FALSE"}
+
+            /* Reference controleren */
+            {call.i &prg="checku" &param=",OUTPUT wz-checkref"}
+            IF wz-checkref = ? 
+            THEN DO ON ENDKEY UNDO trans-block, LEAVE trans-block:
+                {call.i &prg="interror" 
+                        &param=",'digivote,indmchk1','internal,errmsg','checku,errmes03'"}
+                UNDO Trans-block, LEAVE trans-block.
+            END.
+
+            IF NOT wz-checkref
+            THEN DO ON ENDKEY UNDO trans-block, LEAVE trans-block:
+                {call.i &prg="interror" &param=", '','checku,errmes02','checku,errmes03'"}
+                UNDO trans-block, LEAVE trans-block.
+            END.
+
+            /************************************************/
+            /* Kreatie van file ramdrive:setlang.bat        */
+            {call.i &prg="crsetbat" &param=",INPUT  organigram.disk-id"}
+
+            /************************************************/
+            /* Kreatie van informatie file ramdrive:infurn  */
+            {call.i &prg="crinfurn" &param=",INPUT  organigram.disk-id,
+                                             OUTPUT wz-needed-diskspace"}
+
+            /************************************************/
+            /* Naam Disk Image File                         */
+            FIND FIRST urnechku WHERE urnechku.type-file = TRUE 
+                                  AND PROGRAM-NAME(1) BEGINS urnechku.prgname
+                              NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE urnechku
+            THEN DO:
+                {call.i &prg="interror"
+                        &param=",'pmdexpsu,tit01','internal,errmsg',
+                                 'IMAGE'"}
+                UNDO Trans-block, LEAVE Trans-block.
+            END.
+            
+            /* Point to the archive that contains the full size ETALON image file */
+            wz-image-file = "\VOTE\FILES\BAT\"  + urnechku.src-name.
+            
+            /* Decompress ETALON to full size ETALON image file */
+            call C_DEL VALUE("\VOTE\_" + urnechku.src-name).
+            DOS SILENT "\DOS\AR.EXE" VALUE( "x " + wz-image-file).
+            
+            /* Point to the full size ETALON image file */
+            wz-image-file = "\VOTE\_" + urnechku.src-name.
+
+            /************************************************/
+            /* Beveiliging van de bestanden                 */
+            {call.i &prg="crbfiles" &param=",INPUT  wz-image-file,
+                                             INPUT  organigram.master-key,
+                                             INPUT  organigram.session-key,
+                                             OUTPUT wz-extra-free,
+                                             OUTPUT wz-interror"}
+            IF wz-interror <> ?
+            THEN DO:
+                {call.i &prg="interror" 
+                        &param=",'digivote,indwait1','internal,errmsg',wz-interror"}
+                UNDO Trans-block, LEAVE Trans-block.
+            END.
+
+            LEAVE Prep-block.
+        END. /* wz-disks = 1 - voorbereiding - Prep-block: */
+    END.
+
+    ON F4  END-ERROR.
+    ON ESC END-ERROR.
+
+    Form-block:
+    REPEAT
+        ON ENDKEY UNDO Trans-block, LEAVE Trans-block
+        ON ERROR  UNDO Form-block,  RETRY Form-block :
+
+        IF  RETRY AND
+           (KEYFUNCTION(LASTKEY) = "END-ERROR" OR
+            KEYLABEL(LASTKEY)    = "ESC"       OR
+            key-cancel)
+        THEN UNDO Trans-block, LEAVE Trans-block.
+
+        /* To avoid same VolID's for MASTER and BACKUP ... */
+        wz-disk-id = organigram.disk-id.
+        IF disklabel <> "MASTER" 
+        THEN wz-disk-id = wz-disk-id + INT( SUBSTR( disklabel, 7, 1)).
+        
+        {call.i &prg="diskima" &param=",INPUT  wz-image-file,
+                                        INPUT  SUBSTR(wz-flop,1,1),
+                                        INPUT  disklabel,
+                                        INPUT  wz-disk-id,
+                                        INPUT  wz-bureau,
+                                        OUTPUT wz-diskima-status"}
+        IF wz-diskima-status = 0
+        THEN LEAVE Form-block.
+        ELSE UNDO Trans-block, LEAVE Trans-block.
+    END.
+    
+    urn_destinator = "".
+    FOR EACH tot-disks WHERE LOOKUP(STRING(tot-disks.disk-id),organigram.t-disks) > 0 
+                     NO-LOCK:
+        urn_destinator = urn_destinator
+                       + (IF LENGTH(urn_destinator) > 0 THEN "," ELSE "")
+                       + tot-disks.sys-type
+                       + tot-disks.org-type
+                       + tot-disks.area[taalkode]
+                       + STRING(tot-disks.orginator,"999").
+    END.
+    /************************************************/
+    /* Kreatie contents file                        */
+    {call.i &prg="contents" &param=",ramdrive + 'URNECONT',  
+                 disklabel, urn_creator, urn_originator, urn_destinator"}
+
+    /************************************************/
+    /* Kopieer de bestanden voor de urne            */
+    /* Message  'Kopi‰ren van de bestanden , even geduld' */
+    {call.i &prg="disfram" &param=",'digivote,copbes10','',
+                                    ',' + wz-bureau,
+                                    ',' + SUBSTR(wz-flop,1,2) + disklabel,FALSE"}
+    {call.i &prg="cpurn" &param=",INPUT wz-flop,OUTPUT wz-copystat"}
+    IF wz-copystat
+    THEN DO:
+        {call.i &prg="diskchk" &param=",INPUT  SUBSTR(wz-flop,1,1),
+                                        INPUT  disklabel,
+                                        INPUT  wz-bureau,
+                                        OUTPUT wz-diskima-status"}
+    END.
+    IF wz-diskima-status <> 0
+    OR NOT wz-copystat
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Deleting data files on floppy " + wz-flop) 0.
+        /* Prevent usage of diskette ! Delete data files ... */
+        REPEAT i = 1 TO NUM-ENTRIES(wz-data-files):
+            call C_DEL VALUE(wz-flop + ENTRY(i,wz-data-files)).
+        END.
+        UNDO Trans-block, LEAVE Trans-block.
+    END.
+
+    PAUSE 0 NO-MESSAGE.
+
+    /* Estimation of necessary disk space <> free disk space */
+    IF wz-disks = 1
+    THEN DO:
+        call C_DFREE "A".
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Free diskspace   : " + STRING(diskfree)) 0.
+        diskfree = diskfree + wz-extra-free.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Free diskspace + : " + STRING(diskfree)) 0.
+        IF wz-needed-diskspace > diskfree
+        THEN DO:
+            /* Prevent usage of diskette ! Delete data files ... */
+            REPEAT i = 1 TO NUM-ENTRIES(wz-data-files):
+                call C_DEL VALUE(wz-flop + ENTRY(i,wz-data-files)).
+            END.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Missing diskspace : " 
+                        + STRING(wz-needed-diskspace - diskfree)) 1.
+            {call.i &prg="interror"
+                    &param=",'pmdexpsu,tit01','internal,errmsg',
+                             '-' + STRING(wz-needed-diskspace - diskfree) + 'Kb'"}
+            UNDO trans-block, LEAVE trans-block.
+        END.
+    END.
+    
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("URNE Export = OK ! (" + urn_originator + "-" + disklabel + ")") 0.
+    
+    /* Message verwijder diskette met label ... na wegschrijven op B: schijven */
+    IF   wz-disks    >= 2 AND
+       ( wz-disks    <> 3 OR
+         wz-nbr_flop <> 4    )
+    THEN DO:
+        HIDE FRAME disframe NO-PAUSE.
+        {call.i &prg="disfram" &param=",'digivote,verdis01','',
+                                        ',' + (IF      wz-disks = 2
+                                               THEN 'MASTER+BACKUP1'
+                                               ELSE IF wz-disks = 4
+                                               THEN 'BACKUP2+BACKUP3'
+                                               ELSE disklabel),'',TRUE"}
+    END.
+
+    IF KEYFUNCTION(lastkey) = "END-ERROR" OR
+       KEYLABEL(lastkey)    = "ESC"
+    THEN UNDO Trans-block, LEAVE Trans-block.
+
+    IF wz-disks = wz-nbr_flop /* Laatste disk in loop, dus afsluiten */
+    THEN DO:
+        {call.i &prg="delrdisk"} /* Opkuisen Ramdisk voor het printen */
+
+        /* Afdruk ontvangstbewijs */
+        {call.i &prg="disfram" &param=",'digivote,prbrief1','','','',FALSE"}
+        PAUSE 0 NO-MESSAGE.
+
+        disklabel = "MASTER".
+        DO i = 2 TO wz-nbr_flop :
+            disklabel = disklabel + ",BACKUP" + STRING(i - 1).
+        END.
+        {call.i &prg="prbrief" &param=",'6,1,3',RECID(organigram),disklabel"}
+
+        /* Update appropriate tables ... */
+        FIND FIRST session                                        NO-ERROR.
+        FIND FIRST organigram WHERE RECID(organigram) = the_recid NO-ERROR.
+        IF NOT organigram.verwerkt
+        THEN DO:
+            ASSIGN
+            session.disk_read = session.disk_read + 1
+            session.MAC       = "REFRESH".
+            {call.i &prg="sec_sess"}
+
+            ASSIGN
+            organigram.verwerkt = TRUE
+            organigram.MAC      = "REFRESH".
+            {call.i &prg="sec_orga"}
+        END.
+        
+        /* Cleanup temporary files */
+        /* Do this before leaving PROGRESS */
+        {call.i &prg="delrdisk"}
+        call C_DEL VALUE(wz-image-file).
+
+        /* Prepare leaving PROGRESS to save situation and to go on working ... */
+        {call.i &prg="saveurn"}
+
+    END. /* Afsluiten */
+
+END. /* wz-disks = 1 to wz-nbr_flop : Trans-block */
+
+HIDE FRAME disframe NO-PAUSE.
+
+/* Cleanup temporary files */
+/* This has only sence when an error has occured and to be sure everyting has been cleaned */
+{call.i &prg="delrdisk"}
+call C_DEL VALUE(wz-image-file).
+
+{return.i}
+/* eof */

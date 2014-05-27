@@ -1,0 +1,433 @@
+/* Filename            : S_BLOCK.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{selvar.i}                    /* De variabelen voor de selection record */
+{vargener.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER stembureau     FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-level        AS I                                      NO-UNDO.
+
+DEF VAR wz-type-records AS C INIT "I,G,T,U"                       NO-UNDO.
+DEF VAR i               AS I                                      NO-UNDO.
+
+DEF VAR wz-gen-levels   AS C FORMAT "x(20)"                       NO-UNDO.
+DEF VAR wz-gen-level    LIKE election.org-type                    NO-UNDO.
+DEF VAR wz-totlevel     LIKE election.totlevel                    NO-UNDO.
+DEF VAR wz-et-id        LIKE election.et-id                       NO-UNDO.
+
+DEF VAR wz-errno        AS I                                      NO-UNDO.
+DEF VAR wz-errmsg       AS C FORMAT "x(78)" EXTENT 2              NO-UNDO.
+
+DEF VAR maskey          LIKE meta.aesKey                          NO-UNDO.
+DEF VAR seskey          LIKE meta.aesKey                          NO-UNDO.
+
+DEF VAR enc-maskey      LIKE organigram.master-key                NO-UNDO.
+DEF VAR enc-seskey      LIKE organigram.session-key               NO-UNDO.
+
+DEF VAR wz-total        AS I                                      NO-UNDO.
+DEF VAR wz-current      AS I                                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="disfram" &param=",'blocage,sec_chk','','','',FALSE"}
+
+FIND FIRST session NO-LOCK NO-ERROR.
+
+ASSIGN
+wz-level  = 0
+wz-errno  = -1
+wz-errmsg = "".
+
+CheckBlock:
+DO:
+    FIND FIRST setup NO-LOCK.
+    REPEAT i = 1 TO 4:
+        IF setup.organigram[i] = 0
+        THEN DO:
+            ASSIGN 
+            wz-errno     = 100 + i
+            wz-errmsg[1] = "No records of type " + ENTRY(i,wz-type-records) + " found !"
+            wz-errmsg[2] = "(1)".
+            LEAVE CheckBlock.
+        END.
+    END.
+    
+    /* Check if all organigram-records are present and used */
+    IF       session.hands_off[1] = FALSE
+         AND session.hands_off[2] = FALSE
+         AND session.hands_off[3] = FALSE
+    THEN DO:
+        wz-level = 1.
+        
+        /* Check if there is at least 1 record of each sys-type */
+        call ADDTOLOG PROGRAM-NAME(1) "Check if there is at least 1 record of each sys-type." 0.
+        REPEAT i=1 TO NUM-ENTRIES(wz-type-records):
+            FIND FIRST organigram WHERE organigram.sys-type = ENTRY(i,wz-type-records)
+                              NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE organigram
+            THEN DO:
+                ASSIGN 
+                wz-errno     = 100 + i
+                wz-errmsg[1] = "No records of type " + ENTRY(i,wz-type-records) + " found !"
+                wz-errmsg[2] = "(2)".
+                LEAVE CheckBlock.
+            END.
+        END.
+        
+        /* Check if all I-records are there */
+        call ADDTOLOG PROGRAM-NAME(1) "Check if all I-records are there." 0.
+        FOR EACH election NO-LOCK BREAK BY election.et-id:
+            FIND FIRST organigram WHERE organigram.sys-type = "I" 
+                                  AND organigram.org-type = election.org-type
+                              NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE organigram
+            AND election.mandatory = TRUE
+            THEN DO:
+                ASSIGN 
+                wz-errno     = 110
+                wz-errmsg[1] = "No I-record found for organisation " + election.org-type.
+                LEAVE CheckBlock.
+            END.
+        END.
+        
+        /* Check if all G-records are of the same and lowest TOT-level */
+        call ADDTOLOG PROGRAM-NAME(1) "Check if all G-records are of the same and lowest TOT-level." 0.
+        ASSIGN
+        wz-et-id      = -1
+        wz-totlevel   = -1
+        wz-gen-level  = "?"
+        wz-gen-levels = "".
+        FOR EACH election NO-LOCK WHERE election.separate_TOT = TRUE
+                                     BY election.totlevel:
+            IF wz-totlevel = -1 
+            THEN wz-totlevel = election.totlevel.
+
+            IF  wz-totlevel = election.totlevel
+            AND wz-et-id   <> election.et-id
+            THEN DO:
+                ASSIGN
+                wz-et-id      = election.et-id
+                wz-gen-levels = wz-gen-levels
+                              + (IF wz-gen-levels = "" THEN "" ELSE ",")
+                              + election.org-type.
+            END.
+        END.
+        
+  			/* 
+				   !!!!!!!!!!!!!!!!!!!!!
+				   !!! To Be Checked !!!
+				   !!!!!!!!!!!!!!!!!!!!! (overbodig ?)
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Possible GENERATION levels : " + wz-gen-levels) 0.
+        FIND FIRST organigram WHERE organigram.sys-type = "G" NO-LOCK.
+        IF LOOKUP(organigram.org-type,wz-gen-levels) = 0
+        THEN DO:
+            ASSIGN 
+            wz-errno     = 120
+            wz-errmsg[1] = "GENERATION not at lowest TOT-level !".
+            LEAVE CheckBlock.
+        END.
+        wz-gen-level = organigram.org-type.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Used GENERATION level      : " + wz-gen-level) 0.
+        FIND FIRST organigram WHERE organigram.sys-type = "G" 
+                                AND organigram.org-type <> wz-gen-level NO-LOCK NO-ERROR.
+        IF AVAILABLE organigram
+        THEN DO:
+            ASSIGN 
+            wz-errno     = 121
+            wz-errmsg[1] = "GENERATION not ALL of SAME organisation type !"
+            wz-errmsg[2] = organigram.org-type + " instead of " + wz-gen-level.
+            LEAVE CheckBlock.
+        END.
+				   !!!!!!!!!!!!!!!!!!!!!
+        */
+        
+        /* Check if all G-records are used */
+        call ADDTOLOG PROGRAM-NAME(1) "Check if all G-records are used." 0.
+        FOR EACH organigram WHERE organigram.sys-type = "G" NO-LOCK:
+            FIND FIRST stembureau WHERE stembureau.g-disk = organigram.disk-id
+                                NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE stembureau
+            THEN DO:
+                ASSIGN 
+                wz-errno     = 130
+                wz-errmsg[1] = "GENERATION disk has NO children !"
+                wz-errmsg[2] = "-> " + organigram.sys-type 
+                                     + organigram.org-type
+                                     + organigram.area[1]
+                                     + STRING(organigram.orginator,"999").
+                LEAVE CheckBlock.
+            END.
+        END.
+        
+        /* Check if there are T-records present for all selected TOT-levels */
+        call ADDTOLOG PROGRAM-NAME(1) "Check if there are T-records present for all selected TOT-levels." 0.
+        wz-et-id = -1.
+        FOR EACH election NO-LOCK WHERE election.separate_TOT = TRUE
+                                     BY election.totlevel:
+            IF election.et-id <> wz-et-id
+            THEN DO:
+                wz-et-id = election.et-id.
+                IF             election.org-type =  wz-gen-level
+                OR (           election.org-type <> wz-gen-level
+                    AND LOOKUP(election.org-type,wz-gen-levels) = 0)
+                THEN DO:
+                    FIND FIRST organigram WHERE organigram.sys-type = "T"
+                                            AND organigram.org-type = election.org-type
+                                        NO-LOCK NO-ERROR.
+                    IF NOT AVAILABLE organigram
+                    THEN DO:
+                        ASSIGN 
+                        wz-errno     = 140
+                        wz-errmsg[1] = "No T-record found for organisation " 
+                                     + election.org-type.
+                        LEAVE CheckBlock.
+                    END.
+                END.
+            END.
+        END.
+        
+        /* Check if all T-records are used */
+        call ADDTOLOG PROGRAM-NAME(1) "Check if all T-records are used." 0.
+        FOR EACH organigram WHERE organigram.sys-type = "T" NO-LOCK:
+            FIND FIRST stembureau WHERE LOOKUP(STRING(organigram.disk-id),
+                                               stembureau.t-disks) > 0 
+                                NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE stembureau
+            THEN DO:
+                ASSIGN 
+                wz-errno     = 130
+                wz-errmsg[1] = "TOTALISATION disk has NO childeren !"
+                wz-errmsg[2] = "-> " + organigram.sys-type 
+                                     + organigram.org-type
+                                     + organigram.area[1]
+                                     + STRING(organigram.orginator,"999").
+                LEAVE CheckBlock.
+            END.
+        END.
+        
+        call ADDTOLOG PROGRAM-NAME(1) "Checks all completed with success !" 0.
+    END.
+
+    /* Check if all INTRODUCTIONs have been made and completed */
+    ELSE IF  session.hands_off[1] = TRUE
+         AND session.hands_off[2] = FALSE
+         AND session.hands_off[3] = FALSE
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Check if all INTRODUCTIONs have been made and completed." 0.
+        wz-level = 2.
+        
+        FIND FIRST organigram WHERE organigram.sys-type = "I"
+                                AND organigram.verwerkt = FALSE
+                                AND organigram.l-disk   < 0
+                            NO-LOCK NO-ERROR.
+        IF AVAILABLE organigram
+        THEN DO:
+            ASSIGN
+            wz-errno     = 201
+            wz-errmsg[1] = "There are still missing completed INTRODUCTION disks !".
+            LEAVE CheckBlock.
+        END.
+    END.
+    
+    /* Check if all GENERATIONs have been made and completed */
+    ELSE IF  session.hands_off[1] = TRUE
+         AND session.hands_off[1] = TRUE
+         AND session.hands_off[3] = FALSE
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Check if all GENERATIONs have been made and completed." 0.
+        wz-level = 3.
+        
+        FIND FIRST organigram WHERE organigram.sys-type = "G"
+                                AND organigram.verwerkt = FALSE
+                            NO-LOCK NO-ERROR.
+        IF AVAILABLE organigram
+        THEN DO:
+            ASSIGN
+            wz-errno     = 301
+            wz-errmsg[1] = "There are still missing completed GENERATION disks !".
+            LEAVE CheckBlock.
+        END.
+    END.
+    
+    ELSE DO:
+        ASSIGN
+        wz-errno     = 999
+        wz-errmsg[1] = "Everything already checked and blocked !".
+        LEAVE CheckBlock.
+    END.
+END. /* DO */
+
+HIDE FRAME disframe NO-PAUSE.
+
+IF wz-errno = -1
+THEN DO:
+    FOR EACH organigram WHERE LOOKUP(organigram.sys-type,"G,T") > 0
+                          AND organigram.children > 35
+                      NO-LOCK:
+        {call.i &prg="confirm" &param=",'s_block,too_much', 
+                                         organigram.sys-type
+                                       + organigram.org-type
+                                       + organigram.area[taalkode]
+                                       + STRING(organigram.orginator,'999'),
+                                        '=> ' + STRING(organigram.children),
+                                        'general,yes','general,no'"}
+        IF menleav = 0
+        THEN DO:
+            ASSIGN
+            wz-errno     = 911
+            wz-errmsg[1] = "Too much polling stations considered as NOT acceptable !"
+            wz-errmsg[2] = "=> " + organigram.sys-type
+                                 + organigram.org-type
+                                 + organigram.area[taalkode]
+                                 + STRING(organigram.orginator,"999")
+                         + " : " + STRING(organigram.children).      
+            LEAVE.
+        END.
+    END.
+END.
+
+IF wz-errno = -1
+THEN DO:
+    {call.i &prg="confirm" &param=",'s_block,question','','','general,yes','general,no'"}
+    IF menleav = 1
+    THEN DO:
+        FIND FIRST session NO-ERROR.
+        ASSIGN
+        session.hands_off[wz-level] = TRUE
+        session.MAC                 = "REFRESH".
+        {call.i &prg="sec_sess"}
+
+        IF      wz-level = 1
+        THEN DO:
+        		/* Delete obsolete 'setup' related records from organigram */
+        		DELETE FROM organigram   WHERE organigram.disk-id < 0.
+        		/* Delete obsolete organisation records */
+						DELETE FROM organisation WHERE organisation.setup-id <> setup.setup-id.
+            /* Print list as confirmation */
+            {call.i &prg="s_check"}
+        END.    
+        ELSE IF LOOKUP(STRING(wz-level),"2,3") > 0
+        THEN DO:
+            /* Generate master and session keys ... */
+            {call.i &prg="disfram" &param=",'digivote,indwait1','','','',FALSE"}
+            
+            ASSIGN
+            wz-current = 0
+            wz-total   = 0.
+            /* Counting records ... */
+            FOR EACH organigram WHERE    (    wz-level = 2
+                                          AND (        organigram.sys-type = "U"
+                                               OR (    organigram.sys-type = "G"
+                                                   AND organigram.orginator > 0)))
+                                      OR
+                                         (    wz-level = 3
+                                          AND organigram.sys-type = "T"
+                                          AND organigram.orginator > 0):
+                wz-total = wz-total + 1.
+            END.
+            /* Generating passwords (master/session) for the records ... */
+            FOR EACH organigram WHERE    (    wz-level = 2
+                                          AND (        organigram.sys-type = "U"
+                                               OR (    organigram.sys-type = "G"
+                                                   AND organigram.orginator > 0)))
+                                      OR
+                                         (    wz-level = 3
+                                          AND organigram.sys-type = "T"
+                                          AND organigram.orginator > 0):
+                ASSIGN
+                enc-maskey = "-1"
+                enc-seskey = "-1"
+                wz-current = wz-current + 1.
+                
+                PUT SCREEN COLOR GRAY/BLACK ROW 23 COLUMN 69 
+                           STRING(wz-current, ">,>>9") + "/" + STRING(wz-total,">,>>9").
+
+                REPEAT:
+                    {call.i &prg="rnd" &param=",'Master',OUTPUT maskey"}
+                    call CRYPENC PRPTOT maskey.
+                    IF crypStat <> 0 
+                    THEN DO:
+                        MESSAGE PROGRAM-NAME(1) ": Error generating password !".
+                        PAUSE.
+                        /* Todo JRU : Add Log and msg */
+                    END.
+                    enc-maskey = result3.
+                    /* Prevent doubles ... */
+                    FIND FIRST stembureau 
+                         WHERE stembureau.master-key = enc-maskey 
+                       NO-LOCK NO-ERROR.
+                    IF NOT AVAILABLE stembureau
+                    THEN LEAVE.
+                END.
+                IF LOOKUP(organigram.sys-type,"U,T") > 0
+                THEN REPEAT :
+                         {call.i &prg="rnd" &param=",'Session',OUTPUT seskey"}
+                         IF maskey <> seskey
+                         THEN DO:
+                             call CRYPENC PRPTOT seskey.
+                             IF crypStat <> 0 
+                             THEN DO:
+                                 MESSAGE PROGRAM-NAME(1) ": Error generating password !".
+                                 PAUSE.
+                                 /* Todo JRU : Add Log and msg */
+                             END.
+                             enc-seskey = result3.
+                             LEAVE.
+                         END.
+                     END.
+                ELSE seskey = "-1".
+
+                ASSIGN
+                organigram.master-key  = enc-maskey
+                organigram.session-key = enc-seskey
+                organigram.MAC         = "REFRESH".
+            END.
+            
+            PUT SCREEN ROW 23 COLUMN 69 FILL(" ",11).
+            
+            {call.i &prg="sec_orga"}
+            HIDE FRAME disframe NO-PAUSE.
+        END.
+        
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Fase " + STRING(wz-level) + " approved !") 0.
+    END.
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Error " + STRING(wz-errno) + " has occured !") 1.
+    IF wz-errmsg[1] <> "" THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-errmsg[1]) 1.
+    IF wz-errmsg[2] <> "" THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-errmsg[2]) 1.
+
+    IF wz-errno <> 911
+    THEN DO:
+        {call.i &prg="disfram" &param=",'s_block,errors','',
+                's_block,error' + STRING(wz-errno,'999'),
+                ',' + wz-errmsg[2],
+                TRUE"}
+    END.
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

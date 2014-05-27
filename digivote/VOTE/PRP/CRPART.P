@@ -1,0 +1,386 @@
+/* Filename            : CRPART.P                                       */
+/*                                                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{pmlprtin.i}          /* De shared variabelen voor het scherm PMLPRTIN  */
+/*@source sec=1*/
+          /* Variabelen voor encryptie                      */
+/*@source sec=0*/
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR mes1                AS C FORMAT "x(16)"       NO-UNDO.
+DEF VAR mes2                AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR mes3                AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR mes4                AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR men_tit             AS C FORMAT "x(40)"       NO-UNDO.
+DEF VAR partlang            AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR taalgr              LIKE party.taalgroep      NO-UNDO.
+DEF VAR wz-taalgroepsystem  AS L INIT FALSE           NO-UNDO.
+DEF VAR verder              AS I                      NO-UNDO.
+DEF VAR gr                  AS I                      NO-UNDO.
+DEF VAR i                   AS I                      NO-UNDO.
+DEF VAR wz-lang             LIKE language.var_name    NO-UNDO.
+DEF VAR good                AS I FORMAT "9"           NO-UNDO.
+DEF VAR cntindex            AS I FORMAT "99"          NO-UNDO.
+DEF VAR savpart             AS I FORMAT "9" EXTENT 99 NO-UNDO.
+
+DEF VAR wz-cur-pos          AS I                      NO-UNDO.
+DEF VAR wz-tel-chars        AS I                      NO-UNDO.
+DEF VAR wz-tel-non-chars    AS I                      NO-UNDO.
+
+DEF VAR wz-num-parties      AS I                      NO-UNDO.
+DEF VAR wz-max-parties      AS I                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+
+FORM
+    partnr  AT 5 partnaam AT 15
+    partlang AT 42 SPACE(2)
+    HEADER mes1 AT 2 mes2 AT 20 mes3 AT 42
+    WITH FRAME pmlprtin ROW 5 NO-LABELS RETAIN 3
+    TITLE men_tit OVERLAY 13 DOWN CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="mesfil" &param=",'pmlprtin,mes01',16,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmlprtin,mes02',20,OUTPUT mes2"}
+{call.i &prg="mesfil" &param=",'pmlprtin,tit01',40,OUTPUT men_tit"}
+
+partnum = 0.
+partnr = 0.
+
+cntindex = 1.
+REPEAT :
+    savpart[cntindex] = 0.
+    IF cntindex = 99
+    THEN LEAVE.
+    cntindex = cntindex + 1.
+END. /* REPEAT */
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST election WHERE election.e-id = verknum NO-LOCK.
+wz-taalgroepsystem = IF election.et-id = 1
+                     THEN TRUE
+                     ELSE FALSE.
+IF wz-taalgroepsystem
+THEN DO:
+    {call.i &prg="mesfil" &param=",'pmlprtin,mes03', 20,OUTPUT mes3"}
+    {call.i &prg="mesfil" &param=",'general,dutch',  20,OUTPUT taalgr[1]"}
+    {call.i &prg="mesfil" &param=",'general,french', 20,OUTPUT taalgr[2]"}
+    {call.i &prg="mesfil" &param=",'general,german', 20,OUTPUT taalgr[3]"}
+END.
+ELSE mes3 = "".
+
+DO TRANSACTION :
+    FOR EACH party NO-LOCK
+                   WHERE party.disk-id = setup.disk-id
+                     AND party.s-id    = verkdat
+                     AND party.e-id    = verknum
+                     AND party.p-id    <> 0      WITH FRAME pmlprtin :
+        ASSIGN
+        partnr          = party.p-id
+        savpart[partnr] = 1
+        partnaam        = party.party_name.
+
+        IF wz-taalgroepsystem
+        THEN partlang = party.taalgroep[taalkode].
+        ELSE partlang = "".
+
+        DISPLAY partnr partnaam partlang.
+        DOWN.
+        PAUSE 0 NO-MESSAGE.
+    END. /* FOR EACH party */
+END. /* TRANSACTION */
+
+IF partnr = 99
+THEN DO :
+    cntindex = 1.
+    REPEAT :
+        IF cntindex = 99
+        THEN DO :
+            partnr = 99.
+            LEAVE.
+        END.
+        IF savpart[cntindex] = 0
+        THEN DO :
+            partnr = cntindex - 1.
+            LEAVE.
+        END.
+        ELSE DO :
+            cntindex = cntindex + 1.
+            partnr = cntindex.
+        END.
+    END. /* REPEAT */
+END. /* IF partnr = 99 */
+
+IF partnr < 99
+THEN DO :
+    ASSIGN
+    partnr  = partnr + 1
+    menleav = 0.
+
+    REPEAT WITH FRAME pmlprtin :
+        IF LASTKEY = KEYCODE("F4")
+        THEN LEAVE.
+
+        ASSIGN
+        partnaam = ""
+        partlang = ""
+        good     = 0.
+        {call.i &prg="discolme" &param=",'general,fkey02',0"}
+        UPDATE partnr.
+        IF partnr <> 0
+        THEN DO :
+            DO TRANSACTION :
+                FIND FIRST party WHERE party.disk-id = setup.disk-id
+                                   AND party.s-id    = verkdat
+                                   AND party.p-id    = partnr
+                               NO-LOCK NO-ERROR.
+                IF AVAILABLE party
+                THEN DO :
+                    partnaam = party.party_name.
+                    DISPLAY partnaam.
+                    IF wz-taalgroepsystem
+                    THEN DO:
+                        partlang = party.taalgroep[taalkode].
+                        DISPLAY partlang.
+                    END.
+                    IF partnr = 99
+                    THEN LEAVE.
+                    ELSE DO :
+                        partnr = partnr + 1.
+                        DOWN.
+                        PAUSE 0 NO-MESSAGE.
+                    END.
+                END.
+                ELSE good = 1.
+            END. /* TRANSACTION */
+        END.
+        ELSE DO :
+            partnr = 1.
+            NEXT.
+        END.
+
+        IF good = 1
+        THEN DO :
+            ASSIGN
+            verder   = 0 
+            partnaam = "".
+            {call.i &prg="discolme" &param=",'general,fkey04',0"}
+            /*
+            REPEAT WHILE verder = 0:
+            */
+                UPDATE partnaam WITH FRAME pmlprtin
+                    EDITING:
+                        READKEY.
+                        IF  LASTKEY <> KEYCODE("""")
+                        AND LASTKEY <> KEYCODE(",")
+                        THEN APPLY LASTKEY.
+                        ELSE BELL.
+                    END.
+            /*
+                {partname.i}
+            END.
+            IF verder = 0 THEN LEAVE.
+            */
+            IF wz-taalgroepsystem
+            THEN DO:
+                ASSIGN
+                i        = 0
+                partlang = "".
+                {call.i &prg="discolme" &param=",'general,fkey04',0"}
+                UPDATE partlang 
+                    EDITING:
+                        READKEY.
+                        IF i = 0
+                        THEN DO:
+                            IF CAPS(KEYLABEL(LASTKEY)) = "N" OR
+                               CAPS(KEYLABEL(LASTKEY)) = "F" OR
+                               CAPS(KEYLABEL(LASTKEY)) = "D"
+                            THEN DO:
+                                APPLY LASTKEY.
+                                i = 1.
+                            END.
+                            ELSE BELL.
+                        END.
+                        ELSE DO:
+                            IF LOOKUP(KEYFUNCTION(LASTKEY),
+                                     "BACKSPACE,CURSOR-LEFT")> 0
+                            THEN DO:
+                                APPLY LASTKEY.
+                                i = 0.
+                            END.
+                            ELSE IF LOOKUP(KEYFUNCTION(LASTKEY),
+                                          "TAB,BACK-TAB,GO,RETURN,END-ERROR") > 0
+                            THEN DO:
+                                IF LENGTH(partlang) > 0
+                                THEN partlang = SUBSTRING(partlang,1,1).
+                                APPLY LASTKEY.
+                            END.
+                            ELSE BELL.
+                        END.
+                    END.
+            END.
+
+            ASSIGN
+            verder = 0
+            gr     = 0.
+
+            IF wz-taalgroepsystem
+            THEN DO:
+                IF partlang <> ""
+                THEN DO:
+                    ASSIGN gr = IF      CAPS(partlang) = "N" THEN 1
+                                ELSE IF CAPS(partlang) = "F" THEN 2
+                                ELSE IF CAPS(partlang) = "D" THEN 3
+                                ELSE                              0.
+
+                    IF gr <> 0
+                    THEN DO:
+                        ASSIGN
+                        verder   = 1
+                        partlang = taalgr[gr].
+                        DISPLAY partlang AUTO-RETURN.
+                    END.
+                END.
+            END.
+            ELSE verder = 1.
+
+            IF partnaam <> "" AND
+               verder = 1
+            THEN DO :
+                menleav = 1.
+                DO TRANSACTION :
+                    FIND FIRST party WHERE party.disk-id = setup.disk-id
+                                       AND party.s-id    = verkdat
+                                       AND party.p-id    = partnr
+                                   NO-LOCK NO-ERROR.
+                    IF AVAILABLE party
+                    THEN DO :
+                        partnaam = party.party_name.
+                        IF wz-taalgroepsystem
+                        THEN partlang = party.taalgroep[taalkode].
+                        ELSE partlang = "".
+                    END.
+                    ELSE DO :
+                        CREATE party.
+
+/*@source sec=1*/
+                        /* encrypt an initialised totals counter */
+                        call CRYPENC PRPTOT fill("0", AESKEYLEN).
+
+                        ASSIGN
+                        party.disk-id      = setup.disk-id
+                        party.s-id         = verkdat
+                        party.e-id         = verknum
+                        party.p-id         = partnr
+                        party.party_name   = partnaam
+                        party.vote_top     = result3
+                        party.tmp_vote_top = result3
+                        party.vote_can     = result3
+                        party.tmp_vote_can = result3
+                        party.vote_sup     = result3
+                        party.tmp_vote_sup = result3
+                        party.vote_cs      = result3.
+                        party.tmp_vote_cs  = result3.
+/*@source sec=0*/
+                        IF wz-taalgroepsystem
+                        THEN DO:
+                            ASSIGN
+                            wz-lang  = (IF      gr = 1 THEN "dutch"
+                                        ELSE IF gr = 2 THEN "french"
+                                        ELSE                "german")
+                            gr       = taalkode.
+                            DO i = 1 TO 3:
+                                taalkode = i.
+                                {call.i &prg="mesfil" &param=",'general,' + wz-lang,20,
+                                           OUTPUT party.taalgroep[i]"}
+                            END.
+                            taalkode = gr.
+                        END.
+                        FIND FIRST election
+                             WHERE election.e-id = party.e-id NO-ERROR.
+                        IF AVAILABLE election AND party.p-id <> 0
+                        THEN DO:
+                            ASSIGN
+                            party.coll-id      = election.coll-id
+                            party.MAC          = "REFRESH"
+                            election.num_parts = election.num_parts + 1
+                            election.MAC       = "REFRESH".
+                            
+                            /**************************************************************/
+                            /*                                                            */
+                            /*        LIMIT NUMBER OF PARTIES TO A MAXIMUM OF 40          */
+                            /*      AT ELECTION LEVEL (meaning that the sum of all        */
+                            /*     colleges of an election type may NOT exceed 40 !)      */
+                            /*                                                            */
+                            /**************************************************************/
+                            ASSIGN
+                            wz-num-parties = 0
+                            wz-max-parties = 0.
+                            FOR EACH election WHERE election.org-type = setup.org-type NO-LOCK:
+                                wz-num-parties = wz-num-parties
+                                               + election.num_parts.
+                                wz-max-parties = wz-max-parties
+                                               + election.maxpart.
+                            END.
+                            IF wz-max-parties > 40
+                            THEN wz-max-parties = 40.
+
+                            IF wz-num-parties > wz-max-parties
+                            THEN DO:
+                                {call.i &prg="dispmes" &param=",'digivote,parcheck',0"}
+                                menleav = 1.
+                                HIDE FRAME pmlprtin NO-PAUSE.
+                                UNDO,RETURN.
+                            END.
+                        END.
+                    END.
+                    {call.i &prg="sec_elec"}
+                    {call.i &prg="sec_part"}
+                    FIND LAST party WHERE party.disk-id = setup.disk-id
+                                      AND party.s-id    = verkdat
+                                      AND party.e-id    = verknum 
+                                    NO-LOCK NO-ERROR.
+                    IF AVAILABLE party
+                    THEN DO :
+                        IF party.p-id = 99
+                        THEN LEAVE.
+                        ELSE partnr = party.p-id + 1.
+                    END.
+                END.
+                DOWN.
+                PAUSE 0 NO-MESSAGE.
+            END.
+        END.
+    END.
+
+    IF LASTKEY = KEYCODE("F4")
+    THEN menleav = 1.
+END. /* IF partnr < 99 */
+
+HIDE FRAME pmlprtin NO-PAUSE.
+
+{return.i}
+/* eof */

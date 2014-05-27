@@ -1,0 +1,70 @@
+/************************************************************************/
+/*  Filename : PUTVINFO.P                                               */ 
+/************************************************************************/
+
+{chklevel.i 1}
+
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR dv-beta    AS C FORMAT "x(4)"  INIT "áeta"                NO-UNDO.
+DEF VAR dv-version AS C FORMAT "x(60)"                            NO-UNDO.
+DEF VAR pos        AS I                                           NO-UNDO.
+DEF VAR len        AS I                                           NO-UNDO.
+
+DEF VAR wz-version AS C FORMAT "x(40)" INIT "?"                   NO-UNDO.
+DEF VAR wz-v-date  AS C FORMAT "x(10)" INIT "?"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="mesfil" &param=",'version,version',0,OUTPUT dv-version"}
+FIND FIRST setup NO-LOCK NO-ERROR.
+IF AVAILABLE setup
+THEN DO:
+    ASSIGN
+    wz-version      =       STRING(setup.version[1]) 
+                    + "." + STRING(setup.version[2])
+    wz-v-date       = STRING(setup.v-date,"99/99/9999").
+    IF setup.version[3] > 0
+    THEN wz-version = wz-version 
+                    + "." + STRING(setup.version[3]).
+END.
+
+ASSIGN
+SUBSTR(dv-version,INDEX(dv-version,"@1"),2) = wz-version
+SUBSTR(dv-version,INDEX(dv-version,"@2"),2) = wz-v-date.
+
+ASSIGN
+len = LENGTH(dv-version)
+pos = 40 - ( len / 2).
+PUT SCREEN COLOR WHITE/BLACK COLUMN pos - 1   ROW 22 "´".
+PUT SCREEN COLOR GRAY/BLACK  COLUMN pos       ROW 22 dv-version.
+PUT SCREEN COLOR WHITE/BLACK COLUMN pos + len ROW 22 "Ã".
+
+/* Display appropriate Beta information on screen */
+
+/* -
+ASSIGN
+len = LENGTH(dv-beta)
+pos = 4.
+PUT SCREEN COLOR WHITE/BLACK COLUMN pos - 1   ROW 22 "´".
+PUT SCREEN COLOR GRAY/BLACK  COLUMN pos ROW 22 dv-beta.
+PUT SCREEN COLOR WHITE/BLACK COLUMN pos + len ROW 22 "Ã".
+
+pos = 80 - LENGTH(dv-beta) - 2 .
+PUT SCREEN COLOR WHITE/BLACK COLUMN pos - 1   ROW 22 "´".
+PUT SCREEN COLOR GRAY/BLACK  COLUMN pos ROW 22 dv-beta.
+PUT SCREEN COLOR WHITE/BLACK COLUMN pos + len ROW 22 "Ã".
+ - */
+
+/************************************************************************/
+
+{return.i}
+/* eof */

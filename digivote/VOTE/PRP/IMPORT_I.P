@@ -1,0 +1,339 @@
+/* Filename            : IMPORT_I.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-disk-id   LIKE organigram.disk-id             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}                   /* Variabelen voor display frame disframe */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR maskey         LIKE meta.aesKey                    NO-UNDO.
+DEF SHARED VAR seskey         LIKE meta.aesKey                    NO-UNDO.
+
+DEF NEW SHARED VAR wz-P-p-ids AS I EXTENT 41                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-field              AS C FORMAT "x(40)"                 NO-UNDO.
+
+DEF VAR wz-rel-s-disk-id      LIKE organigram.disk-id             NO-UNDO.
+DEF VAR wz-rel-i-disk-id      LIKE organigram.disk-id             NO-UNDO.
+DEF VAR wz-type               AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-P-structure        AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-P-introduction     AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-P-coll-ids         AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-P-counter          AS I                                NO-UNDO.
+DEF VAR wz-C-structure        AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-C-introduction     AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-C-coll-ids         AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-C-p-ids            AS I EXTENT 41                      NO-UNDO.
+DEF VAR wz-C-counter          AS I                                NO-UNDO.
+DEF VAR i                     AS I                                NO-UNDO.
+DEF VAR wz-e-id               AS I EXTENT 3                       NO-UNDO.
+DEF VAR wz-e-ids              AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-coll-ids           AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-parties            AS I INIT 0                         NO-UNDO.
+DEF VAR wz-ignore-blanco      AS L INIT FALSE                     NO-UNDO.
+
+DEF VAR wz-needed-files       AS C INIT "CONTENTS,B006,B21P,B21C" NO-UNDO.
+
+DEF VAR copystat              AS L INIT FALSE                     NO-UNDO.
+DEF VAR wz-status             AS L INIT FALSE                     NO-UNDO.
+
+DEF VAR wz-message            AS C FORMAT "x(40)"                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+wz-status = TRUE.
+{call.i &prg="disfram" &param=",'expzet,waitdisk','',',EXCHANGE_I','',TRUE"}
+IF LASTKEY = KEYCODE("END-ERROR")
+OR key-cancel
+THEN DO:
+    {return.i}
+END.
+
+/* Pre-test om te zien of er wel een schijf in de A: zit */
+CALL C_TSTFN VALUE("A:\NUL").
+IF fileok = 0
+THEN DO:
+    /* Geen diskette in de lezer */
+    call ADDTOLOG PROGRAM-NAME(1) "No disk in drive" 1.
+    {call.i &prg="disfram" &param=",'errormsg,nodisk',',A:','','',TRUE"}
+    {return.i}
+END.
+
+/*
+/* check if disklabel matches allowed_disklabel */
+CALL C_LABEL.
+IF TRIM(dsklbl) <> "EXCHANGE_I"
+THEN DO:
+    /* Ongeoorloofd disklabel aanwezig ! */
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Label '" + dsklbl + "' <> 'EXCHANGE_I'") 1.
+    {call.i &prg="disfram" &param=",'errormsg,badlabel','','','',TRUE"}
+    {return.i}
+END.
+*/
+
+/* check if any files are present on diskette */
+REPEAT i = 1 TO NUM-ENTRIES(wz-needed-files):
+    call C_TSTFN VALUE("A:\" + ENTRY(i,wz-needed-files)).
+    IF fileok = 0
+    THEN DO:
+        /* Bestand niet gevonden, probeer opnieuw ! */
+        {call.i &prg="disfram" &param=",'partload,errmes01','',',' + ENTRY(i,wz-needed-files),'',TRUE"}
+        {return.i}
+    END.
+END.
+
+/*@source sec=1 */
+{exchange.i}
+/* pass master key to AesLib, sessionkey is yet unknown */
+sessionk = FILL("?", AESKEYLEN).
+call CRYPKEYS maskey seskey.
+IF crypStat = 0
+THEN call CRYPSK "D" "A:\B006".
+IF crypStat = 0
+THEN seskey = rndKey.
+ELSE DO:
+    {call.i &prg="init_pwd"}
+
+    call ADDTOLOG PROGRAM-NAME(1) "Wrong password entered on import LISTES ! (File.SessionKey)" 2.
+    {call.i &prg="disfram" &param=",'trdurnma,wrongme1'
+                                   ,'trdurnma,wrongme2','','',TRUE"}
+    {return.i}
+END.
+
+/*@source sec=0 */
+    
+/******************************************/
+/* Kopi‰ren van de bestanden van diskette */
+/******************************************/
+{call.i &prg="disfram" &param=",'digivote,copbes20','','','',FALSE"}
+OUTPUT TO VALUE(ramdrive + "COPYLIST").
+PUT UNFORMATTED
+    "A:\CONTENTS" "~t" ramdrive "EXCHANGE"     SKIP
+    "A:\B006"     "~t" ramdrive "KEYFILE"      SKIP
+    "A:\B21P"     "~t" ramdrive "PARTY.ENC"    SKIP
+    "A:\B21C"     "~t" ramdrive "CANDIDAT.ENC".
+OUTPUT CLOSE.
+
+{call.i &prg="copyfile" &param=", OUTPUT copystat"}
+IF NOT copystat
+THEN DO:
+    call C_DEL VALUE(ramdrive + "EXCHANGE").
+    call C_DEL VALUE(ramdrive + "KEYFILE").
+    call C_DEL VALUE(ramdrive + "PARTY.ENC").
+    call C_DEL VALUE(ramdrive + "CANDIDATE.ENC").
+    {call.i &prg="disfram" &param=",'digivote,cpbser01','digivote,cpbser02','','',TRUE"}
+    {return.i}
+END.
+    
+/**************************************/
+/* Display "Kontrole van de gegevens" */
+/**************************************/
+{call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+FIND FIRST organigram WHERE organigram.disk-id = wz-disk-id NO-LOCK NO-ERROR.
+ASSIGN
+wz-e-id     = 0
+wz-coll-ids = "".
+FOR EACH election NO-LOCK WHERE election.org-type = organigram.org-type:
+    wz-e-id[election.coll-id + 1] = election.e-id.
+
+    IF wz-coll-ids <> "" THEN wz-coll-ids = wz-coll-ids + ",".
+    wz-coll-ids = wz-coll-ids + STRING(election.et-id) + "/" + STRING(election.coll-id).
+END.
+wz-e-ids = STRING( wz-e-id[1]) + ","
+         + STRING( wz-e-id[2]) + ","
+         + STRING( wz-e-id[3]).
+         
+/*@source sec=1*/
+ASSIGN
+wz-status = FALSE
+wz-message = "(CrypKeys)".
+
+call CRYPKEYS maskey seskey.
+IF crypStat = 0
+THEN DO:
+    wz-message = "(CrypFile.party)".
+    call CRYPFILE "D" PRPEXP VALUE(ramdrive + "PARTY.ENC")
+                             VALUE(ramdrive + "PARTY.IMP") 0.
+END.
+IF crypStat = 0
+THEN DO:
+    wz-message = "(CrypFile.candidate)".
+    call CRYPFILE "D" PRPEXP VALUE(ramdrive + "CANDIDAT.ENC")
+                             VALUE(ramdrive + "CANDIDAT.IMP") 0.
+END.
+
+wz-status = (IF crypStat = 0 
+             THEN TRUE 
+             ELSE FALSE).
+
+{call.i &prg="init_pwd"}
+
+/*@source sec=0*/
+
+IF wz-status
+THEN DO:
+		/* Check party ... */
+    {call.i &prg="import_p" &param=",wz-disk-id
+                                    ,wz-e-ids
+                                    ,wz-coll-ids
+                                    ,OUTPUT wz-rel-s-disk-id
+                                    ,OUTPUT wz-rel-i-disk-id
+                                    ,OUTPUT wz-P-structure
+                                    ,OUTPUT wz-P-introduction
+                                    ,OUTPUT wz-P-coll-ids
+                                    ,OUTPUT wz-P-counter
+                                    ,OUTPUT wz-ignore-blanco
+                                    ,OUTPUT wz-message
+                                    ,OUTPUT wz-status"}
+END.
+
+IF wz-status
+THEN DO:
+    wz-message = "(candidate)".
+    
+    INPUT FROM VALUE(ramdrive + "CANDIDAT.IMP") NO-ECHO.
+    ASSIGN
+    wz-C-p-ids   = 0
+    wz-C-counter = 0.
+    REPEAT:
+        IF wz-C-counter = 4
+        THEN SET wz-C-p-ids.
+        ELSE SET wz-field.
+
+        wz-C-counter = wz-C-counter + 1.
+        IF      wz-C-counter   = 1 /* should be 'candidate'  */
+        THEN wz-type           = wz-field.
+        ELSE IF wz-C-counter   = 2 /* Source STRUCTURE       */
+        THEN wz-C-structure    = wz-field.
+        ELSE IF wz-C-counter   = 3 /* Source INTRODUCTION    */
+        THEN wz-C-introduction = wz-field.
+        ELSE IF wz-C-counter   = 4 /* College identification */
+        THEN wz-C-coll-ids     = wz-field.
+    END.
+    INPUT CLOSE.
+    wz-C-counter = wz-C-counter - 6.
+    IF  NOT(    wz-type           = "candidate"
+            AND wz-C-structure    = wz-P-structure
+            AND wz-C-introduction = wz-P-introduction
+            AND wz-C-counter      = INT(wz-field)
+            AND wz-C-coll-ids     = wz-P-coll-ids)
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message + " " + wz-type) 1.
+        call ADDTOLOG PROGRAM-NAME(1) 
+             VALUE(STRING(wz-C-structure)    + "/" + STRING(wz-P-structure)    + " | " 
+                 + STRING(wz-C-introduction) + "/" + STRING(wz-P-introduction) + " | "
+                 + STRING(wz-C-counter)      + "/" +        wz-field           + " | "
+                 +        wz-C-coll-ids      + "/" +        wz-P-coll-ids             ) 1.
+        wz-status = FALSE.
+    END.
+    IF wz-status
+    THEN DO:
+        wz-message = "(candidate::college)".
+        IF wz-C-coll-ids <> wz-P-coll-ids
+        THEN DO:
+		        call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message + " " + 
+		                                            wz-C-coll-ids + " | " + wz-P-coll-ids) 1.
+            wz-status = FALSE.
+        END.
+    END.
+    IF wz-status
+    THEN DO:
+        wz-message = "(candidate::parties)".
+        REPEAT i = 1 TO 41:
+        		IF wz-P-p-ids[i] > 0 
+        		THEN wz-parties = wz-parties + 1.
+        		
+        		IF wz-C-p-ids[i] <> wz-P-p-ids[i]
+            THEN DO:
+		            call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message + " " + 
+		                                                STRING(wz-C-p-ids[i]) + " | " + 
+		                                                STRING(wz-P-p-ids[i])          ) 1.
+                wz-status = FALSE.
+                LEAVE.
+            END.
+        END.
+    END.
+END.
+
+IF wz-status
+THEN DO:
+		FOR EACH party NO-LOCK WHERE party.disk-id = wz-disk-id AND party.p-id > 0:
+				wz-parties = wz-parties + 1.
+		END.
+		IF wz-parties > 40 
+		THEN ASSIGN
+         wz-message = "(party::count>40)"
+         wz-status  = FALSE.
+END.
+
+IF wz-status
+THEN DO:
+    {call.i &prg="import2i" &param=",wz-disk-id
+                                    ,wz-rel-s-disk-id
+                                    ,wz-rel-i-disk-id
+                                    ,wz-P-counter
+                                    ,wz-C-counter
+                                    ,wz-P-coll-ids
+                                    ,wz-e-ids
+                                    ,wz-coll-ids
+                                    ,wz-ignore-blanco
+                                    ,OUTPUT wz-status
+                                    ,OUTPUT wz-message"}
+    IF wz-status
+    THEN DO:
+    		/*******************/
+    		/* Import voltooid */
+    		/*******************/
+    		{call.i &prg="disfram" &param=",'import2s,importok','','','',TRUE"}
+    END.
+    ELSE DO:
+    		/**********************************************/
+    		/* Fouten gedetecteerd tijdens het importeren */
+    		/**********************************************/
+        {call.i &prg="disfram" &param=",'import2s,not_ok','',',' + wz-message,'',TRUE"}
+    END.
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message) 0.
+		IF SUBSTR( wz-message, 1, 20) = "(already processed::"
+		THEN wz-message = "copylis,errmes02".
+		ELSE wz-message = "," + wz-message.
+    {call.i &prg="disfram" &param=",'import2s,not_ok','',wz-message,'',TRUE"}
+END.
+
+call C_DEL VALUE(ramdrive + "EXCHANGE").
+call C_DEL VALUE(ramdrive + "KEYFILE").
+call C_DEL VALUE(ramdrive + "PARTY.ENC").
+call C_DEL VALUE(ramdrive + "PARTY.IMP").
+call C_DEL VALUE(ramdrive + "CANDIDATE.ENC").
+call C_DEL VALUE(ramdrive + "CANDIDATE.IMP").
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

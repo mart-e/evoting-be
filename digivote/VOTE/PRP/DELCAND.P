@@ -1,0 +1,98 @@
+/* Filename            : DELCAND.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEFINE VARIABLE endnum AS INTEGER FORMAT "9".
+DEFINE VARIABLE selnum AS INTEGER FORMAT "9".
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*                                                                      */
+/*        selecwr       Wegschrijven selektie record                    */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="selecwr"}          /* Wegschrijven selectie record 'selection'     */
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND LAST candidate WHERE candidate.disk-id = setup.disk-id
+                      AND candidate.s-id    = verkdat
+                      AND candidate.e-id    = verknum
+                      AND candidate.p-id    = partnum
+                      AND candidate.c-type  = candtyp 
+                  NO-LOCK NO-ERROR.
+IF AVAILABLE candidate
+THEN DO:
+    ASSIGN
+    endnum = candidate.c-id
+    selnum = candnum.
+    
+    trans-block:
+    DO TRANSACTION :
+        FIND candidate WHERE candidate.disk-id = setup.disk-id
+                         AND candidate.s-id    = verkdat
+                         AND candidate.e-id    = verknum
+                         AND candidate.p-id    = partnum
+                         AND candidate.c-type  = candtyp
+                         AND candidate.c-id    = candnum 
+                    NO-ERROR.
+        IF AVAILABLE candidate
+        THEN DO:
+            FIND FIRST party WHERE party.e-id = candidate.e-id
+                               AND party.p-id = candidate.p-id
+                          NO-ERROR.
+            IF AVAILABLE party AND party.p-id <> 0            
+            THEN DO:
+                IF candidate.c-type = 0
+                THEN party.num_can = party.num_can - 1.
+                ELSE party.num_sup = party.num_sup - 1.
+                party.MAC = "REFRESH".
+            END.
+            DELETE candidate.
+            REPEAT ON ENDKEY UNDO trans-block, LEAVE :
+                FIND NEXT candidate WHERE candidate.disk-id = setup.disk-id
+                                      AND candidate.s-id    = verkdat
+                                      AND candidate.e-id    = verknum
+                                      AND candidate.p-id    = partnum
+                                      AND candidate.c-type  = candtyp
+                                 NO-ERROR.
+                IF AVAILABLE candidate
+                THEN ASSIGN
+                     candidate.c-id = candidate.c-id - 1
+                     candidate.MAC  = "REFRESH".
+                ELSE LEAVE.
+            END.
+        END.
+    END.
+END.
+{call.i &prg="sec_part"}
+{call.i &prg="sec_cand"}
+
+ASSIGN
+candnum = 0
+menleav = 1.
+
+{return.i}
+/* eof */

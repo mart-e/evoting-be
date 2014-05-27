@@ -1,0 +1,68 @@
+/* Filename            : TRACERUN.P                                     */
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM prg2call AS C NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{cryprslt.i}
+{hlcvars.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR         logFile  AS C NO-UNDO.
+DEF VAR         prglvl   AS I NO-UNDO.
+
+/* Needed for {QUIT.I} */
+DEF VAR         prgSTAT  AS I NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/*************************************************************************/
+/* If called as 1st level program : QUIT without warning, message, ...   */
+/* Don't use {chklevel.i 1}, because this is for debugging reason only ! */
+IF PROGRAM-NAME(2) = ? 
+THEN DO:
+    {quit.i &corrupt=FALSE}
+END.
+/*************************************************************************/
+
+/*************************************************************************/
+/* Program Control Flow (PCF)                                            */
+/* --------------------                                                  */
+REPEAT WHILE PROGRAM-NAME(prglvl + 1) <> ?:
+    prglvl = prglvl + 1.
+END.
+prglvl = prglvl - 1.
+
+OUTPUT TO VALUE({runlevel.i prglvl}).
+PUT UNFORMATTED CAPS(prg2call).
+OUTPUT CLOSE.
+/*************************************************************************/
+
+FIND FIRST session NO-LOCK.
+logFile = {tracelog.i}.
+OUTPUT TO VALUE(logFile) APPEND.
+IF NOT session.trace
+THEN PUT UNFORMATTED "<".
+     PUT UNFORMATTED {PRGNAME.I prg2call}.
+IF NOT session.trace 
+THEN PUT UNFORMATTED " lvl='" STRING(prglvl) "'/>".
+OUTPUT CLOSE.
+
+RETURN. /* don't use {return.i} here */
+/* eof */

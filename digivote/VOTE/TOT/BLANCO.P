@@ -1,0 +1,60 @@
+/*@function sec=1*/
+/* Filename            : BLANCO.P                                       */
+/*
+<pvcs>
+<workFile>$Workfile:   BLANCO.P  $</workFile>
+<revision>$Revision: 1.3 $</revision>
+<workFileTimeStamp>$Modtime:   Mar 10 2004 12:18:54  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/BLANCO.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/03/01 16:11:56 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT/OUTPUT PARAMETERS                                       */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM VerkiezingsType   LIKE election.et-id  NO-UNDO.
+DEF INPUT  PARAM TaalGroep         AS I                 NO-UNDO.
+DEF OUTPUT PARAM Blanco            AS I                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+Blanco = 0.
+FOR EACH party, FIRST election WHERE election.et-id = VerkiezingsType
+                                 AND party.e-id     = election.e-id
+                                 AND party.p-id     = 0:
+    IF election.et-id = 1
+    THEN DO:
+        IF TaalGroep = -1
+        THEN call CRYPDEC PRPTOT party.vote_top. /* Sum of ALL BLANCO's    */
+        ELSE IF TaalGroep = 1
+        THEN call CRYPDEC PRPTOT party.vote_sup. /* Only NL BLANCO's       */
+        ELSE IF TaalGroep = 2
+        THEN call CRYPDEC PRPTOT party.vote_can. /* Only FR BLANCO's       */
+        ELSE call CRYPDEC PRPTOT party.vote_cs.  /* Only DU BLANCO's (N/A) */
+    END.
+    ELSE     call CRYPDEC PRPTOT party.vote_top.
+
+    Blanco = Blanco + INTEGER(result4).
+END.
+
+{return.i}
+/* eof */

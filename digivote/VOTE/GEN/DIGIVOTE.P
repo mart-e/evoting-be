@@ -1,0 +1,276 @@
+/* Filename            : DIGIVOTE.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   DIGIVOTE.P  $</workFile>
+<revision>$Revision: 1.22 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 01 2004 14:31:10  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/GEN/DIGIVOTE.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/07/29 14:30:56 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+<feedback>
+
+Any comment and / or improvement suggestion can be send directly to 
+the development team of Steria Benelux at the following email adress : 
+dv2004@steria.be
+
+</feedback>
+*/
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR prgSTAT              AS I INIT ?.
+DEF VAR wz-records           AS I                                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+/*@source sec=1*/
+DEF NEW SHARED VAR systeem   AS C     FORMAT "x(3)" INITIAL "NON" NO-UNDO.
+
+DEF NEW SHARED VAR maskey    LIKE meta.aesKey                     NO-UNDO.
+DEF NEW SHARED VAR seskey    LIKE meta.aesKey                     NO-UNDO.
+/*@source sec=0*/
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARS VIA INCLUDE FILE'S                                */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i "NEW"}    /* De variabelen voor het kleuren van de schermen */
+{selvar.i   "NEW"}    /* De variabelen voor de selection record         */
+{vargener.i "NEW"}    /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+/*@source sec=1*/
+{cryprslt.i "NEW"}    /* Variabelen voor encryptie                      */
+/*@source sec=0*/
+{disfram.i  "NEW"}    /* Variabelen voor display frame disframe         */
+{printer.i  "NEW SHARED"} /* Variabelen om printerbestanden te beheren  */
+{hlcvars.i  "NEW"}        /* Variabelen voor HLC-calls                  */
+{logging.i  "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        ON STATEMENTS VIA INCLUDE FILES                               */
+/*                                                                      */
+/************************************************************************/
+{curdutab.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " E-VOTING " AT 1
+    WITH FRAME main-frame ROW 4 CENTERED NO-LABEL NO-BOX
+    COLOR DISPLAY VALUE(menu_bg).
+
+/************************************************************************/
+/*                                                                      */
+/*        START OF PROCEDURE DIGIVOTE                                   */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*   STATUS BERICHT DEFAULT 'PRESS SPACE BAR TO CONTINUE' AF ZETTEN     */
+/************************************************************************/
+STATUS INPUT OFF.
+
+/************************************************************************/
+/*   OPHALEN RAMDRIVE LETTER (SLECHTS EENMALIG !!)                      */
+/************************************************************************/
+call C_GETENV "RAM" "ramdrive".
+IF ramdrive = "?" THEN ramdrive = "C".
+ramdrive = ramdrive + ":\".
+
+/************************************************************************/
+/*   OPHALEN TEMP (SLECHTS EENMALIG !!)                                 */
+/************************************************************************/
+call C_GETENV "TEMP" "temp".
+IF temp = "?" THEN temp = "\VOTE\TEMP".
+
+/************************************************************************/
+/*   Let the program begin ...                                          */
+/************************************************************************/
+
+/* Prevent looping ... */
+call C_DEL VALUE(ramdrive + "VOTE\$_TMPSH_.BAT").
+
+RUN traceprg(prgSTAT,">>>").
+{call.i &prg="init_pwd"}
+
+{call.i &prg="mkconten"}
+{call.i &prg="set_vbl" &param=", 0, 0, 0, FALSE"}
+call C_DEL "\VOTE\SPOOL\PRINT.JOB".
+
+/* Start application with a security check */
+{startdig.i}
+
+/* Check Database integrity */
+{call.i &prg="sec_chk" &param=",FALSE,TRUE"}
+
+/* Check presence of only 1 SETUP-record */
+wz-records = 0.
+FOR EACH setup NO-LOCK:
+    wz-records = wz-records + 1.
+END.
+IF wz-records = 1
+THEN DO:
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    IF TRIM(setup.areaname) = ""
+    THEN DO:
+        {call.i &prg="MyMess" &param=", 'Disk not properly configured for this election ! (cfr. logfile)'"}
+        call ADDTOLOG PROGRAM-NAME(1) "Follow appropriate procedure to generate MAMA !" 1.
+        call ADDTOLOG PROGRAM-NAME(1) "No proper name given to disk !" 1.
+        {quit.i &corrupt=FALSE}
+    END.
+END.
+ELSE DO:
+    {call.i &prg="MyMess" &param=", 'Disk not properly configured for this election ! (cfr. logfile)'"}
+    call ADDTOLOG PROGRAM-NAME(1) "Follow appropriate procedure to generate MAMA !" 1.
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Only 1 SETUP-record is allowed ! [" + STRING(wz-records) + "]") 1.
+    {quit.i &corrupt=FALSE}
+END.
+
+/* Check presence of at least 1 ELECTION-record */
+wz-records = 0.
+FOR EACH election NO-LOCK:
+    wz-records = wz-records + 1.
+END.
+IF wz-records = 0
+THEN DO:
+    {call.i &prg="MyMess" &param=", 'Disk not properly configured ! No elections found ! (cfr. logfile)'"}
+    call ADDTOLOG PROGRAM-NAME(1) "Follow appropriate procedure to generate MAMA !" 1.
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("At least 1 ELECTION-record is needed ! [" + STRING(wz-records) + "]") 1.
+    {quit.i &corrupt=FALSE}
+END.
+
+/***********************************/
+/* Initialize global variables ... */
+/***********************************/
+taalkode = -1.
+
+/******************************************/
+/* Check if it is an automated resume ... */
+/******************************************/
+call C_TSTFN VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME").
+IF fileok = 1
+THEN DO:
+    ASSIGN 
+    taalkode    = -1
+    resume-list = "".
+    call DIGEST VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME").
+    IF session.digest          = hex-digest
+    AND LENGTH(hex-digest)     = 40
+    AND LENGTH(session.digest) = 40
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Resuming previous session ... (digest verified !)" 0.
+        
+        /* Prevent a second resume ... */
+        FIND FIRST session NO-ERROR.
+        IF AVAILABLE session
+        THEN DO:
+            ASSIGN
+            session.digest = ""
+            session.MAC    = "REFRESH".
+            {call.i &prg="sec_sess"}
+        END.
+
+        INPUT FROM VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME") NO-ECHO.
+        SET result3.
+        IF setup.password = result3
+        THEN DO:
+            SET result4.
+            call C_CHECKINT VALUE(result4).
+            IF stat = 0 THEN taalkode = INT(result4).
+            SET resume-list.
+        END.
+        INPUT CLOSE.
+    END.
+    IF  taalkode                 = setup.lang-pc
+    AND NUM-ENTRIES(resume-list) > 0
+    THEN DO:
+        FIND FIRST selection NO-ERROR.
+        IF NOT AVAILABLE selection
+        THEN verkdat           = TODAY.
+        ELSE ASSIGN
+             verkdat           = selection.s-id
+             selection.lang-pc = taalkode.
+        
+        IF ENTRY(1,resume-list) = {prgname.i PROGRAM-NAME(1)}
+        THEN DO:
+            {call_var.i &prg="ENTRY(2,resume-list)"}
+            {quit.i &corrupt=FALSE}  /* returns control to operating system */
+        END.
+    END.
+
+    /* Prevent a second resume ... */
+    FIND FIRST session NO-ERROR.
+    IF AVAILABLE session
+    THEN DO:
+        ASSIGN
+        session.digest = ""
+        session.MAC    = "REFRESH".
+        {call.i &prg="sec_sess"}
+    END.
+    /* Delete RESUME-file */
+    call C_DEL VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME").
+    
+    call ADDTOLOG PROGRAM-NAME(1) "Predefined resume not succeeded ..." 0.
+    call ADDTOLOG PROGRAM-NAME(1) "Resuming with normal proces !" 0.
+    ASSIGN
+    taalkode    = -1
+    resume-list = "".
+END.
+
+/**************************************************/
+/* Invullen van de taalkeuze in VAR taalkode      */
+/**************************************************/
+VIEW FRAME main-frame.
+{call.i &prg="taalkeus"}
+
+IF taalkode > 0
+THEN DO :
+    /***********************************************/
+    /* Vragen naar paswoord en testen van paswoord */
+    /***********************************************/
+    CREATE ALIAS from_elect FOR DATABASE elect NO-ERROR.
+    {call.i &prg="startdig"}
+    DELETE ALIAS from_elect.
+    
+    IF systeem <> "NON"
+    THEN DO:
+        FIND FIRST selection NO-ERROR.
+        IF NOT AVAILABLE selection
+        THEN verkdat          = TODAY.
+        ELSE DO:
+            ASSIGN
+            verkdat           = selection.s-id
+            selection.lang-pc = taalkode.
+        END.
+
+        IF      systeem = "PRP"
+        THEN DO:
+            IF setup.sys-type = "S"
+            THEN DO:
+                {call.i &prg="struct"}
+            END.
+            ELSE DO:
+                {call.i &prg="prpgener"}
+            END.
+        END.
+        ELSE IF systeem = "TOT"
+        THEN DO :
+            {call.i &prg="totgener"}
+        END.
+    END.
+END.
+
+{quit.i &corrupt=FALSE}  /* returns control to operating system */
+/* eof */

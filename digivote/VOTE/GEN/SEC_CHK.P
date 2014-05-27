@@ -1,0 +1,43 @@
+/* Filename            : SEC_CHK.P                                     */
+
+{chklevel.i 1}
+
+/****************************************************************/
+/*                                                              */
+/*  INPUT PARAMETERS                                            */
+/*                                                              */
+/****************************************************************/
+DEF INPUT PARAM notify_me AS L NO-UNDO.
+DEF INPUT PARAM quit_prog AS L NO-UNDO.
+
+/****************************************************************/
+/*                                                              */
+/*  LOCAL VARIABLES                                             */
+/*                                                              */
+/****************************************************************/
+DEF VAR         stop_it   AS C NO-UNDO.
+
+/****************************************************************/
+/*                                                              */
+/*  START PROCEDURE                                             */
+/*                                                              */
+/****************************************************************/
+PAUSE 0 NO-MESSAGE.
+MESSAGE "Performing security check ... please wait ...".
+
+stop_it = (IF quit_prog 
+           THEN "quit" 
+           ELSE "go-on").
+
+{call.i &prg="ChkSec01" &param=",stop_it"}
+{call.i &prg="ChkSec02" &param=",stop_it"}
+{call.i &prg="ChkSec03" &param=",stop_it"}
+
+IF notify_me
+THEN DO:
+    {call.i &prg="MyMess" &param=", 'Check complete !'"}
+END.
+ELSE PAUSE 0 NO-MESSAGE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,94 @@
+/* Filename            : TOTHASH.P                                      */
+
+{chklevel.i 1}
+
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-dsklbl      AS C FORMAT "x(11)"               NO-UNDO.
+DEF OUTPUT PARAM wz-status      AS L                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES from FILE                                    */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}          /* Variabelen voor het TOT hoofdmenu TOGENEME     */
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-calc-mac             AS C FORMAT "x(24)"               NO-UNDO.
+DEF VAR wz-file-mac             AS C FORMAT "x(24)"               NO-UNDO.
+DEF VAR wz-action               AS C FORMAT "x(20)"               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+
+/**************************************/
+/* Display "Kontrole van de gegevens" */
+/**************************************/
+{call.i &prg="disfram" &param=",'blocage,sec_chk','','','',FALSE"}
+
+wz-status = FALSE.
+
+CALL C_TSTFN "A:\B009".
+IF fileok = 0
+THEN DO :
+    call ADDTOLOG PROGRAM-NAME(1) "No digest for results found on diskette ! (B009 missing)" 1.
+END.
+ELSE DO:
+		/* calculate MAC on provided results file */
+		call CRYPKEYS masterk sessionk.
+		call CRYPMAC RESMAC "A:\B001" "NULL".
+		IF crypStat = 0
+		THEN DO:
+		    wz-calc-mac = hexMAC.
+		    call READMAC "A:\B009".
+		    IF crypStat = 0
+		    THEN DO:
+		        wz-file-mac = hexMAC.
+			      /* check if MAC's match each other */
+      			IF wz-calc-mac = wz-file-mac
+			      THEN DO:
+				        call ADDTOLOG PROGRAM-NAME(1) VALUE("Result MAC = OK") 0.
+				        wz-status = TRUE.
+			      END.
+			      ELSE DO:
+    			      call ADDTOLOG PROGRAM-NAME(1) VALUE("Calc MAC = " + wz-calc-mac + "(" + STRING(LENGTH(wz-calc-mac)) + ")") 0.
+     			      call ADDTOLOG PROGRAM-NAME(1) VALUE("File MAC = " + wz-file-mac + "(" + STRING(LENGTH(wz-file-mac)) + ")") 0.
+			      END.
+			  END.
+		END.
+		{call.i &prg="init_pwd"}
+END.
+
+IF NOT wz-status
+THEN DO:
+		call ADDTOLOG PROGRAM-NAME(1) VALUE("Result MAC = NOT OK") 1.
+													/* De gegevens op deze diskette zijn niet consistent */
+													/* De ???????? diskette werd gebruikt.               */
+													/*                                                   */
+		/* wz-dsklbl == "mstr" : Steek de diskette BACKUP in de diskettelezer      */
+		/* wz-dsklbl <> "mstr" : Hertellen is noodzakelijk.                        */
+		ASSIGN
+		wz-dsklbl = IF wz-dsklbl = "MASTER"
+								THEN "mstr"
+								ELSE "bck" + SUBSTR(wz-dsklbl,LENGTH(wz-dsklbl),1)
+		wz-action = IF wz-dsklbl = "mstr"
+								THEN "pmdtot01,notdsk05"
+								ELSE "trdurnma,err_dat4".
+		{call.i &prg="disfram" &param=",'trdurnma,err_dat1','trdurnma,used' + wz-dsklbl,'',wz-action,TRUE"}
+END.
+
+{return.i}
+/* eof */

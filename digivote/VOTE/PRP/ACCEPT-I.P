@@ -1,0 +1,215 @@
+/* Filename            : ACCEPT-I.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{selvar.i}
+{cfvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-tmp-shell           AS C FORMAT "x(50)"                NO-UNDO.
+DEF VAR wz-resume              AS C FORMAT "x(50)"                NO-UNDO.
+DEF VAR wz-bulkload-log        AS C FORMAT "x(50)"                NO-UNDO.
+
+DEF VAR wz-bulkload-ready      AS L                               NO-UNDO.
+
+DEF VAR wz-seldisk             AS C FORMAT "x(45)"                NO-UNDO.
+DEF VAR wz-resume-info         AS C FORMAT "x(78)" EXTENT 2       NO-UNDO.
+
+DEF VAR wz-errorfile           AS L EXTENT 2                      NO-UNDO.
+
+DEF VAR wz-disk-id             LIKE organigram.disk-id            NO-UNDO.
+DEF VAR wz-s-id                AS C FORMAT "x(10)"                NO-UNDO.
+DEF VAR wz-e-id                LIKE election.e-id                 NO-UNDO.
+DEF VAR wz-coll-id             LIKE election.coll-id              NO-UNDO.
+DEF VAR wz-p-id                LIKE party.p-id                    NO-UNDO.
+DEF VAR wz-c-type              LIKE candidate.c-type              NO-UNDO.
+DEF VAR wz-c-id                LIKE candidate.c-id                NO-UNDO.
+
+DEF VAR wz-imported            AS I                               NO-UNDO.
+DEF VAR wz-checked             AS I                               NO-UNDO.
+DEF VAR wz-loaded              AS I                               NO-UNDO.
+
+DEF VAR i                      AS I                               NO-UNDO.
+DEF VAR wz-error               AS I                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-tmp-shell    = ramdrive + "VOTE\$_TMPSH_.BAT"
+wz-resume       = ramdrive + "VOTE\TRACE.LOG\RESUME"
+wz-bulkload-log = ramdrive + "BULKLOAD.LOG".
+
+{call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+IF NUM-ENTRIES(resume-list) = 0
+THEN DO:
+    /* Connect to remote database on drive D: */
+    DO WHILE NOT CONNECTED("d_elect"):
+        CONNECT D:\VOTE\ELECT.DB -1 -ld d_elect NO-ERROR.
+    END.
+    {call.i &prg="accept2i"
+            &param=",wz-tmp-shell,wz-resume,wz-bulkload-log,
+                     OUTPUT wz-bulkload-ready"}
+    {call.i &prg="sec_sess"}
+
+    HIDE FRAME disframe NO-PAUSE.
+
+    IF wz-bulkload-ready
+    THEN DO:
+        /* Make sure the 'disk' doesn't contain any party or candidate info */
+        DELETE FROM party     WHERE party.disk-id     = cf-disk-id.
+        DELETE FROM candidate WHERE candidate.disk-id = cf-disk-id.
+        /* Temporary quit PROGRESS and perform BulkLoad ... */
+        {quit.i &corrupt=FALSE}
+    END.
+END.
+ELSE DO:
+    /* Prevent resuming a second time ... */
+    resume-list = "".
+    
+    INPUT FROM VALUE(wz-resume) NO-ECHO.
+    REPEAT i = 1 TO 4:
+        SET ^. /* SKIP 4 lines */
+    END.
+    SET wz-seldisk.
+    SET wz-resume-info[1].
+    SET wz-resume-info[2].
+    INPUT CLOSE.
+
+    /* Clean up temporary files ... */
+    call C_DEL VALUE(wz-resume).
+    call C_DEL VALUE(wz-tmp-shell).
+    call C_DEL VALUE(ENTRY(1,wz-resume-info[1])).
+    call C_DEL VALUE(ENTRY(1,wz-resume-info[2])).
+    
+    call C_TSTFN VALUE(ENTRY(3,wz-resume-info[1])).
+    wz-errorfile[1] = (fileok = 1).
+    
+    call C_TSTFN VALUE(ENTRY(3,wz-resume-info[2])).
+    wz-errorfile[2] = (fileok = 1).
+
+    IF  NOT wz-errorfile[1]
+    AND NOT wz-errorfile[2]
+    THEN DO:
+        ASSIGN
+        wz-loaded   = INT(ENTRY(4,wz-resume-info[1]))
+                    + INT(ENTRY(4,wz-resume-info[2]))
+        wz-checked  = 0
+        wz-imported = 0.
+        
+        /* Check if party-table contains all imported party-records */
+        INPUT FROM VALUE(ENTRY(2,wz-resume-info[1])) NO-ECHO.
+        REPEAT:
+            IF wz-checked <> wz-imported THEN LEAVE.
+            SET wz-disk-id 
+                wz-s-id wz-e-id wz-coll-id
+                wz-p-id.
+
+            PUT SCREEN COLOR GRAY/BLACK ROW 23 COLUMN 69 
+                       STRING(wz-checked, ">,>>9") + "/" + STRING(wz-loaded,">,>>9").
+        
+            FIND FIRST party WHERE party.disk-id = wz-disk-id
+                               AND party.s-id    = DATE(INT(SUBSTR(wz-s-id,1,2)),
+                                                        INT(SUBSTR(wz-s-id,4,2)),
+                                                        INT(SUBSTR(wz-s-id,7)))
+                               AND party.e-id    = wz-e-id
+                               AND party.coll-id = wz-coll-id
+                               AND party.p-id    = wz-p-id
+                           NO-LOCK NO-ERROR.
+            IF AVAILABLE party
+            THEN wz-imported = wz-imported + 1.
+            wz-checked = wz-checked + 1.
+        END.
+        INPUT CLOSE.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Party|" + STRING(wz-imported)        + "|"
+                                                     + STRING(wz-checked)         + "|"
+                                                     + ENTRY(3,wz-resume-info[1]) + "|"
+                                                     + STRING(wz-loaded)).
+                                                     
+        /* Check if candidate-table contains all imported candidate-records */
+        INPUT FROM VALUE(ENTRY(2,wz-resume-info[2])) NO-ECHO.
+        REPEAT:
+            IF wz-checked <> wz-imported THEN LEAVE.
+            SET wz-disk-id 
+                wz-s-id wz-e-id wz-coll-id
+                wz-p-id
+                wz-c-type wz-c-id.
+
+            PUT SCREEN COLOR GRAY/BLACK ROW 23 COLUMN 69 
+                       STRING(wz-checked, ">,>>9") + "/" + STRING(wz-loaded,">,>>9").
+        
+            FIND FIRST candidate WHERE candidate.disk-id = wz-disk-id
+                                   AND candidate.s-id    = DATE(INT(SUBSTR(wz-s-id,1,2)),
+                                                                INT(SUBSTR(wz-s-id,4,2)),
+                                                                INT(SUBSTR(wz-s-id,7)))
+                                   AND candidate.e-id    = wz-e-id
+                                   AND candidate.coll-id = wz-coll-id
+                                   AND candidate.p-id    = wz-p-id
+                                   AND candidate.c-type  = wz-c-type
+                                   AND candidate.c-id    = wz-c-id
+                               NO-LOCK NO-ERROR.
+            IF AVAILABLE candidate
+            THEN wz-imported = wz-imported + 1.
+            wz-checked = wz-checked + 1.
+        END.
+        INPUT CLOSE.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Candidate|" + STRING(wz-imported)        + "|"
+                                                         + STRING(wz-checked)         + "|"
+                                                         + ENTRY(3,wz-resume-info[2]) + "|"
+                                                         + STRING(wz-loaded)).
+                                                     
+
+        PUT SCREEN ROW 23 COLUMN 69 FILL(" ",11).
+        
+        /* Cleanup data files */
+        call C_DEL VALUE(ENTRY(2,wz-resume-info[1])).
+        call C_DEL VALUE(ENTRY(2,wz-resume-info[2])).
+        
+        wz-error = -1.
+        IF wz-imported = wz-loaded
+        THEN DO:
+            FIND FIRST organigram WHERE organigram.disk-id = wz-disk-id 
+                                     NO-ERROR.
+            IF AVAILABLE organigram
+            THEN DO:
+                ASSIGN
+                organigram.verwerkt = TRUE
+                organigram.MAC      = "REFRESH".
+                {call.i &prg="sec_orga"}
+                call C_DEL VALUE(wz-bulkload-log).
+                {call.i &prg="disfram" &param=",'import2s,importok',
+                                                ',' + wz-seldisk,
+                                                '','',TRUE"}
+            END.
+            ELSE wz-error = 303. /* Geen gerelateerde ingave schijf gevonden */
+        END.
+        ELSE     wz-error = 502. /* Verkeerd aantal lijnen verwerkt dan verwacht */
+
+        IF wz-error <> -1
+        THEN DO:
+            /* Cleanup party- and candidate-table */
+            DELETE FROM party     WHERE party.disk-id     = wz-disk-id.
+            DELETE FROM candidate WHERE candidate.disk-id = wz-disk-id.
+            {call.i &prg="disfram" &param=",'import2s,not_ok',
+                                            'import2s,error' + STRING(wz-error),
+                                            ',' + wz-seldisk,
+                                            '',TRUE"}
+        END.
+    END.
+END.
+
+{return.i}
+/* eof */

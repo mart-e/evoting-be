@@ -1,0 +1,151 @@
+/* Filename            : TOTEXP.P                                       */
+/*
+<pvcs>
+<workFile>$Workfile:   TOTEXP.P  $</workFile>
+<revision>$Revision: 1.10 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:26:06  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/TOTEXP.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2008/11/04 13:15:01 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARS                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF VAR dest-id  LIKE organigram.disk-id                          NO-UNDO.
+
+DEF VAR torig    AS C FORMAT "x(40)"                              NO-UNDO.
+DEF VAR tdest    AS C FORMAT "x(40)"                              NO-UNDO.
+DEF VAR tvoorz   AS C FORMAT "x(30)"                              NO-UNDO.
+DEF VAR tadr     AS C FORMAT "x(30)"                              NO-UNDO.
+DEF VAR tpost    AS C FORMAT "x(4)"                               NO-UNDO.
+DEF VAR tlok     AS C FORMAT "x(25)"                              NO-UNDO.
+DEF VAR ttel     AS C FORMAT "x(20)"                              NO-UNDO.
+
+DEF VAR men_tit  AS C FORMAT "x(30)"                              NO-UNDO.
+DEF VAR men_mes1 AS C FORMAT "x(7)"                               NO-UNDO.
+DEF VAR men_mes2 AS C FORMAT "x(25)"                              NO-UNDO.
+DEF VAR adrmes   AS C FORMAT "x(12)"                              NO-UNDO.
+DEF VAR telmes   AS C FORMAT "x(12)"                              NO-UNDO.
+DEF VAR mes01    AS C FORMAT "x(65)"                              NO-UNDO.
+DEF VAR men_ok   AS C FORMAT "x(15)" EXTENT 2                     NO-UNDO.
+DEF VAR menusel  AS I FORMAT "9"                                  NO-UNDO.
+DEF VAR execsel  AS I FORMAT "9"                                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    tdest    AT 2                                  SKIP(1)
+    men_mes2 AT 2 tvoorz AT 29            SPACE(2) SKIP
+    adrmes   AT 2 tadr   AT 29            SPACE(2) SKIP
+                  tpost  AT 29 tlok AT 34 SPACE(2) SKIP(1)
+    telmes   AT 2 ttel   AT 29
+    WITH FRAME totfiche 
+        TITLE men_tit
+        ROW 9 
+        NO-LABELS
+        OVERLAY 
+        CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'totexpin,tit01',  30,OUTPUT men_tit"}
+{call.i &prg="mesfil" &param=",'general,bureau',   7,OUTPUT men_mes1"}
+{call.i &prg="mesfil" &param=",'general,p_person',25,OUTPUT men_mes2"}
+{call.i &prg="mesfil" &param=",'general,address', 12,OUTPUT adrmes"}
+{call.i &prg="mesfil" &param=",'general,phone',   12,OUTPUT telmes"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST organigram WHERE organigram.disk-id = setup.disk-id NO-LOCK NO-ERROR.
+
+ASSIGN
+torig   = organigram.sys-type 
+        + organigram.org-type 
+        + setup.area
+        + STRING(organigram.orginator,"999")
+dest-id = INT(organigram.t-disks).      
+FIND FIRST organigram WHERE organigram.disk-id = dest-id NO-LOCK NO-ERROR.
+tdest   = organigram.sys-type 
+        + organigram.org-type 
+        + organigram.area[taalkode]
+        + STRING(organigram.orginator,"999").
+FIND FIRST organigram WHERE organigram.disk-id = setup.disk-id NO-ERROR.
+ASSIGN
+tvoorz  = organigram.name
+tadr    = organigram.adres
+tpost   = organigram.postcode
+tlok    = organigram.lokal
+ttel    = organigram.tel-nr.
+
+Export-Block:
+REPEAT :
+    ON ESC END-ERROR.
+    REPEAT :
+        {call.i &prg="discolme" &param=",'general,fkey03',0"}
+        PAUSE 0 NO-MESSAGE.
+        DISPLAY men_mes2 tdest adrmes telmes WITH FRAME totfiche.
+        UPDATE tvoorz tadr tpost AUTO-RETURN tlok ttel WITH FRAME totfiche.
+        LEAVE.
+    END.
+    IF KEYFUNCTION(LASTKEY) = "END-ERROR"
+    OR KEYFUNCTION(LASTKEY) = "ESC"
+    THEN LEAVE Export-Block.
+
+    ASSIGN
+    organigram.name     = tvoorz
+    organigram.adres    = tadr
+    organigram.postcode = tpost
+    organigram.lokal    = tlok
+    organigram.tel-nr   = ttel
+    organigram.MAC      = "REFRESH".
+    {call.i &prg="sec_orga"}
+    
+    HIDE FRAME totfiche NO-PAUSE.
+    IF tdest <> ""
+    THEN DO :
+        {call.i &prg="delrdisk"}     /* Vernietigen van de files op ramdisk */
+        OUTPUT TO VALUE(ramdrive + "TOTEXP.INF").
+        PUT UNFORMATTED
+            """" tdest  """"         SKIP
+            """" tvoorz """"         SKIP
+            """" tadr   """"         SKIP
+            """" tpost " " tlok """" SKIP
+            """" ttel   """"         SKIP.
+        OUTPUT CLOSE.
+        
+        /* Kreatie van de totalen */
+        {call.i &prg="creattot" &param=",torig,tdest"}
+        
+        call C_DEL VALUE(ramdrive + "TOTEXP.INF").
+        {call.i &prg="delrdisk"} /* Vernietigen van de files op ramdisk  */
+    END.
+    LEAVE Export-Block.
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+HIDE FRAME totfiche NO-PAUSE.
+
+{return.i}
+/* eof */

@@ -1,0 +1,93 @@
+/* Filename            : SELVERK.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{selvar.i}            /* De variabelen voor de selection record         */
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+
+/*
+ *      key_dis     : De variabele voor CHOOSE ROW van het scherm
+ *                    Indeling variabele :
+ *                    1-2   : election.e-id
+ *                    3-4   : Spatie
+ *                    5     : Naam verkiezing
+ *      down-num    : Het aantal down lijnen voor het scherm
+*/
+
+DEF VAR key_dis         AS C FORMAT "x(55)"                       NO-UNDO.
+DEF VAR down-num        AS I                                      NO-UNDO.
+
+DEF VAR mes1            AS C FORMAT "x(38)"                       NO-UNDO.
+DEF VAR men_tit         AS C FORMAT "x(38)"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME pmlordge SCROLL 1 down-num DOWN ROW 5
+    TITLE men_tit NO-LABELS OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*                                                                      */
+/*        initverk              Initialisatie van verkiezing            */
+/*        edit_epc              Editeren van de gekozen verkiezing      */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmlordge,mes01',38,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmlordge,tit01',38,OUTPUT men_tit"}
+
+{call.i &prg="initverk"}            /* Initialisatie van een verkiezing */
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+{selitem.g
+ &tab_name     = "election"
+ &where        = "(election.s-id     = verkdat AND
+                   setup.sys-type   <> 'I'           ) OR
+                  (election.s-id     = verkdat AND
+                   setup.sys-type    = 'I'     AND
+                   election.org-type = setup.org-type)"
+ &key_dis      = "STRING(election.e-id,'99') 
+               + FILL(' ',2)
+               + election.long-name[taalkode] 
+               + ' '
+               + election.coll_name[taalkode]"
+ &fkey         = "01"
+ &fra_name     = "pmlordge"    
+ &fra_capture  = "verknum = INT(SUBSTR(key_dis,1,2))
+                  verkben = SUBSTR(key_dis,5,53)"
+ &cursor_left  = 5
+ &cursor_right = 2
+ &action_type  = "E"
+ &action_flag  = 54
+ &action_keys  = "F1,RETURN"
+}
+
+{return.i}
+/* eof */

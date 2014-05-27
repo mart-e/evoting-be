@@ -1,0 +1,31 @@
+/* Filename            : BIJLPRTD.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{typvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST session NO-ERROR.
+IF LOOKUP(STRING(et-ind),session.print_done) = 0
+THEN DO:
+    ASSIGN
+    session.print_done = session.print_done
+                       + (IF LENGTH(session.print_done) > 0 
+                          THEN ","
+                          ELSE "")
+                       + STRING(et-ind)
+    session.MAC        = "REFRESH".
+    {call.i &prg="sec_sess"}
+END.
+
+{return.i}
+/* eof */

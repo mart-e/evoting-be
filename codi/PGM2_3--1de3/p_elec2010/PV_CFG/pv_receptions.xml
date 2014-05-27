@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  Bureau_ColFlags=" COL_Editable COL_Invisible" Bureau2_ColFlags=" COL_Editable COL_Invisible" INS_ColFlags=" COL_Editable COL_Invisible" Date_ColFlags=" COL_Editable COL_Invisible" Observations_ColFlags=" COL_Editable COL_Invisible" BV_1_ColFlags=" COL_Editable COL_Invisible" BV_2_ColFlags=" COL_Editable COL_Invisible" BV_3_ColFlags=" COL_Editable COL_Invisible" BV_4_ColFlags=" COL_Editable COL_Invisible" BV_5_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<Bureau colID="1" >Vote automatisé</Bureau>
+		<Bureau2 colID="2" >Geautomatiseerde stemming</Bureau2>
+		<INS colID="3" >62009</INS>
+		<Date colID="4" >020520101511</Date>
+		<Observations colID="5" ></Observations>
+		<BV_1 colID="6" >0</BV_1>
+		<BV_2 colID="7" >0</BV_2>
+		<BV_3 colID="8" >0</BV_3>
+		<BV_4 colID="9" >0</BV_4>
+		<BV_5 colID="10" >0</BV_5>
+	</row>
+	<row rowNumber="2" rowFlags="">
+		<Bureau colID="1" >Bur. dépouillement 1</Bureau>
+		<Bureau2 colID="2" >Telbureau nr. 1</Bureau2>
+		<INS colID="3" >62009</INS>
+		<Date colID="4" >020520101511</Date>
+		<Observations colID="5" ></Observations>
+		<BV_1 colID="6" >1</BV_1>
+		<BV_2 colID="7" >2</BV_2>
+		<BV_3 colID="8" >0</BV_3>
+		<BV_4 colID="9" >0</BV_4>
+		<BV_5 colID="10" >0</BV_5>
+	</row>
+	<row rowNumber="3" rowFlags="">
+		<Bureau colID="1" >Bur. dépouillement 2</Bureau>
+		<Bureau2 colID="2" >Telbureau nr. 2</Bureau2>
+		<INS colID="3" >62009</INS>
+		<Date colID="4" >020520101512</Date>
+		<Observations colID="5" ></Observations>
+		<BV_1 colID="6" >3</BV_1>
+		<BV_2 colID="7" >4</BV_2>
+		<BV_3 colID="8" >0</BV_3>
+		<BV_4 colID="9" >0</BV_4>
+		<BV_5 colID="10" >0</BV_5>
+	</row>
+	<row rowNumber="4" rowFlags="">
+		<Bureau colID="1" >Bur. dépouillement 3</Bureau>
+		<Bureau2 colID="2" >Telbureau nr. 3</Bureau2>
+		<INS colID="3" >62009</INS>
+		<Date colID="4" >020520101512</Date>
+		<Observations colID="5" ></Observations>
+		<BV_1 colID="6" >5</BV_1>
+		<BV_2 colID="7" >6</BV_2>
+		<BV_3 colID="8" >0</BV_3>
+		<BV_4 colID="9" >0</BV_4>
+		<BV_5 colID="10" >0</BV_5>
+	</row>
+</TD_XML_Table>

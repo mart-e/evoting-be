@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  OuvertureLieu_ColFlags=" COL_Editable COL_Invisible" OuvertureDate_ColFlags=" COL_Editable COL_Invisible" OuvertureHeure_ColFlags=" COL_Editable COL_Invisible" Observations_ColFlags=" COL_Editable COL_Invisible" FermetureLieu_ColFlags=" COL_Editable COL_Invisible" FermetureDate_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags=" ROW_New">
+		<OuvertureLieu colID="1" >AYWAILLE</OuvertureLieu>
+		<OuvertureDate colID="2" >13/06/2010</OuvertureDate>
+		<OuvertureHeure colID="3" >10:21</OuvertureHeure>
+		<Observations colID="4" ></Observations>
+		<FermetureLieu colID="5" >AYWAILLE </FermetureLieu>
+		<FermetureDate colID="6" >21/04/2010</FermetureDate>
+	</row>
+</TD_XML_Table>

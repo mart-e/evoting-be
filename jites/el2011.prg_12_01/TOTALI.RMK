@@ -1,0 +1,36 @@
+Objs=\el2011.prg\obj\\
+
+Prg=\el2011.prg\\
+
+ch=$(Prg)jites.ch
+
+.PRG.OBJ:
+   \clipper5\bin\Clipper $< /O$(Objs)$*
+
+
+$(Objs)JITES.OBJ:    $(Prg)jites.prg     $(ch)
+$(Objs)jt_netwk.obj: $(Prg)jt_netwk.prg  $(ch)
+$(Objs)jt_gmsg.obj:  $(Prg)jt_gmsg.prg   $(ch)
+$(Objs)jt_open.obj:  $(Prg)jt_open.prg   $(ch)
+$(Objs)jt_acces.obj: $(Prg)jt_acces.prg  $(ch)
+$(Objs)jt_quit.obj:  $(Prg)jt_quit.prg   $(ch)
+$(Objs)jt_brows.obj: $(Prg)jt_brows.prg  $(ch)
+$(Objs)jt_resul.obj: $(Prg)jt_resul.prg  $(ch)
+$(Objs)jt_total.obj: $(Prg)jt_total.prg  $(ch)
+$(Objs)jt_elect.obj: $(Prg)jt_elect.prg  $(ch)
+$(Objs)jt_recup.obj: $(Prg)jt_recup.prg  $(ch)
+$(Objs)jt_rdisk.obj: $(Prg)jt_rdisk.prg  $(ch)
+TOTALI.EXE:  $(Objs)JITES.obj    \
+             $(Objs)jt_netwk.obj \
+             $(Objs)jt_gmsg.obj  \
+             $(Objs)jt_open.obj  \
+             $(Objs)jt_acces.obj \
+             $(Objs)jt_quit.obj  \
+             $(Objs)jt_brows.obj \
+             $(Objs)jt_resul.obj \
+             $(Objs)jt_total.obj \
+             $(Objs)jt_elect.obj \
+             $(Objs)jt_recup.obj \
+             $(Objs)jt_rdisk.obj 
+   \clipper5\bin\RTLink @$(Prg)totali.lnk
+TOTALI.EXE: 

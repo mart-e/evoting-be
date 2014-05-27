@@ -1,0 +1,331 @@
+/* Filename            : INITEL_I.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM diskid    LIKE setup.disk-id                     NO-UNDO.
+DEF INPUT  PARAM systype   LIKE setup.sys-type                    NO-UNDO.
+DEF INPUT  PARAM orgtype   LIKE setup.org-type                    NO-UNDO.
+DEF INPUT  PARAM area      LIKE setup.areaname                    NO-UNDO.
+DEF INPUT  PARAM area-id   LIKE setup.orginator                   NO-UNDO.
+
+DEF OUTPUT PARAM wz-status AS L INIT FALSE                        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{disfram.i}
+{initelec.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES AND WORKFILES                                 */
+/*                                                                      */
+/************************************************************************/
+DEF VAR maxp               AS C FORMAT "x(35)"                    NO-UNDO.
+DEF VAR maxc               AS C FORMAT "x(35)"                    NO-UNDO.
+DEF VAR maxs               AS C FORMAT "x(35)"                    NO-UNDO.
+DEF VAR mins               AS C FORMAT "x(35)"                    NO-UNDO.
+DEF VAR taalgr             LIKE party.taalgroep                   NO-UNDO.
+DEF VAR wz-index           AS I INIT 1                            NO-UNDO.
+DEF VAR noerror            AS L                                   NO-UNDO.
+DEF VAR i                  AS I                                   NO-UNDO.
+DEF VAR wz-maxpar          AS I                                   NO-UNDO.
+DEF VAR elname             AS C FORMAT "x(55)"                    NO-UNDO.
+
+DEF VAR sep                AS C INIT ":"                          NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS                                                   */
+/*                                                                      */
+/************************************************************************/
+FORM
+    maxp ":" election.maxpart          SKIP
+    WITH FRAME setmaxpart 
+               ROW 12 
+               CENTERED 
+               NO-LABELS.
+
+FORM
+    maxp sep election.maxpart          SKIP
+    maxc ":" election.maxcan[wz-index] SKIP
+    maxs ":" election.maxsup[wz-index] SKIP
+    mins ":" election.minsup[wz-index]
+    WITH FRAME setmax 
+               ROW 12 
+               CENTERED 
+               NO-LABELS.
+
+FORM
+    elname
+    WITH FRAME elfram 
+               ROW 9 
+               NO-LABELS 
+               CENTERED 
+               OVERLAY 
+               1 DOWN.
+
+/************************************************************************/
+/*              START PROCEDURE                                         */
+/************************************************************************/
+
+/**********************************************************/
+/* FOR A PRP DISK GET THE MINIMA AND MAXIMA OF THE LISTS. */
+/**********************************************************/
+
+{call.i &prg="mesfil" &param=",'initelec,maxp',50,OUTPUT maxp"}
+{call.i &prg="mesfil" &param=",'initelec,maxc',50,OUTPUT maxc"}
+{call.i &prg="mesfil" &param=",'initelec,maxs',50,OUTPUT maxs"}
+{call.i &prg="mesfil" &param=",'initelec,mins',50,OUTPUT mins"}
+
+{call.i &prg="mesfil" &param=",'general,dutch', 50,OUTPUT taalgr[1]"}
+{call.i &prg="mesfil" &param=",'general,french',50,OUTPUT taalgr[2]"}
+{call.i &prg="mesfil" &param=",'general,german',50,OUTPUT taalgr[3]"}
+
+HIDE FRAME disframe NO-PAUSE.
+
+ASSIGN
+wz-index = 1
+maxpar   = 0.
+FOR EACH election WHERE election.org-type = orgtype:
+    /* mark election record as modified */
+    election.MAC = "REFRESH".
+    
+    FIND FIRST types WHERE types.et-id   = election.et-id
+                       AND types.coll-id = election.coll-id
+                   NO-LOCK NO-ERROR.
+
+    IF election.et-id = 1
+    THEN DO:
+        DISPLAY election.long-name[taalkode] @ elname
+            WITH FRAME elfram.
+        PAUSE 0 NO-MESSAGE.
+        
+        {call.i &prg="discolme" &param=",'initelec,fillmaxs',0"}
+        DISPLAY maxp
+            WITH FRAME setmaxpart.
+        SET election.maxpart 
+            WITH FRAME setmaxpart.
+    END.
+    REPEAT:
+        DISPLAY election.long-name[taalkode] +
+                "  " +
+                (IF election.et-id = 1
+                THEN taalgr[wz-index]
+                ELSE election.coll_name[taalkode]) @ elname
+            WITH FRAME elfram.
+        PAUSE 0 NO-MESSAGE.
+
+        {call.i &prg="discolme" &param=",'initelec,fillmaxs',0"}
+        DISPLAY maxp                      WHEN election.et-id <> 1
+                sep                       WHEN election.et-id <> 1
+                maxc 
+                maxs 
+                mins
+                election.maxpart          WHEN election.et-id <> 1
+                election.maxcan[wz-index]
+                election.maxsup[wz-index]
+                election.minsup[wz-index]
+            WITH FRAME setmax.
+        SET election.maxpart          WHEN election.et-id <> 1
+            election.maxcan[wz-index]
+            election.maxsup[wz-index] WHEN election.supps
+            election.minsup[wz-index] WHEN election.supps
+            WITH FRAME setmax.
+
+        noerror = FALSE.
+
+        IF election.maxpart          < 1
+        OR election.maxcan[wz-index] < 1
+        OR election.maxsup[wz-index] < 0
+        OR election.minsup[wz-index] < 0 
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'initelec,err',80,OUTPUT faultmes"}
+            BELL.
+            DISPLAY faultmes WITH FRAME FAULT.
+            PAUSE NO-MESSAGE.
+        END.
+        ELSE IF election.maxpart > 40 
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'initelec,errp',80,OUTPUT faultmes"}
+            BELL.
+            DISPLAY faultmes WITH FRAME FAULT.
+            PAUSE NO-MESSAGE.
+        END.
+        ELSE IF election.maxcan[wz-index] > types.maxcan[wz-index] 
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'initelec,errmaxc',80,OUTPUT faultmes"}
+            BELL.
+            faultmes = faultmes + STRING(types.maxcan[wz-index],"zz9").
+            DISPLAY faultmes WITH FRAME FAULT.
+            PAUSE NO-MESSAGE.
+        END.
+        ELSE IF election.maxsup[wz-index] > types.maxsup[wz-index] 
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'initelec,errmaxs',80,OUTPUT faultmes"}
+            BELL.
+            faultmes = faultmes + STRING(types.maxsup[wz-index],"zz9").
+            DISPLAY faultmes WITH FRAME FAULT.
+            PAUSE NO-MESSAGE.
+        END.
+        ELSE IF election.minsup[wz-index] < types.minsup[wz-index] 
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'initelec,errmins',80,OUTPUT faultmes"}
+            BELL.
+            faultmes = faultmes + STRING(types.minsup[wz-index],"zz9").
+            DISPLAY faultmes WITH FRAME FAULT.
+            PAUSE NO-MESSAGE.
+        END.
+        ELSE IF (election.maxcan[wz-index] + election.maxsup[wz-index]) > 88 
+        THEN DO:
+            IF election.supps 
+            THEN DO:
+                {call.i &prg="mesfil" &param=",'initelec,errc+s',80,OUTPUT faultmes"}
+                BELL.
+                DISPLAY faultmes WITH FRAME FAULT.
+                PAUSE NO-MESSAGE.
+            END.
+            ELSE DO:
+                IF election.maxcan[wz-index] > 89 
+                THEN DO:
+                    {call.i &prg="mesfil" &param=",'initelec,errc',80,OUTPUT faultmes"}
+                    BELL.
+                    DISPLAY faultmes WITH FRAME FAULT.
+                    PAUSE NO-MESSAGE.
+                END.
+                ELSE noerror = TRUE.
+            END.
+        END. /* election.maxcan + election.maxsup > 88 */
+        ELSE IF election.minsup[wz-index] > election.maxsup[wz-index] 
+        THEN DO:
+            {call.i &prg="mesfil" &param=",'initelec,errs',80,OUTPUT faultmes"}
+            BELL.
+            DISPLAY faultmes WITH FRAME FAULT.
+            PAUSE NO-MESSAGE.
+        END.
+        ELSE DO:
+            IF election.et-id = 1
+            THEN DO:
+                IF wz-index = 3
+                THEN noerror = TRUE.
+                ELSE DO:
+                    IF types.maxcan[wz-index + 1] = 0
+                    OR types.minsup[wz-index + 1] = 0
+                    OR types.maxsup[wz-index + 1] = 0
+                    THEN noerror = TRUE.
+                    ELSE DO:
+                        wz-index = wz-index + 1.
+                        HIDE FRAME FAULT NO-PAUSE.
+                    END.
+                END.
+            END.
+            ELSE noerror = TRUE.
+        END.
+        IF noerror 
+        THEN DO:
+            HIDE FRAME FAULT NO-PAUSE.
+            LEAVE.
+        END.
+    END.  /* REPEAT */
+
+    wz-maxpar = 0.
+    IF election.et-id = 1
+    THEN DO:
+        REPEAT i = 1 TO 3:
+            IF (election.maxcan[i] + election.maxsup[i]) > wz-maxpar
+            THEN DO:
+                ASSIGN
+                wz-maxpar = election.maxcan[wz-index] + election.maxsup[wz-index]
+                wz-index  = i.
+            END.
+        END.
+    END.
+    ELSE wz-maxpar = election.maxcan[1] + election.maxsup[1].
+    
+    IF wz-maxpar > maxpar
+    THEN ASSIGN
+         maxpar = wz-maxpar
+         elecid = election.et-id.
+END. /* FOR EACH election */
+HIDE FRAME elfram NO-PAUSE.
+HIDE FRAME setmax NO-PAUSE.
+
+{call.i &prg="disfram" &param=",'digivote,indwait1','','','',FALSE"}
+
+{call.i &prg="chkgroup"}
+
+IF maxpar = 0
+THEN DO:
+    FOR EACH election WHERE election.org-type = orgtype:
+        ASSIGN
+        election.maxpart          = 40
+        election.maxcan[wz-index] =  0
+        election.maxsup[wz-index] =  0
+        election.minsup[wz-index] =  0
+        election.MAC              = "REFRESH".
+    END.
+END.
+{call.i &prg="sec_elec"}
+        
+/* Reset hands_off switch to enable creation of parties and candidates */
+/* If hands_off remains FALSE, creation will be impossible             */
+FIND FIRST session.
+ASSIGN
+session.hands_off = FALSE
+session.MAC       = "REFRESH".
+{call.i &prg="sec_sess"}
+
+/*********************************************/
+/* Assign all BLANCO-party's to the new disk */
+/*********************************************/
+/* encrypt an initialised totals counter (result returned in result3) */
+call CRYPENC PRPTOT fill("0", AESKEYLEN).
+
+FOR EACH election NO-LOCK
+                    WHERE election.org-type = orgtype 
+                    BREAK BY election.et-id:
+    IF FIRST-of(election.et-id)
+    THEN DO:
+        /* Create BLANCO Party for this election */
+        CREATE party.
+        ASSIGN
+        party.disk-id      = diskid
+        party.s-id         = election.s-id
+        party.e-id         = election.e-id
+        party.coll-id      = election.coll-id
+        party.p-id         = 0
+        party.party_name   = "Blanco"
+        party.vote_top     = result3
+        party.tmp_vote_top = result3
+        party.vote_can     = result3
+        party.tmp_vote_can = result3
+        party.vote_sup     = result3
+        party.tmp_vote_sup = result3
+        party.vote_cs      = result3
+        party.tmp_vote_cs  = result3
+        party.MAC          = "REFRESH".
+    
+        RELEASE party.
+    END.
+END.
+{call.i &prg="sec_part"}
+    
+/****************************************************************/    
+/* We do NOT need any record from organigram, so why keep it ?! */
+/****************************************************************/
+DELETE FROM organigram.
+DELETE FROM party      WHERE party.disk-id     <> diskid.
+DELETE FROM candidate  WHERE candidate.disk-id <> diskid.
+
+wz-status = TRUE.
+
+{return.i}
+/* eof */

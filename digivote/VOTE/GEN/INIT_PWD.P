@@ -1,0 +1,125 @@
+/*@function sec=1*/
+/* Filename : init_pwd.p                                                */
+/*
+<pvcs>
+<workFile>$Workfile:   INIT_PWD.P  $</workFile>
+<revision>$Revision: 1.14 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 10:56:42  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/GEN/INIT_PWD.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2007/12/17 12:40:47 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR i        AS I                                             NO-UNDO.
+DEF VAR j        AS I                                             NO-UNDO.
+DEF VAR wz-fk    AS I EXTENT 16
+   INIT [54,66,71,75,74,61,68,70,82,91,96,88,87,71,92,67]         NO-UNDO.
+
+DEF VAR wz-drive AS C                                             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        The ROUTINE ...                                               */
+/*                                                                      */
+/************************************************************************/
+
+IF  dbmasterk  <> "-1"
+AND dbsessionk <> "-1"
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) "Nothing to do ... re-initialising ..." 0.
+    /* master and session key are known so we can make the encryption keys */
+    call CRYPKEYS dbmasterk dbsessionk.
+   IF crypStat <> 0
+   THEN DO:
+       {call.i &prg="MyMess" &param=", 'Re-initialisation failed ! (cfr. logfile)'"}
+       call ADDTOLOG PROGRAM-NAME(1) VALUE("CRYPKEYS returned exception [" + string( crypStat) + "].") 1.
+       {quit.i &corrupt=FALSE}
+   END.
+    {return.i}
+END.
+
+call C_TSTFN "GLOBALS.BIN".
+IF fileok = 1
+THEN DO:
+   call CRYPINIT.                         /* start AES engine */
+   IF crypStat <> 0
+   THEN DO:
+       {call.i &prg="MyMess" &param=", 'Starting encryption failed ! (cfr. logfile)'"}
+       call ADDTOLOG PROGRAM-NAME(1) VALUE("CRYPINIT returned exception [" + string( crypStat) + "].") 1.
+       {quit.i &corrupt=FALSE}
+   END.
+END.
+ELSE DO:
+   {call.i &prg="MyMess" &param=", 'Global encryption data missing ! (cfr. logfile)'"}
+   call ADDTOLOG PROGRAM-NAME(1) "GLOBALS.BIN not found." 1.
+   {quit.i &corrupt=FALSE}
+END.
+
+ASSIGN
+/* ------------------------------------------------------------------- */
+/* save master and session key in global variabels so that we can make */
+/* the encryption keys for the database at anytime                     */
+/* ------------------------------------------------------------------- */
+dbmasterk  = ""
+dbsessionk = "".
+
+DO I = 16 TO 1 BY -1 :
+   J = J + 1.
+   IF I < 9 
+   THEN dbsessionk = dbsessionk + LC(CHR(wz-fk[I] + J)).
+   ELSE dbmasterk  = dbmasterk  + LC(CHR(wz-fk[I] - J)).
+END.
+
+/* :TODO: avn 20011211 - make real 16 bytes keys ?
+          for now we simply double the old 8 byte keys to make the 16 byte ones */
+ASSIGN
+dbmasterk  = dbmasterk  + dbmasterk
+dbsessionk = dbsessionk + dbsessionk.
+
+/* master and session key are known so we can make the encryption keys */
+call CRYPKEYS dbmasterk dbsessionk.
+
+/* authenticate Aes globals datafile */
+/* CrypAut to succeed :: AesLib.c(EntropyPool) + CrypLib.c(BYTE zMac[8]) in _DEBUGMODE ! */
+IF crypStat = 0 THEN call CRYPAUT.
+IF crypStat <> 0
+THEN DO:
+    {call.i &prg="MyMess" &param=", 'Authentication failed! (cfr. logfile)'"}
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("CRYPAUT returned exception [" + string( crypStat) + "].") 1.
+    {quit.i &corrupt=FALSE}
+END.
+
+/* ------------------------------------------------------------------------------------- */
+/* If you reach this point, you can be sure the encryption has been properly initialised */
+/* Now you can safely encrypt, decrypt, calculate and check mac's                        */
+/* ------------------------------------------------------------------------------------- */
+call ADDTOLOG PROGRAM-NAME(1) "AES engine authenticated and started ..." 0.
+
+/* Remove Config and Signature to prevent wrong information  */
+wz-drive = (IF PDBNAME(1) BEGINS "D:\"
+            THEN "D:"
+            ELSE "").
+call C_ATTRIB VALUE(wz-drive + "\VOTE\ELECT.CF") 0.     /* Normal */
+call C_DEL VALUE(wz-drive + "\VOTE\ELECT.CF").
+call C_ATTRIB VALUE(wz-drive + "\VOTE\ELECT.SG") 0.     /* Normal */
+call C_DEL VALUE(wz-drive + "\VOTE\ELECT.SG").
+
+IF wz-drive = ""
+THEN DO:
+    call C_ATTRIB VALUE(ramdrive + "VOTE\ELECT.CF")  0. /* Normal */
+    call C_DEL VALUE(ramdrive + "VOTE\ELECT.CF").
+    call C_ATTRIB VALUE(ramdrive + "VOTE\ELECT.SG")  0. /* Normal */
+    call C_DEL VALUE(ramdrive + "VOTE\ELECT.SG").
+END.
+
+{return.i}
+/* eof */

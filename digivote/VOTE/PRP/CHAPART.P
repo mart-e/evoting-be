@@ -1,0 +1,256 @@
+/* Filename            : CHAPART.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+{pmlprtin.i}          /* De shared variabelen voor het scherm PMLPRTIN  */
+
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR mes1                AS C FORMAT "x(16)"       NO-UNDO.
+DEF VAR mes2                AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR mes3                AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR mes4                AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR men_tit             AS C FORMAT "x(40)"       NO-UNDO.
+DEF VAR verder              AS I                      NO-UNDO.
+DEF VAR gr                  AS I                      NO-UNDO.
+DEF VAR i                   AS I                      NO-UNDO.
+DEF VAR wz-lang             LIKE language.var_name    NO-UNDO.
+DEF VAR partlang            AS C FORMAT "x(20)"       NO-UNDO.
+DEF VAR partgr              LIKE party.taalgroep      NO-UNDO.
+
+DEF VAR wz-cur-pos          AS I                      NO-UNDO.
+DEF VAR wz-tel-chars        AS I                      NO-UNDO.
+DEF VAR wz-tel-non-chars    AS I                      NO-UNDO.
+
+DEF VAR wz-taalgroepsystem  AS L INIT FALSE           NO-UNDO.
+DEF VAR wz-first-char       AS L INIT TRUE            NO-UNDO.
+
+DEF VAR faultmes            AS C FORMAT "x(80)"       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    partnr AT 5 partnaam AT 20 partlang AT 47 SPACE(2)
+    HEADER mes1 AT 2 mes2 AT 20 mes3 AT 47
+    WITH FRAME pmlprtin ROW 5 NO-LABELS RETAIN 3
+    TITLE men_tit OVERLAY CENTERED.
+
+FORM
+    faultmes
+    WITH ROW 23 COLOR MESSAGE CENTERED NO-LABEL FRAME fault OVERLAY NO-BOX.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmlprtin,mes01',16,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmlprtin,mes02',20,OUTPUT mes2"}
+{call.i &prg="mesfil" &param=",'pmlprtin,tit01',40,OUTPUT men_tit"}
+
+ASSIGN
+partnr   = partnum
+partnaam = ""
+partlang = "".
+
+FIND FIRST election WHERE election.e-id = verknum NO-LOCK.
+/* Voor Brusselse Hoofdstedelijke Raad oud taalgroepsysteem activeren */
+wz-taalgroepsystem = IF election.et-id = 1
+                     THEN true
+                     ELSE false.
+
+IF wz-taalgroepsystem
+THEN DO:
+    {call.i &prg="mesfil" &param=",'pmlprtin,mes03',20,OUTPUT mes3"}
+    {call.i &prg="mesfil" &param=",'general,dutch', 20,OUTPUT partgr[1]"}
+    {call.i &prg="mesfil" &param=",'general,french',20,OUTPUT partgr[2]"}
+    {call.i &prg="mesfil" &param=",'general,german',20,OUTPUT partgr[3]"}
+END.
+ELSE mes3 = "".
+
+menleav = 0.
+FIND FIRST setup NO-LOCK NO-ERROR.
+REPEAT WITH FRAME pmlprtin :
+    {call.i &prg="discolme" &param=",'general,fkey01',0"}
+    DISPLAY partnr.
+    ASSIGN
+    partnaam = ""
+    partlang = "".
+    FIND party WHERE party.disk-id = setup.disk-id
+                 AND party.s-id    = verkdat
+                 AND party.e-id    = verknum
+                 AND party.p-id    = partnr  NO-ERROR.
+    IF AVAILABLE party
+    THEN DO:
+        partnaam = party.party_name.
+        DISPLAY partnaam.
+        IF wz-taalgroepsystem
+        THEN DO:
+            partlang = party.taalgroep[taalkode].
+            DISPLAY partlang.
+        END.
+    END.
+    verder = 0.
+    /*
+    REPEAT WHILE verder = 0:
+    */
+        UPDATE partnaam WITH FRAME pmlprtin
+            EDITING:
+                READKEY.
+                IF LASTKEY = KEYCODE("""")
+                OR LASTKEY = KEYCODE(",")
+                THEN BELL.
+                ELSE DO:
+                    /* avoid asking for language group if F4 has been pressed */
+                    IF wz-taalgroepsystem AND
+                       KEYFUNCTION(LASTKEY) = "END-ERROR"
+                    THEN wz-taalgroepsystem = FALSE.
+                    APPLY LASTKEY.
+                END.
+            END.
+    /*
+        {partname.i}
+    END.
+    IF verder = 0 THEN LEAVE.
+    */
+    ASSIGN
+    gr            = 0
+    verder        = 0
+    wz-first-char = TRUE.
+    IF wz-taalgroepsystem
+    THEN DO:
+        {call.i &prg="discolme" &param=",'general,fkey01',0"}
+        UPDATE partlang
+            EDITING:
+                READKEY.
+                IF wz-first-char
+                THEN DO:
+                    IF CAPS(KEYLABEL(LASTKEY)) = CAPS(SUBSTR(partgr[1],1,1)) OR
+                       CAPS(KEYLABEL(LASTKEY)) = CAPS(SUBSTR(partgr[2],1,1)) OR
+                       CAPS(KEYLABEL(LASTKEY)) = CAPS(SUBSTR(partgr[3],1,1))
+                    THEN DO:
+                        APPLY LASTKEY.
+                        wz-first-char = FALSE.
+                    END.
+                    ELSE IF LOOKUP(KEYFUNCTION(LASTKEY),
+                                  "TAB,BACK-TAB,GO,RETURN,END-ERROR") > 0
+                    THEN DO:
+                        IF LENGTH(partlang) > 0
+                        THEN partlang = SUBSTRING(partlang,1,1).
+                        APPLY LASTKEY.
+                    END.
+                    ELSE BELL.
+                END.
+                ELSE DO:
+                    IF LOOKUP(KEYFUNCTION(LASTKEY),
+                             "BACKSPACE,CURSOR-LEFT")> 0
+                    THEN DO:
+                        APPLY LASTKEY.
+                        wz-first-char = TRUE.
+                    END.
+                    ELSE IF LOOKUP(KEYFUNCTION(LASTKEY),
+                                  "TAB,BACK-TAB,GO,RETURN,END-ERROR") > 0
+                    THEN DO:
+                        IF LENGTH(partlang) > 0
+                        THEN partlang = SUBSTRING(partlang,1,1).
+                        APPLY LASTKEY.
+                    END.
+                    ELSE BELL.
+                END.
+            END.
+        IF partlang <> ""
+        THEN DO:
+            ASSIGN gr = IF      CAPS(partlang) = CAPS(SUBSTR(partgr[1],1,1)) THEN 1
+                        ELSE IF CAPS(partlang) = CAPS(SUBSTR(partgr[2],1,1)) THEN 2
+                        ELSE IF CAPS(partlang) = CAPS(SUBSTR(partgr[3],1,1)) THEN 3
+                        ELSE                                                      0.
+
+            IF gr <> 0
+            THEN DO:
+                /*******************************************************************/
+                /* Check num_can and num_sup with max-values of new language group */
+                /*******************************************************************/
+                IF      party.num_can > election.maxcan[gr]
+                THEN DO:
+                    {call.i &prg="mesfil" &param=",'initelec,errmaxc',80,OUTPUT faultmes"}
+                    BELL.
+                    faultmes = faultmes + STRING(election.maxcan[gr],"zz9").
+                    DISPLAY faultmes WITH FRAME FAULT.
+                    PAUSE NO-MESSAGE.
+                END.
+                ELSE IF party.num_sup > election.maxsup[gr]
+                THEN DO:
+                    {call.i &prg="mesfil" &param=",'initelec,errmaxs',80,OUTPUT faultmes"}
+                    BELL.
+                    faultmes = faultmes + STRING(election.maxsup[gr],"zz9").
+                    DISPLAY faultmes WITH FRAME FAULT.
+                    PAUSE NO-MESSAGE.
+                END.
+                ELSE DO:
+                    ASSIGN
+                    verder   = 1
+                    partlang = partgr[gr].
+                    DISPLAY partlang AUTO-RETURN.
+                    PAUSE 0 NO-MESSAGE.
+                END.
+            END.
+        END.
+    END.
+    ELSE verder = 1.
+
+    IF partnaam <> "" AND
+       verder = 1
+    THEN DO :
+        menleav = 1.
+        FIND party WHERE party.disk-id = setup.disk-id
+                     AND party.s-id    = verkdat
+                     AND party.e-id    = verknum
+                     AND party.p-id    = partnr  NO-ERROR.
+        IF AVAILABLE party
+        THEN DO:
+            ASSIGN
+            party.party_name = partnaam
+            party.MAC        = "REFRESH".
+            IF wz-taalgroepsystem
+            THEN DO:
+                ASSIGN
+                wz-lang = (IF      gr = 1 THEN "dutch"
+                           ELSE IF gr = 2 THEN "french"
+                           ELSE                "german")
+                gr      = taalkode.
+                DO i = 1 TO 3:
+                    taalkode = i.
+                    {call.i &prg="mesfil" &param=",'general,' + wz-lang,20,
+                               OUTPUT party.taalgroep[i]"}
+                END.
+                taalkode = gr.
+            END.
+            {call.i &prg="sec_part"}
+        END.
+        LEAVE.
+    END.
+END.
+
+ASSIGN
+partnum = 0
+partnam = ""
+partlan = "".
+HIDE FRAME pmlprtin NO-PAUSE.
+
+{return.i}
+/* eof */

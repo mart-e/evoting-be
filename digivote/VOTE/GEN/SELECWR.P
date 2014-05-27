@@ -1,0 +1,35 @@
+/* Filename            : SELECWR.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+DO TRANSACTION :
+    FIND FIRST selection NO-ERROR.
+    IF AVAILABLE selection THEN DELETE selection.
+
+    CREATE selection.
+    ASSIGN
+    selection.s-id       = verkdat
+    selection.lang-pc    = taalkode
+    selection.e-id       = verknum
+    selection.verk_name  = verkben
+    selection.p-id       = partnum
+    selection.party_name = partnam
+    selection.c-type     = candtyp
+    selection.c-id       = candnum.
+END.
+
+{return.i}
+/* eof */

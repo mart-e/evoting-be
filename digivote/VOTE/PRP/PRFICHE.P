@@ -1,0 +1,109 @@
+/* Filename            : PRFICHE.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{disfram.i}
+{PRINTER.I "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR naam            AS C    FORMAT "x(45)"                    NO-UNDO.
+DEF VAR mes             AS C    FORMAT "x(25)"      EXTENT 5      NO-UNDO.
+DEF VAR dag             AS DATE FORMAT "99/99/9999" INITIAL TODAY NO-UNDO.
+DEF VAR tijd            AS C                                      NO-UNDO.
+DEF VAR the_pwd         LIKE meta.AesKey                          NO-UNDO.
+
+DEF VAR i               AS I                                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    mes[1] AT 2 naam                AT 27          SKIP
+    mes[2] AT 2 organigram.name     AT 27 SPACE(2) SKIP
+    mes[3] AT 2 organigram.adres    AT 27 SPACE(2) SKIP
+                organigram.postcode AT 27 
+                organigram.lokal    AT 32 SPACE(2) SKIP
+    mes[4] AT 2 organigram.tel-nr   AT 27 SPACE(2) SKIP(1)
+/*@source sec=1*/
+    mes[5] AT 2 the_pwd             AT 27 SPACE(2) SKIP(2)
+/*@source sec=0*/
+    WITH FRAME pmsurnefi
+        NO-LABELS
+        OVERLAY
+        NO-BOX
+        DOWN.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+CALL C_PRSTAT.
+IF stat = 144
+THEN DO :
+    {call.i &prg="disfram" &param=",'indicat,mes02','','','',FALSE"}
+    REPEAT i = 1 TO 5:
+        {call.i &prg="mesfil" &param=",'pmdexpbe,mes' + STRING(i,'99'),25,OUTPUT mes[i]"}
+    END.
+    tijd = STRING(TIME,"HH:MM").
+
+    {BEGPRT.I "Y" 0 6}
+
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    naam = setup.sys-type +
+           setup.org-type +
+           setup.area +
+           STRING(setup.orginator,"999").
+           
+    PUT UNFORMATTED
+        naam SKIP
+        dag  SKIP
+        tijd SKIP(2).
+
+    FOR EACH organigram WHERE organigram.g-disk = setup.disk-id
+                          AND organigram.sys-type = "U"
+                      NO-LOCK
+                   WITH FRAME pmsurnefi:
+        naam = organigram.sys-type            +
+               organigram.org-type            +
+               organigram.area[taalkode] +
+               STRING(organigram.orginator,"999").
+        the_pwd = "".
+        IF  organigram.master-key <> "-1"
+        AND organigram.verwerkt
+        THEN DO:
+            call CRYPDEC PRPTOT organigram.master-key.
+            IF crypStat = 0 THEN the_pwd = result4.
+        END.
+        DISPLAY mes naam organigram.name organigram.adres
+                organigram.postcode organigram.lokal
+                organigram.tel-nr
+                the_pwd WHEN organigram.master-key <> "-1"
+                         AND organigram.verwerkt.
+        DOWN.
+        PAUSE 0 NO-MESSAGE.
+    END. /* FOR EACH organigram */
+
+    {ENDPRT.I}.
+
+    HIDE FRAME disframe NO-PAUSE.
+END.
+ELSE DO :
+    {call.i &prg="dispmes" &param=",'indicat,err01',0"}
+    HIDE MESSAGE NO-PAUSE.
+END.
+
+{return.i}
+/* eof */

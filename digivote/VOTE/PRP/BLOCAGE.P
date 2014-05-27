@@ -1,0 +1,160 @@
+/* Filename            : BLOCAGE.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-nbr_party         AS I                                 NO-UNDO.
+DEF VAR wz-index             AS I                                 NO-UNDO.
+DEF VAR wz-parties           AS I EXTENT 3 INIT 0                 NO-UNDO.
+DEF VAR taalgr               LIKE party.taalgroep EXTENT 0        NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{disfram.i}
+{vargener.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+STATUS INPUT OFF.
+
+FIND FIRST session NO-LOCK NO-ERROR.
+IF session.hands_off[1] = TRUE
+THEN DO:
+    BELL.
+    {call.i &prg="dispmes" &param=",'digivote,ermes03',0"}
+    {return.i}
+END.
+FIND FIRST setup NO-LOCK NO-ERROR.
+IF setup.sys-type <> "I"
+THEN DO :
+    {call.i &prg="dispmes" &param=",'general,notavail', 0"}
+    {return.i}
+END.
+
+/*************************************************************************
+ *
+ *      Controle of er lijsten bestaan voor deze verkiezing.
+ *
+ *************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FOR EACH election WHERE election.org-type = setup.org-type NO-LOCK:
+    FIND FIRST party WHERE party.e-id = election.e-id
+                       AND party.p-id <> 0 NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE party
+    THEN DO:
+        {call.i &prg="disfram" &param=",'blocage,noparty','','','',TRUE"}
+        {return.i}
+    END.
+END.
+
+/*************************************************************************
+ *
+ *      Controle of alle lijsten kandidaten hebben
+ *
+ *************************************************************************/
+FOR EACH election, EACH party WHERE party.p-id <> 0
+                                AND party.e-id = election.e-id
+                                AND party.num_can < 1 NO-LOCK:
+    {call.i &prg="disfram" &param=",'blocage,nocand','',
+                                    ',' + TRIM(election.long-name[taalkode] + ' '
+                                             + election.coll_name[taalkode]),
+                                    ',' + STRING(party.p-id) + ' : '
+                                        + TRIM(party.party_name),
+                                    TRUE"}
+    {return.i}
+END.
+
+/*************************************************************************
+ *
+ * Check if for each party, enough supleants are given.
+ *
+ *************************************************************************/
+FOR EACH election, EACH party WHERE election.supps =  TRUE
+                                AND party.e-id     =  election.e-id
+                                AND party.p-id     <> 0:
+    wz-index = (IF election.et-id = 1
+                THEN (IF      SUBSTR(party.taalgroep[1],1,1) = "N" THEN 1
+                      ELSE IF SUBSTR(party.taalgroep[1],1,1) = "F" THEN 2
+                      ELSE                                              3)
+                ELSE 1).
+    IF party.num_sup < election.minsup[wz-index]
+    THEN DO:
+        {call.i &prg="disfram" &param=",'digivote,supmin','',
+                                        ',' + TRIM(election.long-name[taalkode] + ' '
+                                                 + election.coll_name[taalkode]),
+                                        ',' + STRING(party.p-id) + ' : '
+                                            + TRIM(party.party_name),
+                                        TRUE"}
+        {return.i}.
+    END.
+END.
+
+/*************************************************************************
+ *
+ * Check if there is at least 1 party for each language group
+ * (BRUSSELSE HOOFDSTEDELIJKE RAAD)
+ *
+ *************************************************************************/
+FIND FIRST election WHERE election.org-type = setup.org-type 
+                      AND election.et-id    = 1 
+                  NO-LOCK NO-ERROR.
+IF AVAILABLE election
+THEN DO:
+    wz-parties = 0.
+    FOR EACH election, EACH party WHERE election.et-id =  1
+                                    AND party.e-id     =  election.e-id
+                                    AND party.p-id     <> 0:
+        IF      SUBSTR(party.taalgroep[1],1,1) = "N" THEN wz-parties[1] = wz-parties[1] + 1.
+        ELSE IF SUBSTR(party.taalgroep[1],1,1) = "F" THEN wz-parties[2] = wz-parties[2] + 1.
+        ELSE                                              wz-parties[3] = wz-parties[3] + 1.
+    END.
+    IF wz-parties[1] = 0 
+    OR wz-parties[2] = 0
+/******************************
+       Geen DUITSE taalgroep !
+    OR wz-parties[3] = 0
+******************************/     
+    THEN DO:
+        {call.i &prg="mesfil" &param=",'general,' + (IF wz-parties[1] = 0
+                                                     THEN 'dutch'
+                                                     ELSE 'french'), 50,OUTPUT taalgr"}
+        {call.i &prg="disfram" &param=",'blocage,noparty','',
+                                        ',' + TRIM(election.long-name[taalkode] + ' '
+                                                 + taalgr),'',
+                                        TRUE"}
+        {return.i}
+    END.
+END.
+
+wz-nbr_party = 0.
+FOR EACH election, EACH party WHERE party.p-id <> 0
+                                AND party.e-id = election.e-id NO-LOCK:
+    wz-nbr_party = wz-nbr_party + 1.
+END.
+
+{call.i &prg="disfram" &param=",'blocage,mes1','','blocage,mes3','blocage,mes4',TRUE"}
+{call.i &prg="confirm" &param=",'blocage,mes6','','','general,yes','general,no'"}
+IF menleav = 1
+THEN DO:
+    FIND FIRST session NO-ERROR.
+    ASSIGN
+    session.hands_off[1] = TRUE
+    session.MAC          = "REFRESH".
+    {call.i &prg="sec_sess"}
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Data locked/approved ! " +
+                       "(Number of parties = " + STRING(wz-nbr_party) + ")") 0.
+END.
+
+{return.i}
+/* eof */

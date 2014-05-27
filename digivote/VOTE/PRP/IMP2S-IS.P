@@ -1,0 +1,93 @@
+/* Filename            : IMP2S-IS.P
+   -------- 
+   
+   Purpose : Import election structure for I disks
+   -------
+             Additional tests with usage of sub-STRUCTUREs.
+             DON'T MESS WITH IT, because this is a crutial entity !!
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT        PARAM wz-structuur       AS C FORMAT "x(35)"     NO-UNDO.
+
+DEF INPUT-OUTPUT PARAM wz-sub-struct      AS I                    NO-UNDO.
+DEF INPUT-OUTPUT PARAM wz-sub-struct-type AS C FORMAT "x(1)"      NO-UNDO.
+DEF INPUT-OUTPUT PARAM wz-last-orgtype    AS C FORMAT "x(1)"      NO-UNDO.
+DEF INPUT-OUTPUT PARAM wz-s-disk          AS I                    NO-UNDO.
+
+DEF       OUTPUT PARAM wz-errno           AS I                    NO-UNDO.
+DEF       OUTPUT PARAM wz-errmsg-1        AS C FORMAT "x(78)"     NO-UNDO.
+DEF       OUTPUT PARAM wz-errmsg-2        AS C FORMAT "x(78)"     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-field         AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/*********************************************************/
+/* Point 1 : multiple STRUCTURE for one type of election */
+/*********************************************************/
+wz-errno = -1.
+
+IF  NOT(    wz-field[5] = "S"
+				AND wz-field[6] = " "
+				AND wz-field[7] = wz-structuur)
+THEN ASSIGN
+		 wz-errno    = 205
+		 wz-errmsg-1 = "Not same source (Expected:S " + wz-structuur + ")".
+ELSE DO:
+		call C_CHECKINT VALUE(wz-field[8]).
+		IF stat <> 0
+		THEN ASSIGN
+				 wz-errno    = 100
+				 wz-errmsg-1 = "8th field is not numeric ! (orginator)".
+		ELSE IF INT(wz-field[8]) = 0 
+		THEN ASSIGN
+				 wz-errno    = 206
+				 wz-errmsg-1 = "Numbering of sub-STRUCT should start with 001".
+		ELSE IF NOT(   INT(wz-field[8]) = wz-sub-struct
+					      OR INT(wz-field[8]) = wz-sub-struct + 1)
+		THEN ASSIGN
+				 wz-errno    = 207
+				 wz-errmsg-1 = "Numbering of sub-STRUCT not correct!".
+		ELSE DO:
+				ASSIGN 
+				wz-sub-struct = INT(wz-field[8])
+				wz-s-disk     = wz-sub-struct.
+
+				IF wz-sub-struct-type = ""
+				THEN IF  wz-field[2]        = wz-last-orgtype
+						 AND wz-sub-struct-type = ""
+						 THEN ASSIGN
+								  wz-errno    = 208
+							    wz-errmsg-1 = "Sub-STRUCT only allowed on entire type of election".
+						 ELSE wz-sub-struct-type = wz-field[2].
+				ELSE IF wz-field[2] <> wz-sub-struct-type
+				THEN ASSIGN
+						 wz-errno    = 209
+						 wz-errmsg-1 = "Sub-STRUCT only allowed on 1 type of election".
+		END.
+END.
+
+{return.i}
+/* eof */

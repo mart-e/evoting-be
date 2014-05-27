@@ -1,0 +1,231 @@
+/* Filename            : IMP2S-UT.P
+   -------- 
+   
+   Purpose : Import election structure for U disks -> only TOT's are checked here !
+   -------
+             All checks will be moved from INITELEC to IMPORT2S !
+             INITELEC will rely on organigram-table for correctness.
+             IMPORT2S will manage the correctness of the election
+             structure and store it in the organigram-table.
+             organigram-table now contains internal constraints !!
+             DON'T MESS WITH IT, because this is a crutial entity !!
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-highest-tot-level AS C FORMAT "x(20)"         NO-UNDO.
+DEF INPUT  PARAM wz-no-tots           AS I                        NO-UNDO.
+
+DEF INPUT  PARAM wz-s-disk            LIKE organigram.s-disk      NO-UNDO.
+
+DEF OUTPUT PARAM wz-totalisation      AS C FORMAT "x(50)"         NO-UNDO.
+DEF OUTPUT PARAM wz-t-disks           LIKE organigram.t-disks     NO-UNDO.
+
+DEF OUTPUT PARAM wz-errno             AS I                        NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-1          AS C FORMAT "x(78)"         NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-2          AS C FORMAT "x(78)"         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-field         AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFERS                                                 */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER crosscheck FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-rel-orginator     AS I                                 NO-UNDO.
+
+DEF VAR i                    AS I                                 NO-UNDO.
+DEF VAR j                    AS I                                 NO-UNDO.
+
+DEF VAR field-seperator      AS C INIT " "                        NO-UNDO.
+DEF VAR quot                 AS C INIT """"                       NO-UNDO.
+DEF VAR empty-field          AS C INIT """"""                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-errno = -1.
+
+FIND FIRST setup NO-LOCK.
+
+/* Check existance of TOTALISATION-record(s) */
+REPEAT i = 1 TO 3:
+    j = 9 + (4 * i).
+    IF  wz-field[1 + j] = ""
+    AND wz-field[2 + j] = ""
+    AND wz-field[3 + j] = ""
+    AND wz-field[4 + j] = ""
+    THEN IF i = 1
+         THEN DO:
+             ASSIGN
+             wz-errno    = 412
+             wz-errmsg-1 = "Contains too less information ! (No TOT given, min 1 required)".
+             LEAVE.
+         END.
+         ELSE IF i <= wz-no-tots
+         THEN DO:
+             ASSIGN
+             wz-errno    = 499
+             wz-errmsg-1 = "Only " + STRING(i - 1) + " of " + STRING(wz-no-tots) 
+                         + " level(s) of TOT given !".
+             LEAVE.
+         END.
+         ELSE LEAVE.
+
+    IF  wz-field[1 + j] <> "T"
+    THEN DO:
+        ASSIGN
+        wz-errno    = 413
+        wz-errmsg-1 = "Contains too less information ! (Not a TOT)"
+        wz-errmsg-2 = wz-field[1 + j] + " <> T (" + STRING(i) + "ø TOT)".
+        LEAVE.
+    END.
+    call C_CHECKINT VALUE(wz-field[4 + j]).
+    IF stat <> 0
+    THEN DO:
+        ASSIGN
+        wz-errno    = 414
+        wz-errmsg-1 = "4th field of TOT[" + STRING(i) + "] is not numeric ! (" + wz-field[4 + j] + ")".
+        LEAVE.
+    END.
+    wz-rel-orginator = INT(wz-field[4 + j]).
+    /* Check existance of TOTALISATION-record */
+    FIND FIRST organigram WHERE     organigram.sys-type  = wz-field[1 + j]
+                            AND     organigram.org-type  = wz-field[2 + j]
+                            AND (   organigram.area[1]   = wz-field[3 + j]
+                                 OR organigram.area[2]   = wz-field[3 + j]
+                                 OR organigram.area[3]   = wz-field[3 + j])
+                            AND     organigram.orginator = wz-rel-orginator
+                      NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE organigram
+    THEN DO:
+        ASSIGN   
+        wz-errno    = 415
+        wz-errmsg-1 = "No related TOT-record found !".
+        LEAVE.
+    END.
+    /* Check if TOTALISATION doesn't contain any sublevels ... */
+    IF wz-rel-orginator = 0
+    THEN DO:
+        FIND FIRST crosscheck WHERE crosscheck.sys-type  = organigram.sys-type
+                                AND crosscheck.org-type  = organigram.org-type
+                                AND crosscheck.area[1]   = organigram.area[1]
+                                AND crosscheck.orginator > 0
+                            NO-LOCK NO-ERROR.
+        IF AVAILABLE crosscheck
+        THEN DO:
+            ASSIGN   
+            wz-errno    = 416
+            wz-errmsg-1 = "Selected TOT contains sublevels !".
+            LEAVE.
+        END.
+    END.
+    IF organigram.s-disk <> wz-s-disk
+    THEN DO:
+        ASSIGN   
+        wz-errno    = 422
+        wz-errmsg-1 = "Overlapping found in sub-STRUCTURE layout !".
+        LEAVE.
+    END.
+    IF i > 1
+    THEN DO:
+        IF LOOKUP(STRING(organigram.disk-id),wz-t-disks) > 0
+        THEN DO:
+            ASSIGN   
+            wz-errno    = 417
+            wz-errmsg-1 = "Duplicate TOT-record found !"
+            wz-errmsg-2 = "=> " + wz-field[1 + j]
+                                + wz-field[2 + j]
+                                + wz-field[3 + j]
+                                + STRING(wz-rel-orginator,"999").
+            LEAVE.
+        END.
+        /* 
+           !!!!!!!!!!!!!!!!!!!!!
+           !!! To Be Checked !!!
+           !!!!!!!!!!!!!!!!!!!!! (overbodig ?)
+        FIND FIRST crosscheck WHERE crosscheck.sys-type  =  organigram.sys-type
+                                AND crosscheck.org-type  =  organigram.org-type
+                                AND crosscheck.orginator <> wz-rel-orginator
+                                AND crosscheck.t-disks   <> ""
+                            NO-LOCK NO-ERROR.
+        IF AVAILABLE crosscheck
+        THEN DO:
+            ASSIGN   
+            wz-errno    = 418
+            wz-errmsg-1 = "Duplicate TOT-level used for PS !"
+            wz-errmsg-2 = "=> " + crosscheck.sys-type
+                                + crosscheck.org-type
+                                + crosscheck.area[1]
+                                + STRING(crosscheck.orginator,"999")
+                        + " & " + wz-field[1 + j]
+                                + wz-field[2 + j]
+                                + wz-field[3 + j]
+                                + STRING(wz-rel-orginator,"999").
+            LEAVE.
+        END.
+        */
+    END.
+    /* Check if area-name is acceptable for given TOTALISATION */
+    FIND FIRST organisation
+         WHERE     organisation.org-type    = wz-field[2 + j]
+           AND (   organisation.heading3[1] = wz-field[3 + j]
+                OR organisation.heading3[2] = wz-field[3 + j]
+                OR organisation.heading3[3] = wz-field[3 + j])
+           AND (   organisation.area[1]     = wz-field[3]
+                OR organisation.area[2]     = wz-field[3]
+                OR organisation.area[3]     = wz-field[3]    )
+           AND     organisation.setup-id    = setup.setup-id
+       NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE organisation
+    THEN DO:
+        ASSIGN   
+        wz-errno    = 419
+        wz-errmsg-1 = "PS NOT for this TOT disk !"
+        wz-errmsg-2 = wz-field[1] 
+                    + wz-field[2] 
+                    + wz-field[3] 
+                    + STRING(wz-field[4],"999")
+                    + " not for "
+                    + wz-field[1 + j] 
+                    + wz-field[2 + j] 
+                    + wz-field[3 + j] 
+                    + STRING(wz-field[4 + j],"999").
+        LEAVE.
+    END.
+    wz-t-disks = wz-t-disks
+               + (IF wz-t-disks = "" THEN "" ELSE ",")
+               + STRING(organigram.disk-id).
+    IF organigram.org-type = wz-highest-tot-level
+    THEN wz-totalisation = organigram.sys-type
+                         + organigram.org-type
+                         + organigram.area[1].
+END.
+
+{return.i}
+/* eof */

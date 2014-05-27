@@ -1,0 +1,126 @@
+/* Filename            : PROG_END.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-message  AS C FORMAT "x(20)"                   NO-UNDO.
+DEF INPUT PARAM wz-custom-1 AS C FORMAT "x(60)"                   NO-UNDO.
+DEF INPUT PARAM wz-custom-2 AS C FORMAT "x(60)"                   NO-UNDO.
+DEF INPUT PARAM wz-confirm  AS C FORMAT "x(20)"                   NO-UNDO.
+DEF INPUT PARAM wz-cancel   AS C FORMAT "x(20)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES  VIA INCLUDE FILES                               */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het TOT hoofdmenu TOGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-mess   AS C FORMAT "x(60)"          NO-UNDO.
+DEF VAR wz-button AS C FORMAT "x(15)" EXTENT 2 NO-UNDO.
+DEF VAR menusel   AS I FORMAT "9"              NO-UNDO.
+DEF VAR execsel   AS I FORMAT "9"              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL FORM DESCRIPTIONS                                           */
+/*                                                                      */
+/************************************************************************/
+FORM
+                                                      SKIP(1)
+    wz-mess      AT 2                        SPACE(1)
+    wz-custom-1  AT 2                        SPACE(1)
+    wz-custom-2  AT 2                        SPACE(1) SKIP(2)
+    wz-button[1] AT 2 SPACE(10) wz-button[2] SPACE(1) SKIP(1)
+    WITH FRAME confirm
+        COLOR DISPLAY VALUE(menu_fg)
+        NO-LABELS
+        ROW 6
+        CENTERED
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",wz-message,0,OUTPUT wz-mess"}
+{call.i &prg="mesfil" &param=",wz-confirm,0,OUTPUT wz-button[1]"}
+{call.i &prg="mesfil" &param=",wz-cancel, 0,OUTPUT wz-button[2]"}
+
+IF NUM-ENTRIES(wz-custom-1) = 2
+THEN DO:
+    {call.i &prg="mesfil" &param=",wz-custom-1,0,OUTPUT wz-custom-1"}
+END.
+IF NUM-ENTRIES(wz-custom-2) = 2
+THEN DO:
+    {call.i &prg="mesfil" &param=",wz-custom-2,0,OUTPUT wz-custom-2"}
+END.
+
+ASSIGN
+menleav = 0
+menusel = 2
+execsel = 0.
+
+REPEAT WHILE execsel = 0
+       WITH FRAME confirm:
+
+    HIDE MESSAGE NO-PAUSE.
+    DISPLAY wz-mess wz-custom-1 wz-custom-2 wz-button.
+
+    IF menusel > 0
+    THEN DO :
+        COLOR DISPLAY VALUE(menu_fg) wz-button[1 FOR 2].
+        COLOR DISPLAY VALUE(menu_bg) wz-button[menusel].
+        NEXT-PROMPT wz-button[menusel].
+        IF execsel = 0
+        THEN DO:
+            {call.i &prg="discolme" &param=",'general,fkey01',0"}
+        END.
+    END.
+    IF execsel = 0
+    THEN DO:
+        CHOOSE FIELD wz-button[1 FOR 2]
+            COLOR VALUE(menu_bg)
+            AUTO-RETURN
+            NO-ERROR
+            GO-ON ("CURSOR-UP"    "CURSOR-DOWN"
+                   "CURSOR-RIGHT" "CURSOR-LEFT"
+                   "TAB"          "BACK-TAB"
+                   "ESC").
+        menusel = FRAME-INDEX.
+        IF LASTKEY = KEYCODE("TAB") OR
+           LASTKEY = KEYCODE("CURSOR-RIGHT")
+        THEN IF menusel = 2
+             THEN menusel = 1.
+             ELSE menusel = menusel + 1.
+        ELSE IF LASTKEY = KEYCODE("BACK-TAB")    OR
+                LASTKEY = KEYCODE("CURSOR-LEFT") OR
+                LASTKEY = KEYCODE("CURSOR-UP")
+             THEN IF menusel = 1
+                  THEN menusel = 2.
+                  ELSE menusel = menusel - 1.
+             ELSE execsel = 1.
+    END.
+    IF execsel = 1 AND
+       menusel = 1
+    THEN IF KEYFUNCTION(LASTKEY) <> "END-ERROR" AND
+            KEYLABEL(LASTKEY)    <> "ESC"
+         THEN menleav = 1.
+END.
+
+HIDE FRAME confirm NO-PAUSE.
+
+{return.i}
+/* eof */

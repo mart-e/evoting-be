@@ -1,0 +1,70 @@
+/* Filename            : SELCAND.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR key_dis   AS C FORMAT "x(49)".
+DEF VAR down-num  AS INTEGER.
+
+DEF VAR mes1     AS C FORMAT "x(30)".
+DEF VAR men_tit  AS C FORMAT "x(40)".
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME pmlcange SCROLL 1 down-num DOWN ROW 5
+    TITLE men_tit NO-LABELS OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmlcange,mes' + STRING(1 + candtyp,'99'),30,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmlcange,tit' + STRING(1 + candtyp,'99'),40,OUTPUT men_tit"}
+
+{call.i &prg="initcand"}         /* Initialisatie van een kandidaat              */
+
+{selitem.g
+ &tab_name     = "candidate"
+ &where        = "candidate.s-id   = verkdat AND
+                  candidate.e-id   = verknum AND
+                  candidate.p-id   = partnum AND
+                  candidate.c-type = candtyp"
+ &key_dis      = "STRING(candidate.c-id,'>9') + ' ' +
+                  candidate.c_name1             + ' ' +
+                  candidate.c_name2"
+ &fkey         = "01"
+ &fra_name     = "pmlcange"    
+ &fra_capture  = "candnum = INT(SUBSTRING(key_dis,1,2))"
+ &cursor_left  = 5
+ &cursor_right = 2
+ &action_type  = "C"
+ &action_flag  = 54
+ &action_keys  = "F6,F7,F8,F9,F1,RETURN"
+ &action_prgs  = "ainscand.r,binscand.r,delcand.r,chacand.r"
+ &action_post  = " "
+ &action_else  = " "
+}
+
+{return.i}
+/* eof */

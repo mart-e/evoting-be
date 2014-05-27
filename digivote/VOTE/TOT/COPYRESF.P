@@ -1,0 +1,87 @@
+/* Filename            : COPYRESF.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-originator    AS C FORMAT "x(40)"             NO-UNDO.
+DEF INPUT  PARAM wz-destinator    AS C FORMAT "x(40)"             NO-UNDO.
+DEF OUTPUT PARAM wz-result-path   AS C FORMAT "x(40)"             NO-UNDO.
+DEF OUTPUT PARAM wz-status        AS L INIT FALSE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-orig          AS C FORMAT "x(12)"                      NO-UNDO.
+DEF VAR wz-dest          AS C FORMAT "x(12)"                      NO-UNDO.
+
+DEF VAR copystat         AS L INIT FALSE                          NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="disfram" &param=",'digivote,copbes20','','','',FALSE"}
+
+FIND FIRST organigram WHERE organigram.sys-type +
+                            organigram.org-type +
+                            organigram.area[1]  +
+                            STRING(organigram.orginator,"999") = wz-originator
+                         OR organigram.sys-type +
+                            organigram.org-type +
+                            organigram.area[2]  +
+                            STRING(organigram.orginator,"999") = wz-originator
+                         OR organigram.sys-type +
+                            organigram.org-type +
+                            organigram.area[3]  +
+                            STRING(organigram.orginator,"999") = wz-originator
+                    NO-LOCK NO-ERROR.
+wz-orig = SUBSTR(wz-originator, 1, 1)
+        + STRING(organigram.disk-id,"9999999")
+        + "." + SUBSTR(wz-originator, LENGTH(wz-originator) - 2, 3).
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+wz-dest = SUBSTR(wz-destinator, 1, 1)
+        + STRING(setup.disk-id,"9999999")
+        + "." + SUBSTR(wz-destinator, LENGTH(wz-destinator) - 2, 3).
+
+/* make RESULTS directory structure ... */
+call C_MKDIR VALUE("C:\VOTE\RESULTS").
+call C_MKDIR VALUE("C:\VOTE\RESULTS\" + wz-dest).
+call C_MKDIR VALUE("C:\VOTE\RESULTS\" + wz-dest + "\" + wz-orig).
+
+wz-result-path = "C:\VOTE\RESULTS\" + wz-dest + "\" + wz-orig + "\".
+
+call C_TSTFN VALUE(wz-result-path + "NUL").
+IF fileok = 0
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Directory not found : " + wz-result-path) 2.
+END.
+ELSE DO:
+    OUTPUT TO VALUE(ramdrive + "COPYLIST").
+    PUT UNFORMATTED
+        "A:\CONTENTS" "~t" wz-result-path + "CONTENTS" SKIP
+        "A:\B001"     "~t" wz-result-path + "B001"     SKIP
+        "A:\B006"     "~t" wz-result-path + "B006"     SKIP
+        "A:\B009"     "~t" wz-result-path + "B009".
+    OUTPUT CLOSE.
+
+    {call.i &prg="copyfile" &param=", OUTPUT copystat"}
+    IF NOT copystat
+    THEN DO:
+        {call.i &prg="delresf" &param=",?,wz-result-path"}
+        {call.i &prg="disfram" &param=",'digivote,cpbser01','digivote,cpbser02','','',TRUE"}
+    END.
+    ELSE wz-status = copystat.
+END.
+
+PAUSE 0 NO-MESSAGE.
+
+{return.i}
+/* eof */

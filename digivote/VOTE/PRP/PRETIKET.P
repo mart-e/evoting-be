@@ -1,0 +1,145 @@
+/* Filename            : PRETIKET.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+{etiket.i "NEW"}           /* Shared variables for etiket printing      */
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-recid               AS RECID                 NO-UNDO.
+DEF VAR wz-loop                AS I                     NO-UNDO.
+DEF VAR wz-nbex                AS I                     NO-UNDO.
+DEF VAR wz-nbr_elect           AS I                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+CALL C_PRSTAT.
+IF stat = 144
+THEN DO:
+    {call.i &prg="disfram" &param=",'indicat,mes01','','','',FALSE"}
+    CALL C_PRTYPE.
+    FIND FIRST setup   NO-LOCK NO-ERROR.
+    FIND FIRST session NO-LOCK NO-ERROR.
+    ASSIGN
+        wz-row       = 0
+        wz-col       = 0
+        wz-prt       = printer
+        wz-maxcpl[1] = 30   /* max 30 char. on one label - 12 cpi */
+        wz-maxcpl[2] = 40   /* max 40 char. on one label - 17 cpi */
+        wz-maxrpl    = 16.  /* max rows on one label              */
+
+    IF wz-prt = 1
+    THEN DO:   /* HP 1100 */
+        ASSIGN                 /* Labels 3x5 per pagina */
+        wz-labcols       = 3
+        wz-labrows       = 5
+        wz-atnorm[1]     = 1   /* Startpositions label 1-2-3 - 12 cpi */
+        wz-atnorm[2]     = 33
+        wz-atnorm[3]     = 66
+        wz-atsmal[1]     = 1   /* Startpositions label 1-2-3 - 17 cpi */
+        wz-atsmal[2]     = 47
+        wz-atsmal[3]     = 91
+        wz-skipafterpage = 4.  /* Nbr of skips to the first line to print */
+
+        {BEGPRT.I "N" 100 15}
+        PUT SKIP(wz-skipafterpage).
+    END.
+    ELSE DO: /* CompuPrint */
+        ASSIGN                 /* Labels 1x1 */
+        wz-labcols       = 1
+        wz-labrows       = 1
+        wz-atnorm[1]     = 1   /* Startposition label 1 - 12 cpi */
+        wz-atsmal[1]     = 1   /* Startposition label 1 - 17 cpi */
+        wz-skipafterpage = 0.
+
+        {BEGPRT.I "N" -1 15}
+        PUT SKIP(12).   /* Start on 2ø etiket */
+    END.
+
+    wz-nbex = 1.
+    /* Bepaal aantal exemplaren van het etiket */
+    /* per diskette + 2 extra envelop          */
+    ASSIGN
+    wz-nbr_elect = 0
+    wz-nbex      = session.nbr_flop + 2.
+    FOR EACH election NO-LOCK WHERE election.s-id = session.s-id:
+        wz-nbr_elect = wz-nbr_elect + 1.
+    END.
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    IF AVAILABLE setup
+    THEN IF wz-nbr_elect < NUM-ENTRIES(setup.startup[2])
+         THEN DO wz-nbr_elect = 1 TO NUM-ENTRIES(setup.startup[2]):
+                  FIND FIRST election
+                      WHERE election.s-id = session.s-id
+                        AND STRING(election.et-id) + "/" + STRING(election.coll-id)
+                            = ENTRY(wz-nbr_elect,startup[2])
+                    NO-LOCK NO-ERROR.
+                  IF NOT AVAILABLE election
+                  THEN DO:
+                      FIND FIRST types
+                          WHERE STRING(types.et-id) + "/" + STRING(types.coll-id)
+                                = ENTRY(wz-nbr_elect,startup[2])
+                        NO-LOCK NO-ERROR.
+                      IF AVAILABLE types
+                      THEN IF types.mandatory    = FALSE AND
+                              types.separate_TOT = TRUE
+                           THEN wz-nbex = wz-nbex - 1.
+                  END.
+              END.
+
+    FIND LAST urnedest NO-LOCK NO-ERROR.
+    wz-recid = RECID(urnedest).
+
+    FOR EACH organigram WHERE organigram.g-disk   = setup.disk-id
+                          AND organigram.sys-type = "U"
+                      NO-LOCK:
+        DO wz-loop = 1 TO wz-nbex :
+            ASSIGN
+            wz-field    = ""
+            wz-field[1] = (IF      wz-loop = 1
+                           THEN "          MASTER"
+                           ELSE IF wz-loop >= 2 AND
+                                   wz-loop <= (wz-nbex - 2)
+                           THEN "          BACKUP" + STRING(wz-loop - 1)
+                           ELSE " ")
+            wz-field[2] = organigram.sys-type            +
+                          organigram.org-type            +
+                          organigram.area[taalkode] +
+                          STRING(organigram.orginator,"999")
+            wz-field[3] = organigram.name
+            wz-field[4] = organigram.adres
+            wz-field[5] = organigram.postcode + " " + organigram.lokal
+            wz-fieldlist = ",,1,,2,,3,,4,5".
+
+            {call.i &prg="etiket" &param=",IF wz-recid = RECID(urnedest) AND
+                                              wz-loop  = wz-nbex
+                                           THEN TRUE
+                                           ELSE FALSE"}
+        END. /* wz-loop */
+    END. /* each urnedest */
+
+    {ENDPRT.I}
+
+    HIDE FRAME disframe NO-PAUSE.
+END.
+ELSE DO: /* stat <> 144  */
+    {call.i &prg="dispmes" &param=",'indicat,err01',0"}
+    HIDE MESSAGE NO-PAUSE.
+END.
+
+{return.i}
+/* eof */

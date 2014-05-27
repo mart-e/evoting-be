@@ -1,0 +1,53 @@
+/* Filename            : RESUME.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-resume       AS C FORMAT "x(50)"               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR prglvl                  AS I                              NO-UNDO.
+DEF VAR quot                    AS C INIT """"                    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+prglvl = 2.
+DO WHILE PROGRAM-NAME(prglvl + 1) <> ?:
+    prglvl = prglvl + 1.
+END.
+OUTPUT TO VALUE(wz-resume).
+PUT UNFORMATTED 
+    setup.password              SKIP
+    STRING(taalkode)            SKIP.
+    DO WHILE prglvl > 0:
+        PUT UNFORMATTED {prgname.i PROGRAM-NAME(prglvl)}.
+        prglvl = prglvl - 1.
+        IF prglvl > 0 
+        THEN PUT UNFORMATTED ",".
+    END.
+    PUT UNFORMATTED             SKIP
+        quot TRIM(verkben) quot SKIP.
+OUTPUT CLOSE.
+
+{return.i}
+/* eof */

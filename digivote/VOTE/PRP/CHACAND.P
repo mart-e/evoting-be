@@ -1,0 +1,37 @@
+/* Filename            : CHACAND.P                                      */
+
+{candidate.g
+ &pre_start       = " 
+  {call.i &prg='selecwr'} 
+ "
+ &extra_init      = "
+  ASSIGN
+  candnr  = candnum
+  menleav = 0.
+ "
+ &fkey_nbr        = "01"
+ &fetch_candidate = "
+  FIND candidate WHERE candidate.disk-id = setup.disk-id
+                   AND candidate.s-id    = verkdat
+                   AND candidate.e-id    = verknum
+                   AND candidate.p-id    = partnum
+                   AND candidate.c-type  = candtyp
+                   AND candidate.c-id    = candnr  
+                 NO-LOCK NO-ERROR.
+  IF AVAILABLE candidate
+  THEN DO :
+      ASSIGN
+      candnam1 = candidate.c_name1
+      candnam2 = candidate.c_name2.
+      DISPLAY candnam1 candnam2 WITH FRAME pmlcanin.
+  END.
+ "
+ &leave_repeat    = "
+  LEAVE.
+ "
+ &after_repeat    = " 
+  menleav = 1. 
+ "
+}
+
+/* eof */

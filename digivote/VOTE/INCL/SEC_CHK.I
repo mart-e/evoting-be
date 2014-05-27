@@ -1,0 +1,3 @@
+FOR EACH {1} NO-LOCK:
+    {CHK_MAC.I {1}}
+END.

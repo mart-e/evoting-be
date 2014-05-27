@@ -1,0 +1,141 @@
+/* Filename            : BIJLCATP.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   BIJLCATP.P  $</workFile>
+<revision>$Revision: 1.3 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 01 2004 11:43:58  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/BIJLCATP.P-
+arc  $</archive>
+<archiveTimeStamp>$Date: 2005/03/01 16:11:56 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-elect-recid    AS RECID                        NO-UNDO.
+DEF INPUT PARAM wz-party-recid    AS RECID                        NO-UNDO.
+DEF INPUT PARAM wz-sect-nbr       AS I                            NO-UNDO.
+DEF INPUT PARAM TaalGr            AS C FORMAT "x(45)"             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-taal          AS I                              NO-UNDO.
+DEF SHARED VAR wz-categorie     AS I FORMAT "Z,ZZZ,ZZ9" EXTENT  4 NO-UNDO.
+DEF SHARED VAR wz-categorie-tot AS I FORMAT "Z,ZZZ,ZZ9"           NO-UNDO.
+DEF SHARED VAR wz-start-line    AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+/*@source sec=1*/
+
+/*@source sec=0*/
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+
+FIND FIRST election WHERE RECID(election) = wz-elect-recid
+                  NO-LOCK NO-ERROR.
+
+FIND FIRST party    WHERE RECID(party)    = wz-party-recid
+                  NO-LOCK NO-ERROR.
+
+/*@source sec=1*/
+/* ontcijferen stemmen + totaliseer */
+ASSIGN
+    wz-categorie        = 0
+    wz-categorie-tot    = 0.
+call CRYPDEC PRPTOT party.vote_top.
+wz-categorie[1]         = INT(result4).
+call CRYPDEC PRPTOT party.vote_can.
+wz-categorie[2]         = INT(result4).
+call CRYPDEC PRPTOT party.vote_sup.
+wz-categorie[3]         = INT(result4).
+call CRYPDEC PRPTOT party.vote_cs.
+wz-categorie[4]         = INT(result4).
+
+wz-categorie-tot        = wz-categorie[1] +
+                          wz-categorie[2] +
+                          wz-categorie[3] +
+                          wz-categorie[4].
+/*@source sec=0*/
+
+FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                  AND layout.sect-nbr = wz-sect-nbr
+              NO-LOCK:
+    IF wz-start-line = -1
+    THEN wz-start-line = layout.line-nbr - 1.
+
+    wz-lijn = layout.contents.
+    LBLCONV:
+    REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+        ASSIGN
+        wz-convto   = ""
+        wz-startpos = INDEX(wz-lijn,"@F")
+        wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+        wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+        ASSIGN
+        wz-convto =
+            IF      wz-label = "01" /* Partijnummer en naam */
+            THEN ( STRING(party.p-id,"Z9") + " " +
+                   party.party_name )
+            ELSE IF wz-label = "02" /* Totaal 'kop'-stemmen + */
+                                    /* Totaal voorkeurstemmen */
+            THEN STRING(wz-categorie[1] +
+                        wz-categorie[2],"Z,ZZZ,ZZ9")
+            ELSE IF wz-label = "50" /* College informatie */
+            THEN STRING(IF election.colls
+                        THEN ( IF wz-doc-lang = 2
+                               THEN election.head0[wz-doc-lang] + " " +
+                                    election.coll_name[wz-doc-lang]
+                               ELSE election.coll_name[wz-doc-lang] + "e " +
+                                    election.head0[wz-doc-lang]
+                             )
+                        ELSE ( IF election.et-id = 1
+                               THEN TaalGr
+                               ELSE ""
+                             ),
+                        "x(45)")
+            ELSE IF wz-label = "52" /* Heading2 informatie */
+            THEN STRING(( IF election.heading2[wz-doc-lang] = ""
+                          THEN ""
+                          ELSE election.head2[wz-doc-lang] + " : ") +
+                        election.heading2[wz-doc-lang],"x(45)")
+            ELSE IF wz-label = "53" /* Heading3 informatie */
+            THEN STRING(election.head3[wz-doc-lang] + " : " +
+                        election.heading3[wz-doc-lang],"x(45)")
+            ELSE IF wz-label = "70" /* Totaal categorie‰n */
+            THEN STRING(wz-categorie-tot,"Z,ZZZ,ZZ9")
+            ELSE IF LOOKUP( wz-label, "71,72,73,74") > 0 /* een categorie */
+            THEN STRING(wz-categorie[INT(wz-label) - 70],"Z,ZZZ,ZZ9")
+            ELSE IF wz-label = "75" /* Kandidaat + Opvolgers + Kand/Opv */
+            THEN STRING(wz-categorie[2] +
+                        wz-categorie[3] +
+                        wz-categorie[4],
+                        "Z,ZZZ,ZZ9")
+            ELSE "N/A".
+
+        {REPLLBL.I}
+    END. /* REPEAT while index - LBLCONV */
+    {LINEPRT.I 1}
+END. /* FOR EACH layout */
+
+{return.i}
+/* eof */

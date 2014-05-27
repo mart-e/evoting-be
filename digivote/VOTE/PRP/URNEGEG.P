@@ -1,0 +1,124 @@
+/* Filename            : urneGEG.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR bureau          AS C FORMAT "x(45)"                      NO-UNDO.
+DEF VAR key_dis         AS C FORMAT "x(45)"                      NO-UNDO.
+DEF VAR down-num        AS I.
+
+DEF VAR titel           AS C FORMAT "x(40)"                      NO-UNDO.
+DEF VAR men_mes1        AS C FORMAT "x(7)"                       NO-UNDO.
+
+DEF VAR wz-label        AS C FORMAT "x(25)" EXTENT 5             NO-UNDO.
+DEF VAR the_pwd         LIKE elect.meta.aesKey                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{mencolor.i}            /* De variabelen voor het kleuren van scherm    */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS DESCRIPTIONS                                      */
+/*                                                                      */
+/************************************************************************/
+FORM
+                          SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER men_mes1  AT 7 SPACE(2)
+    WITH FRAME pmslstpa 
+        SCROLL 1 
+        down-num DOWN 
+        ROW 5
+        TITLE titel 
+        NO-LABELS 
+        OVERLAY 
+        CENTERED.
+
+FORM
+    wz-label[1] AT 2 bureau                AT 27 SPACE(2) SKIP
+    wz-label[2] AT 2 organigram.name       AT 27 SPACE(2) SKIP
+    wz-label[3] AT 2 organigram.adres      AT 27 SPACE(2) SKIP
+                     organigram.postcode   AT 27 
+                     organigram.lokal      AT 32 SPACE(2) SKIP
+    wz-label[4] AT 2 organigram.tel-nr     AT 27 SPACE(2) SKIP(1)
+/*@source sec=1*/
+    wz-label[5] AT 2 the_pwd               AT 27 SPACE(2) SKIP
+/*@source sec=0*/
+    WITH FRAME pmdexpbe 
+        NO-LABELS 
+        ROW 5 
+        CENTERED 
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'general,bureau',7,OUTPUT men_mes1"}
+{call.i &prg="mesfil" &param=",'pmslstpa,tit1',40,OUTPUT titel"}
+REPEAT down-num = 1 TO 5:
+    {call.i &prg="mesfil" &param=",'pmdexpbe,mes' + STRING(down-num,'99'),25,
+                                   OUTPUT wz-label[down-num]"}
+END.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+{selitem.g
+ &tab_name     = "organigram"
+ &where        = "organigram.g-disk   = setup.disk-id AND
+                  organigram.sys-type = 'U'"
+ &key_dis      = "FILL(' ',2)
+               +  organigram.sys-type
+               +  organigram.org-type
+               +  organigram.area[taalkode] 
+               +  STRING(organigram.orginator,'999')"
+ &fkey         = "01"
+ &fra_name     = "pmslstpa"  
+ &action_flag  = 0
+ &action_keys  = "F1,RETURN"
+ &action_prgs  = " "
+ &action_post  = "
+  FIND FIRST organigram WHERE organigram.sys-type
+                            + organigram.org-type
+                            + organigram.area[taalkode] 
+                            + STRING(organigram.orginator,'999') = SUBSTR(key_dis,3)
+                      NO-LOCK NO-ERROR.
+  IF AVAILABLE organigram
+  THEN DO:
+      ASSIGN
+      the_pwd = FILL(' ',AESKEYLEN)
+      bureau  = SUBSTR(key_dis,3).
+      IF organigram.verwerkt
+      THEN DO:
+          call CRYPDEC PRPTOT organigram.master-key.
+          IF crypStat = 0 THEN the_pwd = result4.
+      END.
+      DISPLAY wz-label bureau organigram.name organigram.adres
+              organigram.postcode organigram.lokal organigram.tel-nr
+              the_pwd
+          WITH FRAME pmdexpbe.
+      {call.i &prg=""dispstat"" &param="",'general,keypress',0""}
+      REPEAT :
+          PAUSE NO-MESSAGE.
+          LEAVE.
+      END.
+      STATUS DEFAULT.
+      HIDE MESSAGE NO-PAUSE.
+      HIDE FRAME pmdexpbe NO-PAUSE.
+      PUT SCREEN ROW 6 COLUMN 23 men_mes1.
+  END.
+ "
+}
+
+{return.i}
+/* eof */

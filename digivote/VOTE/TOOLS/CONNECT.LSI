@@ -1,0 +1,11 @@
+CONNECTD.P  D:\VOTE\ELECT.DB        d_elect
+CONNECT2.P  D:\VOTE\ELECT.DB        d_elect             
+COPYLIS.P   D:\VOTE\ELECT.DB        d_elect
+CPPARCAN.P  D:\VOTE\ELECT.DB        d_elect
+ACCEPT2S.P  D:\VOTE\ELECT.DB        d_elect
+ACCEPT2I.P  D:\VOTE\ELECT.DB        d_elect
+DUMPARTY.P  D:\VOTE\ELECT.DB        d_elect
+DUMPCAND.P  D:\VOTE\ELECT.DB        d_elect
+INITEL_P.P  D:\VOTE\ELECT.DB        from_elect
+INITEL_V.P  D:\VOTE\ELECT.DB        from_elect
+STARTDIG.P  D:\VOTE\ELECT.DB        from_elect

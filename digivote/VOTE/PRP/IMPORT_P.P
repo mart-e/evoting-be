@@ -1,0 +1,166 @@
+/* Filename            : IMPORT_I.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-disk-id        LIKE organigram.disk-id        NO-UNDO.
+DEF INPUT  PARAM wz-e-ids          AS C FORMAT "x(40)"            NO-UNDO.
+DEF INPUT  PARAM wz-coll-ids       AS C FORMAT "x(40)"            NO-UNDO.
+
+DEF OUTPUT PARAM wz-rel-s-disk-id  LIKE organigram.disk-id        NO-UNDO.
+DEF OUTPUT PARAM wz-rel-i-disk-id  LIKE organigram.disk-id        NO-UNDO.
+
+DEF OUTPUT PARAM wz-P-structure    AS C FORMAT "x(40)"            NO-UNDO.
+DEF OUTPUT PARAM wz-P-introduction AS C FORMAT "x(40)"            NO-UNDO.
+DEF OUTPUT PARAM wz-P-coll-ids     AS C FORMAT "x(40)"            NO-UNDO.
+DEF OUTPUT PARAM wz-P-counter      AS I                           NO-UNDO.
+
+DEF OUTPUT PARAM wz-ignore-blanco  AS L INIT FALSE                NO-UNDO.
+
+DEF OUTPUT PARAM wz-message        AS C FORMAT "x(40)"            NO-UNDO.
+DEF OUTPUT PARAM wz-status         AS L INIT TRUE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-P-p-ids          AS I EXTENT 41                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-field                   AS C FORMAT "x(40)"            NO-UNDO.
+DEF VAR wz-type                    AS C FORMAT "x(40)"            NO-UNDO.
+DEF VAR wz-s-disk                  LIKE organigram.s-disk         NO-UNDO.
+DEF VAR i                          AS I                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+wz-message = "(party)".
+
+INPUT FROM VALUE(ramdrive + "PARTY.IMP") NO-ECHO.
+ASSIGN
+wz-P-p-ids   = 0
+wz-P-counter = 0.
+REPEAT:
+    IF wz-P-counter = 4
+    THEN SET wz-P-p-ids.
+    ELSE SET wz-field.
+    
+    wz-P-counter = wz-P-counter + 1.
+    IF      wz-P-counter   = 1 /* should be 'party'      */
+    THEN wz-type           = wz-field.
+    ELSE IF wz-P-counter   = 2 /* Source STRUCTURE       */
+    THEN wz-P-structure    = wz-field.
+    ELSE IF wz-P-counter   = 3 /* Source INTRODUCTION    */
+    THEN wz-P-introduction = wz-field.
+    ELSE IF wz-P-counter   = 4 /* College identification */
+    THEN wz-P-coll-ids     = wz-field.
+END.
+INPUT CLOSE.
+wz-P-counter = wz-P-counter - 6.
+IF  wz-type      = "party"
+AND wz-P-counter = INT(wz-field)
+THEN DO:
+    FIND FIRST organigram WHERE organigram.l-disk = wz-disk-id  
+                            AND organigram.sys-type
+                              + organigram.org-type
+                              + organigram.area[1]
+                              + STRING(organigram.orginator,"999") = wz-P-structure
+                        NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE organigram
+    THEN ASSIGN
+         wz-message = "(party::S)"
+         wz-status  = FALSE.
+    ELSE DO:
+    		IF organigram.verwerkt 
+    		THEN ASSIGN
+    		     wz-message = "(already processed::S)"
+    		     wz-status  = FALSE.
+    		ELSE DO:
+						ASSIGN
+						wz-rel-s-disk-id = organigram.disk-id
+						wz-s-disk        = organigram.s-disk.
+						FIND FIRST organigram WHERE organigram.s-disk = wz-s-disk
+																		AND organigram.l-disk = wz-disk-id  
+																		AND organigram.sys-type
+																			+ organigram.org-type
+																			+ organigram.area[1]
+																			+ STRING(organigram.orginator,"999") = wz-P-introduction
+																NO-LOCK NO-ERROR.
+						IF NOT AVAILABLE organigram
+						THEN ASSIGN
+						     wz-message = "(party::I)"
+						     wz-status  = FALSE.
+						ELSE IF organigram.verwerkt
+						     THEN ASSIGN 
+						          wz-message = "(already processed::I)"
+						          wz-status  = FALSE.
+						     ELSE wz-rel-i-disk-id = organigram.disk-id.
+				END.
+    END.
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message + " " + wz-type) 1.
+    call ADDTOLOG PROGRAM-NAME(1) 
+         VALUE(STRING(wz-P-structure)    + " | " 
+             + STRING(wz-P-introduction) + " | "
+             + STRING(wz-P-counter)      + "/" + wz-field) 1.
+    wz-status = FALSE.
+END.
+IF wz-status
+THEN DO:
+    wz-message = "(party::college)".
+    IF wz-P-coll-ids <> wz-coll-ids
+    THEN DO:
+        IF NUM-ENTRIES( wz-coll-ids)   = 1
+        OR NUM-ENTRIES( wz-P-coll-ids) > 1
+        THEN wz-status = FALSE.
+        ELSE DO:
+            wz-status = FALSE.
+            REPEAT i = 1 TO NUM-ENTRIES( wz-coll-ids):
+                IF wz-P-coll-ids = ENTRY( i, wz-coll-ids)
+                THEN DO:
+                    wz-status = TRUE.
+                    LEAVE.
+                END.
+            END.
+        END.
+    END.
+    IF NOT wz-status
+    THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-message + " " + 
+                                             wz-P-coll-ids + " | " + wz-coll-ids) 1.
+END.
+IF wz-status
+THEN DO:
+    wz-message = "(party::numbers)".
+    REPEAT i = 1 TO 41:
+        FIND FIRST party WHERE party.disk-id = wz-disk-id
+                           AND party.p-id = wz-P-p-ids[i]
+                           AND LOOKUP( STRING( party.e-id), wz-e-ids) > 0
+                       NO-LOCK NO-ERROR.
+        IF AVAILABLE party
+        THEN IF party.p-id > 0
+             THEN DO:
+                 ASSIGN
+                 wz-message = "(party::number::" + STRING( party.p-id) + ")"
+                 wz-status  = FALSE.
+                 LEAVE.
+             END.
+             ELSE IF i = 1
+             THEN wz-ignore-blanco = TRUE.
+    END.
+END.
+
+{return.i}
+/* eof */

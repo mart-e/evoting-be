@@ -1,0 +1,71 @@
+/* Filename            : VERSION.P                                      */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARS VIA INCLUDE FILE'S                                */
+/*                                                                      */
+/************************************************************************/
+/*@source sec=1*/
+{cryprslt.i "NEW"}    /* Variabelen voor encryptie                      */
+/*@source sec=0*/
+{hlcvars.i  "NEW"}        /* Variabelen voor HLC-calls                  */
+{logging.i  "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*   SHARED VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR taalkode AS I             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   LOCAL VARIABLES                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF VAR prgSTAT AS I INIT ?.
+
+DEF VAR ver-msg AS C FORMAT "x(40)" EXTENT 3 NO-UNDO.
+DEF VAR i       AS I                         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   LOCAL FORMS                                                        */
+/*                                                                      */
+/************************************************************************/
+FORM
+                          SKIP(2)
+    ver-msg[1] AT 2 SPACE SKIP(1)
+    ver-msg[2] AT 2 SPACE SKIP(1)
+    ver-msg[3] AT 2 SPACE SKIP(1)
+                          SKIP(1)
+    WITH FRAME version NO-LABELS ROW 7 CENTERED
+         TITLE " Digivote ".
+
+/************************************************************************/
+/*                                                                      */
+/*   START PROCEDURE                                                    */
+/*                                                                      */
+/************************************************************************/
+/************************************************************************/
+/*   OPHALEN RAMDRIVE LETTER (SLECHTS EENMALIG !!)                      */
+/************************************************************************/
+call C_GETENV "RAM" "ramdrive".
+IF ramdrive = "?" THEN ramdrive = "C".
+ramdrive = ramdrive + ":\".
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+DO i = 1 TO 3:
+    taalkode = i.
+    /* read version label stored in language table */
+    {call.i &prg="mesfil" &param=",'version,version',0,OUTPUT ver-msg[i]"}
+    SUBSTR( ver-msg[i], INDEX( ver-msg[i], "@1"), 2) =
+            STRING( setup.version[1]) + "." + STRING( setup.version[2]).
+    SUBSTR( ver-msg[i], INDEX( ver-msg[i], "@2"), 2) = STRING( setup.v-date).
+END.
+DISPLAY ver-msg WITH FRAME version.
+PAUSE.
+HIDE FRAME version NO-PAUSE.
+
+QUIT.
+/* eof */

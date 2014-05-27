@@ -1,0 +1,1 @@
+ramdrive + "VOTE\TRACE.LOG\LEVEL" + STRING({1},"999") + ".LOG"

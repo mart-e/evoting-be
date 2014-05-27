@@ -1,0 +1,47 @@
+/* Filename            : UPDATE.P                                       */
+
+/* Don't use {chklevel.i} => this is also a startup procedure !! */
+
+/************************************************************************/
+/*                                                                      */
+/*   SHARED VARIABLES VIA INCLUDE FILES                                 */
+/*                                                                      */
+/************************************************************************/
+{cryprslt.i "NEW"}
+{hlcvars.i  "NEW"}
+{logging.i  "NEW"}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR prgSTAT    AS I INIT ?.
+DEF VAR v-major    AS I NO-UNDO.
+DEF VAR v-minor    AS I NO-UNDO.
+DEF VAR v-build    AS I NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   START PROCEDURE                                                    */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*   OPHALEN RAMDRIVE LETTER (SLECHTS EENMALIG !!)                      */
+/************************************************************************/
+call C_GETENV "RAM" "ramdrive".
+IF ramdrive = "?" THEN ramdrive = "C".
+ramdrive = ramdrive + ":\".
+
+RUN traceprg(prgSTAT, ">>>").
+
+INPUT FROM VALUE(ramdrive + "BUILD.INF") NO-ECHO.
+SET v-major v-minor v-build.
+INPUT CLOSE.
+CALL C_DEL VALUE(ramdrive + "BUILD.INF").
+
+{call.i &prg="SET_VBL" &param=", v-major, v-minor, v-build, TRUE"}
+
+{quit.i &corrupt=FALSE}  /* returns control to operating system */
+/* eof */

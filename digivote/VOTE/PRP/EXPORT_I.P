@@ -1,0 +1,227 @@
+/* Filename            : EXPORT_I.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-disk-id   LIKE organigram.disk-id             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}                   /* Variabelen voor display frame disframe */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR maskey       LIKE meta.aesKey                      NO-UNDO.
+DEF SHARED VAR seskey       LIKE meta.aesKey                      NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-structure          AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-introduction       AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-counter            AS I                                NO-UNDO.
+DEF VAR wz-coll-ids           AS C FORMAT "x(40)"                 NO-UNDO.
+DEF VAR wz-p-ids              AS I EXTENT 41                      NO-UNDO.
+
+DEF VAR i                     AS I                                NO-UNDO.
+
+DEF VAR wz-errmsg             AS C FORMAT "x(60)"                 NO-UNDO.
+DEF VAR wz-status             AS L                                NO-UNDO.
+DEF VAR copystat              AS L INIT FALSE                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/* Message 'Voorbereiden van gegevens, Even geduld...' */
+{call.i &prg="disfram" &param=",'digivote,indwait1','',',','',FALSE"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST organigram WHERE organigram.disk-id = wz-disk-id NO-LOCK NO-ERROR.
+wz-coll-ids = "".
+FOR EACH election NO-LOCK WHERE election.org-type = organigram.org-type:
+    IF wz-coll-ids <> "" THEN wz-coll-ids = wz-coll-ids + ",".
+    wz-coll-ids = wz-coll-ids + STRING(election.et-id) + "/" + STRING(election.coll-id).
+END.
+ASSIGN
+wz-structure    = setup.sys-type 
+                + setup.org-type 
+                + setup.areaname
+                + STRING(setup.orginator,"999")
+wz-introduction = organigram.sys-type 
+                + organigram.org-type 
+                + organigram.area[1]
+                + STRING(organigram.orginator,"999").
+                
+ASSIGN
+i        = 0
+wz-p-ids = 0.
+FOR EACH party NO-LOCK WHERE party.disk-id = wz-disk-id BY party.p-id:
+    ASSIGN
+    i           = i + 1
+    wz-p-ids[i] = party.p-id.
+END.
+
+OUTPUT TO VALUE(ramdrive + "PARTY.EXP").
+PUT UNFORMATTED "party"                   SKIP
+                """" wz-structure    """" SKIP
+                """" wz-introduction """" SKIP
+                """" wz-coll-ids     """" SKIP.
+REPEAT i = 1 TO 41:
+    PUT UNFORMATTED wz-p-ids[i] " ".
+END.
+PUT UNFORMATTED                           SKIP.
+wz-counter = 0.
+FOR EACH party NO-LOCK WHERE party.disk-id = wz-disk-id BY party.p-id:
+    EXPORT party EXCEPT disk-id e-id MAC.
+    wz-counter = wz-counter + 1.
+END.
+PUT UNFORMATTED wz-counter.
+OUTPUT CLOSE.
+
+ASSIGN
+i        = (IF wz-p-ids[1] = 0 THEN 1 ELSE 0).
+wz-p-ids = 0.
+FOR EACH candidate NO-LOCK WHERE candidate.disk-id = wz-disk-id BREAK BY candidate.p-id:
+		IF FIRST-OF( candidate.p-id)
+		THEN DO:
+				i = i + 1.
+				IF i > 41
+				THEN DO:
+				    call C_DEL VALUE(ramdrive + "PARTY.EXP").
+						HIDE FRAME disframe NO-PAUSE.
+						{call.i &prg="interror" &param=",'smgeneme,opt2','internal,errmsg','(party)'"}
+				    {return.i}
+				END.
+        wz-p-ids[i] = candidate.p-id.
+    END.
+END.
+
+OUTPUT TO VALUE(ramdrive + "CANDIDAT.EXP").
+PUT UNFORMATTED "candidate"               SKIP
+                """" wz-structure    """" SKIP
+                """" wz-introduction """" SKIP
+                """" wz-coll-ids     """" SKIP.
+REPEAT i = 1 TO 41:
+    PUT UNFORMATTED wz-p-ids[i] " ".
+END.
+wz-counter = 0.
+FOR EACH candidate NO-LOCK WHERE candidate.disk-id = wz-disk-id:
+    EXPORT candidate EXCEPT disk-id e-id MAC.
+    wz-counter = wz-counter + 1.
+END.
+PUT UNFORMATTED wz-counter.
+OUTPUT CLOSE.
+
+/* Kreatiecreation contents file */
+{call.i &prg="contents" &param=",ramdrive + 'EXCHANGE'
+                                ,'EXCHANGE_I'
+                                ,wz-structure
+                                ,wz-introduction
+                                ,SUBSTR(wz-introduction,1,2) + '000'"}
+
+{exchange.i}
+{call.i &prg="rnd" &param=",'Session',OUTPUT seskey"}
+
+/* generate encryption keys for destination system */
+wz-errmsg = "(CRYPKEYS)".
+CALL CRYPKEYS maskey seskey.
+IF crypStat = 0
+THEN DO:
+    wz-errmsg = "(CRYPSK)".
+    /* encrypt and store session key */
+    CALL CRYPSK   "E" VALUE(ramdrive + "KEYFILE").
+END.
+IF crypStat = 0
+THEN DO:
+    wz-errmsg = "(CRYPFILE_party)".
+    /* Encrypt the party export file */
+    CALL CRYPFILE "E" PRPEXP VALUE(ramdrive + "PARTY.EXP")
+                             VALUE(ramdrive + "PARTY.ENC") 0.
+END.
+IF crypStat = 0
+THEN DO:
+    wz-errmsg = "(CRYPFILE_candidate)".
+    /* Encrypt the candidate export file */
+    CALL CRYPFILE "E" PRPEXP VALUE(ramdrive + "CANDIDAT.EXP")
+                             VALUE(ramdrive + "CANDIDAT.ENC") 0.
+END.
+IF crypStat = 0
+THEN DO:
+    wz-status = TRUE.
+    REPEAT:
+        {call.i &prg="disfram" &param=",'expzet,waitdisk',',EXCHANGE_I'
+                                       ,',' + wz-structure
+                                       ,',' + wz-introduction
+                                       ,TRUE"}
+        IF key-cancel THEN LEAVE.
+        /* Check if diskette is OK to use */
+        {call.i &prg="chkdisk" &param=",'A:','',OUTPUT wz-status"}
+        IF wz-status THEN LEAVE.
+    END.
+    IF LASTKEY = KEYCODE("END-ERROR")
+    OR key-cancel
+    THEN wz-status = FALSE.
+    ELSE DO:
+        /* Formatteren EXPORT diskette */
+        {call.i &prg="disfram" &param=",'format,export','','','',FALSE"}
+ 
+        {call.i &prg="formdisk" &param=",'A:', 'EXCHANGE_I', FALSE, OUTPUT wz-status"} 
+    END.
+    IF NOT wz-status
+    THEN HIDE FRAME disframe NO-PAUSE.
+    ELSE DO:
+				/* Kopi‰ren van de bestanden, even geduld a.u.b. */
+				{call.i &prg="disfram" &param=",'digivote,copbes10','','','',FALSE"}
+
+        OUTPUT TO VALUE(ramdrive + "COPYLIST").
+        PUT UNFORMATTED
+            ramdrive "EXCHANGE"     "~t" "A:\CONTENTS" SKIP
+            ramdrive "KEYFILE"      "~t" "A:\B006"     SKIP
+            ramdrive "PARTY.ENC"    "~t" "A:\B21P"     SKIP
+            ramdrive "CANDIDAT.ENC" "~t" "A:\B21C".
+        OUTPUT CLOSE.
+
+        {call.i &prg="copyfile" &param=", OUTPUT copystat"}
+        IF NOT copystat
+        THEN DO:
+            call C_DEL VALUE("A:\CONTENTS").
+            call C_DEL VALUE("A:\B006").
+            call C_DEL VALUE("A:\B21P").
+            call C_DEL VALUE("A:\B21C").
+            {call.i &prg="disfram" &param=",'digivote,cpbser01','digivote,cpbser02','','',TRUE"}
+        END.
+    END.
+END.
+ELSE DO:
+    {call.i &prg="interror" 
+            &param=",'expzet,title','internal,errmsg',wz-errmsg"}
+END.
+
+{call.i &prg="init_pwd"}
+
+call C_DEL VALUE(ramdrive + "EXCHANGE").
+call C_DEL VALUE(ramdrive + "KEYFILE").
+call C_DEL VALUE(ramdrive + "PARTY.ENC").
+call C_DEL VALUE(ramdrive + "PARTY.EXP").
+call C_DEL VALUE(ramdrive + "CANDIDAT.ENC").
+call C_DEL VALUE(ramdrive + "CANDIDAT.EXP").
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

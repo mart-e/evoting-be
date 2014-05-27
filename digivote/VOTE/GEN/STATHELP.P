@@ -1,0 +1,34 @@
+/* Filename            : STATHELP.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM timeout           AS L                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+{call.i &prg="dispstat" &param=",'general,keypress', 0"}
+
+REPEAT:
+    IF timeout
+    THEN PAUSE 15 NO-MESSAGE.
+    ELSE PAUSE    NO-MESSAGE.
+    LEAVE.
+END.
+
+IF KEYFUNCTION(LASTKEY) = "END-ERROR"
+THEN key-cancel = TRUE.
+ELSE key-cancel = FALSE.
+
+STATUS DEFAULT.
+
+{return.i}
+/* eof */

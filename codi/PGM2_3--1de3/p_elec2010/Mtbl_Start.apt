@@ -1,0 +1,1274 @@
+.head 0 +  Application Description: Gupta SQLWindows Standard Application Template
+.data CLASSPROPSSIZE
+0000: 4500
+.enddata
+.data CLASSPROPS
+0000: 557365476C6F6261 6C50617468000400 0100000000417070 506174684C656E00
+0020: 04000D0000000041 707050617468000D 00433A5C505F4C69 6233322E34320000
+0040: 0000000000
+.enddata
+.head 1 -  Outline Version - 4.0.35
+.head 1 +  Design-time Settings
+.data VIEWINFO
+0000: 6F00000001000000 FFFF01000D004347 5458566965775374 6174650400010000
+0020: 0000000000A50000 002C000000020000 0003000000FFFFFF FFFFFFFFFFFCFFFF
+0040: FFE9FFFFFFFFFFFF FF000000007C0200 004D010000010000 0001000000010000
+0060: 000F4170706C6963 6174696F6E497465 6D00000000
+.enddata
+.head 2 -  Outline Window State: Normal
+.head 2 +  Outline Window Location and Size
+.data VIEWINFO
+0000: 6600040003002D00 0000000000000000 0000B71E5D0E0500 1D00FFFF4D61696E
+0020: 0000000000000000 0000000000000000 0000003B00010000 00000000000000E9
+0040: 1E800A00008600FF FF496E7465726E61 6C2046756E637469 6F6E730000000000
+0060: 0000000000000000 0000000000003200 0100000000000000 0000E91E800A0000
+0080: DF00FFFF56617269 61626C6573000000 0000000000000000 0000000000000000
+00A0: 3000010000000000 00000000F51E100D 0000F400FFFF436C 6173736573000000
+00C0: 0000000000000000 0000000000000000
+.enddata
+.data VIEWSIZE
+0000: D000
+.enddata
+.head 3 -  Left: -0.013"
+.head 3 -  Top: 0.0"
+.head 3 -  Width:  8.013"
+.head 3 -  Height: 4.969"
+.head 2 +  Options Box Location
+.data VIEWINFO
+0000: D4180909B80B1A00
+.enddata
+.data VIEWSIZE
+0000: 0800
+.enddata
+.head 3 -  Visible? Yes
+.head 3 -  Left: 4.15"
+.head 3 -  Top: 1.885"
+.head 3 -  Width:  3.8"
+.head 3 -  Height: 2.073"
+.head 2 +  Class Editor Location
+.head 3 -  Visible? No
+.head 3 -  Left: 0.575"
+.head 3 -  Top: 0.094"
+.head 3 -  Width:  5.063"
+.head 3 -  Height: 2.719"
+.head 2 +  Tool Palette Location
+.head 3 -  Visible? No
+.head 3 -  Left: 6.388"
+.head 3 -  Top: 0.729"
+.head 2 -  Fully Qualified External References? Yes
+.head 2 -  Reject Multiple Window Instances? No
+.head 2 -  Enable Runtime Checks Of External References? Yes
+.head 2 -  Use Release 4.0 Scope Rules? No
+.head 2 -  Edit Fields Read Only On Disable? No
+.head 1 +  Libraries
+.head 2 -  File Include: mtbl.apl
+.head 2 -  File Include: mimg.apl
+.head 1 +  Global Declarations
+.head 2 +  Window Defaults
+.head 3 +  Tool Bar
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Form Window
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Dialog Box
+.head 4 -  Display Style? Etched
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Top Level Table Window
+.head 4 -  Font Name: MS Sans Serif
+.head 4 -  Font Size: 8
+.head 4 -  Font Enhancement: System Default
+.head 4 -  Text Color: System Default
+.head 4 -  Background Color: System Default
+.head 3 +  Data Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Multiline Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Spin Field
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Background Text
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Pushbutton
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Radio Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Check Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Option Button
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 3 +  Group Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Child Table Window
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  List Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Combo Box
+.head 4 -  Font Name: Use Parent
+.head 4 -  Font Size: Use Parent
+.head 4 -  Font Enhancement: Use Parent
+.head 4 -  Text Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 3 +  Line
+.head 4 -  Line Color: Use Parent
+.head 3 +  Frame
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: 3D Face Color
+.head 3 +  Picture
+.head 4 -  Border Color: Use Parent
+.head 4 -  Background Color: Use Parent
+.head 2 +  Formats
+.head 3 -  Number: 0'%'
+.head 3 -  Number: #0
+.head 3 -  Number: ###000
+.head 3 -  Number: ###000;'($'###000')'
+.head 3 -  Date/Time: hh:mm:ss AMPM
+.head 3 -  Date/Time: M/d/yy
+.head 3 -  Date/Time: MM-dd-yy
+.head 3 -  Date/Time: dd-MMM-yyyy
+.head 3 -  Date/Time: MMM d, yyyy
+.head 3 -  Date/Time: MMM d, yyyy hh:mm AMPM
+.head 3 -  Date/Time: MMMM d, yyyy hh:mm AMPM
+.head 2 +  External Functions
+.head 2 +  Constants
+.data CCDATA
+0000: 3000000000000000 0000000000000000 00000000
+.enddata
+.data CCSIZE
+0000: 1400
+.enddata
+.head 3 +  System
+.head 3 -  User
+.head 3 -  Enumerations
+.head 2 -  Resources
+.head 2 -  Variables
+.head 2 -  Internal Functions
+.head 2 -  Named Menus
+.head 2 +  Class Definitions
+.head 3 +  Functional Class: fcSortCol
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  Window Handle: Handle
+.head 5 -  Number: Flags
+.head 4 -  Functions
+.head 3 +  Functional Class: fcExcExp
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  Number: Language
+.head 5 -  String: ExcStartCell
+.head 5 -  Number: ExcFlags
+.head 5 -  Number: ExpFlags
+.head 5 -  Number: RowFlagsOn
+.head 5 -  Number: RowFlagsOff
+.head 5 -  Number: ColFlagsOn
+.head 5 -  Number: ColFlagsOff
+.head 4 +  Functions
+.head 5 +  Function: Assign
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  FunctionalVar: p
+.head 8 -  Class: fcExcExp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Set Language = p.Language
+.head 7 -  Set ExcStartCell = p.ExcStartCell
+.head 7 -  Set ExcFlags = p.ExcFlags
+.head 7 -  Set ExpFlags = p.ExpFlags
+.head 7 -  Set RowFlagsOn = p.RowFlagsOn
+.head 7 -  Set RowFlagsOff = p.RowFlagsOff
+.head 7 -  Set ColFlagsOn = p.ColFlagsOn
+.head 7 -  Set ColFlagsOff = p.ColFlagsOff
+.head 3 +  Functional Class: fcHTMLExp
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  String: File
+.head 5 -  Number: HTMLFlags
+.head 5 -  Number: ExpFlags
+.head 5 -  Number: RowFlagsOn
+.head 5 -  Number: RowFlagsOff
+.head 5 -  Number: ColFlagsOn
+.head 5 -  Number: ColFlagsOff
+.head 4 +  Functions
+.head 5 +  Function: Assign
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  FunctionalVar: p
+.head 8 -  Class: fcHTMLExp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Set File = p.File
+.head 7 -  Set HTMLFlags = p.HTMLFlags
+.head 7 -  Set ExpFlags = p.ExpFlags
+.head 7 -  Set RowFlagsOn = p.RowFlagsOn
+.head 7 -  Set RowFlagsOff = p.RowFlagsOff
+.head 7 -  Set ColFlagsOn = p.ColFlagsOn
+.head 7 -  Set ColFlagsOff = p.ColFlagsOff
+.head 3 +  General Window Class: CValueList
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: AddValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  String: spText
+.head 7 -  Number: npValue
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return VisListAddValue( hWndItem, spText, npValue )
+.head 5 +  Function: FindValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Number: npValue
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return VisListFindValue( hWndItem, 0, npValue )
+.head 5 +  Function: GetSelectedValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nIdx
+.head 7 -  Number: nValue
+.head 6 +  Actions
+.head 7 -  Set nIdx = SalListQuerySelection( hWndItem )
+.head 7 +  If nIdx >= 0
+.head 8 -  Set nValue = GetValue( nIdx )
+.head 7 -  Return nValue
+.head 5 +  Function: GetValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Number: npIdx
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return VisListGetValue( hWndItem, npIdx )
+.head 5 +  Function: SelectValue
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Number: npValue
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nIdx
+.head 6 +  Actions
+.head 7 -  Set nIdx = FindValue( npValue )
+.head 7 +  If nIdx >= 0
+.head 8 -  Call SalListSetSelect( hWndItem, nIdx )
+.head 7 -  Return nIdx
+.head 4 -  Message Actions
+.head 3 +  General Window Class: CHandleList
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CValueList
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: AddHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  String: spText
+.head 7 -  Window Handle: hWndp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return AddValue( spText, SalWindowHandleToNumber( hWndp ) )
+.head 5 +  Function: FindHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Window Handle: hWndp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return FindValue( SalWindowHandleToNumber( hWndp ) )
+.head 5 +  Function: GetHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Window Handle:
+.head 6 +  Parameters
+.head 7 -  Number: npIdx
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SalNumberToWindowHandle( GetValue( npIdx ) )
+.head 5 +  Function: GetSelectedHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Window Handle:
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SalNumberToWindowHandle( GetSelectedValue( ) )
+.head 5 +  Function: SelectHandle
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 +  Parameters
+.head 7 -  Window Handle: hWndp
+.head 6 -  Static Variables
+.head 6 -  Local variables
+.head 6 +  Actions
+.head 7 -  Return SelectValue( SalWindowHandleToNumber( hWndp ) )
+.head 4 -  Message Actions
+.head 3 +  General Window Class: CWindow
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: AddMsgToLog
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  String: spMsg
+.head 7 -  Number: npwParam
+.head 7 -  Number: nplParam
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: sItemName
+.head 6 +  Actions
+.head 7 +  If TRUE
+.head 8 -  Call SalGetItemName( hWndItem, sItemName )
+.head 8 -  Return FALSE
+.head 4 +  Message Actions
+.head 5 +  On SAM_Click
+.head 6 -  Call AddMsgToLog( "SAM_Click", wParam, lParam )
+.head 5 +  On SAM_ContextMenu
+.head 6 -  Call AddMsgToLog( "SAM_ContextMenu", wParam, lParam )
+.head 5 +  On SAM_DoubleClick
+.head 6 -  Call AddMsgToLog( "SAM_DoubleClick", wParam, lParam )
+.head 5 +  On SAM_DropDown
+.head 6 -  Call AddMsgToLog( "SAM_DropDown", wParam, lParam )
+.head 5 +  On SAM_KillFocus
+.head 6 -  Call AddMsgToLog( "SAM_KillFocus", wParam, lParam )
+.head 5 +  On SAM_SetFocus
+.head 6 -  Call AddMsgToLog( "SAM_SetFocus", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_KeyDown
+.head 6 -  Call AddMsgToLog( "MTM_KeyDown", wParam, lParam )
+.head 3 +  General Window Class: CEditWindow
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CWindow
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 -  Functions
+.head 4 +  Message Actions
+.head 5 +  ! On SAM_AnyEdit
+.head 6 -  Call AddMsgToLog( "SAM_AnyEdit", wParam, lParam )
+.head 5 +  On SAM_Validate
+.head 6 -  Call AddMsgToLog( "SAM_Validate", wParam, lParam )
+.head 3 +  Column Class: CColumn
+.head 4 -  Title:
+.head 4 -  Visible? Class Default
+.head 4 -  Editable? Class Default
+.head 4 -  Maximum Data Length: Class Default
+.head 4 -  Data Type: Class Default
+.head 4 -  Justify: Class Default
+.head 4 -  Width:  Class Default
+.head 4 -  Width Editable? Class Default
+.head 4 -  Format: Class Default
+.head 4 -  Country: Class Default
+.head 4 -  Input Mask: Class Default
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Cell Options
+.head 5 -  Cell Type? Class Default
+.head 5 -  Multiline Cell? Class Default
+.head 5 -  Cell DropDownList
+.head 6 -  Sorted? Class Default
+.head 6 -  Vertical Scroll? Class Default
+.head 6 -  Auto Drop Down? Class Default
+.head 6 -  Allow Text Editing? Class Default
+.head 5 -  Cell CheckBox
+.head 6 -  Check Value:
+.head 6 -  Uncheck Value:
+.head 6 -  Ignore Case? Class Default
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CEditWindow
+.head 4 -  Class Variables
+.head 4 -  Instance Variables
+.head 4 +  Functions
+.head 5 +  Function: OnQuerySortString
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  Number: p_nRow
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  String: sText
+.head 6 +  Actions
+.head 7 -  Call SalTblGetColumnText( hWndForm, SalTblQueryColumnID( hWndItem ), sText )
+.head 7 -  Return SalHStringToNumber( sText )
+.head 5 +  Function: OnQuerySortValue
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 +  Parameters
+.head 7 -  Number: p_nRow
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Date/Time: dt
+.head 7 -  Number: nColType
+.head 7 -  Number: nDataType
+.head 7 -  String: sText
+.head 6 +  Actions
+.head 7 +  If SalTblQueryColumnCellType( hWndItem, nColType )
+.head 8 +  If nColType = COL_CellType_DropDownList
+.head 9 -  Return SalListQuerySelection( hWndItem )
+.head 7 -  !
+.head 7 -  Set nDataType = SalGetDataType( hWndItem )
+.head 7 -  Call SalTblGetColumnText( hWndForm, SalTblQueryColumnID( hWndItem ), sText )
+.head 7 +  Select Case nDataType
+.head 8 +  Case DT_String
+.head 9 -  Return SalStrLength( sText )
+.head 8 +  Case DT_DateTime
+.head 9 -  Set dt = SalStrToDate( sText )
+.head 9 -  Return ( dt - 1970-01-01 ) * 86400
+.head 8 +  Case DT_Number
+.head 9 -  Return SalStrToNumber( sText )
+.head 8 +  Default
+.head 9 -  Return 0
+.head 4 -  List Values
+.head 4 +  Message Actions
+.head 5 +  On MTM_QuerySortString
+.head 6 -  Return OnQuerySortString( lParam )
+.head 5 +  On MTM_QuerySortValue
+.head 6 -  Return OnQuerySortValue( lParam )
+.head 3 +  Child Table Class: CTable
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left:
+.head 6 -  Top:
+.head 6 -  Width:  Class Default
+.head 6 -  Width Editable? Class Default
+.head 6 -  Height: Class Default
+.head 6 -  Height Editable? Class Default
+.head 5 -  Visible? Class Default
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Class Default
+.head 5 -  Font Enhancement: Class Default
+.head 5 -  Text Color: Class Default
+.head 5 -  Background Color: Class Default
+.head 5 -  View: Class Default
+.head 5 -  Allow Row Sizing? Class Default
+.head 5 -  Lines Per Row: Class Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 32000
+.head 5 -  Discardable? No
+.head 4 -  Next Class Child Key: 0
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template:
+.head 4 -  Class DLL Name:
+.head 4 -  Description:
+.head 4 +  Derived From
+.head 5 -  Class: CWindow
+.head 4 -  Contents
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  Number: m_hPal
+.head 4 +  Functions
+.head 5 +  Function: QueryFocusRow
+.head 6 -  Description:
+.head 6 +  Returns
+.head 7 -  Number:
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: nRow
+.head 7 -  Window Handle: hWndCol
+.head 6 +  Actions
+.head 7 +  If NOT SalTblQueryFocus( hWndForm, nRow, hWndCol )
+.head 8 -  Set nRow = TBL_Error
+.head 7 -  Return nRow
+.head 4 +  Message Actions
+.head 5 +  On SAM_CacheFull
+.head 6 -  Call AddMsgToLog( "SAM_CacheFull", wParam, lParam )
+.head 5 +  On SAM_ColumnSelectClick
+.head 6 -  Call AddMsgToLog( "SAM_ColumnSelectClick", wParam, lParam )
+.head 5 +  On SAM_CornerClick
+.head 6 -  Call AddMsgToLog( "SAM_CornerClick", wParam, lParam )
+.head 5 +  On SAM_CornerDoubleClick
+.head 6 -  Call AddMsgToLog( "SAM_CornerDoubleClick", wParam, lParam )
+.head 5 +  On SAM_CountRows
+.head 6 -  Call AddMsgToLog( "SAM_CountRows", wParam, lParam )
+.head 5 +  On SAM_EndCellTab
+.head 6 -  Call AddMsgToLog( "SAM_EndCellTab", wParam, lParam )
+.head 5 +  On SAM_FetchDone
+.head 6 -  Call AddMsgToLog( "SAM_FetchDone", wParam, lParam )
+.head 5 +  On SAM_FetchRow
+.head 6 -  Call AddMsgToLog( "SAM_FetchRow", wParam, lParam )
+.head 5 +  On SAM_FetchRowDone
+.head 6 -  Call AddMsgToLog( "SAM_FetchRowDone", wParam, lParam )
+.head 5 +  On SAM_RowHeaderClick
+.head 6 -  Call AddMsgToLog( "SAM_RowHeaderClick", wParam, lParam )
+.head 5 +  On SAM_RowHeaderDoubleClick
+.head 6 -  Call AddMsgToLog( "SAM_RowHeaderDoubleClick", wParam, lParam )
+.head 5 +  On SAM_RowSetContext
+.head 6 -  Call AddMsgToLog( "SAM_RowSetContext", wParam, lParam )
+.head 5 +  On SAM_RowValidate
+.head 6 -  Call AddMsgToLog( "SAM_RowValidate", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_AreaLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_AreaLBtnDown", wParam, lParam )
+.head 5 +  On MTM_AreaLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_AreaLBtnUp", wParam, lParam )
+.head 5 +  On MTM_AreaLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_AreaLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_AreaRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_AreaRBtnDown", wParam, lParam )
+.head 5 +  On MTM_AreaRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_AreaRBtnUp", wParam, lParam )
+.head 5 +  On MTM_AreaRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_AreaRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_CornerLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_CornerLBtnDown", wParam, lParam )
+.head 5 +  On MTM_CornerLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_CornerLBtnUp", wParam, lParam )
+.head 5 +  On MTM_CornerLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_CornerLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_CornerRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_CornerRBtnDown", wParam, lParam )
+.head 5 +  On MTM_CornerRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_CornerRBtnUp", wParam, lParam )
+.head 5 +  On MTM_CornerRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_CornerRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColHdrLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrLBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrLBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_ColHdrRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrRBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrRBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColHdrSepLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepLBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepLBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepLBtnDblClk", wParam, lParam )
+.head 6 -  Call MTblAutoSizeColumn( hWndForm, SalNumberToWindowHandle( wParam ), MTASC_SPLITROWS )
+.head 5 +  On MTM_ColHdrSepRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepRBtnDown", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepRBtnUp", wParam, lParam )
+.head 5 +  On MTM_ColHdrSepRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_ColHdrSepRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_RowHdrLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrLBtnDown", wParam, lParam )
+.head 5 +  On MTM_RowHdrLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrLBtnUp", wParam, lParam )
+.head 5 +  On MTM_RowHdrLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_RowHdrRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrRBtnDown", wParam, lParam )
+.head 5 +  On MTM_RowHdrRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrRBtnUp", wParam, lParam )
+.head 5 +  On MTM_RowHdrRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_RowHdrRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_SplitBarLBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarLBtnDown", wParam, lParam )
+.head 5 +  On MTM_SplitBarLBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarLBtnUp", wParam, lParam )
+.head 5 +  On MTM_SplitBarLBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarLBtnDblClk", wParam, lParam )
+.head 5 +  On MTM_SplitBarRBtnDown
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarRBtnDown", wParam, lParam )
+.head 5 +  On MTM_SplitBarRBtnUp
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarRBtnUp", wParam, lParam )
+.head 5 +  On MTM_SplitBarRBtnDblClk
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarRBtnDblClk", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColMoved
+.head 6 -  Call AddMsgToLog( "MTM_ColMoved", wParam, lParam )
+.head 5 +  On MTM_ColPosChanged
+.head 6 -  Call AddMsgToLog( "MTM_ColPosChanged", wParam, lParam )
+.head 5 +  On MTM_ColSized
+.head 6 -  Call AddMsgToLog( "MTM_ColSized", wParam, lParam )
+.head 5 +  On MTM_Reset
+.head 6 -  Call AddMsgToLog( "MTM_Reset", wParam, lParam )
+.head 5 +  On MTM_RowDeleted
+.head 6 -  Call AddMsgToLog( "MTM_RowDeleted", wParam, lParam )
+.head 5 +  On MTM_RowInserted
+.head 6 -  Call AddMsgToLog( "MTM_RowInserted", wParam, lParam )
+.head 5 +  On MTM_RowsSwapped
+.head 6 -  Call AddMsgToLog( "MTM_RowsSwapped", wParam, lParam )
+.head 5 +  On MTM_SplitBarMoved
+.head 6 -  Call AddMsgToLog( "MTM_SplitBarMoved", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_CollapseRow
+.head 6 -  Call AddMsgToLog( "MTM_CollapseRow", wParam, lParam )
+.head 5 +  On MTM_CollapseRowDone
+.head 6 -  Call AddMsgToLog( "MTM_CollapseRowDone", wParam, lParam )
+.head 5 +  On MTM_ExpandRow
+.head 6 -  Call AddMsgToLog( "MTM_ExpandRow", wParam, lParam )
+.head 5 +  On MTM_ExpandRowDone
+.head 6 -  Call AddMsgToLog( "MTM_ExpandRowDone", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_QuerySortValue
+.head 6 -  Return SalSendMsg( SalNumberToWindowHandle( wParam ), MTM_QuerySortValue, 0, lParam )
+.head 5 +  On MTM_QuerySortString
+.head 6 -  Return SalSendMsg( SalNumberToWindowHandle( wParam ), MTM_QuerySortString, 0, lParam )
+.head 5 -  !
+.head 5 +  On MTM_BtnClick
+.head 6 -  Call AddMsgToLog( "MTM_BtnClick", wParam, lParam )
+.head 5 +  On MTM_HyperlinkClick
+.head 6 -  Call AddMsgToLog( "MTM_HyperlinkClick", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_Paint
+.head 6 -  Call AddMsgToLog( "MTM_Paint", wParam, lParam )
+.head 5 +  On MTM_PaintDone
+.head 6 -  Call AddMsgToLog( "MTM_PaintDone", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_LoadChildRows
+.head 6 -  Call AddMsgToLog( "MTM_LoadChildRows", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ShowCellTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellBtnTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellBtnTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellImageTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellImageTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellTextTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellTextTip", wParam, lParam )
+.head 5 +  On MTM_ShowCellCompleteTextTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCellCompleteTextTip", wParam, lParam )
+.head 5 +  On MTM_ShowColHdrTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowColHdrTip", wParam, lParam )
+.head 5 +  On MTM_ShowColHdrGrpTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowColHdrGrpTip", wParam, lParam )
+.head 5 +  On MTM_ShowCornerTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowCornerTip", wParam, lParam )
+.head 5 +  On MTM_ShowRowHdrTip
+.head 6 -  Call AddMsgToLog( "MTM_ShowRowHdrTip", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_DrawItem
+.head 6 -  Call AddMsgToLog( "MTM_DrawItem", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_QueryBestCellWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryBestCellWidth", wParam, lParam )
+.head 5 +  On MTM_QueryBestColHdrWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryBestColHdrWidth", wParam, lParam )
+.head 5 +  On MTM_QueryBestCellHeight
+.head 6 -  Call AddMsgToLog( "MTM_QueryBestCellHeight", wParam, lParam )
+.head 5 +  On MTM_QueryMaxColWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryMaxColWidth", wParam, lParam )
+.head 5 +  On MTM_QueryMaxRowHeight
+.head 6 -  Call AddMsgToLog( "MTM_QueryMaxRowHeight", wParam, lParam )
+.head 5 +  On MTM_QueryMinColWidth
+.head 6 -  Call AddMsgToLog( "MTM_QueryMinColWidth", wParam, lParam )
+.head 5 +  On MTM_QueryMinRowHeight
+.head 6 -  Call AddMsgToLog( "MTM_QueryMinRowHeight", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_ColSelChanged
+.head 6 -  Call AddMsgToLog( "MTM_ColSelChanged", wParam, lParam )
+.head 5 +  On MTM_RowSelChanged
+.head 6 -  Call AddMsgToLog( "MTM_RowSelChanged", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_FocusCellChanged
+.head 6 -  Call AddMsgToLog( "MTM_FocusCellChanged", wParam, lParam )
+.head 5 -  !
+.head 5 +  On MTM_LButtonDown
+.head 6 -  Call AddMsgToLog( "MTM_LButtonDown", wParam, lParam )
+.head 3 +  Functional Class: CFont
+.head 4 -  Description:
+.head 4 -  Derived From
+.head 4 -  Class Variables
+.head 4 +  Instance Variables
+.head 5 -  String: Name
+.head 5 -  Number: Size
+.head 5 -  Number: Enh
+.head 4 -  Functions
+.head 3 +  ! Child Table Class: CclsBaseCTblMaster
+.winattr
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left:
+.head 6 -  Top:
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: Default
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  View: Table
+.head 5 -  Allow Row Sizing? No
+.head 5 -  Lines Per Row: Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 5000
+.head 5 -  Discardable? No
+.head 4 -  Next Class Child Key: 0
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template: C:\p_lib32.2005\langue\qo_lang32.exe,frmPropertiesLanguage,,,N,N
+.head 4 -  Class DLL Name:
+.end
+.head 4 -  Description: 
+.head 4 +  Derived From 
+.head 5 -  Class: clsChildTblMultiLanguage
+.head 5 -  Class: clsCtblDynSqlMaster
+.head 5 -  Class: CTable
+.head 4 -  Contents 
+.head 4 -  Class Variables 
+.head 4 +  Instance Variables 
+.head 5 -  Number: i
+.head 4 -  Functions 
+.head 4 +  Message Actions 
+.head 5 +  On PAM_Clear
+.head 6 -  Call SalSendClassMessageNamed( clsClearableCTbl, PAM_Clear, wParam, lParam )
+.head 5 +  On SAM_Close
+.head 6 -  Call SalSendClassMessageNamed( clsCTblDynSql, SAM_Close, wParam, lParam )
+.head 5 +  On SAM_CreateComplete
+.head 6 -  Call SalSendClassMessageNamed( clsCTblDynSql, SAM_CreateComplete, wParam, lParam )
+.head 6 -  ! /@@@@@ LS : 30/11/1999
+.head 6 -  Call SalSendMsgToChildren( hWndItem, SAM_CreateComplete, wParam, lParam )
+.head 6 -  ! \@@@@@ LS : 30/11/1999
+.head 5 +  On PAM_Language
+.head 6 -  Call SalSendClassMessageNamed( clsChildTblMultiLanguage, PAM_Language, wParam, lParam )
+.head 5 +  On SAM_CornerDoubleClick
+.head 6 -  ! Call SalTblCopyRows( hWndItem, ROW_Selected, 0 )
+.head 6 -  Set gwhTrackPopupMenu = hWndForm
+.head 6 -  Call SalTrackPopupMenu( hWndForm, 'menuExportTableWindow', TPM_CursorX | TPM_CursorY, 0, 0 )
+.head 5 +  On PAM_Situation_Table
+.head 6 +  If gbSauverPositionColonnes
+.head 7 +  If wParam = cSitSave
+.head 8 -  Call SalSetProfileString( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), 'nbrcol' , '0', PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 8 -  Set gtnNbrCol = 0
+.head 8 -  Call SalSendMsgToChildren( hWndItem, PAM_Situation_Colonne, wParam, lParam )
+.head 7 +  Else If wParam = cSitLoad
+.head 8 -  Set gtnNbrCol = SalGetProfileInt( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), 'nbrcol', 0, PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini' )
+.head 8 -  Set i = 0
+.head 8 +  ! While i < gtnNbrCol
+.head 9 -  Set i = i + 1
+.head 9 -  ! Call SalGetProfileString( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), String, String, String, String )
+.head 9 -  Call SalGetProfileString( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), 'col' || SalNumberToStrX( i, 0 ), '', gtsColName, PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 8 -  Set i = gtnNbrCol
+.head 8 +  While i >= 0
+.head 9 -  Set gtwhTabCol[i] = hWndNULL
+.head 9 -  Set i = i - 1
+.head 8 -  Call SalSendMsgToChildren( hWndItem, PAM_Situation_Colonne, wParam, i )
+.head 8 -  Set i = 1
+.head 8 +  While i <= gtnNbrCol
+.head 9 +  If gtwhTabCol[ i ] != hWndNULL
+.head 10 -  Call SalTblSetColumnPos( gtwhTabCol[ i ], i )
+.head 9 -  Set i = i + 1
+.head 3 +  ! Child Table Class: CclsBaseCTblDetail
+.winattr
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left:
+.head 6 -  Top:
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: Default
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Default
+.head 5 -  View: Table
+.head 5 -  Allow Row Sizing? No
+.head 5 -  Lines Per Row: Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 5000
+.head 5 -  Discardable? No
+.head 4 -  Next Class Child Key: 0
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template: C:\p_lib32.2005\langue\qo_lang32.exe,frmPropertiesLanguage,,,N,N
+.head 4 -  Class DLL Name:
+.end
+.head 4 -  Description: 
+.head 4 +  Derived From 
+.head 5 -  Class: clsChildTblMultiLanguage
+.head 5 -  Class: clsCtblDynSqlDetail
+.head 5 -  Class: CTable
+.head 4 -  Contents 
+.head 4 -  Class Variables 
+.head 4 +  Instance Variables 
+.head 5 -  Number: i
+.head 4 -  Functions 
+.head 4 +  Message Actions 
+.head 5 +  On PAM_Clear
+.head 6 -  Call SalSendClassMessageNamed( clsClearableCTbl, PAM_Clear, wParam, lParam )
+.head 5 +  On SAM_Close
+.head 6 -  Call SalSendClassMessageNamed( clsCTblDynSql, SAM_Close, wParam, lParam )
+.head 5 +  On SAM_CreateComplete
+.head 6 -  Call SalSendClassMessageNamed( clsCTblDynSql, SAM_CreateComplete, wParam, lParam )
+.head 6 -  ! /@@@@@ LS : 30/11/1999
+.head 6 -  Call SalSendMsgToChildren( hWndItem, SAM_CreateComplete, wParam, lParam )
+.head 6 -  ! \@@@@@ LS : 30/11/1999
+.head 5 +  On PAM_Language
+.head 6 -  Call SalSendClassMessageNamed( clsChildTblMultiLanguage, PAM_Language, wParam, lParam )
+.head 5 +  On SAM_CornerDoubleClick
+.head 6 -  ! Call SalTblCopyRows( hWndItem, ROW_Selected, 0 )
+.head 6 -  Set gwhTrackPopupMenu = hWndForm
+.head 6 -  Call SalTrackPopupMenu( hWndForm, 'menuExportTableWindow', TPM_CursorX | TPM_CursorY, 0, 0 )
+.head 5 +  On PAM_Situation_Table
+.head 6 +  If gbSauverPositionColonnes
+.head 7 +  If wParam = cSitSave
+.head 8 -  Call SalSetProfileString( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), 'nbrcol' , '0', PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 8 -  Set gtnNbrCol = 0
+.head 8 -  Call SalSendMsgToChildren( hWndItem, PAM_Situation_Colonne, wParam, lParam )
+.head 7 +  Else If wParam = cSitLoad
+.head 8 -  Set gtnNbrCol = SalGetProfileInt( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), 'nbrcol', 0, PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini' )
+.head 8 -  Set i = 0
+.head 8 +  ! While i < gtnNbrCol
+.head 9 -  Set i = i + 1
+.head 9 -  ! Call SalGetProfileString( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), String, String, String, String )
+.head 9 -  Call SalGetProfileString( PalGetItemName( SalParentWindow( hWndForm ) ) || '.' || PalGetItemName( hWndItem ), 'col' || SalNumberToStrX( i, 0 ), '', gtsColName, PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 8 -  Set i = gtnNbrCol
+.head 8 +  While i >= 0
+.head 9 -  Set gtwhTabCol[i] = hWndNULL
+.head 9 -  Set i = i - 1
+.head 8 -  Call SalSendMsgToChildren( hWndItem, PAM_Situation_Colonne, wParam, i )
+.head 8 -  Set i = 1
+.head 8 +  While i <= gtnNbrCol
+.head 9 +  If gtwhTabCol[ i ] != hWndNULL
+.head 10 -  Call SalTblSetColumnPos( gtwhTabCol[ i ], i )
+.head 9 -  Set i = i + 1
+.head 3 +  ! Column Class: CclsBaseCol
+.winattr
+.head 4 -  Title:
+.head 4 -  Visible? Yes
+.head 4 -  Editable? Yes
+.head 4 -  Maximum Data Length: Default
+.head 4 -  Data Type: String
+.head 4 -  Justify: Left
+.head 4 -  Width:  Default
+.head 4 -  Width Editable? Yes
+.head 4 -  Format: Unformatted
+.head 4 -  Country: Default
+.head 4 -  Input Mask: Unformatted
+.head 4 -  List in Tool Palette? Yes
+.head 4 -  Property Template: C:\p_lib32.2005\langue\qo_lang32.exe,frmPropertiesLanguage,,,N,N
+.head 4 -  Class DLL Name:
+.head 4 -  Cell Options
+.head 5 -  Cell Type? Standard
+.head 5 -  Multiline Cell? No
+.head 5 -  Cell DropDownList
+.head 6 -  Sorted? Yes
+.head 6 -  Vertical Scroll? Yes
+.head 6 -  Auto Drop Down? No
+.head 6 -  Allow Text Editing? Yes
+.head 5 -  Cell CheckBox
+.head 6 -  Check Value:
+.head 6 -  Uncheck Value:
+.head 6 -  Ignore Case? Yes
+.end
+.head 4 -  Description: 
+.head 4 +  Derived From 
+.head 5 -  Class: clsColMultiLanguage
+.head 5 -  Class: clsClearableCol
+.head 5 -  Class: clsDisableField
+.head 5 -  Class: CColumn
+.head 4 +  Class Variables 
+.head 5 -  String: lsFrmName
+.head 5 -  String: lsTblName
+.head 5 -  String: lsColName
+.head 5 -  Number: lnPos
+.head 5 -  Number: lnWidth
+.head 4 +  Instance Variables 
+.head 5 -  String: s
+.head 5 -  Number: n
+.head 5 -  Number: i
+.head 5 -  !
+.head 5 -  ! Variable indiquant si la position de la colonne doit etre sauvegardee
+.head 5 -  Boolean: ibSauverPositionColonne
+.head 4 -  Functions 
+.head 4 -  List Values 
+.head 4 +  Message Actions 
+.head 5 +  On SAM_AnyEdit
+.head 6 -  Call SalSendClassMessageNamed( clsClearableCol, SAM_AnyEdit, wParam, lParam )
+.head 5 +  On PAM_Clear
+.head 6 -  Call SalSendClassMessageNamed( clsClearableCol, PAM_Clear, wParam, lParam )
+.head 5 +  On PAM_Language
+.head 6 -  Call SalSendClassMessageNamed( clsColMultiLanguage, PAM_Language, wParam, lParam )
+.head 5 +  On PAM_Situation_Colonne
+.head 6 +  If ibSauverPositionColonne
+.head 7 -  Set lsColName = SalStrRepeatX( ' ', 254 )
+.head 7 -  Set lsTblName = SalStrRepeatX( ' ', 254 )
+.head 7 -  Set lsFrmName = SalStrRepeatX( ' ', 254 )
+.head 7 -  ! Call SalTblGetColumnTitle( hWndItem, lsColName, 254 )
+.head 7 -  Set lsColName =  PalGetItemName( hWndItem )
+.head 7 -  Set lsTblName =  PalGetItemName( SalParentWindow( hWndItem ) )
+.head 7 -  Set lsFrmName = PalGetItemName( SalParentWindow( hWndForm ) )
+.head 7 +  If wParam = cSitSave
+.head 8 -  Set lnPos = SalTblQueryColumnPos( hWndItem )
+.head 8 -  Call SalTblQueryColumnWidth( hWndItem, lnWidth )
+.head 8 -  Call SalSetProfileString( lsFrmName || '.' || lsTblName, lsColName, SalNumberToStrX( lnPos, 0 ), PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 8 -  Call SalSetProfileString( lsFrmName || '.' || lsTblName, lsColName || '.width' , SalNumberToStrX( lnWidth, 4 ), PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 8 -  Set gtnNbrCol = gtnNbrCol + 1
+.head 8 -  Call SalSetProfileString( lsFrmName || '.' || lsTblName, 'nbrcol' , SalNumberToStrX( gtnNbrCol, 0 ), PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini'  )
+.head 7 +  Else If wParam = cSitLoad
+.head 8 -  ! If gtsColName = lsColName
+.head 8 -  ! Call SalTblSetColumnPos( hWndItem, lParam )
+.head 8 -  Call SalGetProfileString( lsFrmName || '.' || lsTblName, lsColName, '0', s, PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini' )
+.head 8 -  Set i = SalStrToNumber( s )
+.head 8 -  Set gtwhTabCol[ i ] = hWndItem
+.head 8 -  Call SalTblQueryColumnWidth( hWndItem, lnWidth )
+.head 8 -  Call SalGetProfileString( lsFrmName || '.' || lsTblName, lsColName || '.width', SalNumberToStrX( lnWidth, 4 ), s, PalGetWindowsDirectory() || PalGetPrgmNameDef( 'config' ) || '.ini' )
+.head 8 -  Set n = SalStrToNumber( s )
+.head 8 -  Call SalTblSetColumnWidth( hWndItem, n )
+.head 8 -  ! Set gtnTabColSize[ i ] = hWndItem
+.head 5 +  On SAM_CreateComplete
+.head 6 -  Set ibSauverPositionColonne = SalIsWindowVisible( hWndItem )
+.head 2 +  Default Classes
+.head 3 -  MDI Window: cBaseMDI
+.head 3 -  Form Window:
+.head 3 -  Dialog Box:
+.head 3 -  Table Window:
+.head 3 -  Quest Window:
+.head 3 -  Data Field:
+.head 3 -  Spin Field:
+.head 3 -  Multiline Field:
+.head 3 -  Pushbutton:
+.head 3 -  Radio Button:
+.head 3 -  Option Button:
+.head 3 -  Check Box:
+.head 3 -  Child Table:
+.head 3 -  Quest Child Window: cQuickDatabase
+.head 3 -  List Box:
+.head 3 -  Combo Box:
+.head 3 -  Picture:
+.head 3 -  Vertical Scroll Bar:
+.head 3 -  Horizontal Scroll Bar:
+.head 3 -  Column:
+.head 3 -  Background Text:
+.head 3 -  Group Box:
+.head 3 -  Line:
+.head 3 -  Frame:
+.head 3 -  Custom Control:
+.head 3 -  ActiveX:
+.head 2 -  Application Actions
+.head 1 +  Form Window: frm1
+.head 2 -  Class:
+.head 2 -  Property Template:
+.head 2 -  Class DLL Name:
+.head 2 -  Title:
+.head 2 -  Icon File:
+.head 2 -  Accessories Enabled? No
+.head 2 -  Visible? Yes
+.head 2 -  Display Settings
+.head 3 -  Display Style? Default
+.head 3 -  Visible at Design time? Yes
+.head 3 -  Automatically Created at Runtime? Yes
+.head 3 -  Initial State: Normal
+.head 3 -  Maximizable? Yes
+.head 3 -  Minimizable? Yes
+.head 3 -  Allow Child Docking? No
+.head 3 -  Docking Orientation: All
+.head 3 -  System Menu? Yes
+.head 3 -  Resizable? Yes
+.head 3 -  Window Location and Size
+.head 4 -  Left: Default
+.head 4 -  Top: Default
+.head 4 -  Width:  Default
+.head 4 -  Width Editable? Yes
+.head 4 -  Height: Default
+.head 4 -  Height Editable? Yes
+.head 3 -  Form Size
+.head 4 -  Width:  Default
+.head 4 -  Height: Default
+.head 4 -  Number of Pages: Dynamic
+.head 3 -  Font Name: Default
+.head 3 -  Font Size: Default
+.head 3 -  Font Enhancement: Default
+.head 3 -  Text Color: Default
+.head 3 -  Background Color: Default
+.head 2 -  Description:
+.head 2 -  Named Menus
+.head 2 -  Menu
+.head 2 +  Tool Bar
+.head 3 -  Display Settings
+.head 4 -  Display Style? Default
+.head 4 -  Location? Top
+.head 4 -  Visible? Yes
+.head 4 -  Size: Default
+.head 4 -  Size Editable? Yes
+.head 4 -  Docking Toolbar? No
+.head 4 -  Toolbar Docking Orientation: Top | Bottom
+.head 4 -  Font Name: Default
+.head 4 -  Font Size: Default
+.head 4 -  Font Enhancement: Default
+.head 4 -  Text Color: Default
+.head 4 -  Background Color: Default
+.head 4 -  Resizable? No
+.head 3 -  Contents
+.head 2 +  Contents
+.head 3 +  Child Table: ctbl1
+.head 4 -  Class Child Ref Key: 0
+.head 4 -  Class ChildKey: 0
+.head 4 -  Class: CTable
+.head 4 -  Property Template: C:\p_lib32.2005\langue\qo_lang32.exe,frmPropertiesLanguage,,,N,N
+.head 4 -  Class DLL Name:
+.head 4 -  Display Settings
+.head 5 -  Window Location and Size
+.head 6 -  Left: 0.083"
+.head 6 -  Top: 2.988"
+.head 6 -  Width:  8.6"
+.head 6 -  Width Editable? Yes
+.head 6 -  Height: 6.833"
+.head 6 -  Height Editable? Yes
+.head 5 -  Visible? Yes
+.head 5 -  Font Name: Default
+.head 5 -  Font Size: Default
+.head 5 -  Font Enhancement: Default
+.head 5 -  Text Color: Default
+.head 5 -  Background Color: Light Gray
+.head 5 -  View: Table
+.head 5 -  Allow Row Sizing? No
+.head 5 -  Lines Per Row: Default
+.head 4 -  Memory Settings
+.head 5 -  Maximum Rows in Memory: 32500
+.head 5 -  Discardable? No
+.head 4 +  Contents
+.head 5 +  Column: col1
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title:
+.head 6 -  Visible? Yes
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 5 +  Column: col2
+.head 6 -  Class Child Ref Key: 0
+.head 6 -  Class ChildKey: 0
+.head 6 -  Class:
+.head 6 -  Property Template:
+.head 6 -  Class DLL Name:
+.head 6 -  Title:
+.head 6 -  Visible? Yes
+.head 6 -  Editable? Yes
+.head 6 -  Maximum Data Length: Default
+.head 6 -  Data Type: String
+.head 6 -  Justify: Left
+.head 6 -  Width:  Default
+.head 6 -  Width Editable? Yes
+.head 6 -  Format: Unformatted
+.head 6 -  Country: Default
+.head 6 -  Input Mask: Unformatted
+.head 6 -  Cell Options
+.head 7 -  Cell Type? Standard
+.head 7 -  Multiline Cell? No
+.head 7 -  Cell DropDownList
+.head 8 -  Sorted? Yes
+.head 8 -  Vertical Scroll? Yes
+.head 8 -  Auto Drop Down? No
+.head 8 -  Allow Text Editing? Yes
+.head 7 -  Cell CheckBox
+.head 8 -  Check Value:
+.head 8 -  Uncheck Value:
+.head 8 -  Ignore Case? Yes
+.head 6 -  List Values
+.head 6 -  Message Actions
+.head 4 +  Functions
+.head 5 -  ! MTBL
+.head 5 +  Function: tfOnCreate
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Boolean: b
+.head 7 -  String: s
+.head 7 -  Number: nImg
+.head 7 -  Window Handle: hWndaCols[*]
+.head 6 +  Actions
+.head 7 -  ! Subclass
+.head 7 -  Call MTblSubClass( hWndForm )
+.head 7 -  ! Mousewheel scrolling
+.head 7 -  Call MTblEnableMWheelScroll( hWndForm, TRUE )
+.head 7 -  Call MTblSetMWheelOption( hWndForm, MTMW_PAGE_KEY, VK_Control )
+.head 5 +  Function: wfDoExcel
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  Number: lnRet
+.head 7 -  String: lsText
+.head 6 +  Actions
+.head 7 -  Call VisWaitCursor( TRUE )
+.head 7 -  Call wfSaveSettings(  )
+.head 7 -  Set lnRet = MTblExportToExcel( frm1.ctbl1, 1, "", frm1.ExcExp.ExcFlags, frm1.ExcExp.ExpFlags, frm1.ExcExp.RowFlagsOn,
+	frm1.ExcExp.RowFlagsOff, frm1.ExcExp.ColFlagsOn,frm1.ExcExp.ColFlagsOff )
+.head 7 -  Call VisWaitCursor( FALSE )
+.head 7 +  If lnRet < 1
+.head 8 +  Select Case lnRet
+.head 9 +  Case MTE_ERR_CANCELLED
+.head 10 -  Set lsText = "Export cancelled."
+.head 10 -  Break
+.head 9 +  Case MTE_ERR_RUNNING_INSTANCE
+.head 10 -  Set lsText = "Error getting running instance"
+.head 10 -  Break
+.head 9 +  Case MTE_ERR_NEW_INSTANCE
+.head 10 -  Set lsText = "Error creating new instance"
+.head 10 -  Break
+.head 9 +  Case MTE_ERR_OLE_EXCEPTION
+.head 10 -  Set lsText = "An OLE exception has occured"
+.head 10 -  Break
+.head 9 +  Case MTE_ERR_EXCEPTION
+.head 10 -  Set lsText = "An exception has occured"
+.head 10 -  Break
+.head 9 +  Case MTE_ERR_NOT_SUBCLASSED
+.head 10 -  Set lsText = "Table isn't subclassed"
+.head 10 -  Break
+.head 9 +  Default
+.head 10 -  Set lsText = "Export failed."
+.head 10 -  Break
+.head 8 -  Call SalMessageBox( lsText, "Export error", MB_IconHand | MB_Ok )
+.head 5 +  Function: wfSaveSettings
+.head 6 -  Description:
+.head 6 -  Returns
+.head 6 -  Parameters
+.head 6 -  Static Variables
+.head 6 +  Local variables
+.head 7 -  FunctionalVar: ExcExp
+.head 8 -  Class: fcExcExp
+.head 6 +  Actions
+.head 7 -  ! Language
+.head 7 -  Set ExcExp.Language = 1
+.head 7 -  ! Excel start cell
+.head 7 -  Set ExcExp.ExcStartCell = "0"
+.head 7 -  ! Excel flags
+.head 7 -  Set ExcExp.ExcFlags = ExcExp.ExcFlags | MTE_EXCEL_NEW_WORKBOOK
+.head 7 -  ! Set ExcExp.ExcFlags = ExcExp.ExcFlags | MTE_EXCEL_STRING_COLS_AS_TEXT
+.head 7 -  ! Export flags
+.head 7 -  Set ExcExp.ExpFlags = ExcExp.ExpFlags | MTE_COL_HEADERS
+.head 7 -  Set ExcExp.ExpFlags = ExcExp.ExpFlags | MTE_COLORS
+.head 7 -  Set ExcExp.ExpFlags = ExcExp.ExpFlags | MTE_FONTS
+.head 7 -  Set ExcExp.ExpFlags = ExcExp.ExpFlags | MTE_GRID
+.head 7 -  Set ExcExp.ExpFlags = ExcExp.ExpFlags | MTE_SHOW_STATUS
+.head 7 -  ! Rows to export
+.head 7 -  Set ExcExp.RowFlagsOff = ROW_Hidden
+.head 7 -  ! Columns to export
+.head 7 -  Set ExcExp.ColFlagsOn = COL_Visible
+.head 7 -  ! Assign
+.head 7 -  Call frm1.ExcExp.Assign( ExcExp )
+.head 5 -  !
+.head 4 -  Window Variables
+.head 4 +  Message Actions
+.head 5 +  On SAM_Create
+.head 6 -  Call tfOnCreate(  )
+.head 2 -  Functions
+.head 2 -  Window Parameters
+.head 2 +  Window Variables
+.head 3 -  FunctionalVar: ExcExp
+.head 4 -  Class: fcExcExp
+.head 2 -  Message Actions

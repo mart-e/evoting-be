@@ -1,0 +1,119 @@
+/* Filename            : TOTGENER.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   TOTGENER.P  $</workFile>
+<revision>$Revision: 1.18 $</revision>
+<workFileTimeStamp>$Modtime:   Mar 21 2003 08:10:50  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/TOTGENER.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2007/02/13 12:12:04 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het TOT hoofdmenu TOGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{tmgenein.i "NEW"}      /* Shared frame voor TOT-systeem inikatie menu  */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR proglist        AS C EXTENT 3
+  INITIAL ["rd_resul.r","pr_lists.r","prog_end.r"] NO-UNDO.
+DEF VAR optlist         AS C INIT "1,2,3"                         NO-UNDO. 
+DEF VAR prfound         AS I FORMAT "9"                           NO-UNDO.
+DEF VAR titel-ka        AS C FORMAT "X(78)"                       NO-UNDO.
+DEF VAR tit-mes         AS C FORMAT "X(20)"                       NO-UNDO.
+
+DEF VAR no_tot_1        AS C FORMAT "X(65)"                       NO-UNDO.
+DEF VAR no_tot_2        AS C FORMAT "X(65)"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    verkben AT 2 partnum AT 51 partnam AT 54 " " SKIP(18)
+    WITH FRAME tmgeneka NO-LABELS ROW 1
+    TITLE titel-ka CENTERED.
+
+FORM
+    SPACE(1) men_top[1] SPACE(18) men_top[2] SPACE(18) men_top[3] SPACE(1)
+    WITH COLOR DISPLAY VALUE(menu_fg)
+    NO-LABELS ROW 3 NO-BOX ATTR-SPACE FRAME tmgeneme CENTERED OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*                                                                      */
+/*        totdisk       Weergeven aantal disketten gelezen en gemaakt   */
+/*        rd_resul      Inlezen van de resultaten                       */
+/*        pr_lists      Uitdrukken van de lijsten                       */
+/*        prog_end      Einde van programma                             */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+resume-list = ""
+prfound     = 0.
+FOR EACH election WHERE election.s-id = verkdat NO-LOCK:
+    IF election.e-pr = TRUE THEN prfound = 1.
+END.
+IF prfound = 0 
+THEN DO:
+    {return.i}
+END.
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+
+{E-DAY.I}
+
+{call.i &prg="mesfil" &param=",'tmgeneka,titmes',0,OUTPUT tit-mes"}
+titel-ka = "E-VOTING" + " : " + STRING(verkdat,"99/99/9999") 
+         + " - " + TRIM(tit-mes) + " " 
+         + setup.sys-type 
+         + setup.org-type 
+         + setup.areaname 
+         + STRING(setup.orginator,"999").
+
+{menu_top.g 
+ &fra_kader  = "tmgeneka"
+ &fra_menu   = "tmgeneme"
+ &lang_fixed = "tmgeneme,opt"
+ &menu_start = 1
+ &menu_items = 3
+ &menu_pos   = "menupos"
+ &menu_top   = "men_top"
+ &menu_exec  = "execopt"
+ &exec_list  = "proglist"
+ &show_info  = "
+  {call.i &prg='totdisk'} /* Display diskettes gelezen en gemaakt */
+ "
+}
+
+HIDE FRAME tmgenein NO-PAUSE.
+
+{return.i}
+/* eof */

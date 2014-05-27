@@ -1,0 +1,174 @@
+/* Filename            : PARTLOGO.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-partyrecid AS RECID                            NO-UNDO.
+DEF INPUT PARAM wz-importfile AS C FORMAT "x(35)"                 NO-UNDO.
+DEF INPUT PARAM wz-file       AS C FORMAT "x(35)"                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-message    AS C FORMAT "x(70)"                        NO-UNDO.
+DEF VAR wz-index      AS I                                       NO-UNDO.
+
+DEF VAR wz-max-bytes  AS I                INIT 254               NO-UNDO.
+DEF VAR wz-import     AS C FORMAT "x(70)" EXTENT 3               NO-UNDO.
+DEF VAR wz-stat-logo  AS I                                       NO-UNDO.
+DEF VAR wz-switches   AS I                EXTENT 4               NO-UNDO.
+
+DEF VAR wz-sign-pos   AS I                                       NO-UNDO.
+DEF VAR wz-sign       AS I INIT 32                               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+FIND FIRST party WHERE RECID( party) = wz-partyrecid.
+                    
+INPUT FROM VALUE(wz-importfile) NO-ECHO.
+ASSIGN
+wz-switches  = 0
+wz-stat-logo = 1.
+REPEAT WHILE wz-stat-logo = 1:
+    SET wz-import.
+    {PROGBUSY.I}
+    IF      wz-import[1] = "A"
+    THEN DO:
+        IF wz-switches[1] = 0 AND
+           wz-switches[2] = 0 AND
+           wz-switches[3] = 0 AND
+           wz-switches[4] = 0
+        THEN DO:
+            IF wz-import[2] = wz-file
+            THEN wz-switches[1] = 1.
+            ELSE wz-stat-logo = 0.
+        END.
+        ELSE wz-stat-logo = 0.
+    END.
+    ELSE IF wz-import[1] = "B"
+    THEN DO:
+        IF wz-switches[1] = 1 AND
+           wz-switches[2] = 0 AND
+           wz-switches[3] = 0 AND
+           wz-switches[4] = 0
+        THEN DO:
+            ASSIGN
+            party.logo_width = INTEGER(wz-import[2])
+            party.MAC        = "REFRESH"
+            wz-switches[2]   = 1.
+        END.
+        ELSE wz-stat-logo = 0.
+    END.
+    ELSE IF wz-import[1] = "C"
+    THEN DO:
+        IF wz-switches[1] = 1 AND
+           wz-switches[2] = 1 AND
+           wz-switches[3] = 0 AND
+           wz-switches[4] = 0
+        THEN DO:
+            ASSIGN
+            party.logo_height = INTEGER(wz-import[2])
+            party.MAC         = "REFRESH"
+            wz-switches[3]    = 1.
+        END.
+        ELSE wz-stat-logo = 0.
+    END.
+    ELSE IF wz-import[1] = "D"
+    THEN DO:
+        IF wz-switches[1] = 1 AND
+           wz-switches[2] = 1 AND
+           wz-switches[3] = 1 AND
+           wz-switches[4] = 0
+        THEN DO:
+            IF INTEGER(wz-import[2]) <= wz-max-bytes
+            THEN DO:
+                ASSIGN
+                party.logo_bytes = INTEGER(wz-import[2])
+                party.MAC        = "REFRESH"
+                wz-switches[4]   = 1
+                wz-index         = 0.
+            END.
+            ELSE wz-stat-logo = 0.
+        END.
+        ELSE wz-stat-logo = 0.
+    END.
+    ELSE IF wz-import[1] = "E"
+    THEN DO:
+        IF wz-switches[1] = 1 AND
+           wz-switches[2] = 1 AND
+           wz-switches[3] = 1 AND
+           wz-switches[4] = 1
+        THEN DO:
+            ASSIGN
+            wz-index             = wz-index + 1
+            party.logo[wz-index] = INTEGER(wz-import[2])
+            party.MAC            = "REFRESH".
+        END.
+        ELSE wz-stat-logo = 0.
+    END.
+    ELSE wz-stat-logo = 0.
+END.
+IF wz-index <> party.logo_bytes
+THEN wz-stat-logo = 0.
+
+INPUT CLOSE.
+                    
+CALL C_DEL VALUE(wz-importfile).
+
+/*  Remove LOGO if an error occured while importing it ... */
+IF wz-stat-logo = 0
+THEN DO:
+    ASSIGN
+    party.logo_width  = -1
+    party.logo_height = -1
+    party.logo_bytes  = -1
+    party.MAC         = "REFRESH".
+    REPEAT wz-index = 1 TO wz-max-bytes:
+        party.logo[wz-index] = 255. /* WHITE as default */
+    END.
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Error importing LOGO from " + wz-file +
+                        " for list " + STRING(party.p-id,"99")
+                                     + " " + party.party_name + " !") 2.
+
+    {call.i &prg="mesfil" &param=", 'partlogo,err_msg', 60, OUTPUT wz-message"}
+    HIDE MESSAGE NO-PAUSE.
+    MESSAGE wz-message.
+    {call.i &prg="stathelp" &param=",FALSE"}
+    menleav = -2.
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Logo " + wz-file + " successfully imported " +
+                       "for list " + STRING(party.p-id,"99")
+                             + " " + party.party_name + " !") 0.
+    menleav = -1.
+    /* Verwijderen party logo indien die in \vote\files\ staat */
+    IF INDEX(wz-file,"\VOTE\FILES\") > 0
+    THEN CALL C_DEL VALUE(wz-file).
+END.
+
+{call.i &prg="sec_part"}
+
+{BUSYENDS.I}
+PAUSE 0 NO-MESSAGE.
+
+{return.i}
+/* eof */

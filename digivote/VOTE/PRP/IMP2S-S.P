@@ -1,0 +1,273 @@
+/* Filename            : IMP2S-S.P
+   -------- 
+   
+   Purpose : Quick filecheck
+   -------
+             * Checks destination of file
+             * Checks type of records
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-filename     AS C FORMAT "x(50)"              NO-UNDO.
+DEF INPUT  PARAM the-sys-type    LIKE organigram.sys-type         NO-UNDO.
+DEF INPUT  PARAM wz-type-records LIKE organigram.sys-type         NO-UNDO.
+
+DEF OUTPUT PARAM wz-gen-level    AS C FORMAT "x(20)"              NO-UNDO.
+DEF OUTPUT PARAM wz-disk-id      LIKE organigram.disk-id          NO-UNDO.
+DEF OUTPUT PARAM wz-errno        AS I                             NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-1     AS C FORMAT "x(78)"              NO-UNDO.
+DEF OUTPUT PARAM wz-errmsg-2     AS C FORMAT "x(78)"              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF SHARED VAR wz-field         AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-orginator        AS I                                  NO-UNDO.
+DEF VAR wz-line             AS I                                  NO-UNDO.
+
+DEF VAR wz-setup            AS C FORMAT "x(40)"                   NO-UNDO.
+DEF VAR wz-file             AS C FORMAT "x(40)"                   NO-UNDO.
+
+DEF VAR wz-pseudo-gen-level LIKE organigram.org-type              NO-UNDO.
+DEF VAR inx-sys-type        AS I                                  NO-UNDO.
+
+DEF VAR wz-totlevel         LIKE election.totlevel                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-gen-level = ""
+wz-disk-id   = -1
+wz-errno     = -1
+wz-errmsg-1  = ""
+wz-errmsg-2  = "".
+
+FIND FIRST setup NO-LOCK.
+
+/* Start processing file for general tests only (first 2 lines) */
+INPUT FROM VALUE(wz-filename) NO-ECHO.
+RecordLoop:
+REPEAT:
+    wz-field = "".
+    
+    SET wz-field AUTO-RETURN.
+    
+    wz-line = wz-line + 1.
+    
+    call C_CHECKINT VALUE(wz-field[4]).
+    IF stat <> 0
+    THEN DO:
+        ASSIGN
+        wz-errno    = 100
+        wz-errmsg-1 = "4th field is not numeric ! (orginator)".
+        LEAVE.
+    END.
+    wz-orginator = INT(wz-field[4]).
+
+    /* line 1 contains the destination information */
+    /* example : "S" " " "<area>" 000              */
+    /* ------------------------------------------- */
+    IF      wz-line = 1
+    THEN DO:
+        /* Only DESTINATOR may be filled in */
+        IF wz-field[5] <> ""
+        THEN DO:
+            ASSIGN
+            wz-errno    = 101
+            wz-errmsg-1 = "1st line contains too much information !".
+            LEAVE.
+        END.
+        IF LENGTH(wz-field[2]) = 0
+        THEN wz-field[2] = " ".
+        ASSIGN
+        wz-setup = setup.sys-type 
+                 + setup.org-type 
+                 + setup.areaname 
+                 + STRING(setup.orginator,"999")
+        wz-file  = wz-field[1]    
+                 + wz-field[2]    
+                 + wz-field[3] 
+                 + STRING(wz-orginator,"999").
+        IF wz-setup <> wz-file
+        THEN DO:
+            ASSIGN
+            wz-errno    = 102
+            wz-errmsg-1 = "File not meant for this disk => " + wz-file
+            wz-errmsg-2 = wz-setup + " expected !".
+            LEAVE.
+        END.
+    END.
+
+    /* All the information after line 1 contains the data to be */
+    /* imported into the organigram-table                       */
+    /* For now we only check the 1st line with importable data  */
+    /* -------------------------------------------------------- */
+    ELSE IF wz-line = 2
+    THEN DO:
+        IF wz-field[26] <> ""
+        THEN DO:
+            ASSIGN
+            wz-errno    = 103
+            wz-errmsg-1 = "Contains too much information !".
+            LEAVE.
+        END.
+        /* Check type of expected input records from file */
+        IF wz-field[1] <> the-sys-type
+        THEN DO:
+            ASSIGN 
+            wz-errno    = 104
+            wz-errmsg-1 = "Wrong type of record detected (sys-type = " 
+                         + wz-field[1] + " instead of " + the-sys-type + ")".
+            LEAVE.
+        END.
+        /* Check existant records of previous record types */
+        /* => I should exist before importing G, T or U    */
+        /* => I and G should exist before importing T or U */
+        /* => I, G and T should exist before importing U   */
+        /* ----------------------------------------------- */
+        REPEAT inx-sys-type = 1 TO LOOKUP(the-sys-type,wz-type-records) - 1:
+            
+            FIND FIRST organigram 
+                 WHERE organigram.sys-type = ENTRY(inx-sys-type,
+                                                   wz-type-records)
+               NO-LOCK NO-ERROR.
+            IF NOT AVAILABLE organigram
+            THEN DO:
+                ASSIGN 
+                wz-errno    = 105
+                wz-errmsg-1 = "No " + ENTRY(inx-sys-type,wz-type-records)
+                             + "-records found ! Import them first !".
+                LEAVE.
+           END.
+        END.
+        IF wz-errno <> -1 
+        THEN LEAVE.
+
+        IF the-sys-type <> "I"
+        THEN DO:
+            ASSIGN
+            wz-totlevel  = -1
+            wz-gen-level = "".
+            /* GENERATION is only allowed at lowest level of TOTALISATION */
+            /* If more than one is found, it should be in the list. No    */
+            /* mix of different org-types are allowed.                    */
+            IF      wz-field[1] = "G"
+            THEN DO:
+                FOR EACH election NO-LOCK WHERE election.s-id         = verkdat 
+                                            AND election.separate_TOT = TRUE
+                                             BY election.totlevel:
+                    IF wz-totlevel = -1 
+                    THEN wz-totlevel = election.totlevel.
+
+                    IF wz-totlevel = election.totlevel
+                    THEN DO:
+                        wz-gen-level = wz-gen-level
+                                     + (IF wz-gen-level = "" THEN "" ELSE ",")
+                                     + election.org-type.
+                    END.
+                END.
+                 
+                IF  wz-field[1] = "G"
+                AND LOOKUP(wz-field[2],wz-gen-level) = 0
+                THEN DO:
+                    /* If G is not lowest level -> check lowest available level */
+                    wz-pseudo-gen-level = "".
+                    FOR EACH election NO-LOCK WHERE election.org-type <> wz-gen-level
+                                                 BY election.totlevel:
+                        FIND FIRST organisation
+                             WHERE     organisation.org-type    = wz-field[2]
+                               AND (   organisation.heading3[1] = wz-field[3]
+                                    OR organisation.heading3[2] = wz-field[3]
+                                    OR organisation.heading3[3] = wz-field[3]) 
+                               AND     organisation.setup-id    = setup.setup-id
+                           NO-LOCK NO-ERROR.
+                        IF AVAILABLE organisation
+                        THEN DO:
+                            wz-pseudo-gen-level = election.org-type.
+                            LEAVE.
+                        END.
+                        /******************************************************************/
+                        /* DO NOT CHECK THE UNAVAILABILITY OF organisation !!!            */
+                        /* We're trying to look for the lowest GEN-level of wz-field[3] ! */
+                        /******************************************************************/
+                    END.
+                    IF wz-pseudo-gen-level = ""
+                    THEN DO:
+                        ASSIGN 
+                        wz-errno    = 106
+                        wz-errmsg-1 = "GENERATION not allowed for this organisation type !"
+                        wz-errmsg-2 = wz-field[2] + " not in [" + wz-gen-level + "]".
+                        LEAVE.
+                    END.
+                END.
+                wz-gen-level = wz-field[2].
+            END.
+            ELSE DO:
+                FIND FIRST organigram WHERE organigram.sys-type = "G"
+                                    NO-LOCK NO-ERROR.
+                wz-gen-level = organigram.org-type.
+            END.
+        END.
+        
+        /* Find last used disk-id */
+        IF the-sys-type = "I"
+        THEN wz-disk-id = 0.
+        ELSE DO:
+            FIND FIRST organigram WHERE organigram.sys-type = the-sys-type
+                                NO-LOCK NO-ERROR.
+            IF AVAILABLE organigram
+            THEN wz-disk-id = organigram.disk-id - 1.
+            ELSE DO:
+                FIND LAST organigram 
+                    WHERE organigram.sys-type = ENTRY(LOOKUP(the-sys-type,
+                                                             wz-type-records) - 1,
+                                                      wz-type-records)
+                                   NO-LOCK NO-ERROR.
+                IF AVAILABLE organigram
+                THEN wz-disk-id = organigram.disk-id.
+                ELSE DO:
+                    FIND LAST organigram NO-ERROR.
+                    IF AVAILABLE organigram
+                    THEN wz-disk-id = organigram.disk-id.
+                    ELSE wz-disk-id = 0.
+                END.
+            END.
+        END.
+    END.
+    
+    /* Stop processing after line 2 */
+    IF wz-line > 1 THEN LEAVE.
+END.
+INPUT CLOSE.
+
+IF  wz-errno = -1
+AND wz-line  < 2
+THEN ASSIGN
+     wz-errno    = 199
+     wz-errmsg-1 = "File too small to process ! At least 2 lines needed !".
+
+{return.i}
+/* eof */

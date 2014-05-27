@@ -1,0 +1,92 @@
+/************************************************************************/
+/*  Filename : INTERROR.P                                               */
+/************************************************************************/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-modmsg   AS C FORMAT "x(40)"                   NO-UNDO.
+DEF INPUT PARAM wz-message1 AS C FORMAT "x(65)"                   NO-UNDO.
+DEF INPUT PARAM wz-message2 AS C FORMAT "x(65)"                   NO-UNDO.
+
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-errmsgs          AS C FORMAT "x(65)" EXTENT 3          NO-UNDO.
+DEF VAR wz-module           AS C FORMAT "x(40)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS                                                   */
+/*                                                                      */
+/************************************************************************/
+FORM
+    " "           AT  2          SKIP
+    wz-errmsgs[1] AT  2 SPACE(1) SKIP
+    wz-module     AT 12 
+    wz-errmsgs[2] AT  2          SKIP
+    " "           AT  2          SKIP
+    wz-errmsgs[3] AT  2          SKIP
+    " "           AT  2
+    WITH FRAME internal_error
+        NO-LABELS
+        ROW 7
+        CENTERED
+        OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+PAUSE 0 NO-MESSAGE.
+
+/* Retrieve module description of internal error */
+IF LENGTH(wz-modmsg)      > 0 AND
+   NUM-ENTRIES(wz-modmsg) = 2
+THEN DO:
+    {call.i &prg="mesfil" &param=",wz-modmsg,  0,OUTPUT wz-module"}
+END.
+ELSE wz-module = wz-modmsg.
+
+/* Retrieve message 1 to display (if any given) */
+IF LENGTH(wz-message1)      > 0 AND
+   NUM-ENTRIES(wz-message1) = 2
+THEN DO:
+    {call.i &prg="mesfil" &param=",wz-message1,  0,OUTPUT wz-errmsgs[1]"}
+END.
+ELSE wz-errmsgs[1] = wz-message1.
+
+/* Retrieve message 2 to display (if any given) */
+IF LENGTH(wz-message2)      > 0 AND
+   NUM-ENTRIES(wz-message2) = 2
+THEN DO:
+    {call.i &prg="mesfil" &param=",wz-message2,  0,OUTPUT wz-errmsgs[2]"}
+END.
+ELSE wz-errmsgs[2] = wz-message2.
+
+{call.i &prg="mesfil" &param=",'general,keypress',0,OUTPUT wz-errmsgs[3]"}
+
+call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-errmsgs[1]) 2.
+call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-module) 2.
+IF TRIM(wz-errmsgs[2]) <> "" 
+THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-errmsgs[2]) 2.
+
+DISPLAY wz-errmsgs wz-module
+    WITH FRAME internal_error.
+REPEAT:
+    PAUSE NO-MESSAGE.
+    LEAVE.
+END.
+HIDE FRAME internal_error NO-PAUSE.
+
+{return.i}
+/* eof */

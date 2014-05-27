@@ -1,0 +1,272 @@
+/* Filename            : S_CHK_GT.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}              /* Variabelen voor het TOT hoofdmenu TOGENEME */
+{selvar.i}                    /* De variabelen voor de selection record */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+DEF BUFFER stembureau     FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-title          AS C FORMAT "x(50)"                     NO-UNDO.
+DEF VAR wz-types          AS C INIT "G,T"                         NO-UNDO.
+DEF VAR wz-counter        AS C FORMAT "x(15)"                     NO-UNDO.
+DEF VAR wz-levels         AS C FORMAT "x(10)"                     NO-UNDO.
+DEF VAR wz-level          AS I EXTENT 3                           NO-UNDO.
+DEF VAR i                 AS I                                    NO-UNDO.
+
+DEF VAR wz-empty-leading  AS C INIT "     "                       NO-UNDO.
+DEF VAR wz-error-leading  AS C INIT "¯¯¯¯¯"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK.
+
+REPEAT i = 1 TO NUM-ENTRIES(wz-types):
+    IF      ENTRY(i,wz-types) = "G"
+    THEN DO:
+		    {call.i &prg="mesfil" &param=",'pmgeneka,titmesg',0,OUTPUT wz-title"}
+    END.
+    ELSE IF ENTRY(i,wz-types) = "T"
+    THEN DO:
+		    {call.i &prg="mesfil" &param=",'tmgeneka,titmes',0,OUTPUT wz-title"}
+    END.
+
+    PUT UNFORMATTED (IF setup.organigram[i + 1] = 0
+                     THEN wz-error-leading
+                     ELSE wz-empty-leading) 
+        STRING(i + 1) ". " TRIM(wz-title) " (" STRING(setup.organigram[i + 1]) ")" SKIP.
+    {s_check.i}
+    
+    /* Overview of all 000-levels */
+    wz-level = 0.
+    FOR EACH organigram NO-LOCK WHERE organigram.sys-type = ENTRY(i,wz-types)
+                                  AND (   (    ENTRY(i,wz-types)  = "G"
+                                           AND organigram.g-disk  = -1)
+                                       OR (    ENTRY(i,wz-types)  = "T"
+                                           AND organigram.t-disks = ""))
+                                   BY organigram.disk-id:
+        ASSIGN
+        wz-level[1] = wz-level[1] + 1
+        wz-levels   = STRING(  FILL(" ",2)
+                             + STRING(i + 1) + "." 
+                             + STRING(wz-level[1]),"x(12)").
+        PUT UNFORMATTED wz-empty-leading 
+            wz-levels
+            STRING(  organigram.sys-type
+                   + organigram.org-type
+                   + organigram.area[taalkode]
+                   + STRING(organigram.orginator,"999"),"x(60)")
+            (IF organigram.verwerkt
+             THEN "OK"
+             ELSE "--")
+            " (" STRING(organigram.disk-id, ">>>9") ")"
+            SKIP.
+        {s_check.i}
+    END.
+    PUT UNFORMATTED " " SKIP.
+    {s_check.i}
+    
+    /* Detailed view of all 000-levels */
+    ASSIGN
+    wz-level  = 0.
+    FOR EACH organigram NO-LOCK WHERE organigram.sys-type = ENTRY(i,wz-types)
+                                  AND (   (    ENTRY(i,wz-types)  = "G"
+                                           AND organigram.g-disk  = -1)
+                                       OR (    ENTRY(i,wz-types)  = "T"
+                                           AND organigram.t-disks = ""))
+                                   BY organigram.disk-id:
+        ASSIGN
+        wz-level[1] = wz-level[1] + 1
+        wz-levels   = STRING(  FILL(" ",2)
+                             + STRING(i + 1) + "." 
+                             + STRING(wz-level[1]),"x(12)").
+        FIND FIRST sub-organigram 
+             WHERE    (    ENTRY(i,wz-types) = "G"
+                       AND sub-organigram.g-disk = organigram.disk-id)
+                   OR (    ENTRY(i,wz-types) = "T"    
+                       AND LOOKUP(STRING(organigram.disk-id),
+                                         sub-organigram.t-disks) > 0)
+           NO-LOCK NO-ERROR.
+        wz-counter = "".
+        IF AVAILABLE sub-organigram
+        THEN IF sub-organigram.sys-type = "U"
+             THEN wz-counter = " (" + STRING(organigram.children) + ")".
+        PUT UNFORMATTED (IF wz-counter = " (0)"
+                         THEN wz-error-leading
+                         ELSE wz-empty-leading)
+            wz-levels
+            STRING(  organigram.sys-type
+                   + organigram.org-type
+                   + organigram.area[taalkode]
+                   + STRING(organigram.orginator,"999")
+                   + wz-counter,"x(60)")
+            (IF organigram.verwerkt
+             THEN "OK"
+             ELSE "--")
+            " (" STRING(organigram.disk-id, ">>>9") ")"
+            SKIP.
+        {s_check.i}
+        IF AVAILABLE sub-organigram
+        THEN DO:
+            IF sub-organigram.sys-type = "U"
+            THEN DO:
+                wz-level[2] = 0.
+                FOR EACH stembureau NO-LOCK WHERE stembureau.sys-type = "U"
+                                              AND stembureau.org-type = " "
+                    AND (   (    ENTRY(i,wz-types) = "G"
+                             AND stembureau.g-disk = organigram.disk-id)
+                         OR (    ENTRY(i,wz-types) = "T"    
+                             AND LOOKUP(STRING(organigram.disk-id),
+                                               stembureau.t-disks) > 0)     )
+                                               BY stembureau.disk-id:
+                    ASSIGN
+                    wz-level[2] = wz-level[2] + 1
+                    wz-levels   = STRING(  FILL(" ",4)
+                                         + STRING(i + 1)       + "." 
+                                         + STRING(wz-level[1]) + "."
+                                         + STRING(wz-level[2])      ,"x(14)").
+                    PUT UNFORMATTED wz-empty-leading 
+                        wz-levels
+                        STRING(  stembureau.sys-type
+                               + stembureau.org-type
+                               + stembureau.area[taalkode]
+                               + STRING(stembureau.orginator,"999"),"x(58)")
+                        (IF stembureau.verwerkt
+                         THEN "OK"
+                         ELSE "--")
+                        " (" STRING(stembureau.disk-id, ">>>9") ")"
+                        SKIP.
+                    {s_check.i}
+                END.
+                PUT UNFORMATTED " " SKIP.
+                {s_check.i}
+            END.
+            ELSE DO:
+                /* Global list of 'children' */
+                wz-level[2] = 0.
+                FOR EACH sub-organigram NO-LOCK 
+                   WHERE sub-organigram.sys-type = ENTRY(i,wz-types)
+                     AND (   (    ENTRY(i,wz-types) = "G"
+                              AND sub-organigram.g-disk = organigram.disk-id)
+                          OR (    ENTRY(i,wz-types) = "T"    
+                              AND LOOKUP(STRING(organigram.disk-id),
+                                                sub-organigram.t-disks) > 0) ) 
+                      BY sub-organigram.disk-id:
+                    ASSIGN
+                    wz-level[2] = wz-level[2] + 1
+                    wz-levels   = STRING(  FILL(" ",4)
+                                         + STRING(i + 1)       + "." 
+                                         + STRING(wz-level[1]) + "."
+                                         + STRING(wz-level[2])      ,"x(14)").
+                    PUT UNFORMATTED (IF sub-organigram.children = 0
+                                     THEN wz-error-leading
+                                     ELSE wz-empty-leading)
+                        wz-levels
+                        STRING(  sub-organigram.sys-type
+                               + sub-organigram.org-type
+                               + sub-organigram.area[taalkode]
+                               + STRING(sub-organigram.orginator,"999")
+                               + " (" + STRING(sub-organigram.children) + ")","x(58)")
+                        (IF sub-organigram.verwerkt
+                         THEN "OK"
+                         ELSE "--")
+                        " (" STRING(sub-organigram.disk-id, ">>>9") ")"
+                        SKIP.
+                    {s_check.i}
+                END.
+                PUT UNFORMATTED " " SKIP.
+                {s_check.i}
+                /* Each child in detail ... */
+                wz-level[2] = 0.
+                FOR EACH sub-organigram NO-LOCK 
+                   WHERE sub-organigram.sys-type = ENTRY(i,wz-types)
+                     AND (   (    ENTRY(i,wz-types) = "G"
+                              AND sub-organigram.g-disk = organigram.disk-id)
+                          OR (    ENTRY(i,wz-types) = "T"    
+                              AND LOOKUP(STRING(organigram.disk-id),
+                                                sub-organigram.t-disks) > 0) ) 
+                      BY sub-organigram.disk-id:
+                    ASSIGN
+                    wz-level[2] = wz-level[2] + 1
+                    wz-levels   = STRING(  FILL(" ",4)
+                                         + STRING(i + 1)       + "." 
+                                         + STRING(wz-level[1]) + "."
+                                         + STRING(wz-level[2])      ,"x(14)").
+                    PUT UNFORMATTED (IF sub-organigram.children = 0
+                                     THEN wz-error-leading
+                                     ELSE wz-empty-leading)
+                        wz-levels
+                        STRING(  sub-organigram.sys-type
+                               + sub-organigram.org-type
+                               + sub-organigram.area[taalkode]
+                               + STRING(sub-organigram.orginator,"999")
+                               + " (" + STRING(sub-organigram.children) + ")","x(58)")
+                        (IF sub-organigram.verwerkt
+                         THEN "OK"
+                         ELSE "--")
+                        " (" STRING(sub-organigram.disk-id, ">>>9") ")"
+                        SKIP.
+                    {s_check.i}
+                    ASSIGN
+                    wz-level[3] = 0.
+                    FOR EACH stembureau NO-LOCK WHERE stembureau.sys-type = "U"
+                                                  AND stembureau.org-type = " "
+                        AND (   (    ENTRY(i,wz-types) = "G"
+                                 AND stembureau.g-disk = sub-organigram.disk-id)
+                             OR (    ENTRY(i,wz-types) = "T"    
+                                 AND LOOKUP(STRING(sub-organigram.disk-id),
+                                                   stembureau.t-disks) > 0)     )
+                                                   BY stembureau.disk-id:
+                        ASSIGN
+                        wz-level[3] = wz-level[3] + 1
+                        wz-levels   = STRING(  FILL(" ",6)
+                                             + STRING(i + 1)       + "." 
+                                             + STRING(wz-level[1]) + "."
+                                             + STRING(wz-level[2]) + "."
+                                             + STRING(wz-level[3])      ,"x(16)").
+                        PUT UNFORMATTED wz-empty-leading 
+                            wz-levels
+                            STRING(  stembureau.sys-type
+                                   + stembureau.org-type
+                                   + stembureau.area[taalkode]
+                                   + STRING(stembureau.orginator,"999"),"x(56)")
+                            (IF stembureau.verwerkt
+                             THEN "OK"
+                             ELSE "--")
+                            " (" STRING(stembureau.disk-id, ">>>9") ")"
+                            SKIP.
+                        {s_check.i}
+                    END.
+                    PUT UNFORMATTED " " SKIP.
+                    {s_check.i}
+                END.
+            END.
+        END.
+        PUT UNFORMATTED " " SKIP.
+        {s_check.i}
+    END.
+END.
+
+{return.i}
+/* eof */

@@ -1,0 +1,232 @@
+/* Filename            : SELPRTVK.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   SELPRTVK.P  $</workFile>
+<revision>$Revision: 1.6 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:26:00  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/SELPRTVK.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2008/11/04 13:16:18 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{selvar.i}            /* De variabelen voor de selection record         */
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{selprtvk.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+
+/**************************************************************/
+/* key_dis     : De variabele voor CHOOSE ROW van het scherm  */
+/*               Indeling variabele :                         */
+/*               1-2   : election.e-id                        */
+/*               3-4   : Spatie                               */
+/*               5     : Naam verkiezing                      */
+/* first-key   : De eertse RECID van de tabel                 */
+/* sav-key     : De RECID van actuele types record            */
+/* beg-key     : De begin RECID van het scherm                */
+/* end-key     : De eind RECID van het scherm                 */
+/* counter     : Een teller voor het opvullen van het scherm  */
+/* down-num    : Het aantal down lijnen voor het scherm       */
+/**************************************************************/
+
+DEFINE VARIABLE key_dis    AS CHARACTER FORMAT "x(55)".
+DEFINE VARIABLE first-key  AS RECID.
+DEFINE VARIABLE sav-key    AS RECID.
+DEFINE VARIABLE beg-key    AS RECID.
+DEFINE VARIABLE end-key    AS RECID.
+DEFINE VARIABLE counter    AS INTEGER.
+DEFINE VARIABLE down-num   AS INTEGER.
+
+DEFINE VARIABLE mes1       AS CHARACTER FORMAT "x(38)".
+DEFINE VARIABLE men_tit    AS CHARACTER FORMAT "x(40)".
+
+DEFINE VARIABLE menupos    AS INTEGER INITIAL ?.
+DEFINE VARIABLE execopt    AS INTEGER INITIAL ?.
+DEFINE VARIABLE menleav    AS INTEGER INITIAL ?.
+
+DEFINE VARIABLE last-et-id LIKE election.et-id.
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME pmlordge SCROLL 1 down-num DOWN ROW 5
+    TITLE men_tit NO-LABELS OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+selmenleav = 0.
+
+{call.i &prg="mesfil" &param=",'pmlordge,mes01',38,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmlordge,tit01',40,OUTPUT men_tit"}
+
+FIND FIRST setup.
+FIND FIRST election WHERE election.s-id  = verkdat
+                      AND election.e-pr  = TRUE   NO-ERROR.
+IF AVAILABLE election
+THEN DO :
+    ASSIGN
+        first-key  = RECID(election)
+        down-num   = 0
+        last-et-id = -1.
+    FOR EACH election WHERE election.s-id = verkdat
+                        AND election.e-pr = TRUE:
+        IF election.et-id <> last-et-id
+        THEN down-num = down-num + 1.
+
+        last-et-id = election.et-id.
+    END.
+
+    IF down-num > 13
+    THEN down-num = 13.
+
+    FIND FIRST election WHERE RECID(election) = first-key.
+    CLEAR FRAME pmlordge ALL NO-PAUSE.
+
+    ASSIGN
+        key_dis = STRING(election.e-id,"99") + FILL(" ",2)
+                  + election.long-name[taalkode]
+        sav-key = RECID(election).
+    DISPLAY key_dis WITH FRAME pmlordge.
+    DOWN WITH FRAME pmlordge.
+    PAUSE 0 NO-MESSAGE.
+    ASSIGN
+        counter    = 1
+        beg-key    = sav-key
+        end-key    = sav-key
+        last-et-id = election.et-id.
+
+    REPEAT :
+        IF counter = down-num
+        THEN LEAVE.
+        ELSE DO :
+            FIND NEXT election WHERE election.s-id = verkdat
+                                 AND election.e-pr = TRUE    NO-ERROR.
+            IF NOT AVAILABLE election
+            THEN LEAVE.
+            ELSE DO :
+                IF election.et-id <> last-et-id
+                THEN DO:
+                    counter = counter + 1.
+                    key_dis = STRING(election.e-id,"99") + FILL(" ",2)
+                              + election.long-name[taalkode].
+                    /* key_dis = key_dis + " " + election.coll_name[taalkode]. */
+                    sav-key = RECID(election).
+                    DISPLAY key_dis WITH FRAME pmlordge.
+                    DOWN WITH FRAME pmlordge.
+                    PAUSE 0 NO-MESSAGE.
+                    end-key = sav-key.
+                END.
+                last-et-id = election.et-id.
+            END.
+        END.
+    END.
+
+    UP counter WITH FRAME pmlordge.
+    FIND election WHERE RECID(election) = beg-key.
+    REPEAT :
+        selmenleav = 0.
+        {call.i &prg="discolme" &param=",'general,fkey02',0"}
+        CHOOSE ROW key_dis COLOR VALUE(menu_bg)
+            NO-ERROR AUTO-RETURN WITH FRAME pmlordge.
+        COLOR DISPLAY VALUE(menu_fg) key_dis WITH FRAME pmlordge.
+        PAUSE 0 NO-MESSAGE.
+
+        IF LASTKEY = KEYCODE("CURSOR-DOWN")
+        THEN DO :
+            IF end-key <> first-key
+            THEN DO :
+                FIND election WHERE RECID(election) = end-key.
+                FIND NEXT election WHERE election.s-id = verkdat
+                                     AND election.e-pr = TRUE NO-ERROR.
+                IF AVAILABLE election
+                THEN DO :
+                    key_dis = STRING(election.e-id,"99") + FILL(" ",2)
+                              + election.long-name[taalkode].
+                    sav-key = RECID(election).
+                    DOWN WITH FRAME pmlordge.
+                    PAUSE 0 NO-MESSAGE.
+                    DISPLAY key_dis WITH FRAME pmlordge.
+                    PAUSE 0 NO-MESSAGE.
+                    end-key = sav-key.
+                    FIND election WHERE RECID(election) = beg-key.
+                    FIND NEXT election WHERE election.s-id = verkdat.
+                    sav-key = RECID(election).
+                    beg-key = sav-key.
+                END.
+            END.
+            NEXT.
+        END.
+
+        IF LASTKEY = KEYCODE("CURSOR-UP")
+        THEN DO :
+            IF beg-key <> first-key
+            THEN DO :
+                FIND election WHERE RECID(election) = beg-key.
+                FIND PREV election WHERE election.s-id = verkdat NO-ERROR.
+                IF AVAILABLE election
+                THEN DO :
+                    key_dis = STRING(election.e-id,"99") + FILL(" ",2)
+                              + election.long-name[taalkode].
+                    sav-key = RECID(election).
+                    UP WITH FRAME pmlordge.
+                    DISPLAY key_dis WITH FRAME pmlordge.
+                    PAUSE 0 NO-MESSAGE.
+                    beg-key = sav-key.
+                    FIND election WHERE RECID(election) = end-key.
+                    FIND PREV election WHERE election.s-id = verkdat.
+                    sav-key = RECID(election).
+                    end-key = sav-key.
+                END.
+            END.
+            NEXT.
+        END.
+
+        IF LASTKEY = KEYCODE("F1") OR
+           LASTKEY = KEYCODE("RETURN")      /* Selecteer verkiezing         */
+        THEN DO :
+            COLOR DISPLAY VALUE(menu_bg) key_dis WITH FRAME pmlordge.
+            PAUSE 0 NO-MESSAGE.
+            ASSIGN
+            key_dis  = FRAME-VALUE
+            verknum  = INTEGER(SUBSTRING(key_dis,1,2))
+            verkben  = SUBSTRING(key_dis,5,53)
+            partnum  = 0
+            partnam  = " "
+            candtyp  = 0
+            candnum  = 0.
+            {call.i &prg="selecwr"}
+            selmenleav = 1.
+            LEAVE.
+        END.
+    END.
+    PAUSE 0 NO-MESSAGE.
+END.
+
+HIDE FRAME pmlordge NO-PAUSE.
+
+{return.i}
+/* eof */

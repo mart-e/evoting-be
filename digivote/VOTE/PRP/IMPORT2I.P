@@ -1,0 +1,190 @@
+/* Filename            : IMPORT_I.P                                     */
+ 
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-disk-id       LIKE organigram.disk-id         NO-UNDO.
+DEF INPUT  PARAM wz-rel-s-disk-id LIKE organigram.disk-id         NO-UNDO.
+DEF INPUT  PARAM wz-rel-i-disk-id LIKE organigram.disk-id         NO-UNDO.
+DEF INPUT  PARAM wz-P-counter     AS I                            NO-UNDO.
+DEF INPUT  PARAM wz-C-counter     AS I                            NO-UNDO.
+DEF INPUT  PARAM wz-P-coll-ids    AS C FORMAT "x(40)"             NO-UNDO.
+DEF INPUT  PARAM wz-e-ids         AS C FORMAT "x(40)"             NO-UNDO.
+DEF INPUT  PARAM wz-coll-ids      AS C FORMAT "x(40)"             NO-UNDO.
+DEF INPUT  PARAM wz-ignore-blanco AS L                            NO-UNDO.
+DEF OUTPUT PARAM wz-status        AS L INIT TRUE                  NO-UNDO.
+DEF OUTPUT PARAM wz-message       AS C FORMAT "x(40)"             NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{disfram.i}                   /* Variabelen voor display frame disframe */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR i                     AS I                                NO-UNDO.
+
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/************************/
+/* Bezig met importeren */
+/************************/
+{call.i &prg="disfram" &param=",'import2s,import','','','',FALSE"}
+
+wz-message = "(party)".
+INPUT FROM VALUE(ramdrive + "PARTY.IMP") NO-ECHO.
+SET ^. /* 'party'      */
+SET ^. /* STRUCTURE    */
+SET ^. /* INTRODUCTION */
+SET ^. /* COLLEGE      */
+SET ^. /* PARTY        */
+REPEAT i = 1 TO wz-P-counter:
+		IF i = 1 AND wz-ignore-blanco
+		THEN SET ^.
+		ELSE DO:
+				CREATE party.
+				SET party EXCEPT disk-id e-id MAC.
+				ASSIGN
+				party.disk-id = wz-disk-id
+				party.e-id    = INT( ENTRY( party.coll-id + 1, wz-e-ids))
+				party.MAC     = "REFRESH".
+				/************************************************************/
+				/* Force 'Blanco' to be on college 0  for multiple colleges */
+				/* -------------------------------------------------------- */
+				IF   party.p-id     = 0
+				AND  party.coll-id <> 0
+				THEN DO:
+            party.coll-id  = 0.
+            /* Force e-id to the first college that is present */
+            IF      INT( ENTRY( 1, wz-e-ids)) > 0
+            THEN party.e-id = INT( ENTRY( 1, wz-e-ids)).
+            ELSE IF INT( ENTRY( 2, wz-e-ids)) > 0
+            THEN party.e-id = INT( ENTRY( 2, wz-e-ids)).
+            ELSE party.e-id = INT( ENTRY( 3, wz-e-ids)).
+        END.
+				/************************************************************/
+		END.
+END.
+INPUT CLOSE.
+IF i = wz-P-counter + 1
+THEN DO:
+    {call.i &prg="sec_part"}
+END.
+ELSE DO:
+    ASSIGN
+    wz-message = "(party::count)"
+    wz-status  = FALSE.
+END.
+
+IF wz-status
+THEN DO:
+    wz-message = "(candidate)".
+		INPUT FROM VALUE(ramdrive + "CANDIDAT.IMP") NO-ECHO.
+		SET ^. /* 'candidate'  */
+		SET ^. /* STRUCTURE    */
+		SET ^. /* INTRODUCTION */
+    SET ^. /* COLLEGE      */
+    SET ^. /* PARTY        */
+		REPEAT i = 1 TO wz-C-counter:
+				CREATE candidate.
+				SET candidate EXCEPT disk-id e-id MAC.
+				ASSIGN
+				candidate.disk-id = wz-disk-id
+				candidate.e-id    = INT( ENTRY( candidate.coll-id + 1, wz-e-ids))
+				candidate.MAC     = "REFRESH".
+		END.
+		INPUT CLOSE.
+		IF i = wz-C-counter + 1
+		THEN DO:
+				{call.i &prg="sec_cand"}
+		END.
+		ELSE DO:
+        ASSIGN
+        wz-message = "(candidate::count)"
+        wz-status  = FALSE.
+    END.
+END.
+
+IF wz-status
+THEN DO:
+		/* Mark related STRUCTURE disk as processed */
+		FIND FIRST organigram WHERE organigram.disk-id = wz-rel-s-disk-id.
+		IF AVAILABLE organigram
+		THEN ASSIGN
+		     organigram.verwerkt = TRUE
+		     organigram.MAC      = "REFRESH".
+		ELSE DO:
+		    ASSIGN
+		    wz-message = "(status::s)".
+		    wz-status  = FALSE.
+		END.
+END.
+
+IF wz-status
+THEN DO:
+		/* Mark related INTRODUCTION disk as processed */
+		FIND FIRST organigram WHERE organigram.disk-id = wz-rel-i-disk-id.
+		IF AVAILABLE organigram
+		THEN ASSIGN
+		     organigram.verwerkt = TRUE
+		     organigram.MAC      = "REFRESH".
+		ELSE DO:
+		    ASSIGN
+		    wz-message = "(status:i)"
+		    wz-status  = FALSE.
+		    /* rollback status of related STRUCTURE disk */
+    		FIND FIRST organigram WHERE organigram.disk-id = wz-rel-s-disk-id.
+    		IF AVAILABLE organigram
+    		THEN ASSIGN
+    		     organigram.verwerkt = FALSE
+    		     organigram.MAC      = "REFRESH".
+    END.
+END.
+
+IF wz-status
+THEN DO:
+		/* Mark INTRODUCTION disk as processed if all related records are processed */
+		FIND FIRST organigram WHERE organigram.l-disk   = wz-disk-id
+														AND organigram.verwerkt = FALSE
+												NO-LOCK NO-ERROR.
+		IF NOT AVAILABLE organigram
+		THEN DO:
+				FIND FIRST organigram WHERE organigram.disk-id = wz-disk-id.
+				ASSIGN
+				organigram.verwerkt = TRUE
+				organigram.MAC      = "REFRESH".
+		END.
+END.
+{call.i &prg="sec_orga"}
+
+IF wz-status
+THEN DO:
+		/* Update election.num_parties */
+END.
+
+IF NOT wz-status
+THEN DO:
+		DELETE FROM party     WHERE party.disk-id               = wz-disk-id 
+		                        AND LOOKUP(STRING(party.e-id),    wz-e-ids  ) > 0.
+		DELETE FROM candidate WHERE candidate.disk-id           = wz-disk-id 
+		                        AND LOOKUP(STRING(candidate.e-id),wz-e-ids  ) > 0.
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

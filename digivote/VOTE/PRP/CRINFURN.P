@@ -1,0 +1,497 @@
+/*@function sec=1*/
+/* Filename            : CRINFURN.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-disk-id          LIKE organigram.disk-id      NO-UNDO.
+DEF OUTPUT PARAM wz-needed-diskspace AS I                         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{makelogo.i "NEW"}        /* De RECID variabelen voor exporteren logo's */
+{selvar.i}                    /* De variabelen voor de selection record */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL BUFFER                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER verkiezing FOR election.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+/* Who Am I                 -> U?????999                                */
+DEF VAR urnename            AS C FORMAT "X(40)"                   NO-UNDO.
+/* Where Do I Come From     -> GX?????999                               */
+DEF VAR origin              AS C FORMAT "X(40)"                   NO-UNDO.
+/* Where Do I Have To Go To -> TX?????999 or TX?????999,TY?????999     */
+DEF VAR destination-ids     LIKE organigram.t-disks               NO-UNDO.
+
+DEF VAR wz-prev-et-id       LIKE election.et-id                   NO-UNDO.
+
+DEF VAR wz-taal             AS I                                  NO-UNDO.
+DEF VAR wz-prt-mav          AS I                                  NO-UNDO.
+DEF VAR wz-nbr_elect        AS I                                  NO-UNDO.
+DEF VAR wz-nbr_flop         AS I                                  NO-UNDO.
+DEF VAR wz-stat-logo        AS I                                  NO-UNDO.
+DEF VAR wz-nbr-of-logo      AS I                                  NO-UNDO.
+
+DEF VAR wz-size-line        AS I                                  NO-UNDO.
+DEF VAR wz-size-vote        AS I INIT    2                        NO-UNDO.
+
+DEF VAR wz-VOTE_TYPE_0      AS I INIT    5                        NO-UNDO.
+DEF VAR wz-VOTE_TYPE_1      AS I INIT   34                        NO-UNDO.
+DEF VAR wz-AESMACLEN        AS I INIT    8                        NO-UNDO.
+DEF VAR wz-AESBLOCKLEN      AS I INIT   16                        NO-UNDO.
+DEF VAR wz-Cluster_Length   AS I INIT  512                        NO-UNDO.
+DEF VAR wz-MAX_CARDS_IN_BAC AS I INIT 2000                        NO-UNDO.
+
+DEF VAR wz-sign-pos         AS I                                  NO-UNDO.
+DEF VAR wz-sign             AS I INIT 32                          NO-UNDO.
+
+DEF VAR wz-file             AS C FORMAT "x(35)"                   NO-UNDO.
+
+DEF VAR wz-resfile          AS C                                  NO-UNDO.
+
+DEF VAR wz-size-B001        AS I INIT 0                           NO-UNDO.
+DEF VAR wz-size-JOURNAL     AS I INIT 0                           NO-UNDO.
+
+DEF VAR i                   AS I                                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST session    
+     WHERE session.s-id = verkdat    
+   NO-LOCK NO-ERROR.
+FIND FIRST organigram 
+     WHERE organigram.disk-id = wz-disk-id 
+   NO-LOCK NO-ERROR.
+FIND FIRST session-exceptions
+     WHERE session-exceptions.setup-id    = setup.setup-id
+       AND session-exceptions.heading3[1] = organigram.area[1]
+   NO-LOCK NO-ERROR.
+{PROGBUSY.I}
+IF AVAILABLE session-exceptions
+THEN ASSIGN
+     wz-taal    = (IF session-exceptions.lang = -1
+                   THEN session.lang
+                   ELSE session-exceptions.lang
+                  )
+     wz-prt-mav = (IF session-exceptions.prt-mav = -1
+                   THEN session.prt-mav
+                   ELSE session-exceptions.prt-mav
+                  ).
+ELSE ASSIGN
+     wz-taal    = session.lang
+     wz-prt-mav = 0.
+
+OUTPUT TO VALUE(ramdrive + "B021.00").
+{PROGBUSY.I}
+ASSIGN
+wz-nbr_elect    = 0
+wz-nbr_flop     = session.nbr_flop
+urnename        = organigram.sys-type       +
+                  organigram.org-type       +
+                  organigram.area[taalkode] +
+                  STRING(organigram.orginator,"999")
+origin          = setup.sys-type +
+                  setup.org-type +
+                  setup.areaname +
+                  STRING(setup.orginator,"999")
+destination-ids = organigram.t-disks.
+
+FOR EACH election NO-LOCK WHERE election.s-id = session.s-id:
+    wz-nbr_elect = wz-nbr_elect + 1.
+END.
+IF wz-nbr_elect < NUM-ENTRIES(setup.startup[2])
+THEN DO wz-nbr_elect = 1 TO NUM-ENTRIES(setup.startup[2]):
+         FIND FIRST election
+             WHERE election.s-id = session.s-id
+               AND STRING(election.et-id) + "/" + STRING(election.coll-id)
+                   = ENTRY(wz-nbr_elect,startup[2])
+           NO-LOCK NO-ERROR.
+         IF NOT AVAILABLE election
+         THEN DO:
+             FIND FIRST types
+                 WHERE STRING(types.et-id) + "/" + STRING(types.coll-id)
+                       = ENTRY(wz-nbr_elect,startup[2])
+               NO-LOCK NO-ERROR.
+             IF AVAILABLE types
+             THEN IF types.mandatory    = FALSE AND
+                     types.separate_TOT = TRUE
+                  THEN wz-nbr_flop = wz-nbr_flop - 1.
+         END.
+     END.
+{PROGBUSY.I}
+
+/**********************************************************************/
+/* Calculation of all A-records                                       */
+ASSIGN
+wz-size-B001    = 0
+wz-size-JOURNAL = 0
+wz-size-line    = 4 + ( 17 * ( wz-size-vote + 1)) - 1.
+{ADDSIZE.I}
+wz-size-line    = 4 + 1 + LENGTH(origin) + 1.
+{ADDSIZE.I}
+wz-size-line    = 4 + 1 + LENGTH(urnename) + 1.
+{ADDSIZE.I}
+wz-size-line    = 4 + LENGTH(session.tel-nr).
+{ADDSIZE.I}
+wz-size-line    = 4 + LENGTH(STRING(wz-nbr_flop)).
+{ADDSIZE.I}
+wz-size-line    = 4 + LENGTH(STRING(session.s-id)).
+{ADDSIZE.I}
+wz-size-line    = 5 + LENGTH(STRING(wz-prt-mav)).
+{ADDSIZE.I}
+/**********************************************************************/
+
+PUT UNFORMATTED 
+    "//" SKIP
+    "// GENERAL CONFIGURATION DATA"                                SKIP
+    "//" SKIP
+    "A~t1~t""" origin """"                                         SKIP
+    "A~t2~t""" urnename """"                                       SKIP.
+    
+i = 3.
+FOR EACH organigram WHERE LOOKUP(STRING(organigram.disk-id),destination-ids) > 0
+                  NO-LOCK:
+    {ADDSIZE.I}
+    wz-size-line    = 4 + 1 + LENGTH(organigram.sys-type       +
+                                     organigram.org-type       +
+                                     organigram.area[taalkode] +
+                                     STRING(organigram.orginator,"999")) + 1.
+    PUT UNFORMATTED
+        "A~t" STRING(i) "~t""" organigram.sys-type
+                               organigram.org-type
+                               organigram.area[taalkode]
+                               STRING(organigram.orginator,"999") """" SKIP.
+    i = i + 1.
+END.
+
+PUT UNFORMATTED 
+    "A~t7~t" session.tel-nr                                        SKIP
+    "A~t8~t" wz-nbr_flop                                           SKIP
+    "A~t9~t" session.s-id                                          SKIP
+    "A~t10~t" wz-prt-mav                                           SKIP.
+    
+{PROGBUSY.I}
+PUT UNFORMATTED 
+    "//" SKIP
+    "// ELECTION DATA"                                             SKIP
+    "//" SKIP.
+
+/*@source sec=1*/
+/**************************************************************************/
+/*              CALCULATE SIZE OF JOURNAL FILE B003/B013                  */
+/**************************************************************************/
+/* Add type elector */
+wz-size-JOURNAL = wz-size-JOURNAL + 1.
+
+wz-size-JOURNAL = ( wz-size-JOURNAL + 1) / 2.
+wz-size-JOURNAL = wz-size-JOURNAL
+                + (IF wz-size-JOURNAL MODULO wz-AESBLOCKLEN = 0
+                   THEN 0
+                   ELSE wz-AESBLOCKLEN
+                     - ( wz-size-JOURNAL MODULO wz-AESBLOCKLEN)
+                  ).
+/* Add MAC-size and Usage Flag */
+wz-size-JOURNAL = wz-size-JOURNAL + wz-AESMACLEN + 1.
+/* Number of cards in one cluster */
+wz-size-JOURNAL = wz-Cluster_Length / wz-size-JOURNAL.
+/* Total number of clusters */
+wz-size-JOURNAL = ( ( wz-MAX_CARDS_IN_BAC + wz-size-JOURNAL - 1)
+                / wz-size-JOURNAL)
+                + 1.
+/* ... and the filesize is ... */
+wz-size-JOURNAL = wz-Cluster_Length * wz-size-JOURNAL.
+/**************************************************************************/
+/*@source sec=0*/
+
+wz-prev-et-id = -1.
+FOR EACH verkiezing NO-LOCK BY verkiezing.e-id:
+    IF verkiezing.et-id = wz-prev-et-id
+    THEN NEXT.
+    ELSE wz-prev-et-id = verkiezing.et-id.
+    
+/*@source sec=1*/
+    wz-size-JOURNAL = wz-size-JOURNAL
+                    + (IF verkiezing.e-type = 0
+                       THEN wz-VOTE_TYPE_0
+                       ELSE wz-VOTE_TYPE_1
+                      ).
+/*@source sec=0*/
+
+    FIND FIRST election WHERE election.e-id = verkiezing.e-id
+                              NO-LOCK NO-ERROR.
+    {PROGBUSY.I}
+    PUT UNFORMATTED  
+        "B~t" election.et-id "~t" election.e-type "~t".
+    /**********************************************************************/
+    wz-size-line = 2 + LENGTH(STRING(election.et-id))
+                 + 1 + LENGTH(STRING(election.e-type))
+                 + 1.
+    /**********************************************************************/
+    IF wz-taal < 3
+    THEN DO :
+        PUT UNFORMATTED
+            election.long-name[wz-taal + 1] "~t"
+            election.short-name[wz-taal + 1].
+        /******************************************************************/
+        wz-size-line = wz-size-line
+                     +     LENGTH(election.long-name[wz-taal + 1])
+                     + 1 + LENGTH(election.short-name[wz-taal + 1]).
+        /******************************************************************/
+    END.
+    IF wz-taal = 3
+    THEN DO:
+        PUT UNFORMATTED
+            election.long-name[2] "~t" election.short-name[2] "~t"
+            election.long-name[1] "~t" election.short-name[1].
+        /******************************************************************/
+        wz-size-line = wz-size-line
+                     +     LENGTH(election.long-name[2])
+                     + 1 + LENGTH(election.short-name[2])
+                     + 1 + LENGTH(election.long-name[1])
+                     + 1 + LENGTH(election.short-name[1]).
+        /******************************************************************/
+    END.
+    IF wz-taal = 4
+    THEN DO:
+        PUT UNFORMATTED
+            election.long-name[2] "~t" election.short-name[2] "~t"
+            election.long-name[3] "~t" election.short-name[3].
+        /******************************************************************/
+        wz-size-line = wz-size-line
+                     +     LENGTH(election.long-name[2])
+                     + 1 + LENGTH(election.short-name[2])
+                     + 1 + LENGTH(election.long-name[3])
+                     + 1 + LENGTH(election.short-name[3]).
+        /******************************************************************/
+    END.
+    /**********************************************************************/
+    {ADDSIZE.I}
+    /* Add party-line containing BLANCO votes for this election */
+    wz-size-line = 2 + LENGTH(STRING(election.et-id))
+                 + 1 + LENGTH(STRING(election.coll-id))
+                 + 3 + (IF election.et-id = 1
+                        THEN ( 3 * ( wz-size-vote + 1)) + 2
+                        ELSE wz-size-vote + ( 3 * 2)
+                       ).
+    {ADDSIZE.I}
+    /**********************************************************************/
+    PUT UNFORMATTED SKIP.
+
+END.
+
+
+PUT UNFORMATTED
+    "//" SKIP
+    "// COLLEGE DATA"                                              SKIP
+    "//" SKIP.
+
+FOR EACH election NO-LOCK WHERE session.s-id = election.s-id:
+    {PROGBUSY.I}
+    PUT UNFORMATTED  "C~t" election.et-id "~t" election.coll-id "~t".
+    IF election.colls = FALSE
+    THEN DO:
+        PUT UNFORMATTED  "Geen College".
+        IF wz-taal > 2
+        THEN PUT UNFORMATTED  "~t" "Aucun CollŠge".
+    END.
+    ELSE DO:
+        IF wz-taal = 0
+        THEN PUT UNFORMATTED  election.coll_name[1] " kiescollege".
+        IF wz-taal = 1
+        THEN PUT UNFORMATTED  "CollŠge ‚lectoral " election.coll_name[2].
+        IF wz-taal = 2
+        THEN PUT UNFORMATTED  election.coll_name[3] "es Wahlkollegium".
+        IF wz-taal = 3
+        THEN PUT UNFORMATTED  "CollŠge ‚lectoral " election.coll_name[2] "~t"
+                              election.coll_name[1] " kiescollege".
+        IF wz-taal = 4
+        THEN PUT UNFORMATTED  "CollŠge ‚lectoral " election.coll_name[2] "~t"
+                              election.coll_name[3] "es Wahlkollegium".
+    END.
+    PUT UNFORMATTED SKIP.
+END.
+
+
+PUT UNFORMATTED
+    "//" SKIP
+    "// PARTY DATA"                                                SKIP
+    "//" SKIP.
+
+FOR EACH election NO-LOCK WHERE session.s-id = election.s-id:
+    FOR EACH party NO-LOCK WHERE party.s-id  = session.s-id
+                             AND party.e-id  = election.e-id
+                             AND party.p-id > 0 :
+        {PROGBUSY.I}
+        IF party.taalgroep[taalkode] = ""
+        THEN PUT UNFORMATTED "D~t" election.et-id
+                              "~t" election.coll-id
+                              "~t" party.p-id
+                              "~t" party.party_name
+                              "~t" (IF party.logo_width  = -1
+                                    THEN 0
+                                    ELSE party.logo_width)
+                              "~t" (IF party.logo_height = -1
+                                    THEN 0
+                                    ELSE party.logo_height) SKIP.
+        ELSE PUT UNFORMATTED "D~t" election.et-id
+                              "~t" election.coll-id
+                              "~t" party.p-id
+                              "~t" party.party_name
+                              "~t" (IF party.logo_width  = -1
+                                    THEN 0
+                                    ELSE party.logo_width)
+                              "~t" (IF party.logo_height = -1
+                                    THEN 0
+                                    ELSE party.logo_height)
+                              "~t" (IF      SUBSTR(party.taalgroep[1],1,1) = "N" THEN 2
+                                    ELSE IF SUBSTR(party.taalgroep[1],1,1) = "F" THEN 1
+                                    ELSE                                              4) SKIP.
+    /**********************************************************************/
+    wz-size-line = 2 + LENGTH(STRING(election.et-id))
+                 + 1 + LENGTH(STRING(election.coll-id))
+                 + 1 + LENGTH(STRING(party.p-id))
+                 + 1 + ( 4 * ( wz-size-vote + 1)) - 1.
+    {ADDSIZE.I}
+    /**********************************************************************/
+    END.
+END.
+
+OUTPUT CLOSE. /* Einde B021.00 - Verkiezingen overzicht */
+
+/* ================================= */
+/* Eventuele partijlogo's exporteren */
+/* ================================= */
+ASSIGN
+sessionrecid  = RECID(session)
+electionrecid = ?
+partyrecid    = ?.
+{call.i &prg="makelogo" &param=", INPUT-OUTPUT wz-sign-pos,
+              INPUT-OUTPUT wz-sign,
+                    OUTPUT wz-stat-logo,
+                    OUTPUT wz-nbr-of-logo"}
+IF wz-stat-logo <> 1 
+THEN DO:
+    {return.i}
+END.
+
+/* ============================================= */
+/* Create of B021.xx for each election seperatly */
+/* ============================================= */
+FOR EACH election NO-LOCK WHERE election.s-id = session.s-id
+                          BREAK BY election.et-id :
+    {PROGBUSY.I}
+    IF FIRST-OF(election.et-id)
+    THEN DO:
+        OUTPUT TO VALUE(ramdrive + "B021." + STRING(election.et-id,"99")).
+        PUT "//" SKIP
+            "//CANDIDATE DATA" SKIP
+            "//" SKIP.
+    END.
+
+    FOR EACH party NO-LOCK OF election,
+        EACH candidate OF party NO-LOCK :
+        {PROGBUSY.I}
+        PUT UNFORMATTED  
+            "E~t" election.et-id
+             "~t" election.coll-id
+             "~t" party.p-id
+             "~t" candidate.c-type
+             "~t" candidate.c-id
+             "~t" candidate.c_name1
+             "~t" candidate.c_name2 SKIP.
+        /**********************************************************************/
+        wz-size-line = 2 + LENGTH(STRING(election.et-id))
+                     + 1 + LENGTH(STRING(election.coll-id))
+                     + 1 + LENGTH(STRING(party.p-id))
+                     + 1 + LENGTH(STRING(candidate.c-type))
+                     + 1 + LENGTH(STRING(candidate.c-id))
+                     + 1 + wz-size-vote.
+        {ADDSIZE.I}
+        /**********************************************************************/
+    END.
+    IF LAST-OF(election.et-id)
+    THEN OUTPUT CLOSE.
+
+END. /* election */
+/* Clean-up TEMP */
+call C_DEL VALUE(ramdrive + "B021.AR").
+/* Compress-it! */
+wz-resfile = ramdrive + "ZIPB021.BAT".
+OUTPUT TO VALUE(wz-resfile).
+/* ************************************************************ */
+/* Copy COMMAND.COM to ramdrive                                 */
+/* AR uses DOS memory allocated to COMMAND.COM                  */
+/* Therefore COMMAND.COM must be reloaded after execution !     */
+/* Default location = C:\, but DOS moves in mysterious ways ... */
+/* ************************************************************ */
+PUT UNFORMATTED
+    "@Echo OFF"                                                SKIP
+    SUBSTRING(ramdrive,1,2)                                    SKIP
+    "Cd \"                                                     SKIP
+    "Copy /Y C:\COMMAND.COM"                                   SKIP
+    "\DOS\AR a " ramdrive "B021.AR B021.??"                    SKIP.
+
+IF wz-nbr-of-logo > 0                         
+THEN PUT UNFORMATTED
+    "\DOS\AR a " ramdrive "B021.AR PL??????.DAT"               SKIP.
+
+IF wz-prt-mav = 1
+THEN DO:
+    PUT UNFORMATTED
+        "Cd \VOTE\FILES\BAT"                                   SKIP.
+    FOR EACH urnechku NO-LOCK WHERE urnechku.type-file   = FALSE /* file    */
+                                AND urnechku.action-file = FALSE /* include */
+                                AND PROGRAM-NAME(1) BEGINS urnechku.prgname:
+        PUT UNFORMATTED
+        "\DOS\AR a " ramdrive "B021.AR " urnechku.src-name     SKIP.
+    END.
+END.
+
+/* Return to original drive/path */
+PUT UNFORMATTED
+    SUBSTRING(ramdrive,1,2)                                    SKIP 
+    "Cd \VOTE".
+OUTPUT CLOSE.
+
+{PROGBUSY.I}
+DOS SILENT VALUE(wz-resfile).
+PUT CURSOR OFF.
+{PROGBUSY.I}
+{PREVDELF.I}
+/* Delete Text Versions of B021.?? */
+CALL C_DEL VALUE(ramdrive + "B021.00").
+FOR EACH election NO-LOCK WHERE election.s-id = session.s-id
+                          BREAK BY election.et-id :
+    {PROGBUSY.I}
+    CALL C_DEL VALUE(ramdrive + "B021." + STRING(election.et-id,"99")).
+END.
+{BUSYENDS.I}
+PAUSE 0 NO-MESSAGE.
+
+wz-needed-diskspace = wz-size-B001 + ( 2 * wz-size-JOURNAL).
+
+call ADDTOLOG PROGRAM-NAME(1) VALUE("Size Totals      : " + STRING(wz-size-B001)) 0.
+call ADDTOLOG PROGRAM-NAME(1) VALUE("Size Journal     : " + STRING(wz-size-JOURNAL)) 0.
+call ADDTOLOG PROGRAM-NAME(1) VALUE("Needed diskspace : " + STRING(wz-needed-diskspace)) 0.
+
+{return.i}
+/* eof */

@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!DOCTYPE CodeBlocks_layout_file>
+<CodeBlocks_layout_file>
+	<File name="ALG-FST.C" open="0" top="0">
+		<Cursor position="131" topLine="0"/>
+	</File>
+	<File name="FLOPPY.C" open="0" top="0">
+		<Cursor position="224" topLine="6"/>
+	</File>
+	<File name="RIJNDAEL.C" open="1" top="1">
+		<Cursor position="2272" topLine="76"/>
+	</File>
+	<Expand folder="/Sources"/>
+	<Expand folder="/Headers"/>
+</CodeBlocks_layout_file>

@@ -1,0 +1,83 @@
+/* Filename            : CFTYPES.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-cf-file     AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT  PARAM wz-encrypted   AS L                              NO-UNDO.
+DEF INPUT  PARAM wz-check-types AS L                              NO-UNDO.
+
+DEF OUTPUT PARAM wz-cf-types    AS L                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL WORKFILES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF WORKFILE checkTypes LIKE types.
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-filename             AS C FORMAT "x(50)"               NO-UNDO.
+DEF VAR i                       AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+wz-cf-types = FALSE.
+
+IF wz-encrypted
+THEN DO:
+    wz-filename = ramdrive + "$_TYPES_.TMP".
+    call CRYPFILE "D" RECEXE VALUE(wz-cf-file) VALUE(wz-filename) 0.
+    IF crypStat <> 0
+    THEN DO:
+        {return.i}
+    END.
+END.
+ELSE wz-filename = wz-cf-file.
+
+INPUT FROM VALUE(wz-filename) NO-ECHO.
+REPEAT i = 1 TO 6:
+    SET ^.
+END.
+REPEAT:
+    CREATE checkTypes.
+    IMPORT checkTypes.
+END.
+INPUT CLOSE.
+
+IF wz-encrypted
+THEN call C_DEL VALUE(wz-filename).
+
+IF wz-check-types
+THEN DO:
+    FOR EACH types WHERE types.used = 1 NO-LOCK:
+        FIND FIRST checkTypes WHERE checkTypes.et-id   = types.et-id
+                                AND checkTypes.coll-id = types.coll-id
+                                AND checkTypes.MAC     = types.MAC
+                           NO-ERROR.
+        IF AVAILABLE checkTypes 
+        THEN DELETE checkTypes.
+    END.
+    FIND FIRST checkTypes NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE checkTypes
+    THEN wz-cf-types = TRUE.
+END.
+ELSE DO:
+    FOR EACH checkTypes NO-LOCK:
+        EXPORT checkTypes.
+    END.
+END.
+
+{return.i}
+/* eof */

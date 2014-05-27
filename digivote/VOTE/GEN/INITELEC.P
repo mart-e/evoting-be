@@ -1,0 +1,502 @@
+/* Filename            : INITELEC.P                                     */
+/*
+<pvcs>
+<workFile>$Workfile:   INITELEC.P  $</workFile>
+<revision>$Revision: 1.32 $</revision>
+<workFileTimeStamp>$Modtime:   Feb 24 2004 10:09:32  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/GEN/INITELEC.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2006/10/23 09:42:01 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}
+{vargener.i}
+{selvar.i}
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR systeem AS C FORMAT "x(3)" INITIAL "NON"       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        VARIABLES / FORMS VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{initelec.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES AND WORKFILES                                 */
+/*                                                                      */
+/************************************************************************/
+DEF VAR orgfault         AS C FORMAT "x(70)"                      NO-UNDO.
+DEF VAR word             AS C FORMAT "x(4)"                       NO-UNDO.
+DEF VAR i                AS I                                     NO-UNDO.
+DEF VAR mesname          AS C FORMAT "x(6)"                       NO-UNDO.
+
+DEF VAR fra_var          AS C FORMAT "x(20)"                      NO-UNDO.
+
+DEF VAR old-systype      LIKE setup.sys-type                      NO-UNDO.
+DEF VAR old-orgtype      LIKE setup.org-type                      NO-UNDO.
+DEF VAR old-area         LIKE setup.areaname                      NO-UNDO.
+DEF VAR old-orginator    LIKE setup.orginator                     NO-UNDO.
+
+DEF VAR old-password     LIKE setup.password                      NO-UNDO.
+
+DEF VAR diskid           LIKE setup.disk-id                       NO-UNDO.
+DEF VAR systype          LIKE setup.sys-type                      NO-UNDO.
+DEF VAR orgtype          LIKE setup.org-type                      NO-UNDO.
+DEF VAR area             LIKE setup.areaname                      NO-UNDO.
+DEF VAR area-id          LIKE setup.orginator                     NO-UNDO.
+
+DEF VAR oldname          AS C FORMAT "x(40)"                      NO-UNDO.
+DEF VAR newname          AS C FORMAT "x(40)"                      NO-UNDO.
+
+DEF VAR wz-program       AS C                                     NO-UNDO.
+
+DEF VAR pwd              LIKE setup.password                      NO-UNDO.
+
+DEF VAR prevent_copy     AS L                                     NO-UNDO.
+DEF VAR re-use-pwd       AS L                                     NO-UNDO.
+
+DEF VAR wz-fase          AS I                                     NO-UNDO.
+DEF VAR wz-sys-types     AS C INIT "S,I,G,T"                      NO-UNDO.
+DEF VAR wz-lowest-org    AS C                                     NO-UNDO.
+DEF VAR wz-unique-org    AS L                                     NO-UNDO.
+DEF VAR wz-prev-et-id    AS I                                     NO-UNDO.
+DEF VAR wz-prev-totlevel AS I                                     NO-UNDO.
+
+DEF VAR wz-sub-struct    AS L                                     NO-UNDO.
+DEF VAR wz-polstats      AS L                                     NO-UNDO.
+DEF VAR wz-status        AS L                                     NO-UNDO.
+DEF VAR wz-again         AS L                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS                                                   */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP(1)
+    mesname AT 3 ":" AT 10 systype SPACE(0)
+                           orgtype SPACE(0)
+                           area    SPACE(0)
+                           area-id SPACE(2)
+    SKIP(1)
+    WITH FRAME setcopy 
+               ROW 9 
+               CENTERED 
+               NO-LABELS .
+
+FORM
+    " E-VOTING : DIGNAME "
+    WITH FRAME titelframe 
+               ROW 5 
+               CENTERED 
+               NO-BOX 
+               NO-LABEL 
+               COLOR MESSAGE 
+               OVERLAY.
+
+/************************************************************************/
+/*                                                                      */
+/*              START PROCEDURE                                         */
+/*                                                                      */
+/************************************************************************/
+STATUS INPUT OFF.
+
+prevent_copy = (PDBNAME(1) <> "elect").
+
+FIND FIRST setup NO-ERROR.
+IF AVAILABLE setup
+THEN ASSIGN             
+     oldname         = setup.sys-type +
+                       setup.org-type +
+                       setup.area     +
+                       STRING(setup.orginator,"999")
+     old-systype     = setup.sys-type
+     old-orgtype     = setup.org-type
+     old-area        = setup.area
+     old-orginator   = setup.orginator
+     old-password    = setup.password.
+     
+/**********************************************/
+/* !! Prevent a COPY of this disk !! (Step 1) */
+/**********************************************/
+IF prevent_copy
+THEN DO:
+    ASSIGN
+    setup.sys-type  = "?"
+    setup.org-type  = "?"
+    setup.area      = "??????"
+    setup.orginator = 999
+    setup.password  = "HOW-TO-PREVENT-A-COPY-OF-MY-DISK"
+    setup.MAC       = "REFRESH".
+    {call.i &prg="sec_setu"}
+END.
+
+/***********************/
+/* Check for SUPERMAMA */
+/***********************/
+i = 0.
+FOR EACH setup NO-LOCK:
+    i = i + 1.
+END.
+IF i <> 1
+THEN DO:
+    IF i = 0
+    THEN call ADDTOLOG PROGRAM-NAME(1) VALUE("NO SETUP-record available") 1.
+    ELSE call ADDTOLOG PROGRAM-NAME(1) VALUE("TOO MUCH SETUP-records available") 1.
+    /* "De database bevat onvoldoende gegevens" */
+    {call.i &prg="disfram" &param=",'initelec,badmama','','','',TRUE"}
+    {return.i}
+END.
+
+/*********************************/
+/* Uitschakelen ESC mogelijkheid */
+/*********************************/
+ON F4  BELL.
+ON ESC BELL.
+ON F2  BELL.
+
+/*************************************************/
+/* DISPLAY TITLE AND CHOOSE LANGUAGE AND PRINTER */
+/*************************************************/
+PAUSE 0 NO-MESSAGE.
+VIEW FRAME titelframe.
+{call.i &prg="taalkeus"}
+
+/****************************************/
+/* INITIALISE LANGUAGE DATE AND STRINGS */
+/****************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+taalkode = setup.lang-pc.  /*FRAME-INDEX.*/
+
+{call.i &prg="disfram" &param=",'preview,chkparty','','','',FALSE"}
+
+FIND FIRST session NO-LOCK NO-ERROR.
+IF NOT AVAILABLE session
+THEN DO:
+    /* "De database bevat onvoldoende gegevens" */
+    {call.i &prg="disfram" &param=",'initelec,badmama','','','',TRUE"}
+    {return.i}
+END.
+
+FIND FIRST election NO-LOCK NO-ERROR.
+IF NOT AVAILABLE election
+THEN DO:
+    /* "De verkiezingsvolgorde is nog niet vastgelegd" */
+    {call.i &prg="disfram" &param=",'digivote.errmes06','','','',TRUE"}
+    {return.i}
+END.
+
+verkdat = session.s-id.
+
+/*@source sec=1*/
+IF prevent_copy
+THEN DO WHILE NOT CONNECTED("from_elect"):
+         CONNECT C:\VOTE\ELECT.DB -1 -ld from_elect NO-ERROR.
+     END.
+ELSE CREATE ALIAS from_elect FOR DATABASE elect NO-ERROR.
+HIDE FRAME disframe NO-PAUSE.
+{call.i &prg="startdig"}   /* Ask pasword */
+IF systeem = "NON" 
+THEN DO:
+    {return.i}
+END.
+/*@source sec=0*/
+
+{call.i &prg="disfram" &param=",'preview,chkparty','','','',FALSE"}
+
+/**********************************************/
+/* !! Prevent a COPY of this disk !! (Step 2) */
+/**********************************************/
+IF NOT(   (    old-systype               = "S"
+           AND session.hands_off[1]      = TRUE)
+       OR (    LOOKUP(old-systype,"G,T") > 0
+           AND old-orginator             = 0   )
+       OR      old-systype               = "M"  )
+THEN DO:
+    {call.i &prg="disfram" &param=",'general,notavail','','','',TRUE"}
+    ON ESC END-ERROR.
+    ON F4  END-ERROR.
+    {return.i}
+END.
+
+wz-fase = (IF       session.hands_off[1] = TRUE
+                AND session.hands_off[2] = FALSE
+                AND session.hands_off[3] = FALSE
+           THEN 2
+           ELSE IF  session.hands_off[1] = TRUE
+                AND session.hands_off[2] = TRUE
+                AND session.hands_off[3] = FALSE
+           THEN 3
+           ELSE IF  session.hands_off[1] = TRUE
+                AND session.hands_off[2] = TRUE
+                AND session.hands_off[3] = TRUE
+           THEN 4
+           ELSE 1).
+
+ASSIGN
+wz-prev-et-id    = -1
+wz-prev-totlevel = -1
+wz-lowest-org    = "?"
+wz-unique-org    = FALSE.
+IF wz-fase > 1
+THEN DO:
+    FOR EACH election NO-LOCK BY election.totlevel 
+                              BY election.et-id:
+        IF   wz-prev-totlevel = -1
+        THEN ASSIGN
+             wz-prev-et-id    = election.et-id
+             wz-prev-totlevel = election.totlevel.
+        
+        IF  election.et-id   <> wz-prev-et-id
+        AND election.totlevel = wz-prev-totlevel
+        THEN DO:
+            IF wz-prev-et-id = -1
+            THEN ASSIGN
+                 wz-lowest-org = election.org-type
+                 wz-unique-org = TRUE.
+            ELSE wz-unique-org = FALSE.
+            wz-prev-et-id = election.et-id.
+        END.
+    END.
+END.
+
+{call.i &prg="mesfil" &param=",'initelec,orgfault',70,OUTPUT orgfault"}
+{call.i &prg="mesfil" &param=",'initelec,word',     4,OUTPUT word"}
+{call.i &prg="mesfil" &param=",'initelec,mesname',  6,OUTPUT mesname"}
+
+wz-sub-struct = FALSE.
+IF  old-systype   = "S"
+AND old-orginator =  0
+AND wz-fase       =  2
+THEN DO:
+		FIND FIRST organigram WHERE organigram.sys-type = "I"
+		                        AND organigram.s-disk   >  0
+		                    NO-LOCK NO-ERROR.
+		IF AVAILABLE organigram
+		THEN wz-sub-struct = TRUE.
+END.
+
+wz-polstats = FALSE.
+IF LOOKUP(old-systype,"G,T") > 0
+AND       old-orginator      = 0
+THEN DO:
+    FIND FIRST urnedest NO-LOCK NO-ERROR.
+    FIND FIRST organigram OF urnedest NO-LOCK NO-ERROR.
+    IF AVAILABLE organigram
+    THEN wz-polstats = (IF organigram.sys-type = "U" 
+                        THEN TRUE 
+                        ELSE FALSE).
+END.
+
+HIDE FRAME disframe NO-PAUSE.
+DIGNAME:
+DO:
+    ASSIGN
+    systype = (IF wz-fase = 1
+               THEN old-systype
+               ELSE ENTRY(wz-fase,wz-sys-types))
+    orgtype = (IF wz-unique-org
+               THEN wz-lowest-org
+               ELSE old-orgtype)
+    area    = old-area
+    area-id = (IF  wz-fase     > 1
+               AND old-systype = "S"
+               THEN 0
+               ELSE old-orginator).
+               
+    IF LOOKUP(old-systype,"G,T") > 0 AND old-orginator = 0
+    THEN wz-unique-org = TRUE.
+    
+    IF       old-systype = "M"
+    THEN orgfault = orgfault + " M " + word + " S.".
+    ELSE IF  old-systype = "S"
+    THEN orgfault = orgfault + (IF wz-sub-struct THEN " S," ELSE "") + " I, G " + word + " T.".
+    ELSE IF  LOOKUP(old-systype,"G,T") > 0
+         AND area-id                   = 0
+         AND NOT wz-polstats
+    THEN orgfault = orgfault + " " + old-systype + ".".
+    ELSE DO:
+        /* "Geen duplicaten toegestaan of ongeldige vooruitgang" */
+        {call.i &prg="disfram" &param=",'initelec,invalid','','','',TRUE"}
+        {return.i}
+    END.
+
+/*************************************/
+/* FILL IN THE NAME AND TYPE OF DISK */
+/*************************************/
+    GIVENAME:
+    REPEAT:
+        /* "Vul de naam van de schijf in " */
+        {call.i &prg="discolme" &param=",'initelec,setorig',0"}
+        DISPLAY mesname systype orgtype area area-id WITH FRAME setcopy.
+
+        /**NEW********NEW********NEW**/
+        /*                           */
+        /* M --> S --> SXXX (option) */
+        /*       S --> I             */
+        /*       S --> G000 --> GXXX */
+        /*       S --> T    --> TXXX */
+        /*                           */
+        /**NEW********NEW********NEW**/
+        
+        UPDATE systype WHEN wz-fase = 1 OR wz-sub-struct
+               orgtype WHEN NOT wz-unique-org
+               area    WHEN NOT (LOOKUP(old-systype,"G,T") > 0 AND old-orginator = 0)
+               area-id WHEN wz-fase = 1 OR wz-sub-struct OR LOOKUP(old-systype,"G,T") > 0
+            WITH FRAME setcopy
+            EDITING:
+                READKEY.
+                APPLY KEYCODE(CAPS(KEYLABEL(LASTKEY))).
+                IF GO-PENDING THEN LEAVE.
+                IF LOOKUP(FRAME-FIELD,"systype,orgtype") > 0
+                THEN DO:
+                    IF LOOKUP(KEYFUNCTION(LASTKEY),"BELL,CURSOR-LEFT,CURSOR-RIGHT,BACK-TAB,TAB,RETURN")=0
+                    THEN APPLY KEYCODE("TAB").
+                    NEXT.
+                END.
+            END.
+
+				IF LENGTH(orgtype) = 0
+				THEN orgtype = " ".
+				
+        newname = systype + orgtype + area + STRING(area-id,"999").
+        
+        /* Check correctness of newname */
+        {call.i &prg="initel_n"
+                &param=",INPUT  old-systype,   
+												 INPUT  old-area,      
+												 INPUT  old-orginator,
+												 INPUT  systype,       
+												 INPUT  orgtype,       
+												 INPUT  area,          
+												 INPUT  area-id,       
+												 INPUT  oldname,       
+												 INPUT  newname,       
+												 INPUT  wz-fase,       
+												 INPUT  wz-sub-struct, 
+												 INPUT  orgfault,      
+												 OUTPUT diskid,        
+												 OUTPUT wz-again,        
+												 OUTPUT wz-status"}
+												 
+				IF wz-again  THEN NEXT  GIVENAME.  /* Please try again ...           */
+        IF wz-status THEN LEAVE GIVENAME.  /* BRAVO: All checks succeeded !! */
+    END. /* GIVENAME */
+    HIDE FRAME fault NO-PAUSE.
+    HIDE FRAME setcopy NO-PAUSE.
+
+    IF key-cancel
+    THEN LEAVE DIGNAME.
+    
+    HIDE MESSAGE NO-PAUSE.
+    {call.i &prg="disfram" &param=",'digivote,indwait1','','','',FALSE"}
+
+/********************/
+/* PREPARE NEW DISK */
+/********************/
+    IF LOOKUP(systype,"I,G,T") > 0
+    OR (    systype = "S" 
+        AND area-id >  0 ) 
+    THEN DO:
+        DELETE FROM urnedest.
+        wz-program = "initel_" + systype.
+        {call_var.i &prg="wz-program"
+                    &param=",INPUT  diskid,
+                             INPUT  systype,
+                             INPUT  orgtype,
+                             INPUT  area,
+                             INPUT  area-id,
+                             OUTPUT wz-status"}
+        IF NOT wz-status
+        THEN LEAVE DIGNAME.
+    END.
+    ELSE wz-status = TRUE.
+    
+/********************************/
+/* GENERATE NEW PASSWORDS DISKS */
+/********************************/
+    FIND FIRST setup NO-ERROR.
+    
+    ASSIGN
+    setup.disk-id   = diskid
+    setup.sys-type  = systype
+    setup.org-type  = orgtype
+    setup.areaname  = area
+    setup.orginator = area-id
+    newname         = systype + orgtype + area + STRING(area-id,"999")
+    re-use-pwd      = (IF LOOKUP(systype,"G,T") > 0 AND area-id > 0
+                       THEN TRUE
+                       ELSE FALSE).
+    
+    {call.i &prg="initel_p" &param=",INPUT  diskid,
+                                     INPUT  newname, 
+                                     INPUT  re-use-pwd,
+                                     OUTPUT pwd"}
+    IF pwd <> ?
+    THEN DO:
+        ASSIGN
+        taalkode        = setup.lang-pc
+        setup.password  = pwd
+        setup.MAC       = "REFRESH".
+        {call.i &prg="sec_setu"}
+    
+        /*******************************************************************************/
+        /* Validate the current passwords so only this disk can and will be accepted ! */
+        /* This is only for I and G, not for M, S, T or U-records                      */
+        /*******************************************************************************/
+        IF LOOKUP(setup.sys-type,"I,G") > 0
+        THEN DO:
+            OUTPUT TO VALUE(ramdrive + "DIGEST.SIG").
+            PUT UNFORMATTED oldname SKIP
+                            newname SKIP.
+            REPEAT i = 1 TO 2:
+                FOR EACH types WHERE types.used = 1 NO-LOCK:
+                    EXPORT types.
+                END.
+            END.
+            PUT UNFORMATTED (IF re-use-pwd 
+                             THEN "" 
+                             ELSE old-password) SKIP
+                            pwd.
+            OUTPUT CLOSE.
+            call DIGEST VALUE(ramdrive + "DIGEST.SIG").
+            call C_DEL VALUE(ramdrive + "DIGEST.SIG").
+        
+            {call.i &prg="initel_v" &param=",diskid,pwd,hex-digest"}
+        END.
+    END.
+    
+END.  /* DO: */
+
+IF wz-status
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("initelect:from " + oldname + " to " + newname) 0.
+    {call.i &prg="mkconten"}
+END.
+
+HIDE ALL.
+
+ON ESC END-ERROR.
+ON F4  END-ERROR.
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

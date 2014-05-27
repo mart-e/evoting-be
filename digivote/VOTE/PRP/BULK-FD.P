@@ -1,0 +1,80 @@
+/* Filename            : BULK-FD.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-tmp-shell    AS C FORMAT "x(50)"               NO-UNDO.
+
+DEF INPUT PARAM wz-bulkload-fd  AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT PARAM wz-table        AS C FORMAT "x(15)"               NO-UNDO.
+ 
+DEF INPUT PARAM wz-importfile   AS C FORMAT "x(50)"               NO-UNDO.
+
+DEF INPUT PARAM wz-bulkload-log AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT PARAM wz-errorfile    AS C FORMAT "x(50)"               NO-UNDO.
+
+DEF INPUT PARAM wz-first-entry  AS L                              NO-UNDO.
+DEF INPUT PARAM wz-last-entry   AS L                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-message-1            AS C FORMAT "x(65)"               NO-UNDO.
+DEF VAR wz-message-2            AS C FORMAT "x(65)"               NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+OUTPUT TO VALUE(wz-bulkload-fd).
+PUT UNFORMATTED 
+    "# Database : " LDBNAME(1)                           SKIP
+    wz-table " " wz-importfile " " wz-errorfile          SKIP.
+FIND FIRST _file WHERE _file-name = wz-table NO-LOCK.
+FOR EACH _field OF _file NO-LOCK BY _order:
+    PUT UNFORMATTED "  " _field-name                     SKIP.
+END.
+PUT UNFORMATTED
+    "# end-of-file"                                      SKIP.
+OUTPUT CLOSE.
+
+IF wz-first-entry
+THEN DO:
+    {call.i &prg="mesfil" &param=",'digivote,listinv1',0,OUTPUT wz-message-1"}
+    {call.i &prg="mesfil" &param=",'general,wait',0,     OUTPUT wz-message-2"}
+    /* Create Temporary Shell File for Bulk Loader */
+    OUTPUT TO VALUE(wz-tmp-shell).
+    PUT UNFORMATTED
+    "@Echo OFF"                                          SKIP
+    "Echo " wz-message-1                                 SKIP
+    "Echo " wz-message-2                                 SKIP
+    SUBSTR(ramdrive,1,2)                                 SKIP
+    "Cd \VOTE"                                           SKIP
+    "If Exist " wz-bulkload-log " Del " wz-bulkload-log  SKIP.
+    OUTPUT CLOSE.
+END.
+
+/* Add the Bulk Load Command */
+OUTPUT TO VALUE(wz-tmp-shell) APPEND.
+PUT UNFORMATTED
+    "_ProUtil ELECT -C bulkload " wz-bulkload-fd 
+            " >> " wz-bulkload-log                       SKIP.
+           
+IF wz-last-entry
+THEN PUT UNFORMATTED
+    "_ProUtil ELECT -C idxbuild all"
+            " >> " wz-bulkload-log                       SKIP
+    "Cd \VOTE"                                           SKIP
+    "Pro ELECT -p DIGIVOTE"                              SKIP.
+
+OUTPUT CLOSE.
+
+{return.i}
+/* eof */

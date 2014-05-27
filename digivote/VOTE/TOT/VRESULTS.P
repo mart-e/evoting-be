@@ -1,0 +1,241 @@
+/* Filename            : VCONTENTS.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-results-file  AS C FORMAT "x(45)"             NO-UNDO.
+DEF OUTPUT PARAM wz-cardcount     AS I                            NO-UNDO.
+DEF OUTPUT PARAM wz-status        AS L INIT FALSE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES from FILE                                    */
+/*                                                                      */
+/************************************************************************/
+{vcontents.i}
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-words         AS C FORMAT "x(78)" EXTENT 19            NO-UNDO.
+
+DEF VAR wz-diskname      AS C EXTENT 3                            NO-UNDO.
+DEF VAR wz-date          AS C FORMAT "x(10)"                      NO-UNDO.
+
+DEF VAR wz-mode-degradee AS L INIT FALSE                          NO-UNDO.
+DEF VAR wz-names         AS L INIT FALSE EXTENT 3                 NO-UNDO.
+DEF VAR wz-e-date        AS L INIT FALSE                          NO-UNDO.
+
+DEF VAR expected_records AS I                                     NO-UNDO.
+DEF VAR records_in_file  AS I                                     NO-UNDO.
+
+DEF VAR wz-type-file     AS I                                     NO-UNDO.
+DEF VAR wz-sys-type      AS C                                     NO-UNDO.
+DEF VAR wz-orginator     AS I                                     NO-UNDO.
+
+DEF VAR i                AS I                                     NO-UNDO.
+DEF VAR wz-index         AS I                                     NO-UNDO.
+DEF VAR wz-remainder     AS I                                     NO-UNDO.
+DEF VAR no-counter       AS I                                     NO-UNDO.
+DEF VAR wz-total-counter AS I                                     NO-UNDO.
+DEF VAR wz-counter       AS I EXTENT 16                           NO-UNDO.
+
+DEF VAR wz-el-type       AS C FORMAT "x(16)"                      NO-UNDO.
+DEF VAR wz-el-mode       AS I                                     NO-UNDO.
+DEF VAR wz-totlvls       AS I                                     NO-UNDO.
+
+DEF VAR wz-curr-el-type  AS C FORMAT "x(16)"                      NO-UNDO.
+DEF VAR wz-curr-el-mode  AS I                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-diskname      = ""
+wz-mode-degradee = FALSE
+wz-names[1]      = FALSE
+wz-names[2]      = FALSE
+wz-names[3]      = FALSE
+wz-e-date        = FALSE
+wz-counter       = -1.
+
+Check-Block:
+REPEAT:
+    INPUT FROM VALUE(wz-results-file) NO-ECHO.
+    REPEAT:
+        wz-words = "".
+        SET wz-words.
+        
+        IF wz-words[1] = "A"
+        THEN DO:
+            IF      wz-words[2] = "0"
+            THEN DO:
+                wz-mode-degradee = (IF wz-words[3] BEGINS "X"
+                                    THEN TRUE
+                                    ELSE FALSE).
+                IF NOT wz-mode-degradee
+                THEN DO:
+                    wz-total-counter = INT(wz-words[3]).
+                    DO i = 1 TO 16 : /* Fill counter variabel*/
+                        wz-counter[i] = INT(wz-words[i + 3]).
+                    END.
+                END.
+            END.
+            ELSE IF wz-words[2] = "1"
+            THEN ASSIGN
+                 wz-diskname[1] = wz-words[3]
+                                + (IF LENGTH(wz-words[4]) > 0 THEN " " + wz-words[4] ELSE "")
+                 wz-names[1]    = (wz-diskname[1] = vc-creator).
+            ELSE IF wz-words[2] = "2"
+            THEN ASSIGN
+                 wz-diskname[2] = wz-words[3]
+                                + (IF LENGTH(wz-words[4]) > 0 THEN " " + wz-words[4] ELSE "")
+                 wz-names[2]    = (wz-diskname[2] = vc-originator)
+                 wz-diskname[2] = wz-words[3].
+            ELSE IF LOOKUP(wz-words[2],"3,4,5") > 0
+            THEN wz-diskname[3] = wz-diskname[3]
+                                + (IF LENGTH(wz-words[4]) > 0 THEN " " + wz-words[4] ELSE "")
+                                + (IF LENGTH(wz-diskname[3]) > 0 THEN "," ELSE "")
+                                + wz-words[3].
+            ELSE IF wz-words[2] = "9"
+            THEN ASSIGN
+                 wz-e-date      = (wz-words[3] = STRING(verkdat))
+                 wz-date        = wz-words[3].
+        END.        
+        IF  wz-words[1] = "A" 
+        AND wz-words[2] = "9" 
+        THEN LEAVE.
+    END.
+    INPUT CLOSE.
+    
+    /* Check if ALL totalisations are there */
+    wz-names[3] = (wz-diskname[3] = vc-destinators).
+     
+    IF wz-mode-degradee
+    OR NOT wz-names[1]
+    OR NOT wz-names[2]
+    OR NOT wz-names[3]
+    OR NOT wz-e-date
+    THEN DO:
+        IF wz-mode-degradee
+        THEN call ADDTOLOG PROGRAM-NAME(1) "MODE DEGRADEE" 1.
+        IF NOT wz-names[1]
+        THEN call ADDTOLOG PROGRAM-NAME(1) 
+                  VALUE("1) " + wz-diskname[1] + " <> " + vc-creator) 1.
+        IF NOT wz-names[2]
+        THEN call ADDTOLOG PROGRAM-NAME(1) 
+                  VALUE("2) " + wz-diskname[2] + " <> " + vc-originator) 1.
+        IF NOT wz-names[3]
+        THEN call ADDTOLOG PROGRAM-NAME(1) 
+                  VALUE("3) " + wz-diskname[3] + " <> " + vc-destinators) 1.
+        IF NOT wz-e-date
+        THEN call ADDTOLOG PROGRAM-NAME(1)
+                  VALUE(wz-date + " <> " + STRING(verkdat)) 1.
+                   
+        {call.i &prg="disfram" 
+                &param=",'trdurnma,err_dat1','trdurnma,err_dat2',
+                         (IF wz-mode-degradee THEN 'trdurnma,err_dat3' ELSE ''),
+                         (IF wz-mode-degradee THEN 'trdurnma,err_dat3' 
+                                              ELSE 'trdurnma,err_dst1'),TRUE"}
+        LEAVE Check-Block.
+    END.    
+    
+    /* check number of records/line in result file with expected size from database */
+    {call.i &prg="getbsize" &param=", INPUT  wz-results-file, 
+                                      OUTPUT records_in_file "}
+    ASSIGN
+    wz-sys-type  = SUBSTR(vc-originator,1,1)
+    wz-orginator = INT(SUBSTR(vc-originator,LENGTH(vc-originator) - 2,3))
+    wz-type-file = (IF      wz-sys-type = 'U'                      THEN 1 
+                    ELSE IF wz-sys-type = 'T' AND wz-orginator > 0 THEN 2
+                    ELSE IF wz-sys-type = 'T' AND wz-orginator = 0 THEN 3
+                    ELSE                                                0).
+    IF wz-type-file = 0
+    THEN expected_records = -1.
+    ELSE DO:
+        {call.i &prg="chkbsize" &param=", INPUT wz-type-file,
+                                          INPUT NUM-ENTRIES(vc-destinators),
+                                          OUTPUT expected_records"}
+    END.
+    IF records_in_file <> expected_records
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) 
+               VALUE(wz-results-file + "->records_in_file  : " 
+                                     + STRING(records_in_file)) 1.
+        call ADDTOLOG PROGRAM-NAME(1) 
+               VALUE(wz-results-file + "->expected_records : " 
+                                     + STRING(expected_records)) 1.
+        IF PROGRAM-NAME(2) BEGINS "toturne"
+        THEN DO:
+            {call.i &prg="interror" &param=",'trdresul,mes01','internal,errmsg','(B001)'"}
+        END.
+        LEAVE Check-Block.
+    END.
+
+    /* Check consistency of file contents (votes) */
+    {call.i &prg="chkvotes" &param=",INPUT wz-results-file,
+                                     INPUT (IF wz-type-file = 3
+                                            THEN FALSE
+                                            ELSE TRUE),
+                                     OUTPUT wz-status"}
+    IF NOT wz-status
+    THEN DO:
+        IF PROGRAM-NAME(2) BEGINS "toturne"
+        THEN DO:
+            /* De gegevens op deze diskette zijn niet consistent */
+            {call.i &prg="interror" &param=",'trdresul,mes01','internal,errmsg','trdurnma,err_dat1'"}
+        END.
+        LEAVE Check-Block.
+    END.
+    
+    {call.i &prg="elecmode" &param=",INPUT  FALSE,
+                                     OUTPUT wz-el-type,
+                                     OUTPUT wz-el-mode,
+                                     OUTPUT wz-totlvls"}
+    IF wz-el-mode = 1 
+    OR wz-totlvls = 1
+    THEN wz-cardcount = wz-total-counter.
+    ELSE DO:
+        wz-curr-el-type = FILL( "F", 16).
+        FIND FIRST setup NO-LOCK NO-ERROR.
+        FIND FIRST election WHERE election.s-id     = verkdat
+                              AND election.org-type = setup.org-type
+                          NO-LOCK NO-ERROR.
+        ASSIGN
+        wz-index        = 1
+        wz-curr-el-mode = election.el-mode.
+        REPEAT WHILE wz-curr-el-mode > 0:
+            wz-remainder = wz-curr-el-mode MODULO 2.
+            IF wz-remainder = 1
+            THEN SUBSTRING( wz-curr-el-type, wz-index, 1) = "T".
+            ASSIGN
+            wz-index        = wz-index + 1
+            wz-curr-el-mode = ( wz-curr-el-mode - wz-remainder ) / 2.
+        END.
+        ASSIGN
+        no-counter   = 0
+        wz-cardcount = 0.
+        DO wz-index = 1 TO 16:
+            IF SUBSTR(wz-el-type,wz-index,1) = "T"
+            THEN no-counter = no-counter + 1.
+            IF SUBSTR(wz-curr-el-type,wz-index,1) = "T"
+            THEN wz-cardcount = wz-cardcount + wz-counter[no-counter].
+        END.
+    END.
+
+    /* File seems to be OK ! */
+    wz-status = TRUE.
+    LEAVE Check-Block.
+END.
+
+{return.i}
+/* eof */

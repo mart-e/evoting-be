@@ -1,0 +1,68 @@
+/*@function sec=1*/
+/* Filename            : DISKCHK.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-floppy           AS C FORMAT "x(1)"           NO-UNDO.
+DEF INPUT  PARAM disklabel           AS C FORMAT "x(11)"          NO-UNDO.
+DEF INPUT  PARAM wz-bureau           AS C FORMAT "x(65)"          NO-UNDO.
+
+DEF OUTPUT PARAM wz-status           AS I                         NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-result-file      AS C FORMAT "x(45)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/* Message  'Kopi‰ren van de bestanden , even geduld' */
+{call.i &prg="disfram" &param=",'digivote,indmchk1','',
+                                ',' + wz-bureau,
+                                ',' + wz-floppy + ':' + disklabel,FALSE"}
+PAUSE 0 NO-MESSAGE.
+
+ASSIGN
+wz-status      = -1
+wz-result-file = ramdrive + "RAREAD.RES".
+
+call C_DEL VALUE(wz-result-file).
+DOS SILENT "\DOS\RAREAD.EXE" VALUE( "-d " + wz-floppy + " -n -r " + wz-result-file).
+call C_TSTFN VALUE(wz-result-file).
+IF fileok = 0
+THEN DO:
+    fileok = -1.
+    call ADDTOLOG PROGRAM-NAME(1) "RAREAD did not execute !" 0.
+    {call.i &prg="interror" 
+            &param=",'digivote,copbes10','internal,errmsg',
+                     wz-floppy + ': (RD_IMA)'"}
+END.
+ELSE DO:
+    INPUT FROM VALUE(wz-result-file) NO-ECHO.
+    SET wz-status.
+    INPUT CLOSE.
+    call C_DEL VALUE(wz-result-file).
+       
+    call ADDTOLOG PROGRAM-NAME(1) VALUE( "RaRead: " + STRING(wz-status)) 
+                                  VALUE(IF wz-status = 0 THEN 0 ELSE 2).
+    IF wz-status <> 0
+    THEN DO:
+        {call.i &prg="interror" 
+                &param=",'digivote,indmchk1','internal,errmsg',
+                         wz-floppy + ': (RD_IMA' + STRING(wz-status) + ')'"}
+    END.
+END.
+
+{return.i}
+/* eof */

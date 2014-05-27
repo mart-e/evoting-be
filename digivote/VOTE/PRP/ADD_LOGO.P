@@ -1,0 +1,262 @@
+/* Filename            : PARTLOGO.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-partyrecid AS RECID                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR dirlist AS CHARACTER FORMAT "x(25)".
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-exefile    AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-file       AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-datafile   AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-resultfile AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-importfile AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-title      AS C FORMAT "x(68)"                        NO-UNDO.
+DEF VAR wz-messages   AS C FORMAT "x(70)" EXTENT 8               NO-UNDO.
+DEF VAR msg_items     AS C FORMAT "x(8)"  INIT "FFFFFFFF"        NO-UNDO.
+DEF VAR wz-index      AS I                                       NO-UNDO.
+DEF VAR wz-remainder  AS I                                       NO-UNDO.
+DEF VAR wz-tot-msgs   AS I                                       NO-UNDO.
+
+DEF VAR wz-import     AS C FORMAT "x(70)" EXTENT 3               NO-UNDO.
+DEF VAR wz-stat-logo  AS I                                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmlprtge.i}            /* Shared frame PMLPRTGE                        */
+{pmgeneka.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgeneme.i}            /* Shared frame voor PRP-systeem general menu   */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    wz-messages[1] AT 2 SPACE(1)
+    wz-messages[2] AT 2 SPACE(1)
+    wz-messages[3] AT 2 SPACE(1)
+    wz-messages[4] AT 2 SPACE(1)
+    wz-messages[5] AT 2 SPACE(1)
+    wz-messages[6] AT 2 SPACE(1) SKIP(1)
+    wz-messages[7] AT 2
+        WITH FRAME logo_status
+        OVERLAY CENTERED
+        NO-LABELS
+        ROW 7
+        TITLE wz-title.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+ASSIGN
+wz-exefile    = (IF SEARCH(ramdrive + "VOTE\RUN\PARTLOGO.EXE") = ?
+                 THEN "\"
+                 ELSE ramdrive)
+              + "VOTE\RUN\PARTLOGO.EXE"
+wz-datafile   = ramdrive + "PARTLOGO.DAT"
+wz-resultfile = ramdrive + "PARTLOGO.RES"
+wz-importfile = ramdrive + "NEW_LOGO.DAT".
+
+FIND FIRST party WHERE RECID( party) = wz-partyrecid NO-LOCK.
+
+start:
+    DO:
+        STATUS INPUT OFF.
+        {call.i &prg="dirlist" 
+                &param=",'A:\*.BMP,B:\*.BMP,C:\VOTE\FILES\*.BMP',
+                         'partlogo,tit_dir',  'partlogo,no_logo',
+                         'partlogo,tit_logo', 'partlogo,logohulp'"}
+        VIEW FRAME pmlprtge.
+        PAUSE 0 NO-MESSAGE.
+        {PARTHEAD.I}
+        IF dirlist = "" 
+        THEN DO:
+            {return.i}
+        END.
+        wz-file = dirlist.
+
+        IF SEARCH(wz-file) = ?
+        THEN DO ON ENDKEY UNDO, LEAVE:
+            /* message "Bestand niet gevonden. Probeer opnieuw.". */
+            HIDE MESSAGE NO-PAUSE.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("File not found (" + wz-file + ")") 2.
+            {call.i &prg="dispmes" &param=",'partload,errmes01',0"}
+            UNDO, RETRY.
+        END.
+
+        {call.i &prg="mesfil" &param=",'partlogo,acceptto', 0,OUTPUT wz-messages[1]"}
+        {call.i &prg="mesfil" &param=",'pmlprtin,mes01',    0,OUTPUT wz-messages[2]"}
+        {call.i &prg="mesfil" &param=",'pmlprtin,mes02',    0,OUTPUT wz-messages[3]"}
+        {call.i &prg="mesfil" &param=",'partlogo,accept',   0,OUTPUT wz-messages[4]"}
+        {call.i &prg="mesfil" &param=",'general,cancel',    0,OUTPUT wz-messages[5]"}
+
+        OUTPUT TO VALUE(wz-datafile).
+        PUT UNFORMATTED "A~tBMP~t" wz-file       SKIP
+                        "A~tTXT~t" wz-importfile SKIP
+                        "B~t" wz-messages[1]     SKIP
+                        "C~t" wz-messages[2]     SKIP
+                        "D~t" party.p-id         SKIP
+                        "E~t" wz-messages[3]     SKIP
+                        "F~t" party.party_name   SKIP
+                        "G~t" wz-messages[4]     SKIP
+                        "H~t" wz-messages[5].
+        OUTPUT CLOSE.
+
+        HIDE FRAME pmlprtge NO-PAUSE.
+        HIDE FRAME pmgeneka NO-PAUSE.
+        HIDE FRAME pmgenein NO-PAUSE.
+        HIDE FRAME pmgeneme NO-PAUSE.
+
+        CALL C_DEL VALUE(wz-importfile).
+        CALL C_DEL VALUE(wz-resultfile).
+        DOS SILENT VALUE(wz-exefile).
+        CALL C_DEL VALUE(wz-datafile).
+
+        PUT CURSOR OFF.
+        ASSIGN
+        partnum = 0
+        partnam = "".
+        VIEW FRAME pmgeneka.
+        PAUSE 0 NO-MESSAGE.
+        DISPLAY verkben partnum partnam WITH FRAME pmgenein.
+        PAUSE 0 NO-MESSAGE.
+        VIEW FRAME pmgeneme.
+        PAUSE 0 NO-MESSAGE.
+        VIEW FRAME pmlprtge.
+        PAUSE 0 NO-MESSAGE.
+        {call.i &prg="putvinfo"}
+        {PARTHEAD.I}
+
+        /************************************/
+        /* Prevent PROGRESS error messaging */
+        /* ==> Write fflush failed          */
+        /* ==> Insufficiant disk space      */
+        /************************************/
+        call C_DFREE VALUE(SUBSTR(ramdrive,1,1)).
+        call C_FSIZE VALUE(wz-importfile).
+        IF filesize * 100 > diskfree
+        THEN DO:
+            CALL C_DEL VALUE(wz-resultfile).
+            CALL C_DEL VALUE(wz-importfile).
+        
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("FileSize     : " + STRING(filesize))       1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Needed space : " + STRING(filesize * 100)) 1.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("DiskFree     : " + STRING(diskfree))       1.
+            {call.i &prg="interror" &param=",'edit_epc,menu_128','internal,errmsg','>> ! QUIT ! <<'"}
+            menleav = 9.
+            {return.i}
+        END.
+        
+        IF SEARCH(wz-resultfile) = ?
+        THEN DO:
+            {call.i &prg="interror" &param=",'edit_epc,menu_128','internal,errmsg',''"}
+        END.
+        ELSE DO:
+            INPUT FROM VALUE(wz-resultfile) NO-ECHO.
+            SET wz-import.
+            INPUT CLOSE.
+            CALL C_DEL VALUE(wz-resultfile).
+
+            wz-stat-logo = INTEGER(wz-import[2]).
+            IF      wz-import[1] = "A"
+            THEN DO:
+                IF wz-stat-logo = 1
+                THEN DO:
+                    {call.i &prg="imp_logo" &param=", RECID( party), wz-importfile, wz-file"}
+                END.
+            END.
+            ELSE IF wz-import[1] = "E"
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("Logo " + wz-file + " returned error " + STRING(wz-stat-logo) +
+                             " for list " + STRING(party.p-id,"99")
+                                    + " " + party.party_name + " !") 2.
+                IF LENGTH(wz-import[3]) > 0
+                THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-import[3]) 2.
+
+                IF wz-stat-logo > 0
+                THEN DO:
+                    wz-index = 1.
+                    REPEAT WHILE wz-stat-logo > 0:
+                        ASSIGN
+                        wz-remainder = wz-stat-logo MODULO 2.
+                        IF wz-remainder = 1
+                        THEN SUBSTRING( msg_items, wz-index, 1) = "T".
+                        ASSIGN
+                        wz-index     = wz-index + 1
+                        wz-stat-logo = ( wz-stat-logo - wz-remainder ) / 2.
+                    END.
+                    wz-tot-msgs = 0.
+                    REPEAT wz-index = 1 TO 8:
+                        IF SUBSTRING( msg_items, wz-index, 1) = "T"
+                        THEN DO:
+                            wz-tot-msgs = wz-tot-msgs + 1.
+                            {call.i &prg="mesfil" &param=", 'partlogo,err_bit' + STRING(wz-index), 70,
+                                        OUTPUT wz-messages[wz-tot-msgs]"}
+                        END.
+                    END.
+                    REPEAT wz-index = wz-tot-msgs + 1 TO 8:
+                        wz-messages[wz-index] = "".
+                    END.
+                    {call.i &prg="mesfil" &param=", 'partlogo,errtitle', 40, OUTPUT wz-title"}
+                    {call.i &prg="mesfil" &param=", 'general,keypress',   0, OUTPUT wz-messages[7]"}
+                    wz-title = wz-title + "  (" + wz-file + ")".
+                    DISPLAY wz-messages
+                        WITH FRAME logo_status.
+                    REPEAT:
+                        PAUSE NO-MESSAGE.
+                        LEAVE.
+                    END.
+                    HIDE FRAME logo_status NO-PAUSE.
+                    PAUSE 0 NO-MESSAGE.
+                    VIEW FRAME pmlprtge.
+                    {PARTHEAD.I}
+                END.
+                ELSE DO:
+                    {call.i &prg="mesfil" &param=",'partlogo,err_' +  STRING(0 - wz-stat-logo,'99'),78,
+                                OUTPUT wz-messages[1]"}
+                    HIDE MESSAGE NO-PAUSE.
+                    MESSAGE wz-messages[1].
+                    {call.i &prg="stathelp" &param=",FALSE"}
+                END.
+            END.
+        END.
+    END. /* start */
+    CALL C_DEL VALUE(wz-resultfile).
+    CALL C_DEL VALUE(wz-importfile).
+
+{return.i}
+/* eof */

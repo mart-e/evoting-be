@@ -1,0 +1,299 @@
+/* Filename            : TOTONTV.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   TOTONTV.P  $</workFile>
+<revision>$Revision: 1.10 $</revision>
+<workFileTimeStamp>$Modtime:   Feb 24 2004 09:05:56  $</workFileTimeStamp>
+
+<archive>$Archive:   C:/PVCS VM/v6.8.00/DIGIVOTE/Archives/VOTE/TOT/TOTONTV.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2005/09/15 09:22:16 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM recid_urnedest AS RECID                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}         /* De variabelen voor het kleuren van de schermen  */
+{selvar.i}           /* De variabelen voor de selection record          */
+{disfram.i}          /* Variabelen voor display frame disframe          */
+{typvar.i  "NEW"}
+{printer.i "SHARED"} /* Variabelen om printerbestanden te beheren       */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR mes01                AS C FORMAT "x(65)"                  NO-UNDO.
+DEF VAR language             AS C FORMAT "x(12)" EXTENT  3        NO-UNDO.
+DEF VAR MeerdereColleges     AS L                                 NO-UNDO.
+DEF VAR i                    AS I                                 NO-UNDO.
+DEF VAR Firstbureau          AS I                                 NO-UNDO.
+DEF VAR Lastbureau           AS I                                 NO-UNDO.
+
+DEF VAR wz-total-cards       AS I                                 NO-UNDO.
+DEF VAR wz-count-card        AS I EXTENT 16                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS                                                   */
+/*                                                                      */
+/************************************************************************/
+
+FORM
+    "" AT 2 SKIP
+    mes01 AT 2 SPACE(2)
+    "" AT 2 SKIP
+    "" AT 2 SKIP
+    language[1] AT 27
+    language[2] AT 27
+    language[3] AT 27
+    "" AT 2 SKIP
+    WITH FRAME digvotta NO-LABELS CENTERED OVERLAY ROW 8.
+
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/* Het ontvangstbewijs na het inlezen van de diskette wordt steeds */
+/* naar de printer gestuurd                                        */
+
+HIDE FRAME disframe NO-PAUSE.
+FIND FIRST setup NO-LOCK.
+{call.i &prg="disfram" 
+        &param=",'digivote,onbrief1','','','',FALSE"}
+PAUSE 2 NO-MESSAGE.
+
+wz-doc-lang = 0.
+FIND FIRST selection NO-LOCK.
+FIND FIRST session WHERE session.s-id = selection.s-id NO-LOCK.
+IF      session.lang2 = 3
+THEN DO:
+    HIDE FRAME disframe NO-PAUSE.
+    {call.i &prg="mesfil" &param=",'digvotta,taalkeus',40,OUTPUT mes01"}
+    language[1] = "Nederlands".
+    language[2] = "fran‡ais".
+    REPEAT ON ENDKEY UNDO, RETRY WITH FRAME digvotta :
+        HIDE MESSAGE.
+        DISPLAY mes01.
+        DISPLAY language[1] language[2].
+        {call.i &prg="discolme" &param=",'general,fkey05', 0"}
+        CHOOSE FIELD language[1] language[2]
+               COLOR VALUE(menu_bg)
+               GO-ON ("F4" "ESC")
+               AUTO-RETURN.
+        IF KEYFUNCTION(LASTKEY) = "END-ERROR"
+        OR KEYLABEL(LASTKEY)    = "ESC"
+        THEN DO:
+            wz-doc-lang = -1. /* End situation */
+            LEAVE.
+        END.
+        wz-doc-lang = IF FRAME-INDEX = 1
+                      THEN 1
+                      ELSE 2.
+        LEAVE.
+    END.
+    HIDE FRAME digvotta NO-PAUSE.
+END.
+ELSE IF session.lang2 = 4
+THEN DO:
+    HIDE FRAME disframe NO-PAUSE.
+    {call.i &prg="mesfil" &param=",'digvotta,taalkeus',40,OUTPUT mes01"}
+    language[2] = "fran‡ais".
+    language[3] = "Deutsch".
+    REPEAT ON ENDKEY UNDO, RETRY WITH FRAME digvotta :
+        HIDE MESSAGE.
+        DISPLAY mes01.
+        DISPLAY language[2] language[3].
+        {call.i &prg="discolme" &param=",'general,fkey05', 0"}
+        CHOOSE FIELD language[1] language[2]
+               COLOR VALUE(menu_bg)
+               GO-ON ("F4" "ESC")
+               AUTO-RETURN.
+        IF KEYFUNCTION(LASTKEY) = "END-ERROR"
+        OR KEYLABEL(LASTKEY)    = "ESC"
+        THEN DO:
+            wz-doc-lang = -1. /* End situation */
+            LEAVE.
+        END.
+        wz-doc-lang = IF FRAME-INDEX = 1
+                      THEN 2
+                      ELSE 3.
+        LEAVE.
+    END.
+    HIDE FRAME digvotta NO-PAUSE.
+END.
+
+/* Taalkode voor afdruk bepalen als nog niet bekend door keuze hierboven */
+IF      wz-doc-lang = 0
+THEN DO:
+    wz-doc-lang = IF      session.lang2 = 0   THEN 1 /* Nederlands */
+                  ELSE IF session.lang2 = 1   THEN 2 /* Frans      */
+                  ELSE IF session.lang2 = 2   THEN 3 /* Duits      */
+                  ELSE 1. /* Om toch een taal te hebben, maar kan normaal niet */
+END.
+/* QUIT if F4 has been pressed when asking for language */
+ELSE IF wz-doc-lang = -1
+THEN RETURN.
+
+/* Multicollege check + opvullen election titles */
+MeerdereColleges = FALSE.
+FOR EACH election NO-LOCK
+    WHERE election.s-id = verkdat
+    BREAK BY election.et-id:
+
+    IF FIRST-OF(election.et-id) <> LAST-OF(election.et-id)
+    THEN MeerdereColleges = TRUE.
+END. /* FOR EACH election */
+
+/* Find FIRST and LAST bureau */
+STATUS INPUT OFF.
+PAUSE 0 NO-MESSAGE.
+FOR EACH urnedest, EACH organigram OF urnedest NO-LOCK
+    BREAK BY organigram.orginator:
+
+    IF FIRST( organigram.orginator) THEN Firstbureau = organigram.orginator.
+    IF LAST(  organigram.orginator) THEN Lastbureau  = organigram.orginator.
+END.
+
+FIND FIRST urnedest WHERE RECID(urnedest) = recid_urnedest NO-LOCK NO-ERROR.
+FIND FIRST organigram OF urnedest NO-LOCK NO-ERROR.
+
+call CRYPDEC PRPTOT urnedest.total-cards 1.
+IF crypStat <> 0 
+THEN DO:
+    {return.i}
+END.
+wz-total-cards = INT(result4).
+DO i= 1 TO 16:
+    call CRYPDEC PRPTOT urnedest.count-card[i] 1.
+    IF crypStat <> 0 
+    THEN DO:
+        {return.i}
+    END.
+    wz-count-card[i] = INT(result4).
+END.
+
+/* Pre-fill needed query-fields for 'usage'                             */
+ASSIGN wz-doc-type = 4              /* Ontvangstbewijs TOT              */
+       wz-setup-id = setup.setup-id /* Relation to MAMA                 */
+       wz-et-combi = TRUE.          /* Only documents for all elections */
+
+/* Assemble ET-IDs */
+ASSIGN wz-et-ids = "".
+
+FOR EACH election NO-LOCK
+   WHERE election.s-id = verkdat 
+     AND election.e-pr = TRUE
+      BY election.et-id:
+
+    IF LOOKUP( STRING( election.et-id), wz-et-ids) = 0 
+    THEN DO:
+       /* election id's must be unique in assembled target */
+
+       IF LENGTH( wz-et-ids) > 0 
+       THEN ASSIGN wz-et-ids = wz-et-ids + ",".
+       ASSIGN wz-et-ids = wz-et-ids + STRING( election.et-id).
+    END.
+END.
+
+FIND FIRST election WHERE election.s-id = verkdat
+                      AND election.e-pr = TRUE
+                    NO-LOCK.
+
+{call.i &prg="getusage"}
+IF wz-doc-id = -1
+THEN DO:
+    {return.i}
+END.
+
+FIND FIRST layout WHERE layout.doc-id   = wz-doc-id
+                    AND layout.sect-nbr = 0
+                    AND layout.page-nbr = 0
+                    AND layout.line-nbr = 0
+                  NO-LOCK NO-ERROR.
+IF AVAILABLE layout
+THEN PagHeader = SUBSTRING(AllSpaces, 1, 75 - LENGTH(layout.contents)) +
+                 layout.contents.
+ELSE PagHeader = "".
+{BEGPRT.I "Y" 84 12}
+REPEAT  i = 1 TO 2:     /* Everything in double */
+    ASSIGN wz-page-nbr = 0
+           wz-line-nbr = 0.
+    FOR EACH layout WHERE layout.doc-id   = wz-doc-id
+                      AND layout.sect-nbr = 1
+                    NO-LOCK:
+        wz-lijn = layout.contents.
+        {PAGEBRK.I}
+        {LBLCONV.I 11}
+        LBLCONV12:
+        REPEAT WHILE INDEX(wz-lijn,"@F") > 0 :
+            ASSIGN
+            wz-convto   = ""
+            wz-startpos = INDEX(wz-lijn,"@F")
+            wz-label    = SUBSTR(wz-lijn,wz-startpos + 2,2)
+            wz-resvpos  = INTEGER(SUBSTR(wz-lijn,wz-startpos + 5,2)).
+
+            ASSIGN
+            wz-convto =
+                IF      wz-label = "01" /* Firstbureau */
+                THEN STRING(Firstbureau)
+                ELSE IF wz-label = "02" /* Lastbureau */
+                THEN STRING(Lastbureau)
+                ELSE IF wz-label = "03" /* Bureau-id */
+                THEN STRING(organigram.orginator)
+                ELSE IF wz-label = "04" /* Registratietijd diskette */
+                THEN STRING(urnedest.time-rcv)
+                ELSE IF wz-label = "05" /* Totalisatiesysteem */
+                THEN STRING(setup.orginator)
+                ELSE IF wz-label = "50" /* College informatie */
+                THEN STRING(IF election.colls
+                            THEN ( IF wz-doc-lang = 2
+                                   THEN election.head0[wz-doc-lang] + " " +
+                                        election.coll_name[wz-doc-lang]
+                                   ELSE election.coll_name[wz-doc-lang] + " " +
+                                        election.head0[wz-doc-lang]             )
+                            ELSE "","x(45)")
+                ELSE IF wz-label = "52" /* Heading2 informatie */
+                THEN STRING(( IF election.heading2[wz-doc-lang] = ""
+                              THEN ""
+                              ELSE election.head2[wz-doc-lang] + " : ") +
+                            election.heading2[wz-doc-lang],"x(45)")
+                ELSE IF wz-label = "53" /* Heading3 informatie */
+                THEN STRING(election.head3[wz-doc-lang] + " : " +
+                            election.heading3[wz-doc-lang],"x(45)")
+                ELSE IF wz-label = "80" /* Geregistreerde kaarten */
+/*@source sec=1*/
+                THEN STRING(wz-total-cards,"Z,ZZZ,ZZ9")
+                ELSE IF LOOKUP(wz-label,
+                     "81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,96") > 0
+                THEN STRING(wz-count-card[INT(wz-label) - 80],"Z,ZZZ,ZZ9")
+/*@source sec=0*/
+                ELSE "N/A".
+            {REPLLBL.I}
+        END. /* REPEAT while index - LBLCONV12 */
+        {LINEPRT.I 1}
+    END. /* FOR EACH layout */
+    {PAGPRT.I}
+END. /* 1 TO 2 exemplaren */
+{ENDPRT.I}
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

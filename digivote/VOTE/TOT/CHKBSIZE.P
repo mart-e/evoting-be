@@ -1,0 +1,149 @@
+/************************************************************************/
+/*                                                                      */
+/* Filename            : CHKBSIZE.P                                     */
+/*                                                                      */
+/* Calculate expected size (nbr of records) of a file                   */
+/*                                                                      */
+/************************************************************************/
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+/* --------------------------------- */
+/* typeFile =  1 : B001 from U-disk  */
+/*             2 : B001 from T > 000 */
+/*             3 : B011              */
+/* --------------------------------- */
+DEF INPUT PARAM typeFile          AS I                            NO-UNDO.
+DEF INPUT PARAM addRecords        AS I                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        OUTPUT PARAMETERS                                             */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAM records          AS I                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES from FILE                                    */
+/*                                                                      */
+/************************************************************************/
+{vcontents.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-org-types     AS C                                     NO-UNDO.
+DEF VAR wz-disk-ids      AS C                                     NO-UNDO.
+DEF VAR wz-area          AS C                                     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+records = -1.
+
+/************************************************************************/
+/* Results from U-disk (B001)                                           */
+/************************************************************************/
+IF      typeFile = 1  
+THEN DO:
+    ASSIGN
+    records = 7 + addRecords /* A-records + additional records */
+    wz-org-types = ""
+    wz-disk-ids  = ""
+    wz-area = SUBSTR(vc-originator,3,LENGTH(vc-originator) - 5).
+    FOR EACH election NO-LOCK:
+        wz-org-types = wz-org-types
+                     + (IF LENGTH(wz-org-types) = 0 THEN "" ELSE ",")
+                     + election.org-type.
+    END.
+    FOR EACH organisation NO-LOCK WHERE LOOKUP(organisation.org-type,wz-org-types) > 0
+                                    AND (   organisation.area[1] = wz-area
+                                         OR organisation.area[2] = wz-area
+                                         OR organisation.area[3] = wz-area)
+                                  BREAK BY organisation.org-type:
+        IF FIRST-OF(organisation.org-type)
+        THEN DO:
+            FIND FIRST organigram WHERE organigram.sys-type = "I"
+                                    AND organigram.org-type = organisation.org-type
+                                    AND organigram.area[1]  = organisation.ingave[1]
+                                NO-LOCK NO-ERROR.
+            IF AVAILABLE organigram
+            THEN records = records + organigram.children.
+        END.
+    END.
+    /* Count only elections where organisation-records exists */
+    FOR EACH election NO-LOCK BREAK BY et-id:
+        /* only 1 record per type election */
+        IF FIRST-OF(et-id) 
+        THEN DO:
+            FIND FIRST organisation WHERE     organisation.org-type = election.org-type
+                                      AND (   organisation.area[1]  = wz-area
+                                           OR organisation.area[2]  = wz-area
+                                           OR organisation.area[3]  = wz-area)
+                                  NO-LOCK NO-ERROR.
+            IF AVAILABLE organisation
+            THEN records = records + 1.
+        END.
+    END.
+END.
+
+/************************************************************************/
+/* Results from T-disk > 000 (B001)                                     */
+/************************************************************************/
+ELSE IF typeFile = 2  
+THEN DO:
+    records = 6. /* 1 Comment line and 5 A-records */
+    FOR EACH election NO-LOCK WHERE election.e-pr = TRUE 
+                              BREAK BY election.et-id:
+        /* add 1 record per party + 1 additional for blanco votes */
+        IF FIRST-OF(election.et-id)
+        THEN records = records + 2.
+        records = records + election.num_parts.
+        FOR EACH party WHERE party.s-id = election.s-id
+                         AND party.e-id = election.e-id
+                         AND party.p-id > 0
+                     NO-LOCK:   
+            records = records + party.num_can + party.num_sup.
+        END.
+    END.
+END.
+
+/************************************************************************/
+/* Results exported from T000 (B011)                                    */
+/************************************************************************/
+ELSE IF typeFile = 3  
+THEN DO:
+    records = 32. /* 11 A-records and 21 comment lines */
+    FOR EACH election NO-LOCK BREAK BY et-id:
+        /* only 1 record per type election and 1 per college */
+        records = records + (IF FIRST-OF(election.et-id) 
+                             THEN 2
+                             ELSE 1).
+        /* add 2 record per party + 2 additional for blanco votes */
+        /* 2 blocks of info : names & results */
+        records = records + (election.num_parts * 2) 
+                          + (IF FIRST-OF(election.et-id)
+                             THEN 2
+                             ELSE 0).
+        FOR EACH party WHERE party.s-id = election.s-id
+                         AND party.e-id = election.e-id
+                         AND party.p-id > 0
+                     NO-LOCK:   
+            records = records + (party.num_can * 2)
+                              + (party.num_sup * 2).
+        END.
+    END.
+END.
+
+{return.i}
+/* eof */

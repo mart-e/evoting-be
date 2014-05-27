@@ -1,0 +1,25 @@
+/* Filename            : SEC_SESS.P                                     */
+
+{chklevel.i 1}
+
+/****************************************************************/
+/*                                                              */
+/*  LOCAL VARIABLES                                             */
+/*                                                              */
+/****************************************************************/
+DEF VAR stop_it             AS C                          NO-UNDO.
+
+/****************************************************************/
+/*                                                              */
+/*  START PROCEDURE                                             */
+/*                                                              */
+/****************************************************************/
+RELEASE session.
+FIND FIRST session WHERE MAC="REFRESH".
+IF AVAILABLE session
+THEN DO:
+    {MK_MAC.I session}
+END.
+
+{return.i}
+/* eof */

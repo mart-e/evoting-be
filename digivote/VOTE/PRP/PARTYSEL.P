@@ -1,0 +1,131 @@
+/* Filename        : PARTYSEL.P                                         */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-exefile   AS C FORMAT "x(35)"   NO-UNDO.
+DEF INPUT PARAM wz-resfile   AS C FORMAT "x(35)"   NO-UNDO.
+DEF INPUT PARAM max_can      AS I                  NO-UNDO.
+DEF INPUT PARAM max_sup      AS I                  NO-UNDO.
+DEF INPUT PARAM selindic     AS C FORMAT "x(15)"   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    SHARED VARIABLES  VIA INCLUDE FILES                               */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME */
+{selvar.i}            /* De variabelen voor de selection record     */
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF VAR key_dis            AS C FORMAT "x(28)" NO-UNDO.
+DEF VAR down-num           AS I                NO-UNDO.
+
+DEF VAR mes1               AS C FORMAT "x(20)" NO-UNDO.
+DEF VAR men_tit            AS C FORMAT "x(40)" NO-UNDO.
+DEF VAR wz-taalgroepsystem AS L INIT FALSE     NO-UNDO.
+
+DEF VAR wz-index           AS I INIT 1         NO-UNDO.
+DEF VAR i                  AS I                NO-UNDO.
+DEF VAR wz-maxcs           AS I INIT 0         NO-UNDO.
+
+DEF VAR wz-file            AS C FORMAT "x(35)" NO-UNDO.
+DEF VAR wz-params          AS C FORMAT "x(78)" NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmgeneka.i}
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgeneme.i}            /* Shared frame voor PRP-systeem general menu   */
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL FORM DESCRIPTIONS                                           */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME pmviewpa SCROLL 1 down-num DOWN ROW 5
+    TITLE men_tit NO-LABELS OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmviewpa,mes01',20,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmviewpa,tit01',40,OUTPUT men_tit"}
+
+FIND FIRST election WHERE election.e-id = verknum.
+/********************************************************/
+/* IF Brusselse Hoofdstedelijke Raad => TAALGROEPEN !!! */                      
+/* Only consider the top max can+sup                    */ 
+/********************************************************/
+IF election.et-id = 1
+THEN DO:
+     REPEAT i = 1 TO 3:
+         IF (election.maxcan[i] + election.maxsup[i]) > wz-maxcs
+         THEN DO:
+             ASSIGN
+             wz-maxcs = election.maxcan[wz-index] + election.maxsup[wz-index]
+             wz-index = i.
+         END.
+     END.
+END.
+
+wz-taalgroepsystem = IF election.et-id = 1
+                     THEN TRUE
+                     ELSE FALSE.
+
+partnum = 0.
+{selitem.g 
+ &tab_name     = "party"
+ &where        = "party.s-id = verkdat AND 
+                  party.e-id = verknum AND 
+                  party.p-id <> 0"
+ &key_dis      = "STRING(party.p-id,'Z9') + ' '
+                + party.party_name
+                + (IF wz-taalgroepsystem
+                   THEN ' ' + party.taalgroep[taalkode]
+                   ELSE '')"
+ &fkey         = "01"
+ &fra_name     = "pmviewpa"    
+ &fra_capture  = "partnum = INTEGER(SUBSTRING(key_dis,1,2))
+                  partnam = SUBSTRING(key_dis,4)"
+ &cursor_left  = 2
+ &cursor_right = 4
+ &action_type  = " "
+ &action_flag  = 0
+ &action_keys  = "F5,F1,RETURN"
+ &action_prgs  = " "
+ &action_post  = "            
+  HIDE FRAME pmviewpa NO-PAUSE.
+  {PREVIEW.G}
+  VIEW FRAME pmviewpa.
+  PUT SCREEN ROW 6 COLUMN 29 mes1.
+ "
+ &action_else = "
+  ELSE DO:
+  END.
+ "
+}
+
+{prevdelf.i}
+
+{return.i}
+/* eof */

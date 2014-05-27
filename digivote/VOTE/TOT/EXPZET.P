@@ -1,0 +1,197 @@
+/*@function sec=1*/
+/* Filename            : EXPZET.P                                      */
+/*
+<pvcs>
+<workFile>$Workfile:   EXPZET.P  $</workFile>
+<revision>$Revision: 1.18 $</revision>
+<workFileTimeStamp>$Modtime:   Apr 17 2002 15:25:02  $</workFileTimeStamp>
+
+<archive>$Archive:   P:/Digivote/Archives/VOTE/TOT/EXPZET.P-arc  $</archive>
+<archiveTimeStamp>$Date: 2008/12/12 14:59:51 $</archiveTimeStamp>
+<pvcsUser>$Author: jru $</pvcsUser>
+</pvcs>
+*/
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES VIA INCLUDE FILES                            */
+/*                                                                      */
+/************************************************************************/
+{vcontents.i "NEW"}
+{selvar.i}
+{disfram.i}       /* Variabelen voor display frame disframe             */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR disklabel         AS C FORMAT "x(11)" INIT "EXPORT-B011"  NO-UNDO.
+DEF VAR wz-status         AS L                                    NO-UNDO.
+DEF VAR wz-dummy          AS I                                    NO-UNDO.
+DEF VAR fileName          AS C FORMAT "x(50)"                     NO-UNDO.
+DEF VAR wz-orig           AS C FORMAT "x(50)"                     NO-UNDO.  
+DEF VAR signature         AS C FORMAT "x(40)" EXTENT 2            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FIND FIRST session NO-LOCK NO-ERROR.
+FOR EACH election NO-LOCK BREAK BY election.et-id:
+    IF LOOKUP(STRING(et-id),session.print_done) = 0
+    THEN DO:
+        {call.i &prg="disfram" &param=",'expzet,printit','','','',TRUE"}
+        {return.i}
+    END.
+END.
+
+REPEAT:
+    REPEAT:
+        {call.i &prg="disfram" &param=",'expzet,waitdisk','','trdresul,mes05','',TRUE"}
+        IF key-cancel THEN LEAVE.
+        /* Check if diskette is OK to use */
+        {call.i &prg="chkdisk" &param=",'A:','',OUTPUT wz-status"}
+        IF wz-status THEN LEAVE.
+    END.
+    IF LASTKEY = KEYCODE("END-ERROR")
+    OR key-cancel
+    THEN DO:
+        {return.i}
+    END.
+
+    /* Formatteren EXPORT diskette */
+    {call.i &prg="disfram" &param=",'format,export','','','',FALSE"}
+
+    {call.i &prg="formdisk" &param=",'A:', disklabel, FALSE, OUTPUT wz-status"}
+    IF wz-status THEN LEAVE.
+END.
+
+wz-orig = setup.sys-type + 
+          setup.org-type +
+          setup.area     + 
+          STRING(setup.orginator,"999").
+
+call ADDTOLOG PROGRAM-NAME(1) VALUE("Start Export BiZa ! (" + wz-orig + ")") 0.
+
+/* Voorbereiden van de gegevens */
+{call.i &prg="disfram" &param=",'digivote,indwait1','','trdresul,mes05','',FALSE"}
+
+/* Create export file ... */
+fileName = ramdrive + "EXPZET".
+
+{call.i &prg="expresul" &param=",INPUT  fileName,
+                                 INPUT  wz-orig,
+                                 OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    HIDE FRAME disframe NO-PAUSE.
+    {return.i}
+END.
+
+{call.i &prg="disfram" &param=",'digivote,chkdata','','trdresul,mes05','',FALSE"}
+
+{call.i &prg="vexport" &param=",INPUT  fileName,
+                                INPUT  FALSE,
+                                OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    call C_DEL VALUE(fileName).
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("An error has occured while making export file ! (VExport)") 1.
+    {call.i &prg="interror" &param=",'trdresul,mes05','internal,errmsg','(CHK_INF_1)'"}
+    {return.i}
+END.
+
+/* Integriteitscontrole van export bestand */
+ASSIGN 
+vc-creator     = wz-orig
+vc-originator  = wz-orig
+vc-destinators = ""
+vc-e-date      = STRING(session.s-id,"99/99/9999").
+{call.i &prg="vresults" &param=",INPUT  fileName,
+                                 OUTPUT wz-dummy,
+                                 OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    call C_DEL VALUE(fileName).
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("An error has occured while making export file ! (VResults)") 1.
+    {call.i &prg="interror" &param=",'trdresul,mes05','internal,errmsg','(CHK_INF_2)'"}
+    {return.i}
+END.
+
+ASSIGN
+hex-digest = ""
+signature  = "".
+call DIGEST VALUE(ramdrive + "EXPZET").
+IF LENGTH(hex-digest) <> 40
+THEN DO:
+    HIDE FRAME disframe NO-PAUSE.
+    {call.i &prg="interror" &param=", 'trdresul,mes05','internal,errmsg','digest_MK1'"}
+    {return.i}
+END.
+signature[1] = hex-digest.
+
+OUTPUT TO VALUE(ramdrive + "COPYLIST").
+PUT UNFORMATTED
+    ramdrive "EXPZET~tA:\B011".
+OUTPUT CLOSE.
+
+/* Kopi‰ren van de bestanden, even geduld a.u.b. */
+{call.i &prg="disfram" &param=",'digivote,copbes10','','','',FALSE"}
+
+{call.i &prg="copyfile" &param=",OUTPUT wz-status"}
+/* cleanup ramdrive */
+call C_DEL VALUE(ramdrive + "EXPZET").
+IF NOT wz-status
+THEN DO:
+    /* cleanup a-drive : contents not to be trusted ! */
+    call C_DEL VALUE("A:\B011").
+    HIDE FRAME disframe NO-PAUSE.
+    {call.i &prg="disfram" &param=",'digivote,cpbser01','digivote,cpbser02','','',TRUE"}
+    {return.i}
+END.
+
+{call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+/* re-calculate SHA-1 of copied B011 */
+hex-digest = "".
+call DIGEST "A:\B011".
+IF LENGTH(hex-digest) <> 40
+THEN DO:
+    HIDE FRAME disframe NO-PAUSE.
+    {call.i &prg="interror" &param=", 'trdresul,mes05','internal,errmsg','digest_MK2'"}
+    {return.i}
+END.
+signature[2] = hex-digest.
+
+/* verify SHA-1 of original file and its copy */
+IF signature[1] <> signature[2]
+THEN DO:
+    /* cleanup a-drive : contents not to be trusted ! */
+    call C_DEL VALUE("A:\B011").
+    HIDE FRAME disframe NO-PAUSE.
+    call ADDTOLOG PROGRAM-NAME(1) "DIGEST mismatch after copy !" 1.
+    {call.i &prg="interror" &param=", 'trdresul,mes05','internal,errmsg','digest_VERIFY'"}
+    {return.i}
+END.
+
+OUTPUT TO A:\DIGEST.
+PUT UNFORMATTED signature[1].
+OUTPUT CLOSE.
+
+/* Set READ-ONLY attribute to copied files */
+CALL C_ATTRIB VALUE("A:\B011")   1.
+CALL C_ATTRIB VALUE("A:\DIGEST") 3.
+                             
+HIDE FRAME disframe NO-PAUSE.
+call ADDTOLOG PROGRAM-NAME(1) VALUE("Export BiZa ! (" + wz-orig + ")") 0.
+
+{call.i &prg="disfram" &param=",'digivote,verdis01','',',' + disklabel,'',TRUE"}
+
+PAUSE 0 NO-MESSAGE.
+
+{return.i}
+/* eof */

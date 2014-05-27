@@ -1,0 +1,180 @@
+/* Filename            : PARTLOGO.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-partyrecid AS RECID                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-exefile    AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-datafile   AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-resultfile AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-partlogo   AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-rasterdata AS C FORMAT "x(35)"                        NO-UNDO.
+DEF VAR wz-messages   AS C FORMAT "x(70)" EXTENT 4               NO-UNDO.
+
+DEF VAR wz-index      AS I                                       NO-UNDO.
+DEF VAR wz-max-bytes  AS I                INIT 254               NO-UNDO.
+DEF VAR wz-import     AS C FORMAT "x(70)" EXTENT 3               NO-UNDO.
+DEF VAR wz-stat-logo  AS I                                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmlprtge.i}            /* Shared frame PMLPRTGE                        */
+{pmgeneka.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgeneme.i}            /* Shared frame voor PRP-systeem general menu   */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-exefile    = (IF SEARCH(ramdrive + "VOTE\RUN\PARTLOGO.EXE") = ?
+                 THEN "\"
+                 ELSE ramdrive)
+              + "VOTE\RUN\PARTLOGO.EXE"
+wz-datafile   = ramdrive + "PARTLOGO.DAT"
+wz-resultfile = ramdrive + "PARTLOGO.RES"
+wz-partlogo   = ramdrive + "PARTLOGO.TXT"
+wz-rasterdata = ramdrive + "_RASTER_.DAT".
+
+FIND FIRST party WHERE RECID( party) = wz-partyrecid.
+
+{call.i &prg="confirm" &param=",'partlogo,exists','','',
+                                'partlogo,showlogo','general,cancel'"}
+/*
+VIEW FRAME pmlprtge.
+PAUSE 0 NO-MESSAGE.
+{PARTHEAD.I}
+*/
+IF menleav = 1  /* LOGO tonen */
+THEN DO:
+    {call.i &prg="mesfil" &param=",'pmlprtin,mes01',  0,OUTPUT wz-messages[1]"}
+    {call.i &prg="mesfil" &param=",'pmlprtin,mes02',  0,OUTPUT wz-messages[2]"}
+    {call.i &prg="mesfil" &param=",'partlogo,delete', 0,OUTPUT wz-messages[3]"}
+    {call.i &prg="mesfil" &param=",'general,cancel',  0,OUTPUT wz-messages[4]"}
+
+    OUTPUT TO VALUE(wz-datafile).
+    PUT UNFORMATTED "A~tTXT~t" wz-partlogo   SKIP
+                    "C~t" wz-messages[1]     SKIP
+                    "D~t" party.p-id         SKIP
+                    "E~t" wz-messages[2]     SKIP
+                    "F~t" party.party_name   SKIP
+                    "G~t" wz-messages[3]     SKIP
+                    "H~t" wz-messages[4].
+    OUTPUT CLOSE.
+
+    OUTPUT TO VALUE(wz-partlogo).
+    PUT UNFORMATTED "A~t" wz-rasterdata      SKIP
+                    "B~t" party.logo_width   SKIP
+                    "C~t" party.logo_height  SKIP.
+    REPEAT wz-index = 1 TO party.logo_bytes:
+        PUT UNFORMATTED "D~t" party.logo[wz-index] SKIP.
+    END.
+    OUTPUT CLOSE.
+
+    HIDE FRAME pmlprtge NO-PAUSE.
+    HIDE FRAME pmgeneka NO-PAUSE.
+    HIDE FRAME pmgenein NO-PAUSE.
+    HIDE FRAME pmgeneme NO-PAUSE.
+
+    CALL C_DEL VALUE(wz-resultfile).
+    DOS SILENT VALUE(wz-exefile).
+
+    PUT CURSOR OFF.
+    ASSIGN
+    partnum = 0
+    partnam = "".
+    VIEW FRAME pmgeneka.
+    PAUSE 0 NO-MESSAGE.
+    DISPLAY verkben partnum partnam WITH FRAME pmgenein.
+    PAUSE 0 NO-MESSAGE.
+    VIEW FRAME pmgeneme.
+    PAUSE 0 NO-MESSAGE.
+    VIEW FRAME pmlprtge.
+    PAUSE 0 NO-MESSAGE.
+    {call.i &prg="putvinfo"}
+    {PARTHEAD.I}
+
+    /************************************/
+    /* Prevent PROGRESS error messaging */
+    /* ==> Write fflush failed          */
+    /* ==> Insufficiant disk space      */
+    /************************************/
+    call C_DFREE VALUE(SUBSTR(ramdrive,1,1)).
+    call C_FSIZE VALUE(wz-partlogo).
+
+    CALL C_DEL VALUE(wz-datafile).
+    CALL C_DEL VALUE(wz-partlogo).
+    CALL C_DEL VALUE(wz-rasterdata).
+
+    IF filesize * 100 > diskfree
+    THEN DO:
+        CALL C_DEL VALUE(wz-resultfile).
+
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("FileSize     : " + STRING(filesize))       1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Needed space : " + STRING(filesize * 100)) 1.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("DiskFree     : " + STRING(diskfree))       1.
+        {call.i &prg="interror" &param=",'edit_epc,menu_128','internal,errmsg','>> ! QUIT ! <<'"}
+        menleav = 9.
+        {return.i}
+    END.
+
+    IF SEARCH(wz-resultfile) = ?
+    THEN DO:
+        {call.i &prg="interror" &param=",'edit_epc,menu_128','internal,errmsg',''"}
+    END.
+    ELSE DO:
+        INPUT FROM VALUE(wz-resultfile) NO-ECHO.
+        SET wz-import.
+        INPUT CLOSE.
+        CALL C_DEL VALUE(wz-resultfile).
+
+        wz-stat-logo = INTEGER(wz-import[2]).
+        IF wz-stat-logo = 1  /* LOGO verwijderen */
+        THEN DO:
+            /* Initialize logo information to ensure valid data */
+            ASSIGN
+            party.logo_width  = -1
+            party.logo_height = -1
+            party.logo_bytes  = -1
+            party.MAC         = "REFRESH".
+            REPEAT wz-index = 1 TO wz-max-bytes:
+                party.logo[wz-index] = 255. /* WHITE as default */
+            END.
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Logo of list " + STRING(party.p-id,"99")
+                                   + " " + party.party_name + " removed !") 0.
+            menleav = -2.
+        END.
+    END.
+END.
+
+{call.i &prg="sec_part"}
+
+CALL C_DEL VALUE(wz-resultfile).
+
+{return.i}
+/* eof */

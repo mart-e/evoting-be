@@ -1,0 +1,202 @@
+/* Filename            : S_CHK_S.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}              /* Variabelen voor het TOT hoofdmenu TOGENEME */
+{selvar.i}                    /* De variabelen voor de selection record */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER other-organigram FOR organigram.
+DEF BUFFER sub-organigram   FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-title          AS C FORMAT "x(50)"                     NO-UNDO.
+DEF VAR wz-levels         AS C FORMAT "x(10)"                     NO-UNDO.
+DEF VAR wz-level          AS I EXTENT 3                           NO-UNDO.
+
+DEF VAR wz-indication     AS C FORMAT "x(20)"                     NO-UNDO.
+
+DEF VAR wz-sub-struct     AS I                                    NO-UNDO.
+DEF VAR i                 AS I                                    NO-UNDO.
+
+DEF VAR wz-empty-leading  AS C INIT "     "                       NO-UNDO.
+DEF VAR wz-error-leading  AS C INIT "¯¯¯¯¯"                       NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+FIND FIRST setup NO-LOCK.
+
+{call.i &prg="mesfil" &param=",'pmgeneka,titmess',0,OUTPUT wz-title"}
+
+wz-sub-struct = 0.
+FOR EACH organigram NO-LOCK WHERE organigram.sys-type =  "I"
+                              AND organigram.s-disk   <> -1
+                              AND organigram.l-disk   =  -1
+                               BY organigram.s-disk:
+    IF organigram.s-disk > wz-sub-struct
+    THEN wz-sub-struct = organigram.s-disk.
+END.
+
+PUT UNFORMATTED (IF setup.organigram[1] = 0
+                 THEN wz-error-leading
+                 ELSE wz-empty-leading)
+    "0. " TRIM(wz-title) " (" STRING(wz-sub-struct) ")" SKIP.
+ASSIGN
+i        = 0
+wz-level = 0.
+/* ATTENTION : 'l-disk' should be negative to avoid duplicates or mis-interpretations */
+FOR EACH organigram NO-LOCK WHERE organigram.sys-type =  "I"
+                              AND organigram.s-disk   <> -1
+                              AND organigram.l-disk   =  -1 
+                            BREAK BY organigram.s-disk:
+    IF FIRST-OF(organigram.s-disk)
+    THEN DO:
+				ASSIGN
+				wz-level[1] = wz-level[1] + 1
+				wz-levels   = STRING("  0." + STRING(wz-level[1]),"x(12)").
+
+				/* Display sub-STRUCTURE disk */
+				PUT UNFORMATTED wz-empty-leading 
+						wz-levels
+						STRING(  setup.sys-type
+									 + setup.org-type
+									 + setup.areaname
+									 + STRING(organigram.s-disk,"999"),"x(60)")
+						SKIP.
+				{s_check.i}
+
+				/* Display initial INTRODUCTION disk */
+				PUT UNFORMATTED wz-empty-leading 
+						STRING( " ","x(12)")
+						"ÀÄ"
+						STRING(  organigram.sys-type
+									 + organigram.org-type
+									 + organigram.area[taalkode]
+									 + STRING(organigram.orginator,"999"),"x(58)")
+						(IF organigram.verwerkt
+						 THEN "OK"
+						 ELSE "--")
+						" (" STRING(organigram.disk-id, ">>>9") ")"
+						SKIP.
+				{s_check.i}
+
+        /* Display all other INTRODUCTION disks of same organisation type
+           that also resides on this sub-STRUCTURE disk */
+				FOR EACH other-organigram WHERE other-organigram.sys-type =  organigram.sys-type
+																		AND other-organigram.org-type =  organigram.org-type
+																		AND other-organigram.s-disk   =  organigram.s-disk
+																		AND other-organigram.disk-id  <> organigram.disk-id
+																NO-LOCK:
+						PUT UNFORMATTED wz-empty-leading 
+								STRING( " ","x(12)")
+								"ÀÄ"
+								STRING(  other-organigram.sys-type
+											 + other-organigram.org-type
+											 + other-organigram.area[taalkode]
+											 + STRING(other-organigram.orginator,"999"),"x(58)")
+    						(IF other-organigram.verwerkt
+    						 THEN "OK"
+    						 ELSE "--")
+    						" (" STRING(other-organigram.disk-id, ">>>9") ")"
+								SKIP.
+						{s_check.i}
+				END.
+				
+				/* Display all other INTRODUCTION disks that reside on ALL sub-STRUCTURE disks */
+				FOR EACH other-organigram WHERE other-organigram.sys-type =  organigram.sys-type
+																		AND other-organigram.org-type <> organigram.org-type
+																		AND other-organigram.l-disk   <  0
+																NO-LOCK:
+						IF   other-organigram.s-disk = -1 
+            AND  other-organigram.l-disk = -1
+            AND        organigram.s-disk > 0
+            THEN wz-indication = "".
+            ELSE wz-indication = (IF other-organigram.verwerkt
+								                  THEN "OK"
+								                  ELSE "--")
+    						               + " (" + STRING(other-organigram.disk-id, ">>>9") + ")".									
+						PUT UNFORMATTED wz-empty-leading 
+								STRING( " ","x(12)")
+								"ÀÄ"
+								STRING(  other-organigram.sys-type
+											 + other-organigram.org-type
+											 + other-organigram.area[taalkode]
+											 + STRING(other-organigram.orginator,"999"),"x(58)")
+								wz-indication
+								SKIP.
+						{s_check.i}
+
+						/* Display source of PARTIES and CANDIDATES */
+						IF  other-organigram.s-disk = -9
+						AND other-organigram.l-disk = -9
+						THEN DO:
+								/* -------------------------------------------------------------
+									 Show 'linked' information 
+									 ** grouped by symbolic link information (s-disk)
+									 ** ordered so that STRUCTURE comes before INTRODUCTION (DESC)
+									 ------------------------------------------------------------- */
+								FOR EACH sub-organigram NO-LOCK WHERE sub-organigram.s-disk > 0
+																									AND sub-organigram.l-disk = other-organigram.disk-id
+																						 BREAK BY sub-organigram.s-disk
+																									 BY sub-organigram.sys-type DESC:
+										IF sub-organigram.sys-type = "S"
+										THEN wz-levels = "  ÀÄÄÂÄ".
+										ELSE wz-levels = "     ÀÄ".
+										PUT UNFORMATTED wz-empty-leading 
+												STRING( " ","x(12)")
+												wz-levels
+												STRING(  sub-organigram.sys-type
+															 + sub-organigram.org-type
+															 + sub-organigram.area[taalkode]
+															 + STRING(sub-organigram.orginator,"999"),"x(60)")
+												SKIP.
+										{s_check.i}
+								END.
+						END.
+            /* Display virtual STRUCTURE if sub-STRUCTURE is present for another election type */
+						ELSE IF  other-organigram.s-disk = -1 
+                 AND other-organigram.l-disk = -1
+                 AND       organigram.s-disk > 0
+            THEN DO:
+    						PUT UNFORMATTED wz-empty-leading 
+    								STRING( " ","x(12)")
+    								"  ÀÄÄÂÄ"
+    								STRING(  setup.sys-type + setup.org-type + setup.areaname + "000","x(60)")
+    								SKIP.
+    						{s_check.i}
+    						PUT UNFORMATTED wz-empty-leading 
+    								STRING( " ","x(12)")
+    								"     ÀÄ"
+    								STRING(  other-organigram.sys-type
+    											 + other-organigram.org-type
+    											 + other-organigram.area[taalkode]
+    											 + STRING(other-organigram.orginator,"999"),"x(53)")
+    								SKIP.
+    						{s_check.i}
+            END.
+				END.
+    END.
+END.
+PUT UNFORMATTED SKIP(2).
+{s_check.i}
+
+{return.i}
+/* eof */

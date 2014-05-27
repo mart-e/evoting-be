@@ -1,0 +1,247 @@
+/* Filename            : VCONTENTS.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-file          AS C FORMAT "x(45)"             NO-UNDO.
+DEF INPUT  PARAM ResultFile       AS L                            NO-UNDO.
+
+DEF OUTPUT PARAM wz-status        AS L INIT FALSE                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR intype            AS C FORMAT "x(3)"                      NO-UNDO.
+DEF VAR linenr            AS C FORMAT "x(40)"                     NO-UNDO.
+DEF VAR wz-var            AS C FORMAT "x(78)" EXTENT 17           NO-UNDO.
+
+DEF VAR wz-total-lines    AS I                                    NO-UNDO.
+DEF VAR wz-line           AS I                                    NO-UNDO.
+DEF VAR i                 AS I                                    NO-UNDO.
+
+DEF VAR wz-allowed-types  AS C                                    NO-UNDO.
+DEF VAR wz-party-type     AS C                                    NO-UNDO.
+DEF VAR wz-candidate-type AS C                                    NO-UNDO.
+
+DEF VAR wz-sign-pos       AS I                                    NO-UNDO.
+DEF VAR wz-sign           AS I INIT 32                            NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-allowed-types  = "//,A,B,C,D,E"
+                  + (IF ResultFile THEN ""  ELSE ",F,G")
+wz-party-type     = (IF ResultFile THEN "D" ELSE "F")
+wz-candidate-type = (IF ResultFile THEN "E" ELSE "G").
+
+/* Initialize 'tmp_'-fields */
+call CRYPENC PRPTOT STRING(0,FILL("9",AESKEYLEN)).
+IF crypStat <> 0 
+THEN DO:
+    call ADDTOLOG PROGRAM-NAME(1) "Encryption error !" 1.
+    {return.i}
+END.
+FOR EACH election:
+    {PROGBUSY.I}
+    ASSIGN
+    election.tmp_vote  = result3
+    election.MAC       = "REFRESH".
+END.
+FOR EACH party:
+    {PROGBUSY.I}
+    ASSIGN
+    party.tmp_vote_top = result3
+    party.tmp_vote_can = result3
+    party.tmp_vote_sup = result3
+    party.tmp_vote_cs  = result3
+    party.MAC          = "REFRESH".
+END.
+FOR EACH candidate:
+    {PROGBUSY.I}
+    ASSIGN
+    candidate.tmp_vote = result3
+    candidate.MAC      = "REFRESH".
+END.
+
+{call.i &prg="getbsize" &param=",INPUT wz-file,OUTPUT wz-total-lines"}
+
+INPUT FROM VALUE(wz-file) NO-ECHO.
+
+wz-line = 0.
+Export-Block:
+REPEAT:
+    ASSIGN
+    stat     = 0
+    crypStat = 0
+    intype   = ""
+    linenr   = ""
+    wz-var   = "".
+
+    {PROGBUSY.I}
+    PAUSE 0 NO-MESSAGE.
+    SET intype linenr wz-var.  /* 17 elementen in extent binnenlezen */
+    wz-line = wz-line + 1.
+    
+    /*********************************************************************/
+    IF      intype = "B"
+    THEN DO:
+        call C_CHECKINT VALUE(linenr).
+        IF stat <> 0 THEN LEAVE.
+        FIND FIRST election WHERE election.et-id = INTEGER(linenr) NO-ERROR.
+        IF NOT AVAIL election
+        THEN LEAVE Export-Block.
+
+        call C_CHECKINT VALUE(wz-var[2]).
+        IF stat <> 0 THEN LEAVE Export-Block.
+        call CRYPENC PRPTOT STRING(INT(wz-var[2]),FILL("9",AESKEYLEN)).
+        IF crypStat <> 0 THEN LEAVE Export-Block.
+        ASSIGN
+        election.tmp_vote = result3
+        election.MAC  = "REFRESH".
+    END. /* intype = "B" */
+    /*********************************************************************/
+    ELSE IF intype = wz-party-type
+    THEN DO:
+        call C_CHECKINT VALUE(linenr).
+        IF stat <> 0 THEN LEAVE Export-Block.
+        DO i = 1 TO 6:
+            call C_CHECKINT VALUE(wz-var[i]).
+            IF stat <> 0 THEN LEAVE Export-Block.
+        END.
+        FIND FIRST election
+             WHERE      election.et-id      = INTEGER(linenr)
+               AND (    election.coll-id    = INTEGER(wz-var[1])
+                    OR  INTEGER( wz-var[2]) = 0)
+          NO-LOCK NO-ERROR.
+        IF NOT AVAIL election
+        THEN LEAVE.
+
+        FIND FIRST party
+             WHERE party.s-id = verkdat
+               AND party.e-id = election.e-id
+               AND party.p-id = INTEGER (wz-var[2])
+          NO-ERROR.
+        IF NOT AVAIL party
+        THEN LEAVE Export-Block.
+        
+        call CRYPENC PRPTOT STRING(INT(wz-var[3]),FILL("9", AESKEYLEN)).
+        IF crypStat <> 0 THEN LEAVE Export-Block.
+        party.tmp_vote_top = result3.
+        
+        call CRYPENC PRPTOT STRING(INT(wz-var[4]),FILL("9", AESKEYLEN)).
+        IF crypStat <> 0 THEN LEAVE Export-Block.
+        party.tmp_vote_can = result3.
+
+        call CRYPENC PRPTOT STRING(INT(wz-var[5]),FILL("9", AESKEYLEN)).
+        IF crypStat <> 0 THEN LEAVE Export-Block.
+        party.tmp_vote_sup = result3.
+        
+        call CRYPENC PRPTOT STRING(INT(wz-var[6]),FILL("9", AESKEYLEN)).
+        IF crypStat <> 0 THEN LEAVE Export-Block.
+        ASSIGN
+        party.tmp_vote_cs = result3
+        party.MAC     = "REFRESH".
+    END. /* intype = wz-party-type */
+    /*********************************************************************/
+    ELSE IF intype = wz-candidate-type
+    THEN DO:
+        call C_CHECKINT VALUE(linenr).
+        IF stat <> 0 THEN LEAVE Export-Block.
+        DO i = 1 TO 5:
+            call C_CHECKINT VALUE(wz-var[i]).
+            IF stat <> 0 THEN LEAVE Export-Block.
+        END.
+        FIND FIRST election
+             WHERE      election.et-id      = INTEGER(linenr)
+               AND (    election.coll-id    = INTEGER(wz-var[1])
+                    OR  INTEGER( wz-var[2]) = 0)
+           NO-LOCK NO-ERROR.
+        IF NOT AVAIL election
+        THEN LEAVE.
+
+        FIND FIRST candidate
+             WHERE candidate.s-id   = verkdat
+               AND candidate.e-id   = election.e-id
+               AND candidate.p-id   = INTEGER(wz-var[2])
+               AND candidate.c-type = INTEGER(wz-var[3])
+               AND candidate.c-id   = INTEGER(wz-var[4])
+          NO-ERROR.
+        IF NOT AVAIL candidate
+        THEN LEAVE.
+
+        call CRYPENC PRPTOT STRING(INTEGER(wz-var[5]),FILL("9", AESKEYLEN)).
+        IF crypStat <> 0 THEN LEAVE Export-Block.
+        ASSIGN
+        candidate.tmp_vote = result3
+        candidate.MAC  = "REFRESH".
+    END. /* intype = wz-candidate-type */
+    /*********************************************************************/
+    
+    IF LOOKUP(intype,wz-allowed-types) > 0
+    THEN NEXT.
+    
+    LEAVE Export-Block.
+END.
+
+INPUT CLOSE.
+
+call ADDTOLOG PROGRAM-NAME(1) VALUE(STRING(wz-line) + " / " + STRING(wz-total-lines) 
+                                  + " lines processed.") 0.
+IF stat <> 0
+THEN call ADDTOLOG PROGRAM-NAME(1) "Illegal numeric value detected !" 1.
+IF crypStat <> 0
+THEN call ADDTOLOG PROGRAM-NAME(1) "Encryption/Decryption error !" 1.
+
+/* Verify integrity of vote-fields */
+{call.i &prg="compvote" &param=",OUTPUT wz-status"}
+IF NOT wz-status
+THEN DO:
+    /* Synchronize vote-fields */
+    FOR EACH election:
+        {PROGBUSY.I}
+        ASSIGN
+        election.tmp_vote  = election.vote
+        election.MAC       = "REFRESH".
+    END.
+    FOR EACH party:
+        {PROGBUSY.I}
+        ASSIGN
+        party.tmp_vote_top = party.vote_top
+        party.tmp_vote_can = party.vote_can
+        party.tmp_vote_sup = party.vote_sup
+        party.tmp_vote_cs  = party.vote_cs
+        party.MAC          = "REFRESH".
+    END.
+    FOR EACH candidate:
+        {PROGBUSY.I}
+        ASSIGN
+        candidate.tmp_vote = candidate.vote
+        candidate.MAC      = "REFRESH".
+    END.
+END.
+
+{call.i &prg="sec_cand"}
+{call.i &prg="sec_part"}
+{call.i &prg="sec_elec"}
+
+{BUSYENDS.I}
+PAUSE 0 NO-MESSAGE.
+
+{return.i}
+/* eof */

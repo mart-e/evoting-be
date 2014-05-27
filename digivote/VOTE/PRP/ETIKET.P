@@ -1,0 +1,135 @@
+/* Filename            : ETIKET.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INCLUDE FILES                                                 */
+/*                                                                      */
+/************************************************************************/
+{ETIKET.I}                      /* Shared variables for etiket printing */
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT PARAMETERS                                              */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-last      AS L                                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR i                    AS I                                 NO-UNDO.
+DEF VAR wz-rownr             AS I                                 NO-UNDO.
+DEF VAR wz-small             AS L                                 NO-UNDO.
+DEF VAR wz-ctrlcode          AS C EXTENT 2                        NO-UNDO. 
+                                                /* Esc.Codes [1] 12 cpi */
+                                                /*           [2] 17 cpi */
+
+/************************************************************************/
+/*                                                                      */
+/*        PROGRAM                                                       */
+/*                                                                      */
+/************************************************************************/
+IF wz-prt = 1
+THEN          /* Laser HP Codes   */
+    ASSIGN
+    wz-ctrlcode[1] = CHR(27) + "(s0p12H"
+    wz-ctrlcode[2] = CHR(27) + "(s0p17H".
+ELSE          /* Matrix IBM Codes */
+    ASSIGN
+    wz-ctrlcode[1] = CHR(27) + CHR(58)            /* 12 cpi */
+    wz-ctrlcode[2] = CHR(18) + CHR(27) + CHR(15). /* 17 cpi */
+
+ASSIGN
+wz-col = wz-col + 1 .   /* Next label number on column */
+
+/* Fill row contents of label in workfile */
+DO wz-rownr = 1 TO NUM-ENTRIES(wz-fieldlist) :
+
+    IF ENTRY(wz-rownr,wz-fieldlist) = ""
+    THEN NEXT. /* Blanco row on label */
+
+    FIND FIRST wfrow WHERE wfrow.nr = wz-rownr NO-ERROR.
+    IF NOT AVAIL wfrow
+    THEN DO:
+        CREATE wfrow.
+        wfrow.nr = wz-rownr.
+    END.
+    wfrow.txt[wz-col] = wz-field[INT(ENTRY(wz-rownr,wz-fieldlist))].
+
+END. /* 1 to NUM-ENTRIES(wz-fieldlist) */
+
+
+IF wz-col = wz-labcols OR wz-last
+THEN DO: /* Laatste etiket op de lijn of laatste bestand */
+    ASSIGN
+    wz-row = wz-row + 1
+    wz-small = FALSE.
+    PUT CONTROL wz-ctrlcode[1]. /* Normal 12 cpi */
+
+    DO wz-rownr = 1 TO wz-maxrpl : /* 1 TO maximum rows of label */
+
+        FIND FIRST wfrow WHERE wfrow.nr = wz-rownr NO-ERROR.
+        IF NOT AVAIL wfrow
+        THEN DO:
+            PUT SKIP(1).
+            NEXT.
+        END.
+
+        wz-small = FALSE.
+        /* Check if compressed printing is necessary, if one of the labels
+           on a row is larger then the prefixed length for 12 cpi */
+        DO i = 1 TO wz-labcols :
+            IF LENGTH(wfrow.txt[i]) > wz-maxcpl[1]
+            THEN wz-small = TRUE.
+        END.
+
+        IF wz-small
+        THEN /* Compress field to max. length for small print */
+            DO i = 1 to wz-labcols :
+                IF LENGTH(wfrow.txt[i]) > wz-maxcpl[2] THEN
+                    wfrow.txt[i] = SUBSTR(wfrow.txt[i],1,wz-maxcpl[2]).
+            END.
+
+        IF wz-small
+        THEN DO:
+            PUT CONTROL wz-ctrlcode[2]. /* Stuurcodes HP 17 cpi */
+            DO i = 1 TO wz-labcols :
+                PUT UNFORMATTED
+                    wfrow.txt[i]  AT wz-atsmal[i].
+            END.
+            PUT CONTROL wz-ctrlcode[1]. /* Stuurcodes HP 12 cpi */
+        END.
+        ELSE
+            DO i = 1 TO wz-labcols :
+                PUT UNFORMATTED
+                    wfrow.txt[i]  AT wz-atnorm[i].
+            END.
+        PUT SKIP.
+    END. /* wz-rownr */
+
+    /* Cleanup */
+    FOR EACH wfrow :
+        DELETE wfrow.
+    END.
+
+    wz-col = 0.
+
+    IF wz-row >= wz-labrows
+    THEN DO:
+        wz-row = 0.
+
+        IF PAGE-SIZE > 0
+        THEN DO: /* Klaarzetten voor volgende pagina bij paged output */
+            PAGE.
+            PUT SKIP(wz-skipafterpage).
+        END.
+    END.
+
+END. /* last label of row or last */
+
+{return.i}
+/* eof */

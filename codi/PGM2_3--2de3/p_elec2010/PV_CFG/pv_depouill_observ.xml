@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<TD_XML_Table  col1_ColFlags=" COL_Editable COL_Invisible" col2_ColFlags=" COL_Editable COL_Invisible">
+	<row rowNumber="1" rowFlags="">
+		<col1 colID="1" >NIHIL</col1>
+		<col2 colID="2" >NIHIL</col2>
+	</row>
+</TD_XML_Table>

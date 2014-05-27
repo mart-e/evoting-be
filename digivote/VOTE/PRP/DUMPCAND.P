@@ -1,0 +1,77 @@
+/* Filename            : DUMPCAND.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-export2file AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT  PARAM wz-disk-id     AS I                              NO-UNDO.
+
+DEF OUTPUT PARAM wz-records     AS I                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR field-seperator         AS C INIT " "                     NO-UNDO.
+DEF VAR quot                    AS C INIT """"                    NO-UNDO.
+
+DEF VAR i                       AS i                              NO-UNDO.
+DEF VAR wz-fields               AS C                              NO-UNDO.
+DEF VAR wz-types                AS C                              NO-UNDO.
+DEF VAR wz-extent               AS C                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-fields  = "disk-id,s-id,e-id,coll-id,p-id,"
+           + "c-type,c-id,c_name1,c_name2,"
+           + "vote,tmp_vote,MAC"
+wz-types   = "integer,date,integer,integer,integer,"
+           + "integer,integer,character,character,"
+           + "character,character,character"
+wz-extent  = "0,0,0,0,0,0,0,0,0,0,0,0"
+i          = 0
+wz-records = 0.
+FIND FIRST _file WHERE _file-name = "candidate" NO-LOCK.
+FOR EACH _field OF _file NO-LOCK BY _order:
+    i = i + 1.
+    IF _field-name <>     ENTRY(i,wz-fields)
+    OR _data-type  <>     ENTRY(i,wz-types)
+    OR _extent     <> INT(ENTRY(i,wz-extent))
+    THEN DO:
+        {call.i &prg="interror" &param=",PROGRAM-NAME(1),'internal,errmsg','(candidate)'"}
+        {quit.i &corrupt=FALSE}
+    END.
+END.
+
+OUTPUT TO VALUE(wz-export2file).
+FOR EACH d_elect.candidate NO-LOCK WHERE d_elect.candidate.disk-id = wz-disk-id:
+    PUT UNFORMATTED
+             d_elect.candidate.disk-id                      field-seperator
+             STRING(MONTH(d_elect.candidate.s-id),"99") "/" 
+             STRING(DAY(d_elect.candidate.s-id),  "99") "/" 
+             STRING(YEAR(d_elect.candidate.s-id), "9999")   field-seperator
+             d_elect.candidate.e-id                         field-seperator
+             d_elect.candidate.coll-id                      field-seperator
+             d_elect.candidate.p-id                         field-seperator
+             d_elect.candidate.c-type                       field-seperator
+             d_elect.candidate.c-id                         field-seperator
+        quot d_elect.candidate.c_name1      quot            field-seperator
+        quot d_elect.candidate.c_name2      quot            field-seperator
+        quot d_elect.candidate.vote         quot            field-seperator
+        quot d_elect.candidate.tmp_vote     quot            field-seperator
+        quot d_elect.candidate.MAC quot                                     SKIP.
+    wz-records = wz-records + 1.
+END.
+OUTPUT CLOSE.
+
+{return.i}
+/* eof */

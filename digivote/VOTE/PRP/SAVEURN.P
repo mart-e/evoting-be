@@ -1,0 +1,49 @@
+/* Filename            : CREATURN.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-tmp-shell         AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-resume            AS C FORMAT "x(50)"                  NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+
+/* Prepare leaving PROGRESS to save situation and to go on working ... */
+
+ASSIGN
+wz-tmp-shell     = ramdrive + "VOTE\$_TMPSH_.BAT"
+wz-resume        = ramdrive + "VOTE\TRACE.LOG\RESUME".
+
+/* Create AutoRun */
+{call.i &prg="resume" &param=",wz-resume"}
+   
+call DIGEST VALUE(wz-resume).
+FIND FIRST session.
+ASSIGN
+session.digest = hex-digest
+session.MAC    = "REFRESH".
+{call.i &prg="sec_sess"}
+
+OUTPUT TO VALUE(wz-tmp-shell) APPEND.
+PUT UNFORMATTED
+    "@Echo OFF"                                          SKIP
+    "_ProUtil ELECT -C truncate bi > NUL"                SKIP
+    "ProLog ELECT > NUL"                                 SKIP
+    "Cd \VOTE"                                           SKIP
+    "Attrib -R C:\VOTE\ELECT.* > NUL"                    SKIP
+    "XCopy /Y /V ELECT.* C:\VOTE > NUL"                  SKIP
+    "Pro ELECT -p DIGIVOTE"                              SKIP.
+OUTPUT CLOSE.
+    
+/* Temporary quit PROGRESS and cleanup RAMdrive ... */
+{quit.i &corrupt=FALSE}
+
+/* eof */

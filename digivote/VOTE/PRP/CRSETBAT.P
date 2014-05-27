@@ -1,0 +1,69 @@
+/* Filename            : CRSETBAT.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT  PARAM wz-disk-id      LIKE organigram.disk-id          NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-taal           AS I                NO-UNDO.
+DEF VAR wz-taal-admin     AS I                NO-UNDO.
+DEF VAR wz-el-type        AS C FORMAT "x(16)" NO-UNDO.
+DEF VAR wz-el-mode        AS I                NO-UNDO.
+DEF VAR wz-totlvls        AS I                NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+OUTPUT TO VALUE(ramdrive + "SETLANG").
+
+FIND FIRST setup                                            NO-LOCK NO-ERROR.
+FIND FIRST session    WHERE session.s-id       = verkdat    NO-LOCK NO-ERROR.
+FIND FIRST organigram WHERE organigram.disk-id = wz-disk-id NO-LOCK NO-ERROR.
+FIND FIRST session-exceptions
+     WHERE session-exceptions.setup-id    = setup.setup-id
+       AND session-exceptions.heading3[1] = organigram.area[1]
+   NO-LOCK NO-ERROR.
+IF AVAILABLE session-exceptions
+THEN wz-taal = (IF session-exceptions.lang = -1
+                THEN session.lang
+                ELSE session-exceptions.lang
+               ).
+ELSE wz-taal = session.lang.
+
+ASSIGN
+wz-taal           = wz-taal       + 1
+wz-taal-admin     = session.lang2 + 1.
+
+{call.i &prg="elecmode" &param=",INPUT  FALSE,
+                                 OUTPUT wz-el-type,
+                                 OUTPUT wz-el-mode,
+                                 OUTPUT wz-totlvls"}
+
+PUT UNFORMATTED
+    "@ECHO OFF"                                                SKIP
+    "        SET CURSOR=1"                                     SKIP
+    "        SET LANG="       ENTRY(wz-taal,      "2,1,4,3,5") SKIP
+    "        SET LANG_ADMIN=" ENTRY(wz-taal-admin,"2,1,4,3,5") SKIP
+    "        SET ELECT_MODE=" wz-el-mode                       SKIP.
+OUTPUT CLOSE.
+
+{return.i}
+/* eof */

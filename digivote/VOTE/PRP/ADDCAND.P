@@ -1,0 +1,16 @@
+/* Filename : ADDCAND.P */
+
+{candidate.g
+ &pre_start       = " 
+  {call.i &prg='selecwr'} 
+ "
+ &init_repeat     = " 
+  candnr = candnum 
+ "
+ &fkey_nbr        = "02"
+ &leave_repeat    = "
+  LEAVE.
+ "
+}
+
+/* eof */

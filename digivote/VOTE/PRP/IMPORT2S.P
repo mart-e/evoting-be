@@ -1,0 +1,471 @@
+/* Filename            : IMPORT2S.P
+   -------- 
+   
+   Purpose : Import election structure for I, G, U and T disks
+   -------
+             All checks will be moved from INITELEC to IMPORT2S !
+             INITELEC will rely on organigram-table for correctness.
+             IMPORT2S will manage the correctness of the election
+             structure and store it in the organigram-table.
+             organigram-table now contains internal constraints !!
+             DON'T MESS WITH IT, because this is a crutial entity !!
+*/             
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        INPUT / OUTPUT PARAMETERS                                     */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM wz-org-file     AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT PARAM wz-filename     AS C FORMAT "x(50)"               NO-UNDO.
+DEF INPUT PARAM the-sys-type    LIKE organigram.sys-type          NO-UNDO.
+DEF INPUT PARAM wz-type-records AS C                              NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{vargener.i}              /* Variabelen voor het TOT hoofdmenu TOGENEME */
+{disfram.i}                   /* Variabelen voor display frame disframe */
+{selvar.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES                                              */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR wz-field     AS C FORMAT "x(50)" EXTENT 26     NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        BUFFERS                                                       */
+/*                                                                      */
+/************************************************************************/
+DEF BUFFER sub-organigram FOR organigram.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-disk-id           LIKE organigram.disk-id              NO-UNDO.
+DEF VAR wz-s-disk            LIKE organigram.s-disk               NO-UNDO.
+DEF VAR wz-l-disk            LIKE organigram.l-disk               NO-UNDO.
+DEF VAR wz-orginator         AS I                                 NO-UNDO.
+
+DEF VAR inx-sys-type         AS I                                 NO-UNDO.
+
+DEF VAR wz-importfile        AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-errorfile         AS C FORMAT "x(50)"                  NO-UNDO.
+DEF VAR wz-LBIfile           AS C FORMAT "x(50)"                  NO-UNDO.
+
+DEF VAR wz-line              AS I                                 NO-UNDO.
+DEF VAR wz-lines             AS I                                 NO-UNDO.
+DEF VAR wz-file              AS C FORMAT "x(40)"                  NO-UNDO.
+
+DEF VAR wz-gen-level         AS C FORMAT "x(20)"                  NO-UNDO.
+DEF VAR wz-tot-level         LIKE election.totlevel               NO-UNDO.
+DEF VAR wz-highest-tot-level AS C FORMAT "x(20)"                  NO-UNDO.
+
+DEF VAR i                    AS I                                 NO-UNDO.
+ 
+DEF VAR wz-errno             AS I                                 NO-UNDO.
+DEF VAR wz-errmsg            AS C FORMAT "x(78)" EXTENT 2         NO-UNDO.
+ 
+DEF VAR wz-content           AS C FORMAT "x(63)" EXTENT 6         NO-UNDO.
+
+DEF VAR on_resume            AS L INIT FALSE                      NO-UNDO.
+DEF VAR prglvl               AS I                                 NO-UNDO.
+DEF VAR resume-prg           AS C                                 NO-UNDO.
+   
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORMS DESCRIPTIONS                                      */
+/*                                                                      */
+/************************************************************************/
+FORM
+    wz-content AT 2 SPACE(1) SKIP
+    WITH FRAME frmContent
+        ROW 14
+        NO-LABELS 
+        OVERLAY 
+        CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+ASSIGN
+wz-errno      = -1
+wz-errmsg     = ""
+wz-line       = 0
+wz-lines      = 0
+wz-importfile = ramdrive + "IMPORT2S.D"
+wz-errorfile  = ramdrive + "IMPORT2S.ERR".
+
+{call.i &prg="disfram" &param=",'digivote,chkdata','','','',FALSE"}
+
+{resume.i}
+IF on_resume
+THEN DO:
+    INPUT FROM VALUE(ramdrive + "VOTE\TRACE.LOG\RESUME") NO-ECHO.
+    REPEAT i = 1 TO 4:
+        SET ^. /* SKIP 4 lines */
+    END.
+    SET wz-field[1].
+    INPUT CLOSE.
+    call C_CHECKINT VALUE(wz-field[1]).
+    IF stat = 0 THEN wz-line = INT(wz-field[1]).
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE("Import started for " 
+                                       + wz-org-file 
+                                       + " (" + the-sys-type + ")") 0.
+
+    IF LOOKUP(the-sys-type,wz-type-records) = 0
+    THEN DO:
+        ASSIGN 
+        wz-errno     = 999
+        wz-errmsg[1] = "Unknown type of record detected (" 
+                     + the-sys-type + " instead of " + wz-type-records + ")".
+    END.
+END.
+
+FIND FIRST setup NO-LOCK.
+    
+IF wz-errno = -1 AND NOT on_resume
+THEN DO:
+    call C_DEL VALUE(wz-importfile).
+    call C_DEL VALUE(wz-errorfile).
+    
+    {call.i &prg="getbsize" &param=",INPUT wz-filename,OUTPUT wz-lines"}
+    
+    /* Quick Check importfile */
+    {call.i &prg="imp2s-s" &param=",INPUT  wz-filename,
+                                    INPUT  the-sys-type,
+                                    INPUT  wz-type-records,
+                                    OUTPUT wz-gen-level,
+                                    OUTPUT wz-disk-id,
+                                    OUTPUT wz-errno,
+                                    OUTPUT wz-errmsg[1],
+                                    OUTPUT wz-errmsg[2]"}
+    IF wz-errno = -1
+    THEN DO:
+        /* Processing different types of records ... */
+        /* ========================================= */
+                                       /****************/
+        IF      the-sys-type = "I"     /* INTRODUCTION */
+        THEN DO:                       /****************/
+            {call.i &prg="imp2s-i"
+                    &param=",INPUT  wz-importfile,
+                             INPUT  wz-filename,
+                             INPUT  the-sys-type,
+                             INPUT  wz-disk-id, 
+                             INPUT  wz-lines,
+                             INPUT  wz-gen-level,
+                             INPUT  wz-errorfile,
+                             OUTPUT wz-line, 
+                             OUTPUT wz-errno, 
+                             OUTPUT wz-errmsg[1], 
+                             OUTPUT wz-errmsg[2]"}
+        END.
+                                       /****************/
+        ELSE IF the-sys-type = "U"     /*   BUREAU'S   */
+        THEN DO:                       /****************/
+            wz-tot-level = -1.
+            FOR EACH election NO-LOCK WHERE election.s-id         = verkdat 
+                                        AND election.separate_TOT = TRUE
+                                         BY election.totlevel DESC:
+                IF LOOKUP(election.org-type,wz-highest-tot-level) = 0
+                THEN DO:
+                    IF wz-tot-level = -1 
+                    THEN wz-tot-level = election.totlevel.
+           
+                    IF wz-tot-level = election.totlevel
+                    THEN DO:
+                        wz-highest-tot-level = wz-highest-tot-level
+                                             + (IF wz-highest-tot-level = "" THEN "" ELSE ",")
+                                             + election.org-type.
+                    END.
+                END.
+            END.
+            IF NUM-ENTRIES(wz-highest-tot-level) > 1
+            THEN DO:
+                IF LOOKUP(wz-gen-level,wz-highest-tot-level) > 0
+                THEN wz-highest-tot-level = wz-gen-level.
+                ELSE DO:
+                    ASSIGN
+                    wz-errno     = 504
+                    wz-errmsg[1] = "Unable to determine highest tot-level ! "
+                                 + wz-gen-level + " NOT in LIST(" + wz-highest-tot-level + ")".
+                END.
+            END.
+
+            IF wz-errno = -1
+            THEN DO:
+                {call.i &prg="imp2s-u"
+                        &param=",INPUT  wz-importfile,
+                                 INPUT  wz-filename,
+                                 INPUT  the-sys-type,
+                                 INPUT  wz-disk-id, 
+                                 INPUT  wz-lines,
+                                 INPUT  wz-gen-level,
+                                 INPUT  wz-highest-tot-level,
+                                 INPUT  wz-errorfile,
+                                 OUTPUT wz-line, 
+                                 OUTPUT wz-errno, 
+                                 OUTPUT wz-errmsg[1], 
+                                 OUTPUT wz-errmsg[2]"}
+            END.
+        END.
+                                       /****************/
+        ELSE IF the-sys-type = "G"     /*  GENERATION  */
+             OR the-sys-type = "T"     /* TOTALISATION */
+        THEN DO:                       /****************/
+            {call.i &prg="imp2s-gt"
+                    &param=",INPUT  wz-importfile,
+                             INPUT  wz-filename,
+                             INPUT  the-sys-type,
+                             INPUT  wz-disk-id, 
+                             INPUT  wz-lines,
+                             INPUT  wz-gen-level,
+                             INPUT  wz-errorfile,
+                             OUTPUT wz-line, 
+                             OUTPUT wz-errno, 
+                             OUTPUT wz-errmsg[1], 
+                             OUTPUT wz-errmsg[2]"}
+        END.
+    END.
+
+    call C_DEL VALUE(wz-filename).
+    
+    /* Post checking ... */
+    IF wz-errno = -1
+    THEN DO:
+        /* Check if all lines have been read / processed */
+        IF wz-line = wz-lines
+        THEN call C_DEL VALUE(wz-errorfile).
+        ELSE DO:
+            ASSIGN
+            wz-errno     = 900
+            wz-errmsg[1] = "Only " + STRING(wz-line ) + " of " 
+                                   + STRING(wz-lines) + " lines have been processed !".
+        END.
+    END.
+
+    PUT SCREEN ROW 23 COLUMN 69 FILL(" ",11).
+
+    IF wz-errno = -1
+    /* File checked and considered to be OK to IMPORT ! */
+    THEN DO:
+        {call.i &prg="getbsize" &param=",INPUT wz-importfile,OUTPUT wz-line"}
+        
+        /* Check number of exported records */
+        /* Add 1 for the S-record !!        */
+        IF  wz-line + 1 <> wz-lines
+        AND (   wz-field[1] = "I"
+             OR wz-field[1] = "U")
+        THEN DO:
+            ASSIGN 
+            wz-errno     = 502
+            wz-errmsg[1] = "Mismatch in number of processed records !"
+            wz-errmsg[2] = STRING(wz-line + 1) + " / " + STRING(wz-lines).
+        END.
+        ELSE DO:
+            {call.i &prg="disfram" &param=",'import2s,import','','','',FALSE"}
+
+            /* Clean up existing records of selected AND following record types */
+            REPEAT inx-sys-type = LOOKUP(the-sys-type,wz-type-records)
+                TO NUM-ENTRIES(wz-type-records):
+                
+                FIND FIRST organigram 
+                     WHERE organigram.sys-type = ENTRY(inx-sys-type,
+                                                       wz-type-records)
+                   NO-LOCK NO-ERROR.
+                IF AVAILABLE organigram
+                THEN DO:
+                    call ADDTOLOG PROGRAM-NAME(1) 
+                         VALUE("Cleanup of " + ENTRY(inx-sys-type,
+                                                     wz-type-records) + " records") 0.
+                    FOR EACH organigram 
+                       WHERE organigram.sys-type = ENTRY(inx-sys-type,
+                                                         wz-type-records):
+                        IF ENTRY(inx-sys-type,wz-type-records) = "I"
+                        THEN DO:
+                        		/* Delete related records (l-disk) */
+                        		FOR EACH sub-organigram WHERE sub-organigram.l-disk = organigram.disk-id:
+                        				DELETE sub-organigram.
+                        		END.
+                        END.
+                        DELETE organigram.
+                    END.
+                END.
+                FIND FIRST setup.
+                IF setup.organigram[inx-sys-type] <> 0
+                THEN DO:
+                    ASSIGN
+                    setup.organigram[inx-sys-type] = 0
+                    setup.MAC                      = "REFRESH".
+                END.
+            END.
+            {call.i &prg="sec_setu"}
+            
+            /* Initialize children when importing T or U-records */
+            IF LOOKUP(the-sys-type,"T,U") > 0
+            THEN DO:
+                FOR EACH organigram WHERE LOOKUP(organigram.sys-type,"G,T") > 0
+                                      AND organigram.children > 0:
+                    ASSIGN
+                    organigram.children = 0
+                    organigram.MAC      = "REFRESH".
+                END.
+                {call.i &prg="sec_orga"}
+            END.
+        END.
+    END.
+END.
+
+/* Resume will continue here ... */
+IF wz-errno = -1
+THEN DO:
+    /* ------------------------------------------------------ */
+    /* Import all exported organigram-records into organigram */
+    /* ------------------------------------------------------ */
+    {call.i &prg="s_import" 
+            &param=",INPUT  wz-importfile,
+                     INPUT  wz-line,
+                     
+                     INPUT  wz-org-file,
+                     INPUT  wz-filename,
+                     INPUT  the-sys-type,
+                     
+                     OUTPUT i"}
+    /* ------------------------------------------------------ */
+    
+    /* Check number of imported records */
+    FIND FIRST setup.
+    IF i = wz-line
+    THEN DO:
+        call C_DEL VALUE(wz-errorfile).
+        IF      the-sys-type = "I"
+        THEN DO:
+        		/* Get REAL number of I-records (linked records NOT included) */
+						INPUT FROM VALUE(wz-importfile) NO-ECHO.
+						i = 0.
+						REPEAT:
+								SET wz-disk-id wz-s-disk wz-l-disk.
+								IF wz-l-disk < 0 THEN i = i + 1.
+						END.
+						INPUT CLOSE.
+        END.
+        ELSE IF the-sys-type = "U"
+        THEN DO:
+            /* Update number of children for GENERATION and TOTALISATION records */
+            {call.i &prg="upd2s-gt"}
+        END.
+        setup.organigram[LOOKUP(the-sys-type,wz-type-records)] = i.
+    END.
+    ELSE DO:
+        ASSIGN 
+        wz-errno     = 503
+        wz-errmsg[1] = "Mismatch in number of imported records !"
+        wz-errmsg[2] = STRING(i) + " instead of " + STRING(wz-line)
+        
+        setup.organigram[LOOKUP(the-sys-type,wz-type-records)] = 0.
+        
+        /* Remove partial imported records to avoid inconsistency */
+        DELETE FROM organigram WHERE organigram.sys-type = the-sys-type.
+    END.
+    REPEAT i = LOOKUP(the-sys-type,wz-type-records) + 1 TO 4:
+        setup.organigram[i] = 0.
+    END.
+    setup.MAC = "REFRESH".
+    {call.i &prg="sec_setu"}
+
+    call C_DEL VALUE(wz-importfile).
+     
+END.
+
+call C_DEL VALUE(wz-importfile).
+
+IF wz-errno <> -1 /* Some errors have occured ! Abort IMPORT ! */
+THEN DO:
+    IF  wz-errno < 500
+    AND wz-errno <> 399
+    THEN call ADDTOLOG PROGRAM-NAME(1) VALUE("File " + wz-org-file + " contains errors " +
+                             "at line " + STRING(wz-line) + " ! (errno : " + STRING(wz-errno) + ")") 1.
+    IF wz-errmsg[1] <> "" THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-errmsg[1]) 1.
+    IF wz-errmsg[2] <> "" THEN call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-errmsg[2]) 1.
+    
+    IF wz-errno < 500
+    THEN DO:
+        {call.i &prg="disfram" &param=",'import2s,not_ok',
+                ',' + wz-org-file + '(E:' + STRING(wz-errno) + '-L:' + STRING(wz-line) + ')',
+                'import2s,error' + STRING(wz-errno,'999'),
+                ',' + wz-errmsg[2],
+                FALSE"}
+        ASSIGN
+        wz-content    = ""
+        wz-content[1] = TRIM(wz-field[1]) + ";" + TRIM(wz-field[2]) + ";"
+                      + TRIM(wz-field[3]) + ";" + TRIM(wz-field[4]).
+        IF LOOKUP(STRING(wz-errno),"401,402,403,404") > 0
+        THEN ASSIGN
+             wz-content[2] = TRIM(wz-field[5])
+             wz-content[3] = TRIM(wz-field[6])
+             wz-content[4] = TRIM(wz-field[7])
+             wz-content[5] = TRIM(wz-field[8])
+             wz-content[6] = TRIM(wz-field[9]).
+        ELSE IF the-sys-type = "I"
+        THEN ASSIGN
+             wz-content[3] = TRIM(wz-field[ 5]) + ";" + TRIM(wz-field[ 6]) + ";"
+                           + TRIM(wz-field[ 7]) + ";" + TRIM(wz-field[ 8])
+             wz-content[4] = TRIM(wz-field[ 9]) + ";" + TRIM(wz-field[10]) + ";"
+                           + TRIM(wz-field[11]) + ";" + TRIM(wz-field[12]).
+        ELSE ASSIGN
+             wz-content[3] = TRIM(wz-field[10]) + ";" + TRIM(wz-field[11]) + ";" 
+                           + TRIM(wz-field[12]) + ";" + TRIM(wz-field[13])
+             wz-content[4] = TRIM(wz-field[14]) + ";" + TRIM(wz-field[15]) + ";" 
+                           + TRIM(wz-field[16]) + ";" + TRIM(wz-field[17])
+             wz-content[5] = TRIM(wz-field[18]) + ";" + TRIM(wz-field[19]) + ";" 
+                           + TRIM(wz-field[20]) + ";" + TRIM(wz-field[21])
+             wz-content[6] = TRIM(wz-field[22]) + ";" + TRIM(wz-field[23]) + ";" 
+                           + TRIM(wz-field[24]) + ";" + TRIM(wz-field[25]).
+        PAUSE 0 NO-MESSAGE.
+        DISPLAY wz-content WITH FRAME frmContent.
+        {call.i &prg="stathelp" &param=",FALSE"}
+        HIDE FRAME frmContent NO-PAUSE.
+    END.
+    ELSE DO:
+        {call.i &prg="disfram" &param=",'import2s,not_ok',
+                ',' + wz-org-file + '(E:' + STRING(wz-errno) + ')',
+                'import2s,error' + STRING(wz-errno,'999'),
+                ',' + wz-errmsg[2],
+                TRUE"}
+    END.
+END.
+ELSE DO:
+    call ADDTOLOG PROGRAM-NAME(1) VALUE(wz-org-file + " imported with success !") 0.
+
+    {call.i &prg="disfram" &param=",'import2s,importok',',' + wz-org-file,'','',TRUE"}
+END.
+
+/* --------------------------------------- */
+/* Delete LBI-file(s) : Local Before Image */
+/* PROGRESS won't crash doing this action  */
+/* However, deleting the BI-file will !    */
+/* --------------------------------------- */
+call C_DIR VALUE("LBI*") VALUE(ramdrive + "DIR.LBI").
+INPUT FROM VALUE(ramdrive + "DIR.LBI") NO-ECHO.
+REPEAT:
+    SET wz-LBIfile.
+    call C_DEL VALUE(wz-LBIfile).
+END.
+INPUT CLOSE.
+call C_DEL VALUE(ramdrive + "DIR.LBI").
+call C_DEL VALUE(wz-errorfile).
+
+{return.i}
+/* eof */

@@ -1,0 +1,144 @@
+/* Filename            : COPYFILE.P                                     */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*   OUTPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF OUTPUT PARAMETER copystat AS L NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   LOCAL VARIABLES                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF VAR wz-filename     AS C FORMAT "x(50)" EXTENT 3              NO-UNDO.
+DEF VAR wz-statmess     AS C FORMAT "x(78)"                       NO-UNDO.
+
+DEF VAR wz-return-code  AS I                                      NO-UNDO. 
+
+/************************************************************************/
+/*                                                                      */
+/*   START PROCEDURE                                                    */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'copyfile,statmess',0,OUTPUT wz-statmess"}
+
+copystat = TRUE.
+
+/* Check if all files to be copied exists ...*/
+INPUT FROM VALUE(ramdrive + "COPYLIST") NO-ECHO.
+
+CheckBlock:
+REPEAT WHILE copystat:
+    wz-filename = "".
+    SET wz-filename.
+    IF      wz-filename[1] =  "" OR
+            wz-filename[2] =  ""
+    THEN DO:
+        call ADDTOLOG PROGRAM-NAME(1) "Not all parameters have been supplied !" 2.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Param1 : " + wz-filename[1]) 2.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Param2 : " + wz-filename[2]) 2.
+        call ADDTOLOG PROGRAM-NAME(1) VALUE("Param3 : " + wz-filename[3]) 2.
+        copystat = FALSE.
+        NEXT CheckBlock.
+    END.
+    ELSE IF wz-filename[1] <> "" AND
+            wz-filename[2] <> ""
+    THEN DO:
+        CALL C_TSTFN VALUE(wz-filename[1]).
+        IF fileok = 1
+        THEN IF wz-filename[3] <> ""
+             THEN CALL C_TSTFN VALUE(wz-filename[2]).
+        IF fileok = 0
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) VALUE("Unable to copy to " 
+                                             + (IF wz-filename[3] = ""
+                                                THEN wz-filename[2]
+                                                ELSE wz-filename[3])
+                                              + " (check" + STRING(fileok) + ")") 2.
+            copystat = FALSE.
+            NEXT CheckBlock.
+        END.
+    END.
+END.
+INPUT CLOSE.
+
+IF copystat
+THEN DO:
+    /* Start copying of files ... */
+    INPUT FROM VALUE(ramdrive + "COPYLIST") NO-ECHO.
+
+    CopyBlock:
+    REPEAT WHILE copystat:
+        wz-filename = "".
+        SET wz-filename.
+        IF      wz-filename[1] =  "" AND
+                wz-filename[2] =  ""
+        THEN DO:
+            call ADDTOLOG PROGRAM-NAME(1) "No parameters have been supplied !" 2.
+            copystat = FALSE.
+            NEXT CopyBlock.
+        END.
+        ELSE IF wz-filename[1] <> "" AND
+                wz-filename[2] <> ""
+        THEN DO:
+            /* 
+               !! ATTENTION !!
+               
+               Usage of wz-return-code !
+               
+               C_TSTFN results in value = 0 for FILE NOT FOUND
+                                        = 1 for FILE FOUND
+               C_COPY  results in value = 0 for FILE COPIED
+                                        < 0 for ERROR COPYING FILE
+                                        
+            */
+            CALL C_TSTFN VALUE(wz-filename[1]).
+            wz-return-code = fileok.
+            IF wz-return-code = 1
+            THEN DO:
+                MESSAGE COLOR GRAY/BLACK
+                        wz-statmess (IF wz-filename[3] = ""
+                                     THEN wz-filename[2]
+                                     ELSE wz-filename[3]) "...".
+                IF wz-filename[3] = ""
+                THEN DO:
+                    CALL C_COPY VALUE(wz-filename[1])
+                                VALUE(wz-filename[2]).
+                    wz-return-code = (IF fileok = 0 THEN 1 ELSE fileok).
+                END.
+                ELSE DO:
+                    CALL C_TSTFN VALUE(wz-filename[2]).
+                    wz-return-code = fileok.
+                    IF wz-return-code = 1
+                    THEN DO:
+                        CALL C_COPY VALUE(wz-filename[1])
+                                    VALUE(wz-filename[2])
+                                    VALUE(wz-filename[3]).
+                        wz-return-code = (IF fileok = 0 THEN 1 ELSE fileok).
+                    END.
+                END.
+                HIDE MESSAGE NO-PAUSE.
+            END.
+            IF wz-return-code < 0
+            THEN DO:
+                call ADDTOLOG PROGRAM-NAME(1) VALUE("Unable to copy to " 
+                                                  + (IF wz-filename[3] = ""
+                                                    THEN wz-filename[2]
+                                                    ELSE wz-filename[3])
+                                                  + " (copy" + STRING(wz-return-code) + ")") 2.
+                copystat = FALSE.
+                NEXT CopyBlock.
+            END.
+        END.
+    END.
+    INPUT CLOSE.
+END.
+
+CALL C_DEL VALUE(ramdrive + "COPYLIST").
+
+{return.i}
+/* eof */

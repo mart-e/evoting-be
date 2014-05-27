@@ -1,0 +1,41 @@
+/* Filename            : INDMESS.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*    INPUT PARAMETERS                                                  */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAMETER fra_var AS CHARACTER FORMAT "x(20)" NO-UNDO.
+
+
+/************************************************************************/
+/*                                                                      */
+/*    LOCAL VARIABLES                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF VAR error_message AS C FORMAT "x(78)"          NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*    START PROCEDURE                                                   */
+/*                                                                      */
+/************************************************************************/
+IF NUM-ENTRIES(fra_var) = 2
+THEN DO:
+    {call.i &prg="dispmes" &param=",fra_var,0"}
+END.
+ELSE DO:
+    error_message = "INDMESS: " + PROGRAM-NAME(2) + " <" + fra_var + ">".
+    HIDE MESSAGE NO-PAUSE.
+    MESSAGE SUBSTR(error_message,1,78).
+    {call.i &prg="stathelp" &param=",TRUE"}
+    HIDE MESSAGE NO-PAUSE.
+END.
+
+STATUS DEFAULT.
+HIDE MESSAGE NO-PAUSE.
+
+{return.i}
+/* eof */

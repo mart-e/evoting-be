@@ -1,0 +1,34 @@
+/* Filename        : INITCAND.P                 */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                  */
+/*    SHARED VARIABLES  VIA INCLUDE FILES               */
+/*                                  */
+/************************************************************************/
+
+{selvar.i}        /* De variabelen voor de selection record     */
+
+/************************************************************************/
+/*                                  */
+/*    EXTERNAL PROCEDURES                       */
+/*    selecrd       Inlezen van selectie record     */
+/*    selecwr       Wegschrijven van selectie record    */
+/*                                  */
+/************************************************************************/
+
+/************************************************************************/
+/*                                  */
+/*    START PROCEDURE                       */
+/*                                  */
+/************************************************************************/
+
+{call.i &prg="selecrd"}          /* Inlezen van de selectie record 'selection'   */
+
+candnum = 0.
+
+{call.i &prg="selecwr"}          /* Wegschrijven selectie record 'selection'     */
+
+{return.i}
+/* eof */

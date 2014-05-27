@@ -1,0 +1,38 @@
+/* Filename            : BEGPRT.P                                       */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*   INPUT PARAMETERS                                                   */
+/*                                                                      */
+/************************************************************************/
+DEF INPUT PARAM page-nbr     AS L                                 NO-UNDO.
+DEF INPUT PARAM page-len     AS I                                 NO-UNDO.
+DEF INPUT PARAM desc-nbr     AS I                                 NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   LOCAL VARIABLES                                                    */
+/*                                                                      */
+/************************************************************************/
+DEF VAR var-name             AS C FORMAT "x(8)"                   NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*   INCLUDE FILES                                                      */
+/*                                                                      */
+/************************************************************************/
+{printer.i "SHARED"}       /* Variabelen om printerbestanden te beheren */
+
+/*******************************/
+/* Filling up SHARED variables */
+/*******************************/
+ASSIGN
+prt-lines = IF      page-len = -1 THEN  0           /* -1 voor page-size 0 */
+            ELSE IF page-len = 0  THEN 80           /* 0 voor default page-size 80 */
+            ELSE                       page-len     /* rest, gevraagde lengte */
+prt-page  = page-nbr.
+
+{return.i}
+/* eof */

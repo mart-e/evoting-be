@@ -1,0 +1,19 @@
+#
+#
+#
+#
+#
+
+DESTINATION=\\srv-stesud\home\Gupta\Conversion\\
+
+synchro::
+	-xcopy /s /d /y c:\inetpub\wwwroot\stesud\*.* $(DESTINATION)..
+
+synchro:: *.asp *.htm *.css tdmigrate.pdf *.gif *.png
+	@echo.
+	@echo $**
+	@echo.
+	&-@xcopy /d /y $** $(DESTINATION)
+        -@xcopy /d /y d:\p_lib32\langue\qo_lang32.exe files\\
+	-@xcopy /d /y files\*.* $(DESTINATION)files\\
+

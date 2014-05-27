@@ -1,0 +1,336 @@
+/* Filename            : PREVIEW.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLE                                               */
+/*                                                                      */
+/************************************************************************/
+DEF NEW SHARED VAR selindic AS C FORMAT "x(10)". /* sellist.p in selkies.p */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLE                                                */
+/*                                                                      */
+/************************************************************************/
+DEF VAR max_can      AS I                                  NO-UNDO.
+DEF VAR max_sup      AS I                                  NO-UNDO.
+DEF VAR max_can_e-id AS I                                  NO-UNDO.
+DEF VAR max_sup_e-id AS I                                  NO-UNDO.
+DEF VAR max_cs       AS I                                  NO-UNDO.
+DEF VAR elect_cs     AS I                                  NO-UNDO.
+DEF VAR c-limit      AS I                                  NO-UNDO.
+DEF VAR wz-et-id     LIKE election.et-id                   NO-UNDO.
+DEF VAR wz-exefile   AS C FORMAT "x(35)"                   NO-UNDO.
+DEF VAR wz-resfile   AS C FORMAT "x(35)"                   NO-UNDO.
+DEF VAR wz-params    AS C FORMAT "x(78)"                   NO-UNDO.
+DEF VAR wz-file      AS C FORMAT "x(35)"                   NO-UNDO.
+DEF VAR wz-given     AS C FORMAT "x(20)"                   NO-UNDO.
+DEF VAR wz-largest   AS C FORMAT "x(20)"                   NO-UNDO.
+DEF VAR wz-message   AS C FORMAT "x(78)"                   NO-UNDO.
+DEF VAR sw-message   AS L INIT TRUE                        NO-UNDO.
+DEF VAR wz-selindic  AS C FORMAT "x(15)"                   NO-UNDO.
+DEF VAR wz-index     AS I INIT 1                           NO-UNDO.
+DEF VAR i            AS I                                  NO-UNDO.
+DEF VAR wz-maxcs     AS I INIT 0                           NO-UNDO.
+
+DEF VAR wz-sign-pos  AS I                                  NO-UNDO.
+DEF VAR wz-sign      AS I INIT 32                          NO-UNDO.
+
+DEF VAR wz-graphics  AS I                                  NO-UNDO.
+DEF VAR cmd-graphics AS C FORMAT "x(25)" EXTENT 2 INIT
+      ["GRAPHICS GRAPHICS /R",
+       "GRAPHICS LASERJETII /R"]                           NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED FRAME DESCRIPTIONS                                     */
+/*                                                                      */
+/************************************************************************/
+{pmgeneka.i}
+{pmgenein.i}            /* Shared frame voor PRP-systeem indikatie menu */
+{pmgeneme.i}            /* Shared frame voor PRP-systeem general menu   */
+{disfram.i}
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="initverk"}            /* Initialisatie van een verkiezing */
+
+/*************************************************************************
+ *
+ *      Controle of er lijsten bestaan voor deze verkiezing.
+ *
+ *************************************************************************/
+FIND FIRST setup NO-LOCK NO-ERROR.
+FOR EACH election WHERE election.org-type = setup.org-type NO-LOCK:
+    FIND FIRST party WHERE party.e-id = election.e-id
+                       AND party.p-id <> 0 NO-LOCK NO-ERROR.
+    IF NOT AVAILABLE party
+    THEN DO:
+        {call.i &prg="disfram" &param=",'blocage,noparty','','','',TRUE"}
+        {return.i}
+    END.
+END.
+
+ASSIGN
+wz-exefile  = (IF SEARCH(ramdrive + "VOTE\RUN\PREVIEW.EXE") = ?
+               THEN "\"
+               ELSE ramdrive)
+            + "VOTE\RUN\PREVIEW.EXE"
+wz-resfile  = ramdrive + "PREVIEW.RES"
+wz-graphics = -1.
+
+FIND session WHERE session.s-id = verkdat
+           NO-LOCK NO-ERROR.
+IF AVAILABLE session
+THEN DO :
+    FIND FIRST setup NO-LOCK NO-ERROR.
+    FIND FIRST election WHERE election.s-id = verkdat
+                      NO-LOCK NO-ERROR.
+    IF AVAILABLE election
+    THEN DO:
+        CALL C_PRTYPE.
+        IF LOOKUP(STRING(printer),"0,1") > 0
+        THEN DO:
+            IF wz-graphics <> printer
+            THEN DO:
+                DOS SILENT VALUE(cmd-graphics[printer + 1]).
+                wz-graphics = printer.
+            END.
+        END.
+        ELSE DO:
+            {call.i &prg="disfram" &param=",'preview,no_prt_1',
+                                            'preview,no_prt_2',
+                                            '','',TRUE"}
+            {return.i}
+        END.
+        REPEAT :
+            {call.i &prg="selkies"}      /* Selecteer een verkiezing             */
+
+            IF verknum <> 0 AND
+               menupos = 2
+            THEN DO:
+                FIND FIRST election WHERE election.s-id = verkdat
+                                      AND election.e-id = verknum
+                                  NO-LOCK NO-ERROR.
+                IF    selindic = "volledig"
+                THEN wz-selindic = "partij".
+
+                IF    selindic = "partij" OR
+                  (   selindic = "volledig" AND 
+                   wz-selindic = "partij"      )
+                THEN DO :
+                    {preview.i
+                      &preview_dat = "cr_part"
+                      &prg_params  = "'D '+ (IF selindic = 'volledig'
+                                             THEN '1 '
+                                             ELSE '0 ')
+                                          + ramdrive"
+                    }
+                    /* ------------------------------------------- */
+                    /* Force to print all detailed party lists ... */
+                    /* ------------------------------------------- */
+                    IF      selindic = "volledig"
+                    THEN wz-selindic = "kandidaat".
+                    /* ------------------------------------------- */
+                END. /* selindic = "partij" */
+
+                IF    selindic = "kandidaat" OR
+                  (   selindic = "volledig" AND
+                   wz-selindic = "kandidaat"   )
+                THEN DO:
+                    FIND FIRST party WHERE party.s-id = verkdat
+                                       AND party.e-id = verknum
+                                   NO-LOCK NO-ERROR.
+                    IF AVAILABLE party
+                    THEN DO:
+                        sw-message = TRUE.
+                        REPEAT :
+                            IF sw-message
+                            THEN DO:
+                                wz-sign-pos = 0.
+                                {call.i &prg="disfram" 
+                                        &param=",'preview,chkparty','','','',FALSE"}
+                                FIND FIRST election NO-LOCK WHERE election.s-id = verkdat
+                                                              AND election.e-id = verknum.
+                                ASSIGN
+                                sw-message   = FALSE
+                                max_can      = 0
+                                max_sup      = 0
+                                max_can_e-id = 0
+                                max_sup_e-id = 0
+                                wz-et-id     = election.et-id.
+                                FOR EACH election NO-LOCK WHERE election.s-id  = verkdat
+                                                            AND election.et-id = wz-et-id:
+                                    FOR EACH party NO-LOCK WHERE party.s-id =  verkdat
+                                                             AND party.e-id =  election.e-id
+                                                             AND party.p-id <> 0:
+                                        {PROGBUSY.I}
+                                        FIND LAST candidate WHERE candidate.e-id   = election.e-id
+                                                              AND candidate.p-id   = party.p-id
+                                                              AND candidate.c-type = 0
+                                                          NO-LOCK NO-ERROR.
+                                        IF AVAIL candidate
+                                        THEN DO:
+                                            IF candidate.c-id > max_can
+                                            THEN max_can = candidate.c-id.
+                                            IF candidate.c-id > max_can_e-id AND
+                                               candidate.e-id = verknum
+                                            THEN max_can_e-id = candidate.c-id.
+                                        END.
+                                        IF election.supps
+                                        THEN DO:
+                                            FIND LAST candidate WHERE candidate.e-id   = election.e-id
+                                                                  AND candidate.p-id   = party.p-id
+                                                                  AND candidate.c-type = 1
+                                                              NO-LOCK NO-ERROR.
+                                            IF AVAILABLE candidate
+                                            THEN DO:
+                                                IF candidate.c-id > max_sup
+                                                THEN max_sup = candidate.c-id.
+                                                IF candidate.c-id > max_sup_e-id AND
+                                                   candidate.e-id = verknum
+                                                THEN max_sup_e-id = candidate.c-id.
+                                            END.
+                                        END.
+                                    END. /* FOR EACH party */
+                                END. /* FOR EACH election */
+
+                                {BUSYENDS.I}
+                                
+                                FIND FIRST election NO-LOCK WHERE election.s-id = verkdat
+                                                              AND election.e-id = verknum.
+                                /********************************************************/
+                                /* IF Brusselse Hoofdstedelijke Raad => TAALGROEPEN !!! */                      
+                                /* Only consider the top max can+sup                    */ 
+                                /********************************************************/
+                                IF election.et-id = 1
+                                THEN DO:
+                                     REPEAT i = 1 TO 3:
+                                         IF (election.maxcan[i] + election.maxsup[i]) > wz-maxcs
+                                         THEN DO:
+                                             ASSIGN
+                                             wz-maxcs = election.maxcan[wz-index] 
+                                                      + election.maxsup[wz-index]
+                                             wz-index = i.
+                                         END.
+                                     END.
+                                END.
+                                ELSE wz-index = 1.
+
+                                IF election.supps
+                                THEN ASSIGN
+                                     c-limit  = 40
+                                     max_cs   = max_can_e-id + max_sup_e-id
+                                     elect_cs = election.maxcan[wz-index] + election.maxsup[wz-index].
+                                ELSE ASSIGN
+                                     c-limit  = 42
+                                     max_cs   = max_can_e-id
+                                     elect_cs = election.maxcan[wz-index].
+                                     
+                                HIDE FRAME disframe NO-PAUSE.
+                                
+                                IF max_cs <> elect_cs   AND
+                                   setup.sys-type = "I"
+                                THEN DO:
+                                    {call.i &prg="mesfil" &param=",'preview,givenmax',20,OUTPUT wz-given"}
+                                    {call.i &prg="mesfil" &param=",'preview,largestp',20,OUTPUT wz-largest"}
+                                    wz-message = wz-given   + " = " + STRING(elect_cs) + " / "           +
+                                                 wz-largest + " = " + STRING(max_cs).
+                                    {call.i &prg="disfram" 
+                                            &param=",'preview,maxcs1',
+                                                     'preview,maxcs2',
+                                                     'preview,maxcs3',
+                                                     ',' + wz-message,TRUE"}
+                                END.
+                            END.
+                            IF      selindic = "kandidaat"
+                            THEN DO:
+                                {call.i &prg="partysel" 
+                                        &param=",wz-exefile,
+                                                 wz-resfile,
+                                                 max_can,
+                                                 max_sup,
+                                                 selindic"}
+                                {call.i &prg="initverk"} /* Initialisatie verkiezing */
+                                verknum = 1.
+                                LEAVE.
+                            END.
+                            ELSE IF selindic = "volledig"
+                            THEN DO:
+                                FOR EACH party NO-LOCK WHERE party.s-id = verkdat
+                                                         AND party.e-id = verknum
+                                                         AND party.p-id <> 0:
+                                    ASSIGN
+                                    partnum = party.p-id
+                                    partnam = party.party_name.
+                                    IF  max_can = 0 
+                                    AND max_sup = 0
+                                    THEN ASSIGN
+                                         max_can = -1
+                                         max_sup = -1.
+                                    {preview.i
+                                      &preview_dat = "cr_lst"
+                                      &prg_params  = "'E ' + STRING(max_can) + ' '
+                                                           + STRING(max_sup)
+                                                           + (IF selindic = 'volledig'
+                                                              THEN ' 1 '
+                                                              ELSE ' 0 ')
+                                                           + ramdrive"
+                                      &extra       = "ASSIGN
+                                                      partnum = 0
+                                                      partnam = ''."
+                                      &if_init     = "LEAVE"
+                                    }
+                                    {prevdelf.i}
+                                END.
+                                {call.i &prg="initverk"} /* Initialisatie verkiezing */
+                                verknum = 1.
+                                LEAVE.
+                            END.
+                            ELSE DO :
+                                {call.i &prg="initverk"} /* Initialisatie verkiezing */
+                                verknum = 1.
+                                LEAVE.
+                            END.
+                        END. /* REPEAT */
+                    END. /* IF AVAILABLE party */
+                END. /* selindic = "kandidaat" */
+            END. /* verknum <> 0 AND menupos = 2 */
+            IF menupos <> 2 OR
+               verknum = 0
+            THEN DO :
+                {call.i &prg="initverk"}    /* Initialisatie van een verkiezing  */
+                LEAVE.
+            END.
+            {prevdelf.i}
+        END. /* REPEAT */
+    END.
+    ELSE DO:
+        {call.i &prg="indmess" &param=",'digivote,errmes06'"}
+    END.
+END.
+ELSE DO:
+    {call.i &prg="indmess" &param=",'digivote,errmes04'"}
+END.
+
+{prevdelf.i}
+
+HIDE FRAME disframe NO-PAUSE.
+
+{return.i}
+/* eof */

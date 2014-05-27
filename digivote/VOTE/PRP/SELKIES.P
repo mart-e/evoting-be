@@ -1,0 +1,115 @@
+/* Filename            : SELKIES.P                                      */
+
+{chklevel.i 1}
+
+/************************************************************************/
+/*                                                                      */
+/*        SHARED VARIABLES  VIA INCLUDE FILES                           */
+/*                                                                      */
+/************************************************************************/
+
+{mencolor.i}          /* De variabelen voor het kleuren van de schermen */
+{vargener.i}          /* Variabelen voor het PRP hoofdmenu PMGENEME     */
+{selvar.i}            /* De variabelen voor de selection record         */
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL VARIABLES                                               */
+/*                                                                      */
+/************************************************************************/
+
+/*
+ *      key_dis     : De variabele voor CHOOSE ROW van het scherm
+ *                    Indeling variabele :
+ *                    1-2   : election.e-id
+ *                    3-4   : Spatie
+ *                    5     : Naam verkiezing
+ *      first-key   : De eertse RECID van de tabel
+ *      sav-key     : De RECID van actuele types record
+ *      beg-key     : De begin RECID van het scherm
+ *      end-key     : De eind RECID van het scherm
+ *      counter     : Een teller voor het opvullen van het scherm
+ *      down-num    : Het aantal down lijnen voor het scherm
+*/
+
+DEF VAR key_dis   AS C FORMAT "x(56)".
+DEF VAR down-num  AS I.
+
+DEF VAR mes1      AS C FORMAT "x(38)"    NO-UNDO.
+DEF VAR men_tit   AS C FORMAT "x(40)"    NO-UNDO.
+
+/************************************************************************/
+/*                                                                      */
+/*        LOCAL FORM DESCRIPTIONS                                       */
+/*                                                                      */
+/************************************************************************/
+FORM
+    SKIP
+    key_dis AT 2 SPACE(2) SKIP
+    HEADER mes1 AT 5 SPACE(2)
+    WITH FRAME pmviewge SCROLL 1 down-num DOWN ROW 5
+    TITLE men_tit NO-LABELS OVERLAY CENTERED.
+
+/************************************************************************/
+/*                                                                      */
+/*        EXTERNAL PROCEDURES                                           */
+/*                                                                      */
+/*        verksel       Weergeven van de selectie                       */
+/*        sellist       Selectie soort lijst                            */
+/*        initverk      Initialisatie van een verkiezing                */
+/*                                                                      */
+/************************************************************************/
+
+/************************************************************************/
+/*                                                                      */
+/*        START PROCEDURE                                               */
+/*                                                                      */
+/************************************************************************/
+{call.i &prg="mesfil" &param=",'pmviewge,mes01',38,OUTPUT mes1"}
+{call.i &prg="mesfil" &param=",'pmviewge,tit01',40,OUTPUT men_tit"}
+
+FIND FIRST setup NO-LOCK NO-ERROR.
+verknum = 0.
+
+{selitem.g
+ &tab_name     = "election"
+ &where        = " election.s-id     = verkdat AND
+                  (setup.sys-type    = 'I' AND
+                   election.org-type = setup.org-type) OR
+                  (setup.sys-type    = 'G'           ) OR
+                  (setup.sys-type    = 'T' AND
+                   election.e-pr     =  TRUE         )"
+ &key_dis      = "STRING(election.e-id,'99')  + '  '
+               + election.long-name[taalkode] + ' '
+               + election.coll_name[taalkode]"
+ &fkey         = "01"
+ &fra_name     = "pmviewge"    
+ &fra_capture  = "verknum = INTEGER(SUBSTRING(key_dis,1,2))
+                  verkben = SUBSTRING(key_dis,5,53)"
+ &cursor_left  = 1
+ &cursor_right = 3
+ &action_type  = " "
+ &action_flag  = 0
+ &action_keys  = "F1,RETURN,F5"
+ &action_prgs  = " "
+ &action_post  = "
+  FIND FIRST election WHERE election.s-id = verkdat
+                        AND election.e-id = verknum
+                        NO-LOCK NO-ERROR.
+  IF AVAILABLE election
+  THEN DO:
+      {call.i &prg='verksel'} /* Weergeven van de selektie */
+      {call.i &prg='sellist'} /* Selecteer een lijst       */
+      IF verknum <> 0 THEN LEAVE.
+  END.
+  {call.i &prg='initverk'}    /* Initialisatie van een verkiezing */
+ "
+ &action_else = "
+  ELSE DO:
+      {call.i &prg=""indmess"" &param="",'digivote,errmes06'""}
+  END.
+ "
+}
+
+{return.i}
+/* eof */
